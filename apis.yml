@@ -120,6 +120,14 @@ common:
     url: https://www.cohesity.com/legal/privacy-policy/
   - type: Terms of Use
     url: https://www.cohesity.com/agreements/website-terms-of-use/
+  - type: Integrations
+    url: https://www.cohesity.com/marketplace/
+integrations:
+  - name: Global System Integrators
+  - name: Security Partners
+  - name: Cloud Alliances
+  - name: Managed Service Providers
+  - name: Join Cohesity Aces
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
