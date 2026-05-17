@@ -14,7 +14,7 @@ tags:
   - Helios
   - Orchestration
 type: Index
-x-type: company
+kind: company
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 access: 3rd-Party
 created: '2025-03-01'
@@ -106,7 +106,7 @@ common:
     url: https://developer.cohesity.com/
   - type: Developers Site
     url: https://developers.cohesity.com/
-  - type: API Reference
+  - type: APIReference
     url: https://developer.cohesity.com/apidocs/versions/
   - type: GitHub
     url: https://github.com/cohesity
@@ -114,9 +114,9 @@ common:
     url: https://docs.cohesity.com/
   - type: Support
     url: https://www.cohesity.com/support/
-  - type: Status
+  - type: StatusPage
     url: https://status.cohesity.com/
-  - type: Privacy Policy
+  - type: PrivacyPolicy
     url: https://www.cohesity.com/legal/privacy-policy/
   - type: Terms of Use
     url: https://www.cohesity.com/agreements/website-terms-of-use/
