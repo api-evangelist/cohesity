@@ -100,6 +100,8 @@ apis:
       - Integrate with vRealize, ServiceNow, Ansible, and Terraform workflows
       - Build custom dashboards over per-cluster operational data
 common:
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/cohesity
   - type: Website
     url: https://www.cohesity.com/
   - type: Developer Portal
