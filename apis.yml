@@ -124,6 +124,8 @@ common:
     url: https://www.cohesity.com/agreements/website-terms-of-use/
   - type: Integrations
     url: https://www.cohesity.com/marketplace/
+  - type: LLMsTxt
+    url: https://developers.cohesity.com/llms.txt
 integrations:
   - name: Global System Integrators
   - name: Security Partners
