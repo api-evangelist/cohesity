@@ -15,7 +15,7 @@ tags:
   - Orchestration
 type: Index
 kind: company
-image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
 access: 3rd-Party
 created: '2025-03-01'
 modified: '2026-04-28'
@@ -39,7 +39,7 @@ apis:
       - DataProtect
       - Helios
       - Orchestration
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
     humanURL: https://developer.cohesity.com/helios-api.html
     properties:
@@ -74,7 +74,7 @@ apis:
       - DataProtect
       - Disaster Recovery
       - Per-Cluster
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     humanURL: https://developer.cohesity.com/apidocs/versions/
     properties:
       - url: https://developer.cohesity.com/apidocs/versions/
