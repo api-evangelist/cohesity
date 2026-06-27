@@ -104,7 +104,7 @@ common:
     url: https://www.linkedin.com/company/cohesity
   - type: Website
     url: https://www.cohesity.com/
-  - type: Developer Portal
+  - type: DeveloperPortal
     url: https://developer.cohesity.com/
   - type: Developers Site
     url: https://developers.cohesity.com/
@@ -120,11 +120,11 @@ common:
     url: https://status.cohesity.com/
   - type: PrivacyPolicy
     url: https://www.cohesity.com/legal/privacy-policy/
-  - type: Terms of Use
+  - type: TermsOfService
     url: https://www.cohesity.com/agreements/website-terms-of-use/
   - type: Integrations
     url: https://www.cohesity.com/marketplace/
-  - type: LLMsTxt
+  - type: LlmsText
     url: https://developers.cohesity.com/llms.txt
 integrations:
   - name: Global System Integrators
