@@ -100,6 +100,8 @@ apis:
       - Integrate with vRealize, ServiceNow, Ansible, and Terraform workflows
       - Build custom dashboards over per-cluster operational data
 common:
+  - type: DomainSecurity
+    url: security/cohesity-domain-security.yml
   - type: LinkedIn
     url: https://www.linkedin.com/company/cohesity
   - type: Website
@@ -126,6 +128,8 @@ common:
     url: https://www.cohesity.com/marketplace/
   - type: LlmsText
     url: https://developers.cohesity.com/llms.txt
+  - url: https://www.cohesity.com/feed/
+    type: Blog
 integrations:
   - name: Global System Integrators
   - name: Security Partners
