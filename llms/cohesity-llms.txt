@@ -1,0 +1,14 @@
+# Cohesity · Developer Portal Documentation
+
+> Official Cohesity Developer Portal with APIs, SDKs, guides, and documentation to build, automate, and integrate with Cohesity products.
+
+## Guides
+- [Getting Started with Cohesity](https://developers.cohesity.com/docs/getting-started.md): This document provides an API list for interfacing with the Cohesity Cluster, including information on authorization methods and example workflows for getting views, adding a protection job, and retrieving object information.
+
+## API Reference
+- [API Reference](https://developers.cohesity.com/reference/api-reference.md)
+
+## Recipes
+- [Cluster Authentication - Getting Started](https://developers.cohesity.com/recipes/cluster-authentication-getting-started.md)
+- [Cohesity Cloud Services - Getting Started](https://developers.cohesity.com/recipes/cohesity-cloud-services-getting-started.md)
+- [Cohesity DataProtect - Recipe](https://developers.cohesity.com/recipes/cohesity-dataprotect-receipe-1.md)
