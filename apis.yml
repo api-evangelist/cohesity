@@ -42,7 +42,7 @@ image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/cohesity.p
 access: 3rd-Party
 created: '2025-03-01'
 modified: '2026-04-28'
-position: Consumer
+position: Consuming
 description: >-
   Cohesity is a data security and management company providing backup, disaster
   recovery, archive, and cyber resilience capabilities across on-premises, cloud,
