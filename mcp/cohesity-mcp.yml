@@ -1,0 +1,105 @@
+generated: '2026-09-05'
+method: searched
+status: published
+source: https://learn.microsoft.com/en-us/connectors/cohesitygaiamcp/
+docs: https://docs.cohesity.com/docs/insights/data-insights/gaia/overview.htm
+server:
+  name: Cohesity Gaia MCP
+  vendor: Cohesity, Inc.
+  product: Cohesity Gaia Data Insights
+  release_stage: preview
+  transport: http
+  protocol: Streamable HTTP (MCP JSON-RPC)
+  implementation: FastMCP, stateless_http=true
+  path: /mcp
+deployment:
+  mode: remote
+  endpoint: null
+  install: null
+  package: null
+  auth: api-key
+  verified: searched
+  note: >-
+    Cohesity publishes a remote, HTTP-transport MCP server for Gaia Data Insights
+    (distributed to Microsoft Copilot Studio / Power Platform as the first-party
+    "Cohesity Gaia MCP" connector, publisher "Cohesity, Inc."). The MCP path is
+    documented as /mcp, but the HOST is the customer's own Gaia deployment - the
+    connector documentation describes the server calling the Gaia REST API via a
+    configured api.base_url rather than a single vendor-hosted URL. No absolute
+    endpoint is recorded here because none is published. A POST of tools/list to
+    https://helios.cohesity.com/mcp returned HTTP 401
+    {"errorCode":"KStatusUnauthorized"} - a routed, auth-gated path (a random
+    top-level control path on the same host returned 302 instead) - which is
+    consistent with the Helios control plane hosting the surface, but a 401 is
+    not proof of an MCP endpoint and this pipeline does not record a guessed URL
+    as verified.
+authentication:
+  scheme: apiKey
+  header: apiKey
+  credential: Cohesity Helios / Gaia API key
+  docs: https://docs.cohesity.com/WebHelios/Content/Helios/Access%20Management.htm
+  privilege_required: GAIA_VIEW
+  note: >-
+    The server forwards most incoming HTTP headers so authorization is identical
+    between MCP access and direct Gaia REST access.
+tool_selection:
+  mechanism: x-mcp-tool
+  note: >-
+    Tools are generated only for Gaia OpenAPI operations explicitly marked
+    `x-mcp-tool: true`; names and descriptions are customized with `x-mcp-config`,
+    and `x-mcp-config.hidden-params` removes parameters from the tool surface.
+    The Gaia OpenAPI itself is not published to a public URL - it was not found on
+    any Cohesity host - so tool input schemas below are recorded from the vendor's
+    connector reference, not from a fetched spec.
+tools:
+  - name: gaia_datasets
+    description: >-
+      Lists Gaia datasets; the entry point that returns the dataset hex IDs the
+      other tools take.
+    source_operation: GetDatasets
+    method: GET
+    path: /datasets
+    defaults: {pageSize: 20}
+    hidden_params: [statuses, sortField, sortOrder]
+    response_model: GetDatasetsResponse
+  - name: gaia_dataset_topics
+    description: Returns the hierarchical topic tree discovered for one dataset.
+    source_operation: GetDatasetDiscoveryResults
+    method: GET
+    path: /dataset/{id}/discovery
+    defaults: {level: 1, numLevels: 2}
+    hidden_params: [uuid]
+    note: '`id` must be the dataset hex ID from gaia_datasets, not the display name.'
+  - name: gaia_ask
+    description: Runs a natural-language LLM query across one or more Gaia datasets.
+    source_operation: QueryLlm
+    method: POST
+    path: /ask
+    request_body: LlmQueryParams
+    required: [datasetNames, queryString]
+    hidden_params: [llmId, llmName, llm, conversationId, queryLanguageCode, history, metadata]
+    response_model: QueryLlmResponse
+  - name: gaia_search
+    description: Performs an exhaustive keyword search within one Gaia dataset.
+    source_operation: ExhaustiveSearch
+    method: PUT
+    path: /ask/exhaustive
+    request_body: ExhaustiveSearchParams
+    required: [datasetName, queryString, pageSize]
+    defaults: {pageSize: 10}
+    hidden_params: [conversationId]
+    response_model: ExhaustiveSearchResponse
+rate_limits:
+  - scope: per-connection
+    limit: 100
+    window: 60s
+    source: https://learn.microsoft.com/en-us/connectors/cohesitygaiamcp/
+    note: Throttling limit stated for the Microsoft Power Platform connector, not for the raw MCP server.
+x-evidence:
+  - {fetched: '2026-09-05', url: 'https://learn.microsoft.com/en-us/connectors/cohesitygaiamcp/', http_status: 200}
+  - {fetched: '2026-09-05', url: 'https://helios.cohesity.com/mcp', http_status: 401, note: 'POST tools/list -> KStatusUnauthorized; routed but auth-gated'}
+  - {fetched: '2026-09-05', url: 'https://helios.cohesity.com/cohesity-control-7f3ab91c', http_status: 302, note: 'negative control on the same host - a nonexistent top-level path redirects rather than 401ing'}
+  - {fetched: '2026-09-05', url: 'https://mcp.cohesity.com/mcp', http_status: 0, note: 'DNS does not resolve - no dedicated MCP host'}
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

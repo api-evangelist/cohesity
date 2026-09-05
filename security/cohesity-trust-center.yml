@@ -1,0 +1,30 @@
+generated: '2026-09-05'
+method: searched
+probe: true
+url: https://www.cohesity.com/trust/
+security_profile: https://www.cohesity.com/trust/security-profile/
+certifications:
+  - {name: SOC 2 Type II, detail: Annual Service Organization Controls 2 Type II audits.}
+  - {name: 'ISO/IEC 27001:2022', detail: Certified.}
+  - {name: FedRAMP Moderate, detail: FedRAMP Moderate Authorized.}
+  - {name: GovRAMP, detail: GovRAMP Authorized.}
+  - {name: HIPAA, detail: Products aligned to HIPAA security benchmarks and requirements.}
+  - {name: 'Common Criteria EAL2+ (ALC_FLR.1)', detail: Common Criteria certified.}
+  - {name: 'NIST FIPS 140-2 Level 1', detail: Cryptographic module validated by NIST.}
+  - {name: USGv6, detail: IPv6 conformance certified by UNH-IOL.}
+  - {name: Trade Agreements Act (TAA), detail: Company complies with TAA requirements.}
+regulatory_assessments:
+  - {name: 'SEC Rule 17a-4(f)', detail: WORM implementation assessed as compliant.}
+  - {name: 'FINRA Rule 4511(c)', detail: WORM implementation assessed as compliant.}
+  - {name: 'CFTC Regulation 1.31(c)-(d)', detail: WORM implementation assessed as compliant.}
+evidence:
+  - {source: 'https://www.cohesity.com/trust/', http_status: 200, keywords: [soc 2 type ii, iso 27001, fedramp moderate, govramp, hipaa, common criteria, fips 140-2]}
+  - {source: 'https://www.cohesity.com/trust/security-profile/', http_status: 200}
+note: >-
+  probe-security-programs.py recorded no trust center for this provider because
+  trust.cohesity.com does not resolve and /security 404s; the trust center is at
+  the plain /trust/ path and was found by hand. This artifact is `searched` and
+  must not be overwritten by that probe.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

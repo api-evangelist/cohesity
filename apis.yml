@@ -1,18 +1,22 @@
 aid: cohesity
-url: >-
-  https://raw.githubusercontent.com/api-evangelist/cohesity/refs/heads/main/apis.yml
+url: https://raw.githubusercontent.com/api-evangelist/cohesity/refs/heads/main/apis.yml
 name: Cohesity
 tags:
-  - Automation
-  - Backup
-  - Cyber Resilience
-  - Data Management
-  - Data Protection
-  - Data Security
-  - DataProtect
-  - Disaster Recovery
-  - Helios
-  - Orchestration
+- Automation
+- Backup
+- Cyber Resilience
+- Data Management
+- Data Protection
+- Data Security
+- DataProtect
+- Disaster Recovery
+- Helios
+- Orchestration
+- Ransomware Recovery
+- Site Continuity
+- Reporting
+- Model Context Protocol
+- Enterprise Storage
 type: Index
 kind: company
 deliveryModel:
@@ -41,125 +45,291 @@ accessModel:
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/cohesity.png
 access: 3rd-Party
 created: '2025-03-01'
-modified: '2026-04-28'
-position: Consuming
-description: >-
-  Cohesity is a data security and management company providing backup, disaster
-  recovery, archive, and cyber resilience capabilities across on-premises, cloud,
-  and SaaS workloads. Following the merger with Veritas, the combined company
-  protects enterprise data while powering automation, orchestration, and AI-
-  driven recovery. The Cohesity developer surface centers on the Cohesity REST
-  API, exposed both per-cluster (DataProtect/cluster API) and via the Helios
-  global control plane, with versioned v1 and v2 endpoints, API-key
-  authentication, and SDKs for Python, PowerShell, Ansible, Terraform, and
-  ServiceNow.
+modified: '2026-09-05'
+position: Producing
+description: Cohesity is a data security and management company providing backup, disaster recovery, archive,
+  and cyber resilience capabilities across on-premises, cloud, and SaaS workloads. Following the merger
+  with Veritas, the combined company protects enterprise data while powering automation, orchestration,
+  and AI- driven recovery. The Cohesity developer surface centers on the Cohesity REST API, exposed both
+  per-cluster (DataProtect/cluster API) and via the Helios global control plane, with versioned v1 and
+  v2 endpoints, API-key authentication, and SDKs for Python, PowerShell, Ansible, Terraform, and ServiceNow.
 apis:
-  - aid: cohesity:helios-rest-api
-    name: Cohesity Helios REST API
-    tags:
-      - Automation
-      - Cluster Management
-      - DataProtect
-      - Helios
-      - Orchestration
-    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-    baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
-    humanURL: https://developer.cohesity.com/helios-api.html
-    properties:
-      - url: https://developer.cohesity.com/helios-api.html
-        type: Documentation
-      - url: https://developer.cohesity.com/docs/helios-getting-started
-        type: GettingStarted
-      - url: https://developer.cohesity.com/apidocs/versions/
-        type: APIReference
-    description: >-
-      Helios is Cohesity's SaaS-based control plane that manages a fleet of
-      Cohesity clusters from a single global pane of glass. The Helios REST API
-      authenticates via an apiKey generated from the Helios UI and passed in the
-      request header, supports both v1 and v2 endpoint families, and lets
-      customers list and operate registered clusters, run protection jobs,
-      manage policies, and access reporting and analytics globally.
-    x-features:
-      - apiKey-based authentication via Helios UI
-      - v1 and v2 API surfaces under /irisservices/api/
-      - Manage protection groups, policies, and recovery operations
-      - Reporting and global analytics across clusters
-      - Multi-cluster operations from a single endpoint
-    x-use-cases:
-      - Centralize backup and recovery automation across many Cohesity clusters
-      - Drive policy and SLA enforcement from CI/CD pipelines
-      - Trigger or schedule recoveries from external orchestration tools
-      - Export reporting data into SIEM or BI dashboards
-  - aid: cohesity:dataprotect-rest-api
-    name: Cohesity DataProtect REST API
-    tags:
-      - Backup
-      - DataProtect
-      - Disaster Recovery
-      - Per-Cluster
-    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-    humanURL: https://developer.cohesity.com/apidocs/versions/
-    properties:
-      - url: https://developer.cohesity.com/apidocs/versions/
-        type: Documentation
-      - url: https://developers.cohesity.com/page/api-reference
-        type: APIReference
-    description: >-
-      The DataProtect REST API is the per-cluster RESTful interface exposed by
-      every Cohesity cluster, providing programmatic control over data
-      management operations including backups, restores, replication, archival,
-      cloud tiering, and storage domain management. Authentication is performed
-      via API keys for automation users or username/password for interactive
-      sessions.
-    x-features:
-      - Per-cluster REST endpoint
-      - API key and session authentication
-      - Backup, restore, replication, and archive operations
-      - Storage domain and view management
-      - Versioned API generations available concurrently
-    x-use-cases:
-      - Automate cluster registration and configuration
-      - Trigger ad-hoc backups and recoveries from runbooks
-      - Integrate with vRealize, ServiceNow, Ansible, and Terraform workflows
-      - Build custom dashboards over per-cluster operational data
+- aid: cohesity:helios-rest-api
+  name: Cohesity Helios REST API
+  tags:
+  - Automation
+  - Cluster Management
+  - DataProtect
+  - Helios
+  - Orchestration
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
+  humanURL: https://developer.cohesity.com/helios-api.html
+  properties:
+  - url: https://developer.cohesity.com/helios-api.html
+    type: Documentation
+  - url: https://developer.cohesity.com/docs/helios-getting-started
+    type: GettingStarted
+  - url: https://developer.cohesity.com/apidocs/versions/
+    type: APIReference
+  - url: openapi/cohesity-cluster-v2-openapi.yml
+    type: OpenAPI
+    name: Cohesity REST API v2 (Swagger 2.0)
+  - url: openapi/_original/cohesity-cluster-v2-openapi-original.yml
+    type: OpenAPI
+    name: Cohesity REST API v2 — as published
+  - url: overlays/cohesity-cluster-v2-overlay.yaml
+    type: Overlay
+  - url: https://api.cohesity.com/
+    type: Postman
+    name: Cohesity-Cloud-Services collection
+  description: Helios is Cohesity's SaaS-based control plane that manages a fleet of Cohesity clusters
+    from a single global pane of glass. The Helios REST API authenticates via an apiKey generated from
+    the Helios UI and passed in the request header, supports both v1 and v2 endpoint families, and lets
+    customers list and operate registered clusters, run protection jobs, manage policies, and access reporting
+    and analytics globally.
+  x-features:
+  - apiKey-based authentication via Helios UI
+  - v1 and v2 API surfaces under /irisservices/api/
+  - Manage protection groups, policies, and recovery operations
+  - Reporting and global analytics across clusters
+  - Multi-cluster operations from a single endpoint
+  x-use-cases:
+  - Centralize backup and recovery automation across many Cohesity clusters
+  - Drive policy and SLA enforcement from CI/CD pipelines
+  - Trigger or schedule recoveries from external orchestration tools
+  - Export reporting data into SIEM or BI dashboards
+- aid: cohesity:dataprotect-rest-api
+  name: Cohesity DataProtect REST API
+  tags:
+  - Backup
+  - DataProtect
+  - Disaster Recovery
+  - Per-Cluster
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer.cohesity.com/apidocs/versions/
+  properties:
+  - url: https://developer.cohesity.com/apidocs/versions/
+    type: Documentation
+  - url: https://developers.cohesity.com/page/api-reference
+    type: APIReference
+  - url: https://developers.cohesity.com/docs/getting-started
+    type: GettingStarted
+  - url: openapi/cohesity-cluster-v1-openapi.yml
+    type: OpenAPI
+    name: Cohesity REST API v1 (Swagger 2.0)
+  - url: openapi/_original/cohesity-cluster-v1-openapi-original.yml
+    type: OpenAPI
+    name: Cohesity REST API v1 — as published
+  - url: overlays/cohesity-cluster-v1-overlay.yaml
+    type: Overlay
+  description: The DataProtect REST API is the per-cluster RESTful interface exposed by every Cohesity
+    cluster, providing programmatic control over data management operations including backups, restores,
+    replication, archival, cloud tiering, and storage domain management. Authentication is performed via
+    API keys for automation users or username/password for interactive sessions.
+  x-features:
+  - Per-cluster REST endpoint
+  - API key and session authentication
+  - Backup, restore, replication, and archive operations
+  - Storage domain and view management
+  - Versioned API generations available concurrently
+  x-use-cases:
+  - Automate cluster registration and configuration
+  - Trigger ad-hoc backups and recoveries from runbooks
+  - Integrate with vRealize, ServiceNow, Ansible, and Terraform workflows
+  - Build custom dashboards over per-cluster operational data
+  baseURL: https://{cluster-vip}/irisservices/api/v1/public
+  x-baseurl-note: Templated per cluster. The published v1 specification declares host "<CLUSTER_VIP>"
+    with basePath /irisservices/api/v1 — the DataProtect API is served by every Cohesity cluster at its
+    own VIP, so no single production host exists. The same surface is reachable centrally through Helios
+    at https://helios.cohesity.com/irisservices/api/v1/public.
+- aid: cohesity:helios-reporting-api
+  name: Cohesity Helios Reporting API
+  tags:
+  - Reporting
+  - Analytics
+  - Helios
+  - Automation
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  baseURL: https://helios.cohesity.com/heliosreporting/api/v1
+  humanURL: https://developer.cohesity.com/apidocs/helios-reporting
+  properties:
+  - url: https://developer.cohesity.com/apidocs/helios-reporting
+    type: Documentation
+  - url: openapi/cohesity-helios-reporting-openapi.yml
+    type: OpenAPI
+    name: Helios Reporting service APIs (Swagger 2.0)
+  - url: openapi/_original/cohesity-helios-reporting-openapi-original.yml
+    type: OpenAPI
+    name: Helios Reporting — as published
+  - url: overlays/cohesity-helios-reporting-overlay.yaml
+    type: Overlay
+  description: The Helios Reporting service exposes Cohesity's cross-cluster reporting layer as a standalone
+    REST API with 20 operations. It publishes a catalog of report types and their components, renders
+    on-demand previews without persisting anything, and manages recurring schedules whose exports are
+    collected as downloadable task artifacts. Authentication is the same apiKey header used across the
+    Cohesity surface.
+  x-features:
+  - Report catalog and report-type definitions
+  - On-demand report and component previews
+  - Recurring schedules with on-demand runs
+  - Asynchronous export with task artifacts
+  - apiKey header authentication
+  x-use-cases:
+  - Feed backup and compliance reporting into BI or SIEM tooling
+  - Answer a one-off posture question with a preview call that creates nothing
+  - Automate recurring executive and audit reporting
+- aid: cohesity:site-continuity-api
+  name: Cohesity Site Continuity API
+  tags:
+  - Disaster Recovery
+  - Site Continuity
+  - Orchestration
+  - Helios
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  baseURL: https://helios.cohesity.com/v2/mcm/site-continuity/v2
+  humanURL: https://developer.cohesity.com/apidocs/site-continuity
+  properties:
+  - url: https://developer.cohesity.com/apidocs/site-continuity
+    type: Documentation
+  - url: openapi/cohesity-site-continuity-openapi.yml
+    type: OpenAPI
+    name: Site Continuity v2 Service APIs (Swagger 2.0)
+  - url: openapi/_original/cohesity-site-continuity-openapi-original.yml
+    type: OpenAPI
+    name: Site Continuity v2 — as published
+  - url: overlays/cohesity-site-continuity-overlay.yaml
+    type: Overlay
+  description: Site Continuity is Cohesity's disaster-recovery orchestration service, exposed as a 25-operation
+    REST API on the Helios control plane. It models sites, applications and DR plans, runs health checks
+    that validate a plan without executing it, and performs and tracks failover and failback actions.
+    It is the one Cohesity surface that publishes an enumerated error-code vocabulary (kNoError, kValidationError,
+    kInternalError).
+  x-features:
+  - Sites, applications and versioned app snapshots
+  - DR plan lifecycle and plan actions
+  - Non-destructive DR plan health checks
+  - Enumerated SCErrorCode error vocabulary
+  - apiKey header authentication
+  x-use-cases:
+  - Orchestrate and rehearse failover from external runbooks
+  - Validate DR readiness on a schedule without triggering a failover
+  - Report DR plan state into a resilience dashboard
 common:
-  - type: DomainSecurity
-    url: security/cohesity-domain-security.yml
-  - type: LinkedIn
-    url: https://www.linkedin.com/company/cohesity
-  - type: Website
-    url: https://www.cohesity.com/
-  - type: DeveloperPortal
-    url: https://developer.cohesity.com/
-  - type: Developers Site
-    url: https://developers.cohesity.com/
-  - type: APIReference
-    url: https://developer.cohesity.com/apidocs/versions/
-  - type: GitHub
-    url: https://github.com/cohesity
-  - type: Documentation
-    url: https://docs.cohesity.com/
-  - type: Support
-    url: https://www.cohesity.com/support/
-  - type: StatusPage
-    url: https://status.cohesity.com/
-  - type: PrivacyPolicy
-    url: https://www.cohesity.com/legal/privacy-policy/
-  - type: TermsOfService
-    url: https://www.cohesity.com/agreements/website-terms-of-use/
-  - type: Integrations
-    url: https://www.cohesity.com/marketplace/
-  - type: LlmsText
-    url: https://developers.cohesity.com/llms.txt
-  - url: https://www.cohesity.com/feed/
-    type: Blog
+- type: AgenticAccess
+  url: agentic-access/cohesity-agentic-access.yml
+- type: Authentication
+  url: authentication/cohesity-authentication.yml
+- type: DomainSecurity
+  url: security/cohesity-domain-security.yml
+- type: LinkedIn
+  url: https://www.linkedin.com/company/cohesity
+- type: Website
+  url: https://www.cohesity.com/
+- type: DeveloperPortal
+  url: https://developer.cohesity.com/
+- type: Portal
+  url: https://developers.cohesity.com/
+- type: APIReference
+  url: https://developer.cohesity.com/apidocs/versions/
+- type: GitHub
+  url: https://github.com/cohesity
+- type: Documentation
+  url: https://docs.cohesity.com/
+- type: Support
+  url: https://www.cohesity.com/support/
+- type: StatusPage
+  url: https://status.cohesity.com/
+- type: Integrations
+  url: https://www.cohesity.com/marketplace/
+- type: LlmsText
+  url: https://developers.cohesity.com/llms.txt
+- url: https://www.cohesity.com/feed/
+  type: Blog
+- type: PrivacyPolicy
+  url: https://www.cohesity.com/agreements/privacy/
+- type: TermsOfService
+  url: https://www.cohesity.com/agreements/
+- type: GettingStarted
+  url: https://developers.cohesity.com/docs/getting-started
+- type: GitHubOrganization
+  url: https://github.com/cohesity
+- type: Pricing
+  url: https://www.cohesity.com/buy/cohesity-data-cloud-packaging/
+- type: SignUp
+  url: https://www.cohesity.com/free-trial/
+- type: Postman
+  url: https://www.postman.com/cohesity/
+- type: OpenAPI
+  url: openapi/cohesity-cluster-v1-openapi.yml
+  name: Cohesity REST API v1
+- type: OpenAPI
+  url: openapi/cohesity-cluster-v2-openapi.yml
+  name: Cohesity REST API v2
+- type: OpenAPI
+  url: openapi/cohesity-helios-reporting-openapi.yml
+  name: Helios Reporting API
+- type: OpenAPI
+  url: openapi/cohesity-site-continuity-openapi.yml
+  name: Site Continuity API
+- type: Packages
+  url: packages/cohesity-packages.yml
+- type: SDKs
+  url: packages/cohesity-packages.yml
+- type: MCPServer
+  url: mcp/cohesity-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/cohesity-tool-crosswalk.yml
+- type: LLMsTxt
+  url: llms/cohesity-llms.txt
+- type: Overlay
+  url: overlays/cohesity-cluster-v2-overlay.yaml
+- type: Conformance
+  url: conformance/cohesity-conformance.yml
+- type: Compliance
+  url: https://www.cohesity.com/trust/
+- type: ErrorCatalog
+  url: errors/cohesity-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/cohesity-lifecycle.yml
+- type: Deprecation
+  url: https://developer.cohesity.com/docs/whats-new-65
+- type: ChangeLog
+  url: changelog/cohesity-changelog.yml
+- type: OAuthScopes
+  url: scopes/cohesity-scopes.yml
+- type: WellKnown
+  url: well-known/cohesity-well-known.yml
+- type: VulnerabilityDisclosure
+  url: security/cohesity-vulnerability-disclosure.yml
+- type: Security
+  url: https://www.cohesity.com/trust/security-profile/
+- type: TrustCenter
+  url: security/cohesity-trust-center.yml
+- type: Conventions
+  url: conventions/cohesity-conventions.yml
+- type: DataModel
+  url: data-model/cohesity-data-model.yml
+- type: Webhooks
+  url: asyncapi/cohesity-webhooks.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Plans
+  url: plans/cohesity-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/cohesity-rate-limits.yml
 integrations:
-  - name: Global System Integrators
-  - name: Security Partners
-  - name: Cloud Alliances
-  - name: Managed Service Providers
-  - name: Join Cohesity Aces
+- name: Global System Integrators
+- name: Security Partners
+- name: Cloud Alliances
+- name: Managed Service Providers
+- name: Join Cohesity Aces
 maintainers:
-  - FN: Kin Lane
-    email: kin@apievangelist.com
+- FN: Kin Lane
+  email: kin@apievangelist.com
 specificationVersion: '0.23'
+x-enrichment:
+  date: '2026-09-05'
+  status: enriched
+  artifacts_added: 37
+  pass: local-v3

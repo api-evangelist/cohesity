@@ -1,0 +1,112 @@
+generated: '2026-09-05'
+method: searched
+source: >-
+  well-known/cohesity-openid-configuration.json,
+  well-known/cohesity-oauth-authorization-server.json,
+  well-known/cohesity-oauth-protected-resource.json, openapi/*.yml,
+  https://www.cohesity.com/trust/security-profile/
+standards:
+  - id: oauth2
+    conforms: true
+    evidence: >-
+      Live RFC 6749 authorization-code flow advertised at
+      https://helios.cohesity.com/.well-known/oauth-authorization-server
+      (authorize/token/revoke endpoints, refresh_token grant).
+  - id: oauth2-pkce-rfc7636
+    conforms: true
+    evidence: 'code_challenge_methods_supported: [S256] in the Helios discovery documents.'
+  - id: rfc8414-authorization-server-metadata
+    conforms: true
+    evidence: https://helios.cohesity.com/.well-known/oauth-authorization-server returns a conformant metadata document.
+  - id: rfc9728-protected-resource-metadata
+    conforms: true
+    evidence: >-
+      https://helios.cohesity.com/.well-known/oauth-protected-resource returns
+      resource, resource_name "Cohesity Data Cloud", authorization_servers,
+      bearer_methods_supported and scopes_supported.
+  - id: oidc-discovery
+    conforms: true
+    evidence: https://helios.cohesity.com/.well-known/openid-configuration with issuer + jwks_uri.
+  - id: oauth2-token-revocation-rfc7009
+    conforms: true
+    evidence: 'revocation_endpoint: https://helios.cohesity.com/oauth2/revoke'
+  - id: mcp
+    conforms: true
+    evidence: >-
+      Cohesity publishes a Model Context Protocol server (Cohesity Gaia MCP,
+      Streamable HTTP, FastMCP) distributed as a first-party Microsoft Copilot
+      Studio connector - see mcp/cohesity-mcp.yml.
+  - id: openapi
+    conforms: false
+    evidence: >-
+      All four published specifications are Swagger 2.0, not OpenAPI 3.x. No
+      OpenAPI 3 document is published on any Cohesity host.
+  - id: swagger-2.0
+    conforms: true
+    evidence: 'swagger: "2.0" in all four published specifications.'
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: >-
+      Vendor error envelope {errorCode, errorMessage|message}; no
+      application/problem+json anywhere. See errors/cohesity-problem-types.yml.
+  - id: rfc8594-sunset-header
+    conforms: false
+    evidence: >-
+      Deprecations are announced in release-note prose only; no Sunset or
+      Deprecation header, and no operation carries `deprecated: true`.
+  - id: idempotency
+    conforms: false
+    evidence: No idempotency key parameter or header in any of the 687 published operations.
+  - id: rfc9116-security-txt
+    conforms: false
+    evidence: /.well-known/security.txt returns 404 on every Cohesity host probed.
+  - id: json-api
+    conforms: false
+  - id: odata
+    conforms: false
+  - id: scim
+    conforms: false
+  - id: fhir
+    conforms: false
+  - id: a2a-agent-card
+    conforms: false
+    evidence: >-
+      /.well-known/agent-card.json and /.well-known/agent.json probed on all
+      seven known hosts; no host serves a document.
+domain_standards:
+  note: >-
+    Cohesity's market is enterprise data protection and cyber resilience. Its
+    domain obligations are regulatory records-retention rules rather than a
+    message-format standard, and Cohesity declares conformance against them on
+    its own trust pages - not inside the contract - so these are recorded as
+    published compliance rather than as a contract signature. REWARD-ONLY: no
+    domain message standard is invented for this provider.
+  standards:
+    - id: sec-17a-4f
+      conforms: true
+      evidence: 'https://www.cohesity.com/trust/security-profile/ - WORM implementation assessed as compliant with SEC Rule 17a-4(f).'
+    - id: finra-4511c
+      conforms: true
+      evidence: 'https://www.cohesity.com/trust/security-profile/ - WORM implementation assessed as compliant with FINRA Rule 4511(c).'
+    - id: cftc-1.31
+      conforms: true
+      evidence: 'https://www.cohesity.com/trust/security-profile/ - WORM implementation assessed as compliant with CFTC Regulation 1.31(c)-(d).'
+    - id: fips-140-2
+      conforms: true
+      evidence: 'NIST-validated cryptographic module at FIPS 140-2 Level 1 (https://www.cohesity.com/trust/security-profile/).'
+    - id: common-criteria-eal2plus
+      conforms: true
+      evidence: 'Common Criteria certified at EAL2+ ALC_FLR.1 (https://www.cohesity.com/trust/security-profile/).'
+    - id: fedramp-moderate
+      conforms: true
+      evidence: 'FedRAMP Moderate Authorized (https://www.cohesity.com/trust/security-profile/).'
+    - id: usgv6
+      conforms: true
+      evidence: 'UNH-IOL certified USGv6 compliant (https://www.cohesity.com/trust/security-profile/).'
+compliance_program:
+  published: true
+  url: https://www.cohesity.com/trust/
+  detail: security/cohesity-trust-center.yml
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

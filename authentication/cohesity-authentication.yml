@@ -1,0 +1,83 @@
+generated: '2026-09-05'
+method: searched
+source: >-
+  openapi/cohesity-cluster-v2-openapi.yml,
+  openapi/cohesity-helios-reporting-openapi.yml,
+  openapi/cohesity-site-continuity-openapi.yml (securityDefinitions), upgraded
+  with https://developers.cohesity.com/docs/getting-started and the live Helios
+  OAuth/OIDC discovery documents
+docs: https://developers.cohesity.com/docs/getting-started
+summary:
+  types: [apiKey, oauth2, openIdConnect, http]
+  api_key_in: [header]
+  oauth2_flows: [authorizationCode]
+schemes:
+  - name: APIKeyHeader
+    type: apiKey
+    in: header
+    parameter: apiKey
+    sources:
+      - openapi/cohesity-cluster-v2-openapi.yml
+      - openapi/cohesity-helios-reporting-openapi.yml
+      - openapi/cohesity-site-continuity-openapi.yml
+    description: >-
+      The primary automation credential across every Cohesity surface. A Helios
+      or cluster API key is created once in the UI (or from an authenticated
+      session) and shown only once, then sent on every request in the `apiKey`
+      header.
+  - name: Helios OAuth 2.0 / OIDC
+    type: oauth2
+    flow: authorizationCode
+    authorizationUrl: https://helios.cohesity.com/oauth2/authorize
+    tokenUrl: https://helios.cohesity.com/oauth2/token
+    revocationUrl: https://helios.cohesity.com/oauth2/revoke
+    jwksUri: https://helios.cohesity.com/oauth2/jwks.json
+    issuer: https://helios.cohesity.com
+    pkce: [S256]
+    scopes_ref: scopes/cohesity-scopes.yml
+    sources: [well-known/cohesity-openid-configuration.json]
+    description: >-
+      Not declared in any published OpenAPI document; discovered from the live
+      OIDC and RFC 8414 metadata Helios serves. Public clients are supported
+      (token_endpoint_auth_method `none` with PKCE S256).
+  - name: Cluster access token
+    type: http
+    scheme: bearer
+    sources: [https://developers.cohesity.com/docs/getting-started]
+    description: >-
+      On-prem clusters accept username + password + domain at the access-token
+      endpoint and return a token used on subsequent calls.
+  - name: Cluster session ID
+    type: apiKey
+    in: cookie
+    sources: [https://developers.cohesity.com/docs/getting-started]
+    description: >-
+      On-prem clusters also support a session-ID cookie obtained from an
+      interactive login; this is the cookie used to mint an API key programmatically.
+surfaces:
+  - surface: Helios (SaaS control plane)
+    methods: [api-key, username-password-ui, oauth2]
+    mfa: >-
+      Multi-factor authentication is supported for interactive sign-in. Cohesity
+      documents that enabling MFA does NOT support automation - an important
+      operational constraint for any agent or CI credential.
+    docs: https://developers.cohesity.com/docs/getting-started
+  - surface: On-prem cluster (DataProtect)
+    methods: [access-token, session-id, api-key]
+    mfa: Supported on all three methods when enabled on the cluster.
+    docs: https://developers.cohesity.com/docs/getting-started
+  - surface: Gaia Data Insights / Gaia MCP
+    methods: [api-key]
+    header: apiKey
+    privilege: GAIA_VIEW
+    docs: https://learn.microsoft.com/en-us/connectors/cohesitygaiamcp/
+credential_lifecycle:
+  rotation_docs: https://docs.cohesity.com/WebHelios/Content/Helios/Access%20Management.htm
+  note: >-
+    API keys are displayed exactly once at creation and cannot be retrieved
+    afterwards; rotation means issuing a new key and revoking the old one from
+    Helios Access Management. OAuth tokens are revocable at the documented
+    revocation endpoint.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

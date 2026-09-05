@@ -1,0 +1,3964 @@
+swagger: "2.0"
+info:
+  version: 1.0.0
+  description: 'Public APIs for Site Continuity v2 service.
+
+
+    # Getting Started
+
+    These APIs provides operations for interfacing with the Site Continuity
+    v2 service.
+
+    ## Base URL
+
+
+    * The base URL for making API calls is
+    `https://helios.cohesity.com/v2/mcm/site-continuity/v2` <br>
+
+    * An apiKey is needed in order to authenticate the requests to the
+    Site Continuity service. To create an apiKey, please visit this webpage:
+
+    https://developer.cohesity.com/docs/helios-getting-started <br>
+
+    ---
+
+    > NOTE: The apiKey has no expiration and is valid until deleted
+    explicitly.
+
+    ---
+
+    ## Data Protection APIs
+
+
+    * Site Continuity v2 workflows need to invoke Helios Data Protection APIs
+    at various instances during creation of Sites, Applications and DR plans.
+
+    * Please refer following webpage for the reference to Helios Data Protection
+    APIs: <br> <br>
+
+    Refer following for v2 APIS:
+    https://developer.cohesity.com/apidocs/helios/v2-api/#/http/getting-started <br> <br>
+    Refer following for v1 APIs:
+    https://developer.cohesity.com/apidocs/helios/v1-api/#/http/getting-started
+    '
+
+  title: Site Continuity v2 Service APIs
+  termsOfService: https://cohesity.com
+  contact:
+    email: support@cohesity.com
+
+host: helios.cohesity.com
+basePath: /v2/mcm/site-continuity/v2
+schemes:
+  - https
+
+securityDefinitions:
+  ApiKeyAuth:
+    type: apiKey
+    in: header
+    name: apiKey
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /sites:
+    get:
+      description: |-
+        Privileges: DRAAS_VIEW
+
+        Returns a list of available sites based on the defined
+        filter criteria.
+      tags:
+      - Sites
+      summary: Returns a list of sites.
+      operationId: SCGetSites
+
+      parameters:
+        - name: siteIds
+          description: Specifies Ids to filter sites response.
+          in: query
+          type: array
+          items:
+            type: integer
+            format: int64
+        - name: siteNames
+          description: Specifies site names to filter the sites response. This
+            is case insensitive and supports substring search.
+          in: query
+          type: array
+          items:
+            type: string
+      responses:
+        200:
+          $ref: "#/responses/SCGetSitesResponse"
+        default:
+          $ref: "#/responses/SCErrorResponse"
+    post:
+      description: |-
+        Privileges: DRAAS_MODIFY
+
+        Creates a new site with for a given cluster.
+      tags:
+        - Sites
+      summary: Creates a new site.
+      operationId: SCCreateSite
+
+      parameters:
+        - name: body
+          description: Specifies the parameters to create a site.
+          in: body
+          schema:
+            $ref: "#/definitions/SCCommonSite"
+          required: true
+      responses:
+        201:
+          $ref: "#/responses/SCCreateSiteResponse"
+        default:
+          $ref: "#/responses/SCErrorResponse"
+  /sites/{id}:
+    get:
+      description: |-
+        Privileges: DRAAS_VIEW
+
+        Gets a site's information using its ID.
+      tags:
+        - Sites
+      summary: Returns a site by ID.
+      operationId: SCGetSiteById
+
+      parameters:
+        - name: id
+          description: Specifies the ID of the site.
+          in: path
+          type: integer
+          format: int64
+          required: true
+      responses:
+        200:
+          $ref: "#/responses/SCGetSiteByIdResponse"
+        default:
+          $ref: "#/responses/SCErrorResponse"
+    delete:
+      description: |-
+        Privileges: DRAAS_MODIFY
+
+        Deletes a site using its ID.
+      tags:
+        - Sites
+      summary: Deletes a site by ID.
+      operationId: SCDeleteSiteById
+
+      parameters:
+        - name: id
+          description: Specifies the ID of the site.
+          in: path
+          type: integer
+          format: int64
+          required: true
+      responses:
+        204:
+          description: No content
+        default:
+          $ref: "#/responses/SCErrorResponse"
+    put:
+      description: |-
+        Privileges: DRAAS_MODIFY
+
+        Updates a site's information using its ID. The user can only
+        update the name and location of the sites. The updated name should be
+        unique among already existing sites. We do not support updating
+        onPremParams and the type of site.
+      tags:
+        - Sites
+      summary: Updates a site by ID.
+      operationId: SCUpdateSiteById
+
+      parameters:
+        - name: id
+          description: Specifies the ID of the site.
+          in: path
+          type: integer
+          format: int64
+          required: true
+        - in: body
+          name: body
+          description: Specifies the parameters to update a site.
+          schema:
+            $ref: "#/definitions/SCCommonSite"
+          required: true
+      responses:
+        200:
+          $ref: "#/responses/SCUpdateSiteResponse"
+        default:
+          $ref: "#/responses/SCErrorResponse"
+  /applications:
+    post:
+      description: |-
+        Privileges: DRAAS_MODIFY
+
+        Creates a new application consisting of objects, delays and
+        scripts.
+      tags:
+        - Applications
+      summary: Creates a new application.
+      operationId: SCCreateApp
+
+      parameters:
+        - name: body
+          description: Specifies the parameters to create an application.
+          in: body
+          schema:
+            $ref: "#/definitions/SCAppCreateOrUpdateParams"
+          required: true
+      responses:
+        201:
+          $ref: "#/responses/SCCreateAppResponse"
+        default:
+          $ref: "#/responses/SCErrorResponse"
+    get:
+      description: |-
+        Privileges: DRAAS_VIEW
+
+        Returns a list of applications based on the defined filter
+        criteria.
+      tags:
+        - Applications
+      summary: Returns a list of applications.
+      operationId: SCGetApps
+
+      parameters:
+        - name: appIds
+          description: Specifies IDs to filter the applications response.
+          in: query
+          type: array
+          items:
+            type: integer
+            format: int64
+        - name: appNames
+          description: Specifies app names to filter the applications
+            response. This is case insensitive and supports substring search.
+          in: query
+          type: array
+          items:
+            type: string
+        - name: siteIds
+          description: Specifies site IDs to filter the applications response.
+          in: query
+          type: array
+          items:
+            type: integer
+            format: int64
+        - name: statuses
+          description: Specifies the application statuses to filter the
+            applications response.
+            'NotReady' status specifies that application is currently not
+            ready to be used for DR operations.<br><br>
+            'Ready' status specifies that application is ready for performing
+            DR operations.<br><br>
+          in: query
+          type: array
+          items:
+            type: string
+            enum:
+              - NotReady
+              - Ready
+        - name: includeSummary
+          description: Specifies the parameter to include summary information
+            for application response. This must be passed as true to include
+            the summary in the response.
+          type: boolean
+          in: query
+      responses:
+        200:
+          $ref: "#/responses/SCGetAppsResponse"
+        default:
+          $ref: "#/responses/SCErrorResponse"
+  /applications/{id}:
+    get:
+      description: |-
+        Privileges: DRAAS_VIEW
+
+        Gets application information using its ID.
+      tags:
+        - Applications
+      summary: Returns an application by ID.
+      operationId: SCGetAppById
+
+      parameters:
+        - name: id
+          description: Specifies the ID of the application.
+          in: path
+          type: integer
+          format: int64
+          required: true
+      responses:
+        200:
+          $ref: "#/responses/SCGetAppByIdResponse"
+        default:
+          $ref: "#/responses/SCErrorResponse"
+    put:
+      description: |-
+        Privileges: DRAAS_MODIFY
+
+        Updates application's information using its ID.
+      tags:
+        - Applications
+      summary: Updates an application by ID.
+      operationId: SCUpdateAppById
+
+      parameters:
+        - name: id
+          description: Specifies the ID of the application.
+          in: path
+          type: integer
+          format: int64
+          required: true
+        - in: body
+          name: body
+          description: Specifies the parameters to update an application.
+          schema:
+            $ref: "#/definitions/SCAppCreateOrUpdateParams"
+          required: true
+      responses:
+        200:
+          $ref: "#/responses/SCUpdateApplicationResponse"
+        default:
+          $ref: "#/responses/SCErrorResponse"
+    delete:
+      description: |-
+        Privileges: DRAAS_MODIFY
+
+        Deletes an application using its ID. Delete
+        operation will not be allowed if the application is currently used by
+        a DR plan.
+      tags:
+        - Applications
+      summary: Deletes an application by ID.
+      operationId: SCDeleteAppById
+
+      parameters:
+        - name: id
+          description: Specifies the ID of the Application.
+          in: path
+          type: integer
+          format: int64
+          required: true
+      responses:
+        204:
+          description: No content
+        default:
+          $ref: "#/responses/SCErrorResponse"
+  /applications/{id}/versions:
+    get:
+      description: |-
+        Privileges: DRAAS_VIEW
+
+        Get list of versions associated with the application.
+      tags:
+        - Applications
+      summary: Returns a list of application versions.
+      operationId: SCGetVersionsForApp
+
+      parameters:
+        - name: id
+          description: Specifies the ID of the application.
+          in: path
+          type: integer
+          format: int64
+          required: true
+        - name: versions
+          description: Specifies version numbers to filter specific
+            versions of the application.
+          in: query
+          type: array
+          items:
+            type: integer
+            format: int64
+      responses:
+        200:
+          $ref: "#/responses/SCGetAppVersionsResponse"
+        default:
+          $ref: "#/responses/SCErrorResponse"
+  /applications/{id}/replicated-snapshots:
+    get:
+      description: |-
+        Privileges: DRAAS_VIEW
+
+        Gets the replicated snapshot details for all objects from
+        the latest application version. API will return the latest replicated
+        snapshot for all objects when no filters are specified. These
+        replicated snapshots are served from the internal cache and may be
+        stale.
+      tags:
+        - Applications
+      summary: Returns list of replicated snapshots for an application.
+      operationId: SCGetSnapshotForAppId
+
+      parameters:
+        - name: id
+          description: Specifies the ID of the application.
+          in: path
+          type: integer
+          format: int64
+          required: true
+        - name: objectIds
+          description: Specifies the list of objectIDs to filter the snapshot
+            information. This list should only contain the list of objectIDs
+            at the source site that were added while creating the application.
+            'fromTimeUsecs' and 'toTimeUsecs' must be set to valid timestamps
+            when using the 'objectIds' filter.
+          in: query
+          type: array
+          items:
+            type: integer
+            format: int64
+        - name: fromTimeUsecs
+          description: Specifies the starting timestamp in Unix time epoch in
+            microseconds to get the snapshots response. 'objectIds' filter must
+            be specified with at least one ID when using 'fromTimeUsecs' filter.
+          type: integer
+          format: int64
+          in: query
+        - name: toTimeUsecs
+          description: Specifies the ending timestamp in Unix time epoch in
+            microseconds to get the snapshots response. 'objectIds' filter must
+            be specified with at least one ID when using 'toTimeUsecs' filter.
+          type: integer
+          format: int64
+          in: query
+      responses:
+        200:
+          $ref: "#/responses/SCGetLatestSnapshotByAppIdResponse"
+        default:
+          $ref: "#/responses/SCErrorResponse"
+  /dr-plans:
+    post:
+      description: |-
+        Privileges: DRAAS_MODIFY
+
+        Creates a new DR plan consisting of application, primary
+        site, DR site and resource profile configuration.
+      tags:
+        - DRPlan
+      summary: Creates a DR plan.
+      operationId: SCCreateDRPlan
+
+      parameters:
+        - name: body
+          description: Specifies the parameters to create a DR plan.
+          in: body
+          schema:
+            $ref: "#/definitions/SCDRPlanCreateOrUpdateParams"
+          required: true
+      responses:
+        201:
+          $ref: "#/responses/SCCreateDRPlanResponse"
+        default:
+          $ref: "#/responses/SCErrorResponse"
+    get:
+      description: |-
+        Privileges: DRAAS_VIEW
+
+        Returns a list of DR Plans based on the defined filter
+        criteria.
+      tags:
+        - DRPlan
+      summary: Returns a list of DR plans.
+      operationId: SCGetDrPlans
+
+      parameters:
+        - name: drPlanIds
+          description: Specifies IDs to filter the DR plans response.
+          in: query
+          type: array
+          items:
+            type: integer
+            format: int64
+        - name: drPlanNames
+          description: Specifies DR plan names to filter the DR plans
+            response. This is case insensitive and supports substring search.
+          in: query
+          type: array
+          items:
+            type: string
+        - name: appIds
+          description: Specifies application IDs to filter the DR plans
+            response.
+          in: query
+          type: array
+          items:
+            type: integer
+            format: int64
+        - name: states
+          description: Specifies list of states to filter the DR plans
+            response.
+          in: query
+          type: array
+          items:
+            type: string
+            enum:
+              - Created
+              - Active
+              - Deleted
+              - Failed
+              - Completed
+        - name: primarySiteIds
+          description: Specifies primary site IDs to filter the DR plans
+            response.
+          in: query
+          type: array
+          items:
+            type: integer
+            format: int64
+        - name: drSiteIds
+          description: Specifies DR site IDs to filter the DR plans
+            response.
+          in: query
+          type: array
+          items:
+            type: integer
+            format: int64
+        - name: statuses
+          description: Specifies list of status to filter the DR plans
+            response.
+          in: query
+          type: array
+          items:
+            type: string
+            enum:
+              - ActivationReady
+              - ActivationInProgress
+              - ActivationNotReady
+              - ConfigurationError
+              - FailoverNotReady
+              - FailoverReady
+              - FailoverInProgress
+              - FailoverFailed
+              - FailoverCompleted
+              - PrepareForFailbackInProgress
+              - FailbackNotReady
+              - FailbackReady
+              - FailbackInProgress
+              - FailbackFailed
+              - FailbackCompleted
+              - TeardownInProgress
+              - CancellationInProgress
+              - TestFailoverInProgress
+              - TestFailbackInProgress
+              - PrepareForFailoverInProgress
+              - SystemError
+        - name: slaStatus
+          description: Specifies the SLA status to filter the DR Plans
+            response.
+          in: query
+          type: string
+          enum:
+            - Satisfied
+            - NotSatisfied
+        - name: includeSummary
+          description: Specifies the filter to include the summary of the
+            DR plans. This must be passed and set to true in order to get the
+            summary.
+          in: query
+          type: boolean
+      responses:
+        200:
+          $ref: "#/responses/SCGetDRPlansResponse"
+        default:
+          $ref: "#/responses/SCErrorResponse"
+  /dr-plans/{id}:
+    get:
+      description: |-
+        Privileges: DRAAS_VIEW
+
+        Gets DR plan information using its ID.
+      tags:
+        - DRPlan
+      summary: Returns a DR plan by ID.
+      operationId: SCGetDRPlanById
+
+      parameters:
+        - name: id
+          description: Specifies the ID of the DR plan.
+          in: path
+          type: integer
+          format: int64
+          required: true
+      responses:
+        200:
+          $ref: "#/responses/SCGetDRPlanByIdResponse"
+        default:
+          $ref: "#/responses/SCErrorResponse"
+    delete:
+      description: |-
+        Privileges: DRAAS_MODIFY
+
+        Deletes a DR plan using its ID.
+      tags:
+        - DRPlan
+      summary: Deletes a DR plan by ID.
+      operationId: SCDeleteDRPlanById
+
+      parameters:
+        - name: id
+          description: Specifies the ID of the DR plan.
+          in: path
+          type: integer
+          format: int64
+          required: true
+      responses:
+        204:
+          description: No content
+        default:
+          $ref: "#/responses/SCErrorResponse"
+    put:
+      description: |-
+        Privileges: DRAAS_MODIFY
+
+        Updates DR plan's information using its ID.
+      tags:
+        - DRPlan
+      summary: Updates a DR Plan by ID.
+      operationId: SCUpdateDRPlanById
+
+      parameters:
+        - name: id
+          description: Specifies the ID of the DR plan.
+          in: path
+          type: integer
+          format: int64
+          required: true
+        - in: body
+          name: body
+          description: Specifies the parameters to update a DR plan.
+          schema:
+            $ref: "#/definitions/SCDRPlanCreateOrUpdateParams"
+          required: true
+      responses:
+        200:
+          $ref: "#/responses/SCUpdateDRPlanResponse"
+        default:
+          $ref: "#/responses/SCErrorResponse"
+  /health-checks:
+    post:
+      description: |-
+        ROLES: DRAAS_MODIFY
+
+        Initiates an on demand health check on the specified DR plans.
+      tags:
+        - HealthChecks
+      summary: Initiates a health check.
+      operationId: SCInitiateHealthCheck
+
+      parameters:
+        - name: body
+          description: Specifies the parameters to initiate a health check.
+            If the API request succeeds, clients should query the respective
+            resource to track the status of the health check.
+            For example - if the health check was triggered on a
+            DR plan, then a subsequent GET API call on DR plans will
+            return the latest status associated with the health check.
+          in: body
+          schema:
+            $ref: "#/definitions/SCInitiateHealthCheckParams"
+          required: true
+      responses:
+        204:
+          $ref: "#/responses/NoContentResponse"
+        default:
+          $ref: "#/responses/SCErrorResponse"
+  /dr-plans/{id}/actions:
+    post:
+      description: |-
+        Privileges: DRAAS_MODIFY
+
+        Performs actions such as activate, failover, failback, etc
+        on a given DR plan.
+      tags:
+        - DRPlan
+      summary: Performs an action on a DR plan.
+      operationId: SCPerformActionOnDRPlan
+
+      parameters:
+        - name: id
+          description: Specifies the ID of the DR plan.
+          in: path
+          type: integer
+          format: int64
+          required: true
+        - name: body
+          description: Specifies the parameters to perform action on DR plan.
+          in: body
+          schema:
+            $ref: "#/definitions/SCPerformActionOnDrPlanParams"
+          required: true
+      responses:
+        202:
+          $ref: "#/responses/SCPerformActionDrPlanResponse"
+        default:
+          $ref: "#/responses/SCErrorResponse"
+  /actions:
+    get:
+      description: |-
+        Privileges: DRAAS_VIEW
+
+        Returns a list of actions on DR plans based on the defined
+        filter criteria.
+      tags:
+        - DRPlan
+      summary: Returns a list of actions.
+      operationId: SCGetActions
+
+      parameters:
+        - name: actionIds
+          description: Specifies IDs to filter the actions response.
+          in: query
+          type: array
+          items:
+            type: integer
+            format: int64
+        - name: statuses
+          description: Specifies list of statuses to filter the actions
+            response.
+          in: query
+          type: array
+          items:
+            type: string
+            enum:
+              - Running
+              - Completed
+              - Failed
+              - Canceled
+              - Canceling
+        - name: types
+          description: Specifies list of types to filter the actions
+            response.
+          in: query
+          type: array
+          items:
+            type: string
+            enum:
+              - Activate
+              - PrepareForFailover
+              - PrepareForFailback
+              - TestFailover
+              - TestFailback
+              - Failover
+              - Failback
+              - Teardown
+        - name: drPlanIds
+          description: Filter the actions response by DR plan IDs.
+          type: array
+          items:
+            type: integer
+            format: int64
+          in: query
+        - name: fromTimeUsecs
+          description: Specifies the starting timestamp in Unix time epoch in
+            microseconds to get actions response. This filter will return the
+            actions having start time greater than equal to this value.
+          type: integer
+          format: int64
+          in: query
+        - name: toTimeUsecs
+          description: Specifies the ending timestamp in Unix time epoch in
+            microseconds to get actions response. This filter will return the
+            actions having finish time less than equal to toTimeUsecs.
+          type: integer
+          format: int64
+          in: query
+        - name: includeStepDetails
+          description: Specifies the filter to include step level details for
+            attempts associated with every DR action. This must be passed as
+            true to include the step details in attempts.
+          type: boolean
+          in: query
+      responses:
+        200:
+          $ref: "#/responses/SCGetActionsResponse"
+        default:
+          $ref: "#/responses/SCErrorResponse"
+  /actions/{id}:
+    get:
+      description: |-
+        Privileges: DRAAS_VIEW
+
+        Gets action information performed on DR plan using its action
+        ID.
+      tags:
+        - DRPlan
+      summary: Returns an action by ID.
+      operationId: SCGetActionById
+
+      parameters:
+        - name: id
+          description: Specifies the ID of the action.
+          in: path
+          type: integer
+          format: int64
+          required: true
+        - name: includeStepDetails
+          description: Specifies the filter to include step level details for
+            attempts associated with DR action. This must be passed as
+            true to include the step details in attempts.
+          type: boolean
+          in: query
+      responses:
+        200:
+          $ref: "#/responses/SCGetActionByIdResponse"
+        default:
+          $ref: "#/responses/SCErrorResponse"
+  /actions/{id}/operations:
+    post:
+      description: |-
+        Privileges: DRAAS_MODIFY
+
+        Perform operations like cancel, resume and force finish
+        on a DR plan action. The provided operation will be validated and error
+        will be returned if operation cannot be performed at that time. Resume
+        and force finish creates a new attempt on the DR plan action. Cancel
+        cancels the latest attempt on the DR plan action. An attempt details
+        must be accessed using the GET actions API by providing the the same
+        action ID as provided here.
+      tags:
+        - DRPlan
+      summary: Performs operations on a DR plan action.
+      operationId: SCPerformOperationOnDrPlanAction
+
+      parameters:
+        - name: id
+          description: Specifies the ID of the action on which the operation
+            needs to be performed.
+          in: path
+          type: integer
+          format: int64
+          required: true
+        - name: body
+          description: Specifies the parameters to perform the operation on a
+            DR plan action.
+          in: body
+          schema:
+            $ref: "#/definitions/SCOperationOnActionParams"
+          required: true
+      responses:
+        204:
+          $ref: "#/responses/NoContentResponse"
+        default:
+          $ref: "#/responses/SCErrorResponse"
+  /objects/operations:
+    post:
+      description: |-
+        Privileges: DRAAS_MODIFY
+
+        Initiate operations to check, gather information and
+        perform computations using objects.
+      tags:
+        - Objects
+      summary: Initiates asynchronous operations.
+      operationId: SCCreateObjectsOperation
+
+      parameters:
+        - name: body
+          description: Specifies the parameters to perform operation using objects.
+          in: body
+          schema:
+            $ref: "#/definitions/SCCreateObjectsOperationParams"
+          required: true
+      responses:
+        201:
+          $ref: "#/responses/SCCreateObjectsOperationResponse"
+        default:
+          $ref: "#/responses/SCErrorResponse"
+  /objects/operations/{operationId}:
+    get:
+      description: |-
+        Privileges: DRAAS_VIEW
+
+        Get results of operation using objects.
+      tags:
+        - Objects
+      summary: Returns an operation by ID.
+      operationId: SCGetObjectsOperationResults
+
+      parameters:
+        - name: operationId
+          description: Specifies the operation id to track the progress
+            of operation performed using objects.
+          in: path
+          type: string
+          required: true
+      responses:
+        200:
+          $ref: "#/responses/SCGetObjectsOperationResultsResponse"
+        default:
+          $ref: "#/responses/SCErrorResponse"
+  /stats:
+    post:
+      description: |-
+        Privileges: DRAAS_VIEW
+
+        Fetch detailed stats about DR Plans, sites and applications
+        to power custom dashboards.
+      tags:
+        - Stats
+      summary: Returns detailed statistics.
+      operationId: SCGetStats
+
+      parameters:
+        - name: body
+          description: Specifies the parameters to get the stats.
+          in: body
+          schema:
+            $ref: "#/definitions/SCGetStatsParams"
+          required: true
+      responses:
+        200:
+          $ref: "#/responses/SCGetStatsResponse"
+        default:
+          $ref: "#/responses/SCErrorResponse"
+
+definitions:
+  SCInitiateHealthCheckParams:
+    description: Specifies the parameters required to initiate a health
+      check.
+    type: object
+    required:
+      - checkType
+    properties:
+      checkType:
+        description: Specifies the type of the resource on which the
+          health check should be initiated.
+        type: string
+        enum:
+          - DRPlan
+        x-nullable: true
+      drPlanHealthCheckParams:
+        description: Specifies the parameters required for initiating health
+          check on a DR plan.
+        type: object
+        $ref: "#/definitions/SCDRPlanHealthCheckParams"
+        x-nullable: true
+  SCDRPlanHealthCheckParams:
+    description: Specifies the parameters associated with DR plan health
+      check.
+    type: object
+    required:
+      - drPlanId
+    properties:
+      drPlanId:
+        description: Specifies the unique identifier for the DR plan.
+        type: integer
+        format: int64
+        x-nullable: true
+  SCGetStatsResponse:
+    description: Specifies the various stats about DR Plans, sites and applications.
+      Based on the passed statTypes, appropriate stats data will be returned in the
+      response.
+    type: object
+    properties:
+      numActivePlans:
+        description: Specifies the total number of active DR plans. This
+          includes the plans that are either currently active, completed or
+          failed due to an error.
+        type: integer
+        format: int32
+        x-nullable: true
+      numCompletedPlans:
+        description: Specifies the total number of completed DR plans. This
+          will include the plans that are currently either failover completed
+          or failback completed.
+        type: integer
+        format: int32
+        x-nullable: true
+      numReadyPlans:
+        description: Specifies the total number of DR plans that are either
+          ready for failover or failback.
+        type: integer
+        format: int32
+        x-nullable: true
+      numNotReadyPlans:
+        description: Specifies the total number of DR plans that are neither
+          ready for failover nor failback.
+        type: integer
+        format: int32
+        x-nullable: true
+      numErrorPlans:
+        description: Specifies the total number of plans that either failed a
+          failover or failback operation, or have some configuration error.
+        type: integer
+        format: int32
+        x-nullable: true
+      numRunningPlans:
+        description: Specifies the total number of plans that are currently
+          in the running state as a result of executing one of the actions
+          from activate, failover, failback, teardown or cancel.
+        type: integer
+        format: int32
+        x-nullable: true
+      readyPlanStats:
+        description: Specifies the stats for DR plans that are either ready
+          for failover or failback.
+        type: object
+        $ref: "#/definitions/SCReadyPlanStats"
+        x-nullable: true
+      slaStats:
+        description: Specifies the SLA stats for active DR plans.
+        type: object
+        $ref: "#/definitions/SCSLAStatsResponse"
+        x-nullable: true
+      activityStats:
+        description: Specifies the activity stats for the specific time interval.
+        type: object
+        $ref: "#/definitions/SCActivityStatsResponse"
+        x-nullable: true
+      siteConnectivityStats:
+        description: Specifies the connectivity stats for the sites.
+        type: object
+        $ref: "#/definitions/SCSiteConnectivityStatsResponse"
+        x-nullable: true
+  SCReadyPlanStats:
+    description: Specifies the stats for all the DR plans that are ready
+      for either failover or failback.
+    type: object
+    properties:
+      numFailoverReadyPlans:
+        description: Specifies the total number of DR plans ready for failover.
+        type: integer
+        format: int32
+        x-nullable: true
+      numFailbackReadyPlans:
+        description: Specifies the total number of DR plans ready for failback.
+        type: integer
+        format: int32
+        x-nullable: true
+  SCSLAStatsResponse:
+    description: Specifies the SLA stats for active DR plans.
+    type: object
+    properties:
+      numSLASatisfiedPlans:
+        description: Specifies the total number of active DR plans where SLA
+          is satisfied.
+        type: integer
+        format: int32
+        x-nullable: true
+      numSLANotSatisfiedPlans:
+        description: Specifies the total number of active DR plans where SLA
+          is not satisfied.
+        type: integer
+        format: int32
+        x-nullable: true
+  SCActivityStatsResponse:
+    description: Specifies the activity stats for the specific time interval.
+    type: object
+    properties:
+      numTotalActivities:
+        description: Specifies the total number of activities performed during the
+          mentioned time interval.
+        type: integer
+        format: int32
+        x-nullable: true
+      numSuccessfulTestActivities:
+        description: Specifies the total number of successful test activities that
+          will be created as a result of test failover and test failback
+          operations on DR plans.
+        type: integer
+        format: int32
+        x-nullable: true
+      numFailedTestActivities:
+        description: Specifies the total number of failed test activities that
+          will be created as a result of test failover and test failback
+          operations on DR plans.
+        type: integer
+        format: int32
+        x-nullable: true
+      numSuccessfulActualActivities:
+        description: Specifies the total number of successful activities created
+          for actual failover and failback operations on DR plans.
+        type: integer
+        format: int32
+        x-nullable: true
+      numFailedActualActivities:
+        description: Specifies the total number of failed activities created
+          for actual failover and failback operations on DR plans.
+        type: integer
+        format: int32
+        x-nullable: true
+  SCSiteConnectivityStatsResponse:
+    description: Specifies the activity stats for the specific time interval.
+    type: object
+    properties:
+      connectedSites:
+        description: Specifies the site details for all the active sites. This
+          does not contain the linking information between sites. Refer
+          'connectionGraph' property for inferring the connections between
+          sites.
+        type: array
+        items:
+          $ref: "#/definitions/SCConnectedSites"
+      drPlanStats:
+        description: Specifies the DR plan related stats. This contains the list
+          of all DR plans that are used for making connection between any pair of
+          sites. Clients should use the following list to map the relevant DR plans
+          using the drPlanIds added in the 'connectedSites' property.
+        type: array
+        items:
+          $ref: "#/definitions/SCDRPlanConnectionStats"
+      disconnectedSites:
+        description: Specifies the list of inactive sites that are currently
+          not included in any of the DR plans. This is only populated if
+          'returnOnlyInactiveSites' is set to true in the request body.
+        type: array
+        items:
+          $ref: "#/definitions/SCDisconnectedSite"
+      connectionGraph:
+        description: Specifies the connection details between multiple sites.
+          Each entry in the graph specifies the primary site, DR site and
+          all plans connecting these plans.
+        type: array
+        items:
+          $ref: "#/definitions/SCConnectedSitePair"
+  SCConnectedSites:
+    description: Specifies the connectivity stats for a site
+      where each source site is connected to one or more sites by DR plans.
+    type: object
+    properties:
+      siteDetails:
+        description: Specifies the site details of a source site.
+        type: object
+        $ref: "#/definitions/SCSite"
+        x-nullable: true
+  SCDRPlanConnectionStats:
+    description: Specifies the DR plan related details mainly used to represent
+      the connection details between a pair of sites.
+    type: object
+    properties:
+      drPlanId:
+        description: Specifies the unique identifier for the DR plan.
+        type: integer
+        format: int64
+        x-nullable: true
+      drPlanName:
+        description: Specifies the name of the DR Plan.
+        type: string
+        x-nullable: true
+      drPlanState:
+        description: Specifies the current state of the DR plan.
+        type: string
+        enum:
+          - Created
+          - Active
+          - Failed
+          - Completed
+          - Deleted
+        x-nullable: true
+      drPlanStatus:
+        description: Specifies the current status of the DR plan.
+        type: string
+        enum:
+          - ActivationReady
+          - ActivationInProgress
+          - ActivationNotReady
+          - ConfigurationError
+          - FailoverNotReady
+          - FailoverReady
+          - FailoverInProgress
+          - FailoverFailed
+          - FailoverCompleted
+          - PrepareForFailbackInProgress
+          - FailbackNotReady
+          - FailbackReady
+          - FailbackInProgress
+          - FailbackFailed
+          - FailbackCompleted
+          - TeardownInProgress
+          - CancellationInProgress
+          - TestFailoverInProgress
+          - TestFailbackInProgress
+          - PrepareForFailoverInProgress
+          - SystemError
+        x-nullable: true
+      drPlanSlaStatus:
+        description: Specifies the SLA status for a DR plan.
+        type: string
+        enum:
+          - Satisfied
+          - NotSatisfied
+        x-nullable: true
+      appId:
+        description: Specifies the unique identifier for the application associated
+          with the above DR plan.
+        type: integer
+        format: int64
+        x-nullable: true
+      appName:
+        description: Specifies the name of the app associated with this DR plan.
+        type: string
+        x-nullable: true
+      lastActivityStartTimeUsecs:
+        description: Specifies the start time in microseconds of the last action
+          executed on the DR Plan.
+        type: integer
+        format: int64
+        x-nullable: true
+      lastActivityEndTimeUsecs:
+        description: Specifies the end time in microseconds of the last action
+          executed on the DR Plan.
+        type: integer
+        format: int64
+        x-nullable: true
+  SCDisconnectedSite:
+    description: Specifies the details of a disconnected site.
+    type: object
+    properties:
+      siteDetails:
+        description: Specifies the site details.
+        type: object
+        $ref: "#/definitions/SCSite"
+        x-nullable: true
+  SCConnectedSitePair:
+    description: Specifies the connectivity stats for a site
+      that is connected to at least one other site via DR plan.
+    type: object
+    properties:
+      primarySiteId:
+        description: Specifies the unique identifier of the source site in
+          the connection pair.
+        type: integer
+        format: int64
+        x-nullable: true
+      drSiteId:
+        description: Specifies the unique identifier of the destination site in
+          the connection pair.
+        type: integer
+        format: int64
+        x-nullable: true
+      drPlanIds:
+        description: Specifies the list of DR plan ids that are connecting primary
+          and DR sites.
+        type: array
+        items:
+          type: integer
+          format: int64
+      isReachable:
+        description: Specifies true if the primary site and DR site are reachable
+          from each other.
+        type: boolean
+        x-nullable: true
+  SCGetStatsParams:
+    description: Specifies the parameters to get stats. Based on the
+      passed statTypes, appropriate stats data will be returned in the response.
+      If statTypes is not specified then basic stats about DR plans will be
+      returned.
+    type: object
+    properties:
+      statTypes:
+        description: Specifies the list of stats for fetching stats.
+          Specify comma separated list of following statTypes to fetch one or more
+          stats at a time.
+        type: array
+        items:
+          type: string
+          enum:
+            - SlaStats
+            - ActivityStats
+            - SiteConnectivityStats
+      activityStatsParams:
+        description: Specifies the parameters to fetch the activity stats.
+        type: object
+        $ref: "#/definitions/SCActivityStatsParams"
+      siteConnectivityStatsParams:
+        description: Specifies the parameters to fetch the site connectivity stats.
+        type: object
+        $ref: "#/definitions/SCSiteConnectivityStatsParams"
+  SCActivityStatsParams:
+    description: Specifies the parameters to fetch the activity stats.
+    type: object
+    properties:
+      timePeriodInMonths:
+        description: Specifies the time period in months for which the activity
+          stats will be returned. If timePeriodInMonths is not specified then
+          stats for the last month will be returned.
+        type: integer
+        format: int32
+        minimum: 1
+  SCSiteConnectivityStatsParams:
+    description: Specifies the parameters to fetch the site connectivity stats.
+    type: object
+    properties:
+      returnInactiveSites:
+        description: Specifying this to true will return the list of sites that
+          are not used in any of the DR plans currently. If not specified or specified
+          as false then stats wont be returned for inactive sites.
+        type: boolean
+        x-nullable: true
+  SCActionsResponse:
+    description: Specifies the list of actions.
+    type: object
+    properties:
+      actions:
+        description: Specifies the list of actions.
+        type: array
+        items:
+          $ref: "#/definitions/SCAction"
+  SCAction:
+    description: Specifies the details of an ongoing or past action performed
+      on a DR plan.
+    type: object
+    properties:
+      id:
+        description: Specifies the identifier for an action.
+        type: integer
+        format: int64
+        x-nullable: true
+      type:
+        description: Specifies the current action which is being performed on
+          a DR plan. <br>
+          'Activate' activates the DR plan which periodically checks the
+          protection and replication status to determine if the DR plan
+          Recovery Point Objective (RPO) is met. <br>
+          'TestFailover' tests if a failover from primary site to DR site
+          works. <br>
+          'Failover' fails over the resources from primary site to DR
+          site. <br>
+          'PrepareForFailback' prepares the DR plan for a Failback operation
+          by validating the required configuration for failback to the primary
+          site. <br>
+          'TestFailback' tests if a failback from DR site to primary site
+          works. <br>
+          'Failback' fails back the resources from DR site to primary
+          site. <br>
+          'PrepareForFailover' prepares the DR plan for subsequent Failover
+          operation (after a successful Failover and Failback) by
+          validating the required configuration for Failover to the DR
+          site. <br>
+          'Teardown' can be used to tear down configuration after a
+          failed/partially successful Failover or Failback operation. This
+          option can also be used to tear down configuration after a
+          successful/failed/partially successful Test Failover or Test Failback
+          operation. <br>
+        type: string
+        enum:
+          - Activate
+          - PrepareForFailover
+          - PrepareForFailback
+          - TestFailover
+          - TestFailback
+          - Failover
+          - Failback
+          - Teardown
+        x-nullable: true
+      drPlanId:
+        description: Specifies the ID of the DR plan with which the current
+          action is associated.
+        type: integer
+        format: int64
+        x-nullable: true
+      status:
+        description: Specifies the current status of the DR plan action.
+          Following status field will always match with latest attempt's
+          status.
+        type: string
+        enum:
+          - Running
+          - Completed
+          - Failed
+          - Canceled
+          - Canceling
+        x-nullable: true
+      message:
+        description: Specifies the message associated with the above status.
+          In case of errors/warnings, this field will be populated with
+          appropriate message.
+        type: string
+        x-nullable: true
+      progressPercentage:
+        description: Specifies the progress in percentage for a DR plan action.
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 100
+      startTimeUsecs:
+        description: Specifies the start time of the action in microseconds.
+        type: integer
+        format: int64
+        x-nullable: true
+      endTimeUsecs:
+        description: Specifies the end time of the action in microseconds.
+        type: integer
+        format: int64
+        x-nullable: true
+      latestAttemptId:
+        description: Specifies the identifier to locate the latest attempt
+          for a DR plan action.
+        type: integer
+        format: int64
+        x-nullable: true
+      attempts:
+        description: Specifies the list of attempts associated with an action.
+          The list of attempts will be returned in the order of start timestamps
+          where latest timestamp will appear first and so on.
+        type: array
+        items:
+          $ref: "#/definitions/SCActionAttempt"
+      parentId:
+        description: Specifies the identifier of the parent action on which
+          the current action is performed. e.g Teardown action can be
+          performed on failover/test failover/failback/test failback action.
+          This field will not be populated for activities such as Activation,
+          Failover, Test failover, Failback, Test failback etc where no parent
+          action exists.
+        type: integer
+        format: int64
+        x-nullable: true
+      supportedOperations:
+        description: Specifies the operations that can be performed to handle
+          the failures that resulted from this action.
+        type: array
+        items:
+          type: string
+          enum:
+            - ForceFinish
+            - Resume
+            - Cancel
+            - Teardown
+          x-nullable: true
+      userConfig:
+        description: Specifies the user provided configuration associated with
+          the current activity. This field will only be populated for types of
+          activities such as Failover, TestFailover, Failback, TestFailback
+          etc. where explicit user configuration is provided when performing
+          an action on DR plan.
+        type: object
+        $ref: "#/definitions/SCUserActionConfig"
+  SCUserActionConfig:
+    description: Specifies the user configuration which was used during
+      the submission of the action.
+    type: object
+    properties:
+      sourceConfig:
+        description: Specifies the source configuration which was used during
+          submission of the action. This configuration will contain the
+          details such as source type, source identifier, resource profile etc.
+          In case of vCenter source, resource profile array will always contain
+          a single entry of the resource profile selected used during the
+          submission of the DR action. This field will only be populated for
+          actions such as Failover, Failback, TestFailover, and TestFailback.
+        type: object
+        $ref: "#/definitions/SCSourceConfig"
+      objectSnapshots:
+        description: Specifies the list of object and snapshot details that
+          was provided at the time of action submission.
+        type: array
+        items:
+          $ref: "#/definitions/SCObjectSnapshotUserConfig"
+  SCObjectSnapshotUserConfig:
+    description: Specifies the object and snapshot details from the user
+      provided configuration at the time of action submission.
+    type: object
+    properties:
+      objectDetails:
+        description: Specifies the specific details of the object.
+        type: object
+        $ref: "#/definitions/SCObjectDetails"
+      snapshotDetails:
+        description: Specifies the specific details of the snapshot
+          for the object.
+        type: object
+        $ref: "#/definitions/SCSnapshotDetails"
+      pointInTimeUsecs:
+        description: Specifies the epoch timestamp in microseconds of a
+          point-in-time selected by the user.
+        type: integer
+        format: int64
+        x-nullable: true
+  SCActionAttempt:
+    description: Specifies the attempt details for an action. A new attempt is
+      created under following two conditions. <br>
+      1. When an top level action (Failover, Failback, Test Failover, Test
+         Failback) is performed on a DR plan, a new attempt will be
+         created. <br>
+      2. In case if action created from point 1 results into the failed state,
+         then clients can execute operations such as resume or force finish to
+         recover from errors. Each of these operations will create a new
+         attempt and clients must use the latest attempt to track the progress
+         of a DR action. <br>
+    type: object
+    properties:
+      attemptId:
+        description: Specifies the unique identifier for the attempt. This
+          identifier is unique within the scope of the DR plan action.
+        type: integer
+        format: int64
+        x-nullable: true
+      operationType:
+        description: Specifies the current operation which is being performed on
+          a DR plan action. This operation type will be populated only if the
+          attempt is initiated by executing an operation on a DR action.
+        type: string
+        enum:
+          - Resume
+          - ForceFinish
+        x-nullable: true
+      status:
+        description: Specifies the current status of an attempt.
+        type: string
+        enum:
+          - Running
+          - Completed
+          - Failed
+          - Canceled
+          - Canceling
+        x-nullable: true
+      message:
+        description: Specifies the message associated with the status.
+          In case of errors/warnings, this field will be populated with
+          appropriate message.
+        type: string
+        x-nullable: true
+      startTimeUsecs:
+        description: Specifies the start time of an attempt in microseconds.
+        type: integer
+        format: int64
+        x-nullable: true
+      endTimeUsecs:
+        description: Specifies the end time of an attempt in microseconds.
+        type: integer
+        format: int64
+        x-nullable: true
+      cancellationTimeUsecs:
+        description: Specifies the time when cancel operation was initiated
+          on the ongoing attempt. This field will be populated only if the
+          operation type is 'Cancel'.
+        type: integer
+        format: int64
+        x-nullable: true
+      steps:
+        description: Specifies the list of steps associated with the attempt.
+          Each step indicates the incremental progression of the attempt.
+        type: array
+        items:
+          $ref: "#/definitions/SCAttemptStep"
+  SCAttemptStep:
+    description: Specifies the step level details such as message, status,
+      progress percentage for the respective DR action.
+    type: object
+    properties:
+      message:
+        description: Specifies the detailed message for the step.
+        type: string
+        x-nullable: true
+      status:
+        description: Specifies the status of the step. <br>
+          'Created' state specifies that attempt step has been created. <br>
+          'InProgress' status specifies that attempt step is in progress. This
+          is a transient status and will not emit a timestamp. Instead, the status
+          will change to 'Success' or 'Failure' when step reaches a terminating
+          status such as success or failure. <br>
+          'Success' status specifies that attempt step has successfully finished.
+          <br>
+          'Failure' status specifies that attempt step has failed. <br>
+        type: string
+        enum:
+          - Started
+          - InProgress
+          - Success
+          - Failure
+        x-nullable: true
+      stepTimeUsecs:
+        description: Specifies the emit time of the step in microseconds. This
+          timestamp will not be emitted for inProgress steps.
+        type: integer
+        format: int64
+        x-nullable: true
+      progressPercentage:
+        description: Specifies the progress in percentage for the step.
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 100
+      objects:
+        description: Specifies the list of objects associated with this step.
+          A single step may be working on one or more objects as per the
+          functioning of the step.
+        type: array
+        items:
+          $ref: "#/definitions/SCAttemptStepObject"
+      subSteps:
+        description: Specifies the list of sub-steps associated with the
+          current step. At occasions, larger steps may be divided into
+          smaller sub-steps and details of these steps will be returned
+          here.
+        type: array
+        items:
+          $ref: "#/definitions/SCAttemptStep"
+  SCAttemptStepObject:
+    description: Specifies the object level details involved in the individual
+      step of an attempt.
+    type: object
+    properties:
+      objectId:
+        description: Specifies the ID of the object.
+        type: integer
+        format: int64
+        x-nullable: true
+      objectName:
+        description: Specifies the name of the object.
+        type: string
+        x-nullable: true
+  SCDrPlanAction:
+    description: Specifies the action configuration to be executed on a DR
+      plan.
+    type: object
+    properties:
+      actionId:
+        description: Specifies the identifier which can be used to get
+          the current status of the action.
+        type: integer
+        format: int64
+        x-nullable: true
+      action:
+        description: Specifies the current action which is being performed on
+          a DR plan. <br>
+          'Activate' activates the DR plan which periodically checks the
+          protection and replication status to determine if the DR plan
+          Recovery Point Objective (RPO) is met. <br>
+          'TestFailover' tests if a failover from primary site to DR site
+          works. <br>
+          'Failover' fails over the resources from primary site to DR
+          site. <br>
+          'PrepareForFailback' prepares the DR plan for a Failback operation
+          by validating the required configuration for failback to the primary
+          site. <br>
+          'TestFailback' tests if a failback from DR site to primary site
+          works. <br>
+          'Failback' fails back the resources from DR site to primary
+          site. <br>
+          'PrepareForFailover' prepares the DR plan for subsequent Failover
+          operation (after a successful Failover and Failback) by
+          validating the required configuration for Failover to the DR
+          site. <br>
+          'Teardown' can be used to tear down configuration after a
+          failed/partially successful Failover or Failback operation. This
+          option can also be used to tear down configuration after a
+          successful/failed/partially successful Test Failover or Test Failback
+          operation. <br>
+        type: string
+        enum:
+          - Activate
+          - PrepareForFailover
+          - PrepareForFailback
+          - TestFailover
+          - TestFailback
+          - Failover
+          - Failback
+          - Teardown
+        x-nullable: true
+  SCPerformActionOnDrPlanParams:
+    description: Specifies the parameters required to perform a specific
+      action on a DR plan.
+    type: object
+    required:
+      - action
+    properties:
+      action:
+        description: Specifies the current action which is being performed on
+          a DR plan. <br>
+          'Activate' activates the DR plan which periodically checks the
+          protection and replication status to determine if the DR plan
+          Recovery Point Objective (RPO) is met. <br>
+          'TestFailover' tests if a failover from primary site to DR site
+          works. <br>
+          'Failover' fails over the resources from primary site to DR
+          site. <br>
+          'PrepareForFailback' prepares the DR plan for a Failback operation
+          by validating the required configuration for failback to the primary
+          site. <br>
+          'TestFailback' tests if a failback from DR site to primary site
+          works. <br>
+          'Failback' fails back the resources from DR site to primary
+          site. <br>
+          'PrepareForFailover' prepares the DR plan for subsequent Failover
+          operation (after a successful Failover and Failback) by
+          validating the required configuration for Failover to the DR
+          site. <br>
+          'Teardown' can be used to tear down configuration after a
+          failed/partially successful Failover or Failback operation. This
+          option can also be used to tear down configuration after a
+          successful/failed/partially successful Test Failover or Test Failback
+          operation. <br>
+        type: string
+        enum:
+          - Activate
+          - PrepareForFailover
+          - PrepareForFailback
+          - TestFailover
+          - TestFailback
+          - Failover
+          - Failback
+          - Teardown
+        x-nullable: true
+      failoverParams:
+        description: Specifies the parameters to trigger failover on a DR plan.
+        type: object
+        $ref: "#/definitions/SCFailoverActionParams"
+      testFailoverParams:
+        description: Specifies the parameters to trigger a test failover
+          on a DR plan.
+        type: object
+        $ref: "#/definitions/SCTestFailoverActionParams"
+      failbackParams:
+        description: Specifies the parameters to trigger a failback on a DR
+          plan.
+        type: object
+        $ref: "#/definitions/SCFailbackActionParams"
+      testFailbackParams:
+        description: Specifies the parameters to trigger a test failback on
+          a DR plan.
+        type: object
+        $ref: "#/definitions/SCTestFailbackActionParams"
+      teardownParams:
+        description: Specifies the parameters to trigger a teardown operation
+          on a specified action.
+        type: object
+        $ref: "#/definitions/SCTeardownActionParams"
+  SCTeardownActionParams:
+    description: Specifies the action parameters to teardown a DR plan action.
+    type: object
+    required:
+      - actionId
+    properties:
+      actionId:
+        description: Specifies the action identifier on which the teardown
+          operation needs to be performed. For specified action ID, if teardown
+          action is not applicable then validation error will be returned.
+        type: integer
+        format: int64
+        x-nullable: true
+  SCTestFailoverActionParams:
+    description: Specifies the action parameters to trigger test failover on a
+      DR plan.
+    type: object
+    allOf:
+      - $ref: "#/definitions/SCDRPlanActionCommonParams"
+      - type: object
+        required:
+          - environment
+        properties:
+          environment:
+            description: Specifies the environment of the source for which
+              the test failover action needs to be performed.
+            type: string
+            enum:
+              - vmware
+          vmwareParams:
+            description: Specifies the VMware specific parameters to perform
+              the test failover action.
+            type: object
+            $ref: "#/definitions/SCTestFailoverActionVMwareParams"
+  SCTestFailoverActionVMwareParams:
+    description: Specifies the VMware specific parameters to perform the test
+      failover action.
+    type: object
+    required:
+      - resourceProfileName
+    properties:
+      resourceProfileName:
+        description: Specifies the unique resource profile name which is
+          added as a part of the DR plan.
+        type: string
+        x-nullable: true
+      performStorageVmotion:
+        description: Specifies whether to perform the storage vMotion
+          operation with the test failover action. Default value is false
+          if not specified.
+        type: boolean
+        x-nullable: true
+  SCFailbackActionParams:
+    description: Specifies the action parameters to trigger a failback on a
+      DR plan.
+    type: object
+    allOf:
+      - $ref: "#/definitions/SCDRPlanActionCommonParams"
+      - type: object
+        required:
+          - environment
+        properties:
+          environment:
+            description: Specifies the environment of the source for which
+              the failback action needs to be performed.
+            type: string
+            enum:
+              - vmware
+          vmwareParams:
+            description: Specifies the VMware specific parameters to perform
+              the failback action.
+            type: object
+            $ref: "#/definitions/SCFailbackActionVMwareParams"
+  SCTestFailbackActionParams:
+    description: Specifies the action parameters to trigger a test failback
+      on a DR plan.
+    type: object
+    allOf:
+      - $ref: "#/definitions/SCDRPlanActionCommonParams"
+      - type: object
+        required:
+          - environment
+        properties:
+          environment:
+            description: Specifies the environment of the source for which
+              the test failback action needs to be performed.
+            type: string
+            enum:
+              - vmware
+          vmwareParams:
+            description: Specifies the VMware specific parameters to perform
+              the test failback action.
+            type: object
+            $ref: "#/definitions/SCTestFailbackActionVMwareParams"
+  SCTestFailbackActionVMwareParams:
+    description: Specifies the action parameters to trigger a test failback
+      on a DR plan.
+    type: object
+    required:
+      - resourceProfileName
+    properties:
+      resourceProfileName:
+        description: Specifies the unique resource profile name which is
+          added as a part of the DR plan.
+        type: string
+        x-nullable: true
+      performStorageVmotion:
+        description: Specifies whether to perform the storage vMotion
+          operation with the test failback action. Default value is false
+          if not specified.
+        type: boolean
+        x-nullable: true
+  SCFailoverActionParams:
+    description: Specifies the action parameters to trigger failover on a DR
+      plan.
+    type: object
+    allOf:
+      - $ref: "#/definitions/SCDRPlanActionCommonParams"
+      - type: object
+        required:
+          - environment
+        properties:
+          environment:
+            description: Specifies the environment of the source for which
+              the failover action needs to be performed.
+            type: string
+            enum:
+              - vmware
+          vmwareParams:
+            description: Specifies the VMware specific parameters to perform
+              the failover action.
+            type: object
+            $ref: "#/definitions/SCFailoverActionVMwareParams"
+  SCFailoverActionVMwareParams:
+    description: Specifies the action parameters to trigger failover for VMware
+      environment.
+    type: object
+    required:
+      - resourceProfileName
+    properties:
+      resourceProfileName:
+        description: Specifies the unique resource profile name which is
+          added as a part of the DR plan.
+        type: string
+        x-nullable: true
+      shutdownVms:
+        description: Specifies if the data objects such as VMs at primary
+          site should be shut down after failover is completed.
+        type: boolean
+        x-nullable: true
+      protectVms:
+        description: Specifies if the data objects such as VMs at DR site
+          should be protected after failover is completed. If this field
+          is not set then failback operation will not be possible as a part
+          of the current DR plan.
+        type: boolean
+        x-nullable: true
+  SCFailbackActionVMwareParams:
+    description: Specifies the action parameters to trigger failback for VMware
+      environment.
+    type: object
+    required:
+      - resourceProfileName
+    properties:
+      resourceProfileName:
+        description: Specifies the unique resource profile name which is
+          added as a part of the DR plan.
+        type: string
+        x-nullable: true
+      shutdownVms:
+        description: Specifies if the data objects such as VMs at DR
+          site should be shut down after failback is completed.
+        type: boolean
+        x-nullable: true
+      protectVms:
+        description: Specifies if the data objects such as VMs at primary site
+          should be re-protected after failback is completed.
+        type: boolean
+        x-nullable: true
+  SCDRPlanActionCommonParams:
+    description: Specifies the action parameters to trigger failover or failback
+      on a DR plan.
+    type: object
+    properties:
+      objectSnapshotOverrides:
+        description: Specifies the list of object Ids along with the snapshot
+          ID which will be used during failover. If object ID is not
+          specified then latest snapshot will be used internally for failover
+          action for that object.
+        type: array
+        items:
+          $ref: "#/definitions/SCObjectSnapshotOverride"
+        x-nullable: true
+  SCObjectSnapshotOverride:
+    description: Specifies the list of object Ids along with the snapshot
+      timestamps typically used for actual or test failover/failback.
+    required:
+      - objectId
+    properties:
+      objectId:
+        description: Specifies the unique ID of the object in DR plan. This
+          identifier uniquely locates the data object such as VM in primary
+          site.
+        type: integer
+        format: int64
+        x-nullable: true
+      snapshotId:
+        description: Specifies the snapshot identifier associated with the
+          object id mentioned above. If objectID is provided but 'snapshotId'
+          is not, then the field will be defaulted to a latest snapshot Id
+          internally.
+        type: string
+        x-nullable: true
+      pointInTimeUsecs:
+        description: Specifies the epoch timestamp in microseconds for
+          recovering to a point-in-time in the past. This option is only
+          available if Continuous Data Protection (CDP) is enabled for data
+          objects.
+        type: integer
+        format: int64
+        x-nullable: true
+  SCDRPlansResponse:
+    description: Specifies the list of DR plans.
+    type: object
+    properties:
+      drPlans:
+        description: Specifies the list of DR plans.
+        type: array
+        items:
+          $ref: "#/definitions/SCDRPlan"
+      summary:
+        description: Specifies the summary of the DR plans.
+        type: object
+        $ref: "#/definitions/SCDRPlansSummary"
+  SCDRPlan:
+    description: Specifies the information about a DR plan.
+    type: object
+    properties:
+      id:
+        description: Specifies the unique identifier for the DR plan.
+        type: integer
+        format: int64
+        x-nullable: true
+      state:
+        description: Specifies the current state of the DR plan.
+        type: string
+        enum:
+          - Created
+          - Active
+          - Failed
+          - Completed
+          - Deleted
+        x-nullable: true
+      status:
+        description: Specifies the current status of the DR plan.
+        type: string
+        enum:
+          - ActivationReady
+          - ActivationInProgress
+          - ActivationNotReady
+          - ConfigurationError
+          - FailoverNotReady
+          - FailoverReady
+          - FailoverInProgress
+          - FailoverFailed
+          - FailoverCompleted
+          - PrepareForFailbackInProgress
+          - FailbackNotReady
+          - FailbackReady
+          - FailbackInProgress
+          - FailbackFailed
+          - FailbackCompleted
+          - TeardownInProgress
+          - CancellationInProgress
+          - TestFailoverInProgress
+          - TestFailbackInProgress
+          - PrepareForFailoverInProgress
+          - SystemError
+        x-nullable: true
+      errorDetails:
+        description: Specifies the error details in case DR plan is in a failed
+          state.
+        type: object
+        $ref: "#/definitions/DrPlanErrorDetails"
+        x-nullable: true
+      slaStatus:
+        description: Specifies the SLA status for a DR plan.
+        type: string
+        enum:
+          - Satisfied
+          - NotSatisfied
+        x-nullable: true
+      lastActionId:
+        description: Specifies the last action id of a DR plan.
+        type: integer
+        format: int64
+        x-nullable: true
+      isAppRunningOnDRSite:
+        description: Specifies whether the app is currently running on
+          the DR site. Value true implies that the app is running on DR site
+          and false implies that the app is running on primary site. If no app
+          is associated with the DR plan, this field will not be populated.
+        type: boolean
+        x-nullable: true
+      markedForDeletion:
+        description: Specifies whether the DR plan is undergoing deletion in
+          background. Once the DR plan is fully deleted, the response will not
+          contain this DR plan.
+        type: boolean
+        x-nullable: true
+      lastTestActionId:
+        description: Specifies the last test action ID on the DR plan. This
+          will only be populated if at least one test action such as
+          test failover or test failback has run on the DR plan.
+        type: integer
+        format: int64
+        x-nullable: true
+      lastHealthCheckDetails:
+        description: Specifies the details of the last health check executed
+          on a DR plan.
+        type: object
+        $ref: "#/definitions/SCHealthCheck"
+        x-nullable: true
+    allOf:
+      - $ref: "#/definitions/SCDRPlanCreateOrUpdateParams"
+  SCHealthCheck:
+    description: Specifies the information about the health check.
+    type: object
+    allOf:
+      - $ref: "#/definitions/SCInitiateHealthCheckParams"
+    properties:
+      status:
+        description: Specifies the current status of the health check.
+        type: string
+        enum:
+          - Scheduled
+          - Running
+          - Successful
+          - Failed
+        x-nullable: true
+      startTimeUsecs:
+        description: Specifies the start time of the health check in
+          microseconds.
+        type: integer
+        format: int64
+        x-nullable: true
+      endTimeUsecs:
+        description: Specifies the end time of the health check in
+          microseconds.
+        type: integer
+        format: int64
+        x-nullable: true
+      message:
+        description: Specifies the message associated with the health
+          check.
+        type: string
+        x-nullable: true
+  DrPlanErrorDetails:
+    description: Specifies the error details in case DR plan is in a failed
+      state.
+    type: object
+    properties:
+      message:
+        description: Specifies the overall error in the DR plan.
+        type: string
+        x-nullable: true
+      detailedErrors:
+        description: Specifies more detailed errors and can be specific to
+          entities, protection groups, policies etc.
+        type: array
+        items:
+          type: string
+        x-nullable: true
+  SCDRPlanCreateOrUpdateParams:
+    description: Specifies the parameters required for creation of DR plan.
+    type: object
+    required:
+      - name
+      - primarySite
+      - drSite
+      - rpo
+    properties:
+      name:
+        description: Specifies the name of the DR Plan.
+        type: string
+        x-nullable: true
+      description:
+        description: Specifies the description of the DR Plan.
+        type: string
+        x-nullable: true
+      primarySite:
+        description: Specifies the primary site configuration of the DR plan.
+        type: object
+        $ref: "#/definitions/SCPrimarySiteConfig"
+      drSite:
+        description: Specifies the DR site configuration of the DR plan.
+        type: object
+        $ref: "#/definitions/SCDRSiteConfig"
+      appId:
+        description: Specifies the unique identifier for the application.
+          This field is optional for creation of DR plan but it is
+          required before performing any actions on a DR plan.
+        type: integer
+        format: int64
+        x-nullable: true
+      rpo:
+        description: Specifies the Recovery Point Objective (RPO) configuration
+          required for this DR plan. This value is used to validate the RPO
+          expectation of the DR plan by comparing this configuration against
+          the backup and replication frequencies set on the objects in the
+          DR plan.
+        type: object
+        $ref: "#/definitions/SCRPOConfig"
+  SCDRSiteConfig:
+    description: Specifies the configuration for DR site.
+    type: object
+    required:
+      - siteId
+      - source
+    properties:
+      siteId:
+        description: Specifies the unique identifier of the DR site.
+        type: integer
+        format: int64
+        x-nullable: true
+      source:
+        description: Specifies the registered source configuration on the DR
+          site.
+        type: object
+        allOf:
+          - $ref: "#/definitions/SCSourceConfig"
+  SCvCenterResourceProfileParams:
+    description: Specifies the resource profile settings for vCenter source.
+    type: object
+    required:
+      - name
+      - defaultResourceSet
+    properties:
+      name:
+        description: Specifies name of the resource profile.
+        type: string
+        x-nullable: true
+      isValid:
+        description: Specifies whether the resource profile is valid for
+          performing failover/failback on the DR plan.
+        type: boolean
+        x-nullable: true
+        readOnly: true
+      defaultResourceSet:
+        description: Specifies the parameters required to configure a default
+          resource set. Default resource set must be configured and all
+          settings will be generically applied to all objects unless they are
+          specifically overridden in custom resource set settings.
+        type: object
+        allOf:
+          - $ref: "#/definitions/SCvCenterDefaultResourceSet"
+      customResourceSets:
+        description: Specifies the parameters required to configure custom
+          resource sets. These are additional resource sets added along with
+          default resource set primarily to override default settings.
+        type: array
+        items:
+          $ref: "#/definitions/SCvCenterCustomResourceSet"
+      ipConfig:
+        description: Specifies the custom IP configuration for VMs as part of
+          a resource profile.
+        type: object
+        $ref: "#/definitions/SCIpConfig"
+  SCvCenterDefaultResourceSet:
+    description: Specifies the parameters required to configure default
+      resource set.
+    type: object
+    required:
+      - computeConfig
+    properties:
+      name:
+        description: Specifies name of the resource set. If name is not
+          provided then an internally generated name will be assigned to this
+          resource set.
+        type: string
+        x-nullable: true
+      computeConfig:
+        description: Specifies the compute settings for the current resource
+          set.
+        type: object
+        $ref: "#/definitions/SCvCenterComputeConfig"
+  SCvCenterCustomResourceSet:
+    description: Specifies the parameters required to configure a custom
+      resource set.
+    type: object
+    allOf:
+      - $ref: "#/definitions/SCvCenterDefaultResourceSet"
+      - type: object
+        properties:
+          objectIds:
+            description: Specifies the list of VM object IDs to which the
+              given resource settings will apply. These objects will override
+              the default settings provided in default resource set.
+            type: array
+            items:
+              type: integer
+              format: int64
+            minItems: 1
+  SCvCenterComputeConfig:
+    description: Specifies the compute configuration for a vCenter resource
+      set.
+    type: object
+    required:
+      - dataCenterConfig
+      - clusterComputeConfig
+      - resourcePoolConfig
+      - datastoreConfig
+      - networkPortGroupConfig
+    properties:
+      dataCenterConfig:
+        description: Specifies the compute settings for the data center
+          located under a specific vCenter object hierarchy on Cohesity.
+        type: object
+        $ref: "#/definitions/SCDataCenterComputeConfig"
+      clusterComputeConfig:
+        description: Specifies the compute settings for the cluster
+          located under a specific vCenter object hierarchy on Cohesity.
+        type: object
+        $ref: "#/definitions/SCClusterComputeConfig"
+      resourcePoolConfig:
+        description: Specifies the compute settings for the resource pool
+          located under a specific vCenter object hierarchy on Cohesity.
+        type: object
+        $ref: "#/definitions/SCResourcePoolComputeConfig"
+      datastoreConfig:
+        description: Specifies the compute settings for the data store
+          located under a specific vCenter object hierarchy on Cohesity.
+        type: object
+        $ref: "#/definitions/SCDatastoreComputeConfig"
+      networkPortGroupConfig:
+        description: Specifies the compute settings for the data store
+          located under a specific vCenter object hierarchy on Cohesity.
+        type: object
+        $ref: "#/definitions/SCNetworkPortGroupComputeConfig"
+  SCDataCenterComputeConfig:
+    description: Specifies the compute settings for the data center
+      located under a specific vCenter object hierarchy on Cohesity.
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        description: Specifies the ID of the data center object.
+        type: integer
+        format: int64
+        x-nullable: true
+      moRef:
+        description: Specifies the Managed Object Reference (MoRef)
+          of the data center object. This is a unique identifier inside
+          vCenter.
+        type: string
+        x-nullable: true
+        readOnly: true
+      name:
+        description: Specifies the name of the data center object.
+        type: string
+        x-nullable: true
+        readOnly: true
+  SCClusterComputeConfig:
+    description: Specifies the compute settings for the cluster object
+      located under a specific vCenter object hierarchy on Cohesity.
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        description: Specifies the ID of the cluster object.
+        type: integer
+        format: int64
+        x-nullable: true
+      moRef:
+        description: Specifies the Managed Object Reference (MoRef)
+          of the cluster object. This is a unique identifier inside
+          vCenter.
+        type: string
+        x-nullable: true
+        readOnly: true
+      name:
+        description: Specifies the name of the cluster object.
+        type: string
+        x-nullable: true
+        readOnly: true
+  SCResourcePoolComputeConfig:
+    description: Specifies the compute settings for the resource pool object
+      located under a specific vCenter object hierarchy on Cohesity.
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        description: Specifies the ID of the resource pool object.
+        type: integer
+        format: int64
+        x-nullable: true
+      moRef:
+        description: Specifies the Managed Object Reference (MoRef)
+          of the resource pool object. This is a unique identifier inside
+          vCenter.
+        type: string
+        x-nullable: true
+        readOnly: true
+      name:
+        description: Specifies the name of the resource pool object.
+        type: string
+        x-nullable: true
+        readOnly: true
+  SCDatastoreComputeConfig:
+    description: Specifies the compute settings for the data store object
+      located under a specific vCenter object hierarchy on Cohesity.
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        description: Specifies the ID of the data store object.
+        type: integer
+        format: int64
+        x-nullable: true
+      moRef:
+        description: Specifies the Managed Object Reference (MoRef)
+          of the data store object. This is a unique identifier inside
+          vCenter.
+        type: string
+        x-nullable: true
+        readOnly: true
+      name:
+        description: Specifies the name of the data store object.
+        type: string
+        x-nullable: true
+        readOnly: true
+  SCNetworkPortGroupComputeConfig:
+    description: Specifies the compute settings for the network port group
+      object located under a specific vCenter object hierarchy on Cohesity.
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        description: Specifies the ID of the network port group object.
+        type: integer
+        format: int64
+        x-nullable: true
+      moRef:
+        description: Specifies the Managed Object Reference (MoRef)
+          of the network port group object. This is a unique identifier inside
+          vCenter.
+        type: string
+        x-nullable: true
+        readOnly: true
+      name:
+        description: Specifies the name of the network port group object.
+        type: string
+        x-nullable: true
+        readOnly: true
+  SCIpConfig:
+    description: Specifies the customer IP configuration parameters.
+    type: object
+    required:
+      - configurationType
+    properties:
+      configurationType:
+        description: Specifies the type of the IP configuration.
+        type: string
+        enum:
+          - DHCP
+          - Static
+        x-nullable: true
+      dhcpConfig:
+        description: Specifies the dhcp IP configuration.
+        type: object
+        $ref: "#/definitions/SCDhcpIpConfig"
+      staticConfig:
+        description: Specifies the static IP configuration.
+        type: object
+        $ref: "#/definitions/SCStaticIpConfig"
+  SCDhcpIpConfig:
+    description: Specifies the DHCP IP configurations.
+    allOf:
+      - $ref: "#/definitions/SCCommonDNSSettings"
+  SCCommonDNSSettings:
+    description: Specifies the common DNS IP settings.
+    properties:
+      dnsServers:
+        description: Specifies the list of DNS servers.
+        type: array
+        items:
+          type: string
+      dnsSuffixes:
+        description: Specifies the list of DNS suffixes.
+        type: array
+        items:
+          type: string
+  SCStaticIpConfig:
+    description: Specifies the Static IP configurations.
+    required:
+      - configOption
+    properties:
+      configOption:
+        description: Specifies the config option for static Ip config.
+        type: string
+        enum:
+          - Original
+          - NetworkMapping
+          - Manual
+        x-nullable: true
+      originalConfig:
+        description: Specifies the original static IP configuration.
+        type: object
+        $ref: "#/definitions/SCOriginalStaticIpConfig"
+      networkMappingConfig:
+        description: Specifies the new network mapping.
+        type: array
+        items:
+          $ref: "#/definitions/SCNetworkMappingIpConfig"
+      manualIpConfig:
+        description: Specifies the manual IP setting at object/vm level.
+        type: object
+        $ref: "#/definitions/SCManualStaticIpConfig"
+  SCOriginalStaticIpConfig:
+    description: Specifies the original static IP configuration.
+    allOf:
+      - $ref: "#/definitions/SCCommonDNSSettings"
+  SCNetworkMappingIpConfig:
+    description: Specifies the network mapping configuration.
+    allOf:
+      - type: object
+        properties:
+          sourceNetwork:
+            description: Specifies the source network.
+            type: string
+            x-nullable: true
+          targetNetwork:
+            description: Specifies the target network.
+            type: string
+            x-nullable: true
+          gateway:
+            description: Specifies the gateway network address.
+            type: string
+            x-nullable: true
+      - $ref: "#/definitions/SCCommonDNSSettings"
+  SCManualStaticIpConfig:
+    description: Specifies the manual IP configuration.
+    type: object
+    properties:
+      manualObjectLevelConfig:
+        description: Specifies object level network mapping.
+        type: array
+        items:
+          $ref: "#/definitions/SCManualObjectLevelIpConfig"
+  SCManualObjectLevelIpConfig:
+    description: Specifies the object level manual IP configuration.
+    allOf:
+      - type: object
+        required:
+          - objectId
+          - ipAddress
+          - subnet
+          - gateway
+        properties:
+          objectId:
+            description: Specifies the object ID for VM for which static IP
+              need to be assigned.
+            type: integer
+            format: int64
+            x-nullable: true
+          ipAddress:
+            description: Specifies the static IP address.
+            type: string
+            x-nullable: true
+          subnet:
+            description: Specifies the subnet for IP address.
+            type: string
+            x-nullable: true
+          gateway:
+            description: Specifies the gateway network address.
+            type: string
+            x-nullable: true
+      - $ref: "#/definitions/SCCommonDNSSettings"
+  SCPrimarySiteConfig:
+    description: Specifies the configuration for primary site.
+    type: object
+    required:
+      - siteId
+      - source
+    properties:
+      siteId:
+        description: Specifies the unique identifier of the site.
+        type: integer
+        format: int64
+        x-nullable: true
+      source:
+        description: Specifies the registered source configuration on the
+          primary site.
+        type: object
+        allOf:
+          - $ref: "#/definitions/SCSourceConfig"
+  SCSourceConfig:
+    description: Specifies the source details for DR plan configuration.
+    type: object
+    required:
+      - environment
+    properties:
+      environment:
+        description: Specifies the source environment.
+        type: string
+        enum:
+          - vmware
+      vmwareParams:
+        description: Specifies the source for adding VMware data object parameters.
+          Only vCenter is supported at this time.
+        type: object
+        $ref: "#/definitions/SCDRSourceVMwareParams"
+  SCDRSourceVMwareParams:
+    description: Specifies the source details for adding VMware objects.
+    type: object
+    required:
+      - sourceType
+    properties:
+      sourceType:
+        description: Specifies the type of the VMware source.
+        type: string
+        enum:
+          - vCenter
+        x-nullable: true
+      vCenterParams:
+        description: Specifies the parameters to configure vCenter source.
+        type: object
+        $ref: "#/definitions/SCDRSourceVCenterParams"
+  SCDRSourceVCenterParams:
+    description: Specifies the vCenter parameters to configure a source.
+    type: object
+    required:
+      - objectId
+    properties:
+      objectId:
+        description: Specifies the object ID of the vCenter. This object
+          identifier uniquely locates the vCenter object within Cohesity.
+        type: integer
+        format: int64
+        x-nullable: true
+      resourceProfiles:
+        description: Specifies the resource profile settings.
+        type: array
+        items:
+          $ref: "#/definitions/SCvCenterResourceProfileParams"
+  SCRPOConfig:
+    description: Specifies the Recovery Point Objective (RPO) configuration
+      for a DR Plan.
+    required:
+       - unit
+    properties:
+      unit:
+        description: Specifies the unit for RPO settings.
+        type: string
+        enum:
+          - Minutes
+          - Hours
+          - Days
+        x-nullable: true
+      frequency:
+        description: Specifies the frequency at which RPO need
+          to be executed along with the unit.
+        type: integer
+        format: int32
+        x-nullable: true
+        minimum: 1
+  SCApplicationVersionsResponse:
+    description: Specifies the list of application versions.
+    type: object
+    properties:
+      application:
+        description: Specifies the information about application.
+        type: object
+        $ref: "#/definitions/SCApplication"
+        x-nullable: true
+      versions:
+        description: Specifies the list of application versions. Listed
+          versions will be returned in decreasing order. Latest version
+          will appear first and next will be one previous to latest and so on.
+        type: array
+        items:
+          type: object
+          $ref: "#/definitions/SCApplicationVersion"
+      paginationInfo:
+        description: Specifies the information needed in order to support
+         pagination. This will not be included for the last page of results.
+        $ref: "#/definitions/SCPaginationInfo"
+        x-nullable: true
+  SCApplicationsResponse:
+    description: Specifies the list of applications.
+    type: object
+    properties:
+      applications:
+        description: Specifies the list of applications.
+        type: array
+        items:
+          $ref: "#/definitions/SCApplication"
+      summary:
+        description: Specifies the summary information of existing applications.
+        $ref: "#/definitions/SCApplicationsSummary"
+        x-nullable: true
+      paginationInfo:
+        description: Specifies the information needed in order to support
+          pagination. This will not be included for the last page of results.
+        $ref: "#/definitions/SCPaginationInfo"
+        x-nullable: true
+  SCApplicationsSummary:
+    description: Specifies the summary information of existing applications.
+    type: object
+    properties:
+      numApplications:
+        description: Specifies the total number of existing applications.
+        type: integer
+        format: int64
+        x-nullable: true
+      numUniqueLocations:
+        description: Specifies the total number of unique locations associated
+          with the existing applications.
+        type: integer
+        format: int64
+        x-nullable: true
+      numApplicationObjects:
+        description: Specifies the total number of objects added in all the
+          existing applications.
+        type: integer
+        format: int64
+        x-nullable: true
+  SCApplication:
+    description: Specifies the information about the application.
+    type: object
+    properties:
+      id:
+        description: Specifies the unique identifier for the application.
+        type: integer
+        format: int64
+        x-nullable: true
+      status:
+        description: Specifies the current status of the application.
+          Status will be always associated with latest version of the
+          application.<br><br>
+          'NotReady' status specifies that Application is currently not
+          ready to be used when creating or updating DR plans. This usually
+          happens if there are no backup jobs associated with objects added
+          in the application.<br><br>
+          'Ready' status specifies that application is ready to be added in
+          DR plan.<br><br>
+        type: string
+        enum:
+          - NotReady
+          - Ready
+        x-nullable: true
+      markedForDeletion:
+        description: Specifies whether the application is undergoing deletion
+          in background. Once the application is fully deleted, the response
+          will not contain this application.
+        type: boolean
+        x-nullable: true
+    allOf:
+      - $ref: "#/definitions/SCCommonAppParams"
+      - type: object
+        properties:
+          latestAppVersion:
+            description: Specifies the details of latest application version.
+              Latest version is the recently created application object and
+              allows performing edits on the application.
+            type: object
+            $ref: "#/definitions/SCApplicationVersion"
+            x-nullable: true
+          drPlanId:
+            description: Specifies the DR plan ID where this application is
+              currently being used. This filed will only populated when
+              application status is 'IsUse'.
+            type: integer
+            format: int64
+            x-nullable: true
+  SCApplicationVersion:
+    description: Specifies the application details for a given version.
+    type: object
+    properties:
+      siteId:
+        description: Specifies the unique site identifier to which current
+          application version belongs to.
+        type: integer
+        format: int64
+        x-nullable: true
+      version:
+        description: Specifies the version number of the application.
+        type: integer
+        format: int64
+        x-nullable: true
+      spec:
+        description: Specifies the application configuration consisting
+          source information, object details, scripts and time delays.
+        type: object
+        $ref: "#/definitions/SCAppSpec"
+        x-nullable: true
+      previousToCurrentVersionMap:
+        description: Specifies the map for linking data objects from previous
+          version to current version. This map will help identifying the
+          recovered objects on DR cluster after successful failover or failback
+          operation. This field will not be populated for very first version of
+          the application.
+        type: object
+        $ref: "#/definitions/SCAppVersionMapping"
+        x-nullable: true
+  SCAppVersionMapping:
+    description: Specifies the map for linking data objects from previous
+      version to current version. This map will help identifying the
+      recovered objects on DR cluster after successful failover or failback
+      operation.
+    type: object
+    properties:
+      currentVersion:
+        description: Specifies the current version number of the application.
+        type: integer
+        format: int32
+        x-nullable: true
+      previousVersion:
+        description: Specifies the previous version number of the application.
+        type: integer
+        format: int32
+        x-nullable: true
+      currentSiteId:
+        description: Specifies the unique site identifier in the current
+          application version.
+        type: integer
+        format: int64
+        x-nullable: true
+      previousSiteId:
+        description: Specifies the unique site identifier in the previous
+          application version.
+        type: integer
+        format: int64
+        x-nullable: true
+      drPlanActionId:
+        description: Specifies the identifier of a successful DR plan action
+          that was initially triggered to create this current version. This
+          action will be typically either a failover or failback action.
+        type: integer
+        format: int64
+        x-nullable: true
+      objectLinkage:
+        description: Specifies the map for linking data objects from previous
+          version to current version.
+        type: array
+        items:
+          $ref: "#/definitions/SCAppObjectLinkage"
+  SCAppObjectLinkage:
+    description: Specifies the map for linking data objects from previous
+      version to current version.
+    type: object
+    properties:
+      previousObjectId:
+        description: Specifies the unique ID of the data object from the
+          previous version. This ID along with the registered source
+          uniquely locates the object on the primary site in the context of
+          most recent failover or failback operation.
+        type: integer
+        format: int64
+        x-nullable: true
+      currentObjectId:
+        description: Specifies the unique ID of the data object in the current
+          version. This ID will be uniquely associated with the DR site after
+          most recent successful failover or failback operation.
+        type: integer
+        format: int64
+        x-nullable: true
+  SCAppCreateOrUpdateParams:
+    description: Specifies the parameters required to create or update
+      application.
+    type: object
+    allOf:
+      - $ref: "#/definitions/SCCommonAppParams"
+      - type: object
+        required:
+          - siteId
+          - spec
+        properties:
+          siteId:
+            description: Specifies the unique identifier of the site.
+            type: integer
+            format: int64
+            x-nullable: true
+          spec:
+            description: Specifies the application configuration consisting
+              source information, object details, scripts and time delays.
+            type: object
+            $ref: "#/definitions/SCAppSpec"
+            x-nullable: true
+  SCCommonAppParams:
+    description: Specifies the common parameters required to create or update
+      application.
+    type: object
+    required:
+      - name
+    properties:
+      name:
+        description: Specifies the name of the application.
+        type: string
+        x-nullable: true
+  SCAppSpec:
+    description: Specifies the application configuration.
+    type: object
+    required:
+      - source
+      - components
+    properties:
+      source:
+        description: Specifies the source details for managing data objects
+          such as VMs, Views, etc.
+        type: object
+        $ref: "#/definitions/SCAppSourceConfig"
+        x-nullable: true
+      components:
+        description: Specifies the configuration for app components such as
+          objects (VMs, Views, DBs, etc), scripts and time delays in ordered
+          list. Ordered list will preserve the sequence of components and will
+          failover or failback in the order of the sequence provided here.
+        type: array
+        items:
+          $ref: "#/definitions/SCAppComponentsConfig"
+  SCAppSourceConfig:
+    description: Specifies the source details for managing data objects
+      such as VMs, Views, etc.
+    type: object
+    required:
+      - environment
+    properties:
+      environment:
+        description: Specifies the environment required for adding data
+          objects.
+        type: string
+        enum:
+          - vmware
+      vmwareParams:
+        description: Specifies the source for adding VMware data object parameters.
+          Only vCenter is supported at this time.
+        type: object
+        $ref: "#/definitions/SCAppSourceVMwareParams"
+  SCAppSourceVMwareParams:
+    description: Specifies the source details for adding VMware objects.
+    type: object
+    required:
+      - sourceType
+    properties:
+      sourceType:
+        description: Specifies the type of the VMware source.
+        type: string
+        enum:
+          - vCenter
+        x-nullable: true
+      vCenterParams:
+        description: Specifies the parameters to configure vCenter as a DR
+          target.
+        type: object
+        $ref: "#/definitions/SCAppSourceVCenterParams"
+  SCAppSourceVCenterParams:
+    description: Specifies the vCenter parameters required to be included as DR
+      target.
+    type: object
+    required:
+      - objectId
+    properties:
+      objectId:
+        description: Specifies the object ID of the vCenter. This object
+          identifier uniquely locates the vCenter object within Cohesity.
+        type: integer
+        format: int64
+        x-nullable: true
+      uuid:
+        description: Specifies the UUID of the VMWare source.
+        type: string
+        x-nullable: true
+        readOnly: true
+  SCAppComponentsConfig:
+    description: Specifies the configuration for app components such as
+      objects (VMs, Views, DBs, etc), scripts and time delays in ordered list.
+    type: object
+    required:
+      - type
+    properties:
+      type:
+        description: Specifies the type of the component.
+        type: string
+        enum:
+          - objects
+          - script
+          - delay
+        x-nullable: true
+      objectParams:
+        description: Specifies the configuration to add data objects such
+          as VMs, Views, DBs, etc. When multiple objects are specified in
+          this field then they will be processed and recovered in parallel
+          at the time of failover or failback.
+        type: array
+        items:
+          $ref: "#/definitions/SCAppComponentObjectConfig"
+      scriptParams:
+        description: Specifies the parameters to add a script component.
+        type: object
+        $ref: "#/definitions/SCAppComponentScriptConfig"
+        x-nullable: true
+      delayParams:
+        description: Specifies the parameters to configure a time delay.
+        type: object
+        $ref: "#/definitions/SCAppComponentTimeDelayConfig"
+        x-nullable: true
+  SCAppComponentObjectConfig:
+    description: Specifies configuration required for adding an object
+      component.
+    required:
+      - id
+      - type
+    properties:
+      id:
+        description: Specifies the unique ID of the data object. This
+          identifier uniquely locates a data object along with the source
+          added to Cohesity.
+        type: integer
+        format: int64
+        x-nullable: true
+      type:
+        description: Specifies the type of the object.
+        type: string
+        enum:
+          - virtualMachine
+        x-nullable: true
+      virtualMachineParams:
+        description: Specifies the virtual machine object selection parameters.
+        type: object
+        $ref: "#/definitions/SCAppComponentVMParams"
+  SCAppComponentVMParams:
+    description: Specifies the configuration parameters for virtual machine object.
+    type: object
+    properties:
+      protectionGroupId:
+        description: Specifies the Protection Group Id associated with the
+          object.
+        type: string
+        x-nullable: true
+      username:
+        description: Specifies the username associated with the VM.
+        type: string
+        x-nullable: true
+      password:
+        description: Specifies the password associated with the VM.
+        type: string
+        x-nullable: true
+      scriptExecutionPath:
+        description: Specifies the directory path in guest OS where user
+          scripts will be placed for execution.
+        type: string
+        x-nullable: true
+      scriptParams:
+        description: Specifies the parameters to add a script component inside
+          a virtual machine.
+        type: object
+        $ref: "#/definitions/SCAppComponentScriptConfig"
+        x-nullable: true
+  SCAppComponentTimeDelayConfig:
+    description: Specifies the time delay config.
+    required:
+      - unit
+      - delay
+    properties:
+      unit:
+        description: Specifies the unit for the time delay.
+        type: string
+        enum:
+          - Seconds
+          - Minutes
+          - Hours
+        x-nullable: true
+      delay:
+        description: Specifies the delay to be added.
+        type: integer
+        format: int64
+        x-nullable: true
+  SCAppComponentScriptConfig:
+    description: Specifies the parameters required for adding a script.
+    required:
+      - name
+      - content
+    properties:
+      name:
+        description: Specifies name of the script.
+        type: string
+        x-nullable: true
+      content:
+        description: Specifies contents/code of the script. Contents should be
+          base64 encoded to avoid issues associated with special characters.
+        type: string
+        x-nullable: true
+      arguments:
+        description: Specifies the list of arguments to the script.
+        type: array
+        items:
+          type: string
+  SCCommonSite:
+    description: Specifies the common site parameters.
+    type: object
+    required:
+      - name
+      - type
+    properties:
+      name:
+        description: Specifies the name of the site.
+        type: string
+        x-nullable: true
+      type:
+        description: Specifies type of the site.
+        type: string
+        enum:
+          - OnPrem
+        x-nullable: true
+      location:
+        description: Specifies location details of the site.
+        type: object
+        $ref: "#/definitions/SCSiteLocationDetails"
+        x-nullable: true
+      onPremParams:
+        description: Specifies the parameters required to create an on premises
+          site.
+        type: object
+        $ref: "#/definitions/SCOnPremSite"
+        x-nullable: true
+  SCOnPremSite:
+    description: Specifies the details of an on prem site.
+    type: object
+    required:
+      - clusterId
+      - incarnationId
+    properties:
+      clusterId:
+        description: Specifies the ID of the on prem cluster.
+        type: integer
+        format: int64
+        x-nullable: true
+      incarnationId:
+        description: Specifies the incarnation ID of the on prem cluster.
+        type: integer
+        format: int64
+        x-nullable: true
+  SCSiteLocationDetails:
+    description: Specifies details related to the location of a site.
+    properties:
+      city:
+        description: Specifies the city where this site is located.
+        type: string
+        x-nullable: true
+      country:
+        description: Specifies the country name for this site.
+        type: string
+        x-nullable: true
+      iso:
+        description: Specifies 2 Character ISO Name for country.
+        type: string
+        x-nullable: true
+      latitude:
+        description: Specifies the latitude for this site.
+        type: number
+        format: float64
+        x-nullable: true
+      longitude:
+        description: Specifies the longitude for this site.
+        type: number
+        format: float64
+        x-nullable: true
+      state:
+        description: Specifies name of the region or state to which the site
+          belongs to.
+        type: string
+        x-nullable: true
+  SCSite:
+    description: Specifies the site details.
+    type: object
+    allOf:
+      - type: object
+        properties:
+          id:
+            description: Specifies the unique identifier of the site.
+            type: integer
+            format: int64
+            x-nullable: true
+          healthStatus:
+            description: Specifies the health status of the site.
+            type: string
+            enum:
+              - NotReachable
+              - Healthy
+              - Unhealthy
+            x-nullable: true
+      - $ref: "#/definitions/SCCommonSite"
+  SCSitesResponse:
+    description: Specifies the list of sites.
+    type: object
+    properties:
+      sites:
+        description: Specifies the list of sites.
+        type: array
+        items:
+          $ref: "#/definitions/SCSite"
+      paginationInfo:
+        description: Specifies the information needed in order to support
+         pagination. This will not be included for the last page of results.
+        $ref: "#/definitions/SCPaginationInfo"
+        x-nullable: true
+  SCError:
+    description: Specifies the error object with error code and a message.
+    type: object
+    properties:
+      errorCode:
+        description: Specifies the error code.
+        x-nullable: true
+        $ref: "#/definitions/SCErrorCode"
+      errorMessage:
+        description: Specifies the error message.
+        type: string
+        x-nullable: true
+  SCErrorCode:
+    description: Specifies all the error codes that are returned by API server
+    type: string
+    enum:
+      - kNoError
+      - kValidationError
+      - kInternalError
+  SCCreateObjectsOperationParams:
+    description: Specifies the parameters to perform an operation using objects.
+    type: object
+    required:
+      - operationId
+      - operationType
+    properties:
+      operationId:
+        description: Specifies the operation id to perform operation using objects.
+          This operation id will be used in later get calls to track the
+          progress of operations.
+        type: string
+      operationType:
+        description: Specifies the operation type.<br>
+          'CheckObjectCreds' initiates a verification check for object credentials.<br>
+          'FetchResourcePoolInfo' initiates an operation to fetch information about
+          all resource pools under a vCenter.<br>
+          'FetchEntityHierarchyWithObjectInfo' initiates an operation to fetch
+          information about entity hierarchy for a vCenter. Once entity hierarchy
+          is fetched, more object related information such as protection groups,
+          RPO information will also be fetched. This is a cached response and may
+          not always reflect the latest state of the entity hierarchy and PG/RPO
+          information.<br>
+          'RefreshReplicatedSnapshots' initiates an operation to fetch the
+          replicated snapshot details for all the objects belonging to the latest
+          application version.<br>
+        type: string
+        enum:
+          - CheckObjectCreds
+          - FetchResourcePoolInfo
+          - FetchEntityHierarchyWithObjectInfo
+          - RefreshReplicatedSnapshots
+      checkObjectCredsParams:
+        description: Specifies the parameters to check objects credentials.
+        type: object
+        $ref: "#/definitions/SCCheckObjectCredsParams"
+      fetchResourcePoolInfoParams:
+        description: Specifies the parameters to fetch information of all
+          resource pools under a vCenter.
+        type: object
+        $ref: "#/definitions/SCFetchResourcePoolInfoParams"
+      fetchEntityHierarchyWithObjectInfoParams:
+        description: Specifies the parameters to fetch information of entity
+          hierarchy under a vCenter and information such as protection
+          groups and RPO for all objects under the same vCenter.
+        type: object
+        $ref: "#/definitions/SCFetchEntityHierarchyWithObjectInfoParams"
+      refreshReplicatedSnapshotsParams:
+        description: Specifies the parameters to initiate a refresh operation
+          on objects included in a DR plan via linked application.
+        type: object
+        $ref: "#/definitions/SCRefreshReplicatedSnapshotParams"
+  SCRefreshReplicatedSnapshotParams:
+    description: Specifies the parameters to initiate a refresh operation to
+      to fetch replicated snapshots for all objects included in a DR plan via
+      linked application. Successful refresh operation will also update the
+      internal cache to reflect the latest snapshots.
+    type: object
+    required:
+      - drPlanId
+    properties:
+      drPlanId:
+        description: Specifies the ID of the DR plan. Successful execution of
+          the API will internally update the linked application's cache with
+          latest snapshot details.
+        type: integer
+        format: int64
+        x-nullable: true
+  SCCheckObjectCredsParams:
+    description: Specifies the parameters to create a verification check for
+      object credentials.
+    type: object
+    required:
+      - siteId
+    properties:
+      siteId:
+        description: Specifies the ID of the site.
+        type: integer
+        format: int64
+        x-nullable: true
+      objects:
+        description: Specifies the list of objects for credential validation.
+        type: array
+        items:
+          $ref: "#/definitions/SCObjectCredsParams"
+        minItems: 1
+  SCObjectCredsParams:
+    description: Specifies the credential parameters of an object.
+    type: object
+    required:
+      - objectId
+      - username
+      - password
+    properties:
+      objectId:
+        description: Specifies the Cohesity entity ID of the object.
+        type: integer
+        format: int64
+        x-nullable: true
+      sourceId:
+        description: Specifies the Cohesity entity ID of the source to which
+          this object belongs to.
+        type: integer
+        format: int64
+        x-nullable: true
+      objectUniqueIdentifier:
+        description: Specifies unique identifier for the object(VM) for which
+          credentials need to be checked. For VMware, this will be VMs' MORef.
+        type: string
+        x-nullable: true
+      username:
+        description: Specifies the name of the user.
+        type: string
+        x-nullable: true
+      password:
+        description: Specifies the password of the user.
+        type: string
+        x-nullable: true
+  SCFetchResourcePoolInfoParams:
+    description: Specifies the parameters to fetch resource pool information.
+    type: object
+    required:
+      - siteId
+      - vCenterId
+    properties:
+      siteId:
+        description: Specifies the ID of the site.
+        type: integer
+        format: int64
+        x-nullable: true
+      vCenterId:
+        description: Specifies the ID of the vCenter.
+        type: integer
+        format: int64
+        x-nullable: true
+  SCFetchEntityHierarchyWithObjectInfoParams:
+    description: Specifies the parameters to fetch information of entity
+      hierarchy under a vCenter and information such as protection
+      groups and RPO for all objects under the same vCenter.
+    type: object
+    required:
+      - siteId
+      - vCenterId
+    properties:
+      siteId:
+        description: Specifies the ID of the site from which the entity
+          hierarchy needs to be obtained. Prior to a Failover operation,
+          or after a Failback operation, this would be the primary site.
+          After a Failover operation, this would be the DR site.
+        type: integer
+        format: int64
+        x-nullable: true
+      vCenterId:
+        description: Specifies the object ID of the vCenter in the site
+          specified by siteId field. Prior to a Failover operation,
+          or after a Failback operation, this would be the primary site.
+          After a Failover operation, this would be the DR site.
+        type: integer
+        format: int64
+        x-nullable: true
+      destinationSiteId:
+        description: Specifies the ID of the site to which replication
+          would be configured from the entities in the entity hierarchy.
+          Prior to a Failover operation, or after a Failback operation,
+          this would be the DR site. After a Failover operation, this
+          would be the primary site.
+        type: integer
+        format: int64
+        x-nullable: true
+  SCObjectsOperation:
+    description: Specifies an operation using objects.
+    type: object
+    properties:
+      operationId:
+        description: Specifies the operation id to perform operation using objects.
+          This operation id will be used in later get calls to track the
+          progress of operations.
+        type: string
+      operationType:
+        description: Specifies the operation type.<br>
+          'CheckObjectCreds' initiates a verification check for object credentials.<br>
+          'FetchResourcePoolInfo' initiates an operation to fetch information about
+          all resource pools under a vCenter.<br>
+          'FetchEntityHierarchyWithObjectInfo' initiates an operation to fetch
+          information about entity hierarchy for a vCenter. Once entity hierarchy
+          is fetched, more object related information such as protection groups,
+          RPO information will also be fetched. This is a cached response and may
+          not always reflect the latest state of the entity hierarchy and PG/RPO
+          information.<br>
+          'RefreshReplicatedSnapshots' initiates an operation to fetch the
+          replicated snapshot details for all the objects included in a DR plan via
+          linked application.<br>
+        type: string
+        enum:
+          - CheckObjectCreds
+          - FetchResourcePoolInfo
+          - FetchEntityHierarchyWithObjectInfo
+          - RefreshReplicatedSnapshots
+  SCObjectsOperationResults:
+    description: Specifies the results of operation using objects.
+    type: object
+    properties:
+      operationId:
+        description: Specifies the operation id to perform operation using objects.
+        type: string
+      operationType:
+        description: Specifies the operation type.<br>
+          'CheckObjectCreds' initiates a verification check for object credentials.<br>
+          'FetchResourcePoolInfo' initiates an operation to fetch information about
+          all resource pools under a vCenter.<br>
+          'FetchEntityHierarchyWithObjectInfo' initiates an operation to fetch
+          information about entity hierarchy for a vCenter. Once entity hierarchy
+          is fetched, more object related information such as protection groups,
+          RPO information will also be fetched. This is a cached response and may
+          not always reflect the latest state of the entity hierarchy and PG/RPO
+          information.<br>
+          'RefreshReplicatedSnapshots' initiates an operation to fetch the
+          replicated snapshot details for all the objects included in a DR plan via
+          linked application. If the current operation results in success,
+          refreshed snapshots should be accessed by making call to the
+          get replicated snapshots API.
+        type: string
+        enum:
+          - CheckObjectCreds
+          - FetchResourcePoolInfo
+          - FetchEntityHierarchyWithObjectInfo
+          - RefreshReplicatedSnapshots
+        x-nullable: true
+      status:
+        description: Specifies the operation status.
+        type: string
+        enum:
+          - Success
+          - Failure
+          - InProgress
+        x-nullable: true
+      errorMessage:
+        description: Specifies the error message if the status is failure.
+        type: string
+        x-nullable: true
+      checkObjectCredsResults:
+        description: Specifies the results of checking objects
+          credentials.
+        type: object
+        $ref: "#/definitions/SCCheckObjectCredsResults"
+      fetchResourcePoolInfoResults:
+        description: Specifies the results of fetching resource pool information.
+        type: object
+        $ref: "#/definitions/SCFetchResourcePoolInfoResults"
+      fetchEntityHierarchyWithObjectInfoResults:
+        description: Specifies the results of fetching entity hierarchy and object
+          information such as protection group and RPO. At times, all this information
+          may not be available at once. At these instances, 'fetchStatus' field will
+          indicate the current progress of this operation. Please note that the
+          'status' field at the operation level is used for tracking the progress of
+          the entire operation while 'fetchStatus' field is more fine-grained and used
+          for tracking individual fetching operations within a top level operation.
+        type: object
+        $ref: "#/definitions/SCFetchEntityHierarchyWithObjectInfoResults"
+  SCCheckObjectCredsResults:
+    description: Specifies the results of checking objects credentials.
+    type: object
+    properties:
+      siteId:
+        description: Specifies the ID of the site.
+        type: integer
+        format: int64
+        x-nullable: true
+      objects:
+        description: Specifies the results of the objects in the action.
+        type: array
+        items:
+          $ref: "#/definitions/SCObjectCredsCheckResult"
+  SCObjectCredsCheckResult:
+    description: Specifies the credentials check result of one object.
+    type: object
+    properties:
+      objectId:
+        description: Specifies the ID of the object.
+        type: integer
+        format: int64
+        x-nullable: true
+      isCheckDone:
+        description: Specifies whether the check for the object is done.
+        type: boolean
+        x-nullable: true
+      isCredentialValid:
+        description: Specifies whether the credential is valid for the
+          object. This will only be returned when isCheckDone is true.
+        type: boolean
+        x-nullable: true
+      errorMessage:
+        description: Specifies the error message if the credential is
+          invalid. This will only be returned when isCheckDone is true
+          and isCredentialValid is false.
+        type: string
+        x-nullable: true
+  SCFetchResourcePoolInfoResults:
+    description: Specifies the results of fetching resource pool information.
+    type: object
+    properties:
+      siteId:
+        description: Specifies the ID of the site.
+        type: integer
+        format: int64
+        x-nullable: true
+      vCenterId:
+        description: Specifies the ID of the vCenter.
+        type: integer
+        format: int64
+        x-nullable: true
+      resourcePools:
+        description: Specifies the information of the resource pools under the vCenter.
+        type: array
+        items:
+          $ref: "#/definitions/SCResourcePoolInfo"
+  SCResourcePoolInfo:
+    description: Specifies the information of a resource pool.
+    type: object
+    properties:
+      resourcePoolId:
+        description: Specifies the ID of the resource pool.
+        type: integer
+        format: int64
+        x-nullable: true
+      resourcePoolName:
+        description: Specifies the name of the resource pool.
+        type: string
+        x-nullable: true
+      dataStores:
+        description: Specifies the list of data stores under the
+          resource pool.
+        type: array
+        items:
+          $ref: "#/definitions/SCDataStoreInfo"
+      networks:
+        description: Specifies the list of networks under the
+          resource pool.
+        type: array
+        items:
+          $ref: "#/definitions/SCNetworkInfo"
+  SCDataStoreInfo:
+    description: Specifies the information of a data store.
+    type: object
+    properties:
+      id:
+        description: Specifies the ID of the data store.
+        type: integer
+        format: int64
+        x-nullable: true
+      name:
+        description: Specifies the name of the data store.
+        type: string
+        x-nullable: true
+  SCNetworkInfo:
+    description: Specifies the information of a network.
+    type: object
+    properties:
+      id:
+        description: Specifies the ID of the network.
+        type: integer
+        format: int64
+        x-nullable: true
+      name:
+        description: Specifies the name of the network.
+        type: string
+        x-nullable: true
+  SCFetchEntityHierarchyWithObjectInfoResults:
+    description: Specifies the results of fetching entity hierarchy and object
+      information such as protection group and RPO. At times, all this information
+      may not be available at once. At these instances, 'fetchStatus' field will
+      indicate the current progress of this operation. Please note that the
+      'status' field at the operation level is used for tracking the progress of
+      the entire operation while 'fetchStatus' field is more fine-grained and used
+      for tracking individual fetching operations within a top level operation.
+    type: object
+    properties:
+      siteId:
+        description: Specifies the ID of the site from which the entity
+          hierarchy has been returned. Prior to a Failover operation,
+          or after a Failback operation, this would be the primary site.
+          After a Failover operation, this would be the DR site.
+        type: integer
+        format: int64
+        x-nullable: true
+      vCenterId:
+        description: Specifies the object ID of the vCenter in the site
+          specified by siteId field. Prior to a Failover operation,
+          or after a Failback operation, this would be the primary site.
+          After a Failover operation, this would be the DR site.
+        type: integer
+        format: int64
+        x-nullable: true
+      destinationSiteId:
+        description: Specifies the ID of the site to which replication
+          would be configured from the entities in the entity hierarchy.
+          Prior to a Failover operation, or after a Failback operation,
+          this would be the DR site. After a Failover operation, this
+          would be the primary site.
+        type: integer
+        format: int64
+        x-nullable: true
+      fetchStatus:
+        description: Specifies the current status for the progress made during
+          sequential fetch operations such as entity hierarchy,
+          protection group and RPO fetch etc. This status indicates the
+          fetch progress and hence every status implicitly indicates that
+          previous fetch tasks were successfully completed.
+        type: string
+        enum:
+          - EntityHierarchyFetched
+          - ProtectionGroupFetched
+          - RPOFetched
+          - AllFetched
+        x-nullable: true
+      entityHierarchy:
+        description: Specifies the json encoded string which represents the
+          entity hierarchy. The caller of the API needs to decode it based
+          on the entity hierarchy object defined in public API data models.
+        type: string
+        x-nullable: true
+      objectsInfo:
+        description: Specifies the information such as protection group and RPO
+          information for the all the objects belonging the entity hierarchy
+          populated above.
+        type: array
+        items:
+          $ref: "#/definitions/SCFetchObjectsInfoResult"
+  SCFetchObjectsInfoResult:
+    description: Specifies the information such as protection group and
+      RPO for an object.
+    type: object
+    properties:
+      objectId:
+        description: Specifies the ID of the object.
+        type: integer
+        format: int64
+        x-nullable: true
+      objectName:
+        description: Specifies the name of the object.
+        type: string
+        x-nullable: true
+      pgGroupsAndRpo:
+        description: Specifies the list of protection groups and respective
+          RPO information for the object.
+        type: array
+        items:
+          $ref: "#/definitions/SCPgAndRpoInfo"
+  SCPgAndRpoInfo:
+    description: Specifies the protection group and RPO information for
+      an object.
+    type: object
+    properties:
+      protectionGroupId:
+        description: Specifies the Protection group identifier associated with
+          the object.
+        type: string
+        x-nullable: true
+      protectionGroupName:
+        description: Specifies the Protection group name associated with the
+          object.
+        type: string
+        x-nullable: true
+      rpoUnit:
+        description: Specifies the RPO unit associated with the above
+          protection group.
+        type: string
+        enum:
+          - Minutes
+          - Hours
+          - Days
+        x-nullable: true
+      rpoFrequency:
+        description: Specifies the frequency at which RPO needs
+          to be executed along with the unit.
+        type: integer
+        format: int32
+        x-nullable: true
+  SCPaginationInfo:
+    description: Specifies information needed to support pagination.
+    type: object
+    properties:
+      cookie:
+        description: Specifies a cookie which can be passed in by the user
+          in order to retrieve the next page of results.
+        type: string
+        x-nullable: true
+  SCDRPlansSummary:
+    description: Specifies the summary of the DR Plans.
+    type: object
+    properties:
+      totalPlans:
+        description: Specifies the total number DR Plans.
+        type: integer
+        format: int32
+        x-nullable: true
+      activePlans:
+        description: Specifies the total number of active DR plans. This
+          includes the plans that are either currently active, completed or
+          failed due to an error.
+        type: integer
+        format: int32
+        x-nullable: true
+      runningPlans:
+        description: Specifies the  total number of DR Plans in running
+          status. This includes the plans that are in failover running,
+          failback running, teardown running or cancelling status.
+        type: integer
+        format: int32
+        x-nullable: true
+      completedPlans:
+        description: Specifies the total number of completed DR plans. This
+          includes the plans that are currently either failover completed
+          or failback completed.
+        type: integer
+        format: int32
+        x-nullable: true
+      readyPlans:
+        description: Specifies the total number of DR plans that are
+          ready for any of the actions such as activation, failover, or
+          failback.
+        type: integer
+        format: int32
+        x-nullable: true
+      notReadyPlans:
+        description: Specifies the total number of DR plans that are not
+          ready for any of the actions such as activation, failover, or
+          failback.
+        type: integer
+        format: int32
+        x-nullable: true
+      failedPlans:
+        description: Specifies the total number of plans that either failed a
+          failover or failback operation, or have some configuration error.
+        type: integer
+        format: int32
+        x-nullable: true
+      slaSatisfiedPlans:
+        description: Specifies the total number of active DR plans where SLA
+          is satisfied.
+        type: integer
+        format: int32
+        x-nullable: true
+      slaNotSatisfiedPlans:
+        description: Specifies the total number of active DR plans where SLA
+          is not satisfied.
+        type: integer
+        format: int32
+        x-nullable: true
+  SCGetSnapshotsByAppIdResponse:
+    description: Specifies the response for fetching snapshots for all the
+      objects belonging to an application.
+    type: object
+    properties:
+      appId:
+        description: Specifies the unique identifier for the application.
+        type: integer
+        format: int64
+        x-nullable: true
+      objectSnapshots:
+        description: Specifies the latest snapshot for all entities
+          belonging to the latest version of the application.
+        type: array
+        items:
+          $ref: "#/definitions/SCObjectSnapshot"
+  SCObjectSnapshot:
+    description: Specifies the snapshot details for an object.
+      The details include object details, snapshot details and point in time
+      recovery timestamps. If object is protected by CDP
+      (Continuous Data Protection) then refer point in time recovery timestamps
+      for fetching replicated snapshot information.
+    type: object
+    properties:
+      objectDetails:
+        description: Specifies the specific details of the object. Following
+          details belong to the objects added in the application spec while
+          configuration.
+        type: object
+        $ref: "#/definitions/SCObjectDetails"
+      replicatedSnapshots:
+        description: Specifies the list of replicated snapshots associated with
+          the object. Following list will always contain the latest replicated
+          snapshot as first record. If specific 'objectIds' are requested in
+          query params then the following list will also contain the list of
+          non latest snapshots based on the provided timestamps.
+        type: array
+        items:
+          $ref: "#/definitions/SCSnapshotDetails"
+      timeRanges:
+        description: Specifies the list of time ranges associated with the
+          object. This list will be populated for the objects that are protected
+          via CDP. Following list will always contain the latest time range
+          as first record. If specific 'objectIds' are requested in
+          query params then the following list will also contain the list of
+          non latest time ranges based on the provided timestamps. A time range
+          will be added to this list if it lies partially or completely within
+          the provided timestamps, StartTime and EndTime in filter,
+          (both inclusive).
+          Partial match can happen when
+          - timeRange's endTimeUsecs lies in the filter range but startTimeUsecs
+            lies outside the filter range.
+          - timeRange's startTimeUsecs lies in the filter range but endTimeUsecs
+            lies outside the filter range.
+        type: array
+        items:
+          $ref: "#/definitions/SCTimeRange"
+      sourceBackupDetails:
+        description: Specifies the details about the backup information from the
+          source site which initiated the backup for the object.
+        type: object
+        $ref: "#/definitions/SCBackupDetails"
+  SCTimeRange:
+    description: Specifies the time range for the objects protected typically
+      protected via CDP.
+    type: object
+    properties:
+      startTimeUsecs:
+        description: Specifies the start time of the time range specified as
+          unix epoch timestamp.
+        type: integer
+        format: int64
+        x-nullable: true
+      endTimeUsecs:
+        description: Specifies the end time of the time range specified as
+          unix epoch timestamp.
+        type: integer
+        format: int64
+        x-nullable: true
+  SCSnapshotDetails:
+    description: Specifies the specific details of the snapshot.
+    type: object
+    properties:
+      snapshotId:
+        description: Specifies the unique identifier for the snapshot.
+        type: string
+        x-nullable: true
+      snapshotTimeUsecs:
+        description: Specifies the Unix time epoch in microseconds when the
+          snapshot was taken.
+        type: integer
+        format: int64
+        x-nullable: true
+  SCObjectDetails:
+    description: Specifies the object level details.
+    type: object
+    properties:
+      objectId:
+        description: Specifies the ID of the object.
+        type: integer
+        format: int64
+        x-nullable: true
+      objectName:
+        description: Specifies the name of the object.
+        type: string
+        x-nullable: true
+      objectType:
+        description: Specifies the type of the object.
+        type: string
+        enum:
+          - virtualMachine
+        x-nullable: true
+      virtualMachineInfo:
+        description: Specifies the details specific to the virtualMachine
+          object type.
+        type: object
+        $ref: "#/definitions/SCVMDetails"
+  SCVMDetails:
+    description: Specifies the details specific to the virtualMachine
+      object type.
+    type: object
+    properties:
+      isCdpProtected:
+        description: Specifies true if the VM is protected using Continuous
+          Data Protection (CDP).
+        type: boolean
+        x-nullable: true
+  SCOperationOnActionParams:
+    description: Specifies the parameters for an performing an operation on a
+      DR plan action.
+    type: object
+    required:
+      - operationType
+    properties:
+      operationType:
+        description: Specifies the current operation type which is being
+          performed on an action. <br>
+          'Cancel' is used to cancel any of the following in-flight
+          actions - Activate, PrepareForFailover, PrepareForFailback,
+          TestFailover, Failover, TestFailback, Failback. This operation will
+          cancel the latest ongoing attempt. <br>
+          'Resume' resumes a failed/partially successful Failover or Failback
+          action. This operation will create a new attempt to resume the
+          respective DR plan action. <br>
+          'ForceFinish' forcefully finishes a partially successful Failover or
+          Failback action without attempting to bring up the failed
+          resources. This operation will create a new attempt to force finish
+          the respective DR plan action. <br>
+        type: string
+        enum:
+          - Cancel
+          - Resume
+          - ForceFinish
+        x-nullable: true
+  SCBackupDetails:
+    description: Specifies the details about the backup information.
+    type: object
+    properties:
+      protectionGroupId:
+        description: Specifies the uniques identifier of the Protection Group.
+        type: string
+        x-nullable: true
+      protectionGroupName:
+        description: Specifies name of the protection group.
+        type: string
+        x-nullable: true
+responses:
+  SCCreateSiteResponse:
+    description: Specifies the response of a successful site creation.
+    schema:
+      $ref: "#/definitions/SCSite"
+  SCGetSitesResponse:
+    description: Specifies the response of a successful get sites
+      operation.
+    schema:
+      $ref: "#/definitions/SCSitesResponse"
+  SCErrorResponse:
+    description: Specifies the common error definition.
+    schema:
+      $ref: "#/definitions/SCError"
+  SCGetSiteByIdResponse:
+    description: Specifies the response of a successful get site operation.
+    schema:
+      $ref: "#/definitions/SCSite"
+  SCUpdateSiteResponse:
+    description: Specifies the response of a successful site update.
+    schema:
+      $ref: "#/definitions/SCSite"
+  SCCreateAppResponse:
+    description: Specifies the response of a successful application creation.
+    schema:
+      $ref: "#/definitions/SCApplication"
+  SCGetAppsResponse:
+    description: Specifies the response of a successful get applications
+      operation.
+    schema:
+      $ref: "#/definitions/SCApplicationsResponse"
+  SCGetAppByIdResponse:
+    description: Specifies the response of a successful get application
+      operation.
+    schema:
+      $ref: "#/definitions/SCApplication"
+  SCUpdateApplicationResponse:
+    description: Specifies the response of a successful application update.
+    schema:
+      $ref: "#/definitions/SCApplication"
+  SCGetAppVersionsResponse:
+    description: Specifies the response of a successful get application
+      versions operation.
+    schema:
+      $ref: "#/definitions/SCApplicationVersionsResponse"
+  SCCreateDRPlanResponse:
+    description: Specifies the response of a successful DR plan creation.
+    schema:
+      $ref: "#/definitions/SCDRPlan"
+  SCGetDRPlansResponse:
+    description: Specifies the response of a successful get DR plans
+      operation.
+    schema:
+      $ref: "#/definitions/SCDRPlansResponse"
+  SCGetDRPlanByIdResponse:
+    description: Specifies the response of a successful get DR plan
+      operation.
+    schema:
+      $ref: "#/definitions/SCDRPlan"
+  SCUpdateDRPlanResponse:
+    description: Specifies the response of a successful DR plan update.
+    schema:
+      $ref: "#/definitions/SCDRPlan"
+  SCPerformActionDrPlanResponse:
+    description: Specifies the response after performing an action on DR plan.
+    schema:
+      $ref: "#/definitions/SCDrPlanAction"
+  SCGetActionsResponse:
+    description: Specifies the response of a successful get actions.
+    schema:
+      $ref: "#/definitions/SCActionsResponse"
+  SCGetActionByIdResponse:
+    description: Specifies the response of a successful get DR plan
+      operation.
+    schema:
+      $ref: "#/definitions/SCAction"
+  SCCreateObjectsOperationResponse:
+    description: Specifies the response of an operation using objects.
+    schema:
+      $ref: "#/definitions/SCObjectsOperation"
+  SCGetObjectsOperationResultsResponse:
+    description: Specifies the results of an operation using objects.
+    schema:
+      $ref: "#/definitions/SCObjectsOperationResults"
+  SCGetStatsResponse:
+    description: Specifies the response for fetching stats.
+    schema:
+      $ref: "#/definitions/SCGetStatsResponse"
+  SCGetLatestSnapshotByAppIdResponse:
+    description: Specifies the response of a successful get snapshots
+      operation on an app Id.
+    schema:
+      $ref: "#/definitions/SCGetSnapshotsByAppIdResponse"
+  NoContentResponse:
+    description: "No Content"

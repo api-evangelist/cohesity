@@ -1,0 +1,111 @@
+generated: '2026-09-05'
+method: searched
+source: >-
+  Registry metadata endpoints (pypi.org/pypi/<pkg>/json, proxy.golang.org,
+  powershellgallery.com OData, galaxy.ansible.com v3, registry.terraform.io v1)
+  plus the first-party SDK landing pages linked from https://developer.cohesity.com/
+note: >-
+  Cohesity ships no JavaScript/npm client library; npm was probed for `cohesity`,
+  `cohesity-sdk` and `@cohesity/sdk` and all three are absent. The distribution
+  spine is Python, Go, PowerShell, Ansible and Terraform. Version + published are
+  read from each registry's metadata endpoint on the date above.
+packages:
+  - language: python
+    registry: pypi
+    name: cohesity-sdk
+    url: https://pypi.org/project/cohesity-sdk/
+    install: pip install cohesity-sdk
+    source: https://github.com/cohesity/cohesity_sdk
+    official: true
+    version: 1.4.0
+    published: '2025-03-19'
+    note: >-
+      Current-generation Cohesity Management SDK for Python, covering the v1 and
+      v2 cluster and Helios surfaces.
+  - language: python
+    registry: pypi
+    name: cohesity-management-sdk
+    url: https://pypi.org/project/cohesity-management-sdk/
+    install: pip install cohesity-management-sdk
+    source: https://github.com/cohesity/management-sdk-python
+    official: true
+    version: 1.16.0
+    published: '2026-08-25'
+    note: >-
+      Longer-running generated Python management SDK; the most recently released
+      first-party Cohesity client library found in any registry.
+  - language: go
+    registry: go
+    name: github.com/cohesity/go-sdk
+    url: https://pkg.go.dev/github.com/cohesity/go-sdk
+    install: go get github.com/cohesity/go-sdk
+    source: https://github.com/cohesity/go-sdk
+    official: true
+    version: v0.74.2
+    published: '2026-05-19'
+  - language: go
+    registry: go
+    name: github.com/cohesity/management-sdk-go
+    url: https://pkg.go.dev/github.com/cohesity/management-sdk-go
+    install: go get github.com/cohesity/management-sdk-go
+    source: https://github.com/cohesity/management-sdk-go
+    official: true
+    version: v0.0.0-20240514173917-fdda37b91cd3
+    published: '2024-05-14'
+    note: >-
+      Untagged pseudo-version; the module has never carried a semver tag and the
+      repository has not been pushed since 2024-05-14. Superseded in practice by
+      github.com/cohesity/go-sdk.
+  - language: powershell
+    registry: powershellgallery
+    name: Cohesity.PowerShell
+    url: https://www.powershellgallery.com/packages/Cohesity.PowerShell
+    install: Install-Module -Name Cohesity.PowerShell
+    source: https://github.com/cohesity/cohesity-powershell-module
+    official: true
+    version: 1.9.9
+    published: '2024-08-27'
+  - language: powershell
+    registry: powershellgallery
+    name: Cohesity.PowerShell.Core
+    url: https://www.powershellgallery.com/packages/Cohesity.PowerShell.Core
+    install: Install-Module -Name Cohesity.PowerShell.Core
+    source: https://github.com/cohesity/cohesity-powershell-module
+    official: true
+    version: 1.9.9
+    published: '2024-08-27'
+    note: .NET Core / cross-platform build of the same module.
+  - language: ansible
+    registry: ansible-galaxy
+    name: cohesity.dataprotect
+    url: https://galaxy.ansible.com/ui/repo/published/cohesity/dataprotect/
+    install: ansible-galaxy collection install cohesity.dataprotect
+    source: https://github.com/cohesity/ansible-collection
+    official: true
+    version: 1.4.5
+    published: '2026-07-29'
+  - language: terraform
+    registry: terraform-registry
+    name: cohesity/cohesity
+    url: https://registry.terraform.io/providers/cohesity/cohesity/latest
+    install: 'terraform { required_providers { cohesity = { source = "cohesity/cohesity" } } }'
+    source: https://github.com/cohesity/terraform-provider-cohesity
+    official: true
+    version: 2.1.3
+    published: '2025-05-09'
+    note: >-
+      The Terraform Registry reports 2.1.3 (2025-05-09) while the GitHub source
+      repository's newest module tag is v1.0.1 (2021-05-18); the registry is the
+      published artifact and is recorded as such.
+registries_probed:
+  - {registry: pypi, result: hit}
+  - {registry: npm, result: miss, note: 'cohesity, cohesity-sdk, @cohesity/sdk all 404'}
+  - {registry: go, result: hit}
+  - {registry: powershellgallery, result: hit}
+  - {registry: ansible-galaxy, result: hit}
+  - {registry: terraform-registry, result: hit}
+  - {registry: rubygems, result: not-probed, note: no evidence of a Ruby client in the docs}
+  - {registry: nuget, result: not-probed, note: PowerShell module ships via PowerShell Gallery, not NuGet}
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

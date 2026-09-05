@@ -1,0 +1,41 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Cohesity REST API v1 (cluster / Helios v1)
+  version: 1.0.0
+extends: openapi/cohesity-cluster-v1-openapi.yml
+x-generated: '2026-09-05'
+x-method: generated
+x-source: >-
+  Derived from the API Evangelist enrichment pass on all/cohesity/ (2026-09-05).
+  The underlying document is Cohesity's own Swagger 2.0, harvested verbatim from
+  https://developer.cohesity.com/apidocs/ and never mutated.
+actions:
+  - target: $.info
+    update:
+      x-apievangelist-provider: cohesity
+      x-apievangelist-enriched: '2026-09-05'
+      x-apievangelist-operations: 379
+      x-apievangelist-spec-version: swagger-2.0
+      x-apievangelist-source: https://developer.cohesity.com/apidocs/versions/
+      x-apievangelist-artifacts:
+        authentication: authentication/cohesity-authentication.yml
+        conventions: conventions/cohesity-conventions.yml
+        errors: errors/cohesity-problem-types.yml
+        lifecycle: lifecycle/cohesity-lifecycle.yml
+        scopes: scopes/cohesity-scopes.yml
+        data_model: data-model/cohesity-data-model.yml
+        webhooks: asyncapi/cohesity-webhooks.yml
+      x-apievangelist-findings:
+        - Swagger 2.0 only; no OpenAPI 3.x document is published.
+        - No operation declares an enumerated 4xx/5xx response; every operation relies on a single `default` error response.
+        - No idempotency mechanism exists on any mutating operation.
+        - No rate-limit response headers and no 429 response are declared.
+        - No operation carries `deprecated: true`; deprecations live in release-note prose only.
+        - Timestamps are microseconds since epoch (`*Usecs`) throughout.
+  - target: $
+    update:
+      x-apievangelist-auth-note: >-
+        Automation authenticates with a Helios or cluster API key sent in the
+        `apiKey` header. Helios additionally runs an OAuth 2.0 / OIDC
+        authorization-code flow with PKCE that is not declared in this document -
+        see well-known/cohesity-openid-configuration.json.

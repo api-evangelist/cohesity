@@ -1,0 +1,102 @@
+generated: '2026-09-05'
+method: derived
+source: >-
+  mcp/cohesity-mcp.yml (tool list from the Cohesity Gaia MCP connector reference)
+  bound against the operationIds in openapi/cohesity-cluster-v1-openapi.yml,
+  openapi/cohesity-cluster-v2-openapi.yml,
+  openapi/cohesity-helios-reporting-openapi.yml and
+  openapi/cohesity-site-continuity-openapi.yml
+note: >-
+  THE HEADLINE FINDING IS THE DIVERGENCE, NOT THE OVERLAP. Cohesity's MCP surface
+  and Cohesity's published OpenAPI surface describe two different products. All
+  four MCP tools belong to Gaia Data Insights, whose OpenAPI is not published to
+  any public URL; all 687 published REST operations belong to the cluster /
+  Helios data-protection surface, which has no MCP tool at all. There is
+  therefore zero binding between the two, and that is the honest measurement -
+  not a mapping failure. Every row below is confidence: none / mcp_only for that
+  reason.
+surfaces:
+  openapi:
+    files:
+      - openapi/cohesity-cluster-v1-openapi.yml
+      - openapi/cohesity-cluster-v2-openapi.yml
+      - openapi/cohesity-helios-reporting-openapi.yml
+      - openapi/cohesity-site-continuity-openapi.yml
+    source: https://developer.cohesity.com/apidocs/versions/
+    gated: false
+  graphql:
+    endpoint: null
+    note: Cohesity publishes no GraphQL surface; none was found on any host.
+  mcp:
+    url: null
+    path: /mcp
+    gated: true
+    note: >-
+      tools/list against https://helios.cohesity.com/mcp returned HTTP 401
+      (KStatusUnauthorized), so live inputSchema introspection requires an
+      authenticated Gaia/Helios API key. Tool names, parameters, defaults and
+      hidden fields below are taken from the vendor connector reference.
+  gaia_openapi:
+    published: false
+    note: >-
+      The Gaia OpenAPI - the document that carries the x-mcp-tool markers and the
+      real inputSchema for every tool - is referenced by the connector docs but is
+      not served at any public Cohesity URL. Probed and missed on
+      developer.cohesity.com, developers.cohesity.com, docs.cohesity.com,
+      api.cohesity.com and helios.cohesity.com.
+crosswalk: []
+mcp_only:
+  - tool: gaia_datasets
+    gaia_operation: GetDatasets
+    reason: >-
+      Backed by the Gaia Data Insights REST API (GET /datasets), which is a
+      different product from the published cluster/Helios OpenAPI and has no
+      public specification.
+  - tool: gaia_dataset_topics
+    gaia_operation: GetDatasetDiscoveryResults
+    reason: Gaia-only; no equivalent operation exists in any published Cohesity spec.
+  - tool: gaia_ask
+    gaia_operation: QueryLlm
+    reason: >-
+      RAG/LLM query over indexed backup data. No published Cohesity REST
+      operation performs an LLM query.
+  - tool: gaia_search
+    gaia_operation: ExhaustiveSearch
+    reason: >-
+      Exhaustive document search inside a Gaia dataset. The nearest published
+      operations are cluster file-search operations, which index live/backup file
+      metadata rather than Gaia dataset documents - a semantic neighbour, not a
+      binding, so it is deliberately not mapped.
+rest_only:
+  - capability: Data protection - protection groups, runs and policies
+    spec: openapi/cohesity-cluster-v2-openapi.yml
+    example_operations: [GetProtectionGroups, CreateProtectionGroup, GetProtectionGroupRuns, CancelProtectionGroupRun]
+  - capability: Recovery and failover
+    spec: openapi/cohesity-cluster-v2-openapi.yml
+    example_operations: [CreateRecovery, CancelRecoveryById, TearDownRecoveryById, CancelFailover, CancelViewFailover]
+  - capability: Protection sources and registrations
+    spec: openapi/cohesity-cluster-v2-openapi.yml
+    example_operations: [GetProtectionSources, GetSourceRegistrations, GetProtectionSourceRegistration]
+  - capability: Views, storage domains and file services
+    spec: openapi/cohesity-cluster-v1-openapi.yml
+    example_operations: [GetViews, CreateView, GetViewBoxes]
+  - capability: Alerts and notification rules (the webhook surface)
+    spec: openapi/cohesity-cluster-v1-openapi.yml
+    example_operations: [GetAlerts, GetAlertTypes, GetNotificationRules, CreateNotificationRule, UpdateNotificationRule, DeleteNotificationRule]
+  - capability: Helios global reporting
+    spec: openapi/cohesity-helios-reporting-openapi.yml
+    example_operations: [GetReports, GetReportPreview]
+  - capability: Site continuity / DR orchestration
+    spec: openapi/cohesity-site-continuity-openapi.yml
+    example_operations: [SCGetDrPlans, SCCreateDRPlan, SCPerformActionOnDRPlan, SCInitiateHealthCheck]
+coverage:
+  tools_named: 4
+  tools_bound_to_published_rest: 0
+  mcp_only: 4
+  rest_operations_total: 687
+  rest_operations_with_a_tool: 0
+  rest_only_capabilities: 7
+  binding_rate: 0.0
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

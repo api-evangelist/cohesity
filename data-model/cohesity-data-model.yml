@@ -1,0 +1,120 @@
+generated: '2026-09-05'
+method: derived
+source: >-
+  openapi/cohesity-cluster-v2-openapi.yml (1,497 definitions),
+  openapi/cohesity-cluster-v1-openapi.yml (1,120 definitions),
+  openapi/cohesity-site-continuity-openapi.yml, openapi/cohesity-helios-reporting-openapi.yml
+note: >-
+  Derived from $ref topology and id-reference fields in the published Swagger 2.0
+  documents. Cohesity's contracts are enormous and heavily polymorphic - the v2
+  document carries GUID-suffixed synthetic schema names such as
+  `CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801`,
+  which is a code-generator artifact, not a domain name. Only the stable domain
+  entities are modelled below; the per-workload parameter schemas (Cassandra,
+  MongoDB, VMware, AWS, Azure, O365 and roughly forty more) are variants of the
+  same three shapes and are summarised rather than enumerated.
+id_conventions:
+  - >-
+    Object ids are opaque strings, frequently composite
+    (`clusterId:clusterIncarnationId:objectId`) on Helios where the same logical
+    object exists on several clusters.
+  - >-
+    All timestamps are MICROSECONDS since epoch and carry a `Usecs` suffix
+    (startTimeUsecs, endTimeUsecs, runStartTimeUsecs).
+  - >-
+    Enumerated values are `k`-prefixed PascalCase strings (kCritical, kRegular,
+    kBackupRestore) throughout both generations.
+entities:
+  - name: ProtectionSource
+    description: A registered thing that can be protected - a vCenter, an AWS account, a Microsoft 365 tenant, a SQL host, a NAS array.
+    key_operations: [GetProtectionSources, GetSourceRegistrations, GetProtectionSourceRegistration, UpdateProtectionSourceRegistration, DeleteProtectionSourceRegistration]
+    spec: openapi/cohesity-cluster-v2-openapi.yml
+  - name: Object
+    description: An individual protectable item discovered under a source - a VM, a mailbox, a database, a view.
+    schema: ObjectSummary
+    key_operations: [GetProtectedObjectsOfAnyType, GetObjectSnapshots, GetObjectRuns]
+    spec: openapi/cohesity-cluster-v2-openapi.yml
+  - name: ProtectionGroup
+    description: The unit of backup policy application - a named set of objects run on a schedule against a policy.
+    key_operations: [GetProtectionGroups, CreateProtectionGroup, UpdateProtectionGroup, DeleteProtectionGroup]
+    spec: openapi/cohesity-cluster-v2-openapi.yml
+  - name: ProtectionGroupRun
+    description: One execution of a protection group, with per-object status and produced snapshots.
+    key_operations: [GetProtectionGroupRuns, CreateProtectionGroupRun, CancelProtectionGroupRun]
+    spec: openapi/cohesity-cluster-v2-openapi.yml
+  - name: ProtectionPolicy
+    description: Retention, frequency, replication and archival rules referenced by protection groups.
+    key_operations: [GetProtectionPolicies, CreateProtectionPolicy]
+    spec: openapi/cohesity-cluster-v2-openapi.yml
+  - name: Snapshot
+    description: A point-in-time copy produced by a run and consumed by a recovery.
+    schema: CommonRecoverObjectSnapshotParams
+    spec: openapi/cohesity-cluster-v2-openapi.yml
+  - name: Recovery
+    description: A restore task targeting one or more snapshots at a recover target.
+    schema: RecoveryObjectIdentifier
+    key_operations: [CreateRecovery, GetRecoveries, CancelRecoveryById, TearDownRecoveryById]
+    spec: openapi/cohesity-cluster-v2-openapi.yml
+  - name: StorageDomain
+    description: The storage container (historically "view box") that holds views and backup data.
+    key_operations: [GetViewBoxes]
+    spec: openapi/cohesity-cluster-v1-openapi.yml
+  - name: View
+    description: An NFS/SMB/S3 file or object share carved out of a storage domain.
+    key_operations: [GetViews, CreateView]
+    spec: openapi/cohesity-cluster-v1-openapi.yml
+  - name: Alert
+    description: A raised condition, categorised and severity-graded; the event primitive of the platform.
+    key_operations: [GetAlerts, GetAlertById, GetAlertCategories, GetAlertTypes]
+    spec: openapi/cohesity-cluster-v1-openapi.yml
+  - name: NotificationRule
+    description: A subscription binding alert category/type/severity to delivery targets including webhooks.
+    key_operations: [GetNotificationRules, CreateNotificationRule, UpdateNotificationRule, DeleteNotificationRule]
+    spec: openapi/cohesity-cluster-v1-openapi.yml
+  - name: Tenant
+    description: A service-provider tenancy; the multi-tenancy discriminator carried on 47 operations.
+    spec: openapi/cohesity-cluster-v2-openapi.yml
+  - name: Cluster
+    description: A registered Cohesity cluster, the unit Helios federates.
+    spec: openapi/cohesity-cluster-v1-openapi.yml
+  - name: DrPlan
+    description: A Site Continuity disaster-recovery plan binding sites, apps and actions.
+    key_operations: [SCGetDrPlans, SCCreateDRPlan, SCUpdateDRPlanById, SCPerformActionOnDRPlan, SCInitiateHealthCheck]
+    spec: openapi/cohesity-site-continuity-openapi.yml
+  - name: Site
+    description: A Site Continuity source or target site.
+    key_operations: [SCGetSites, SCCreateSite]
+    spec: openapi/cohesity-site-continuity-openapi.yml
+  - name: App
+    description: An application grouping protected under a DR plan.
+    key_operations: [SCGetApps, SCCreateApp, SCGetVersionsForApp, SCGetSnapshotForAppId]
+    spec: openapi/cohesity-site-continuity-openapi.yml
+relationships:
+  - {from: Cluster, to: ProtectionSource, type: has_many, via: clusterId}
+  - {from: ProtectionSource, to: Object, type: has_many, via: parentId}
+  - {from: ProtectionGroup, to: Object, type: has_many, via: objectIds}
+  - {from: ProtectionGroup, to: ProtectionPolicy, type: belongs_to, via: policyId}
+  - {from: ProtectionGroup, to: ProtectionGroupRun, type: has_many, via: protectionGroupId}
+  - {from: ProtectionGroupRun, to: Snapshot, type: has_many, via: runId}
+  - {from: Recovery, to: Snapshot, type: has_many, via: snapshotId}
+  - {from: Recovery, to: Object, type: has_many, via: RecoveryObjectIdentifier.id}
+  - {from: StorageDomain, to: View, type: has_many, via: storageDomainId}
+  - {from: NotificationRule, to: Alert, type: has_many, via: 'categories + alertTypeList + severities (match, not FK)'}
+  - {from: Tenant, to: ProtectionSource, type: has_many, via: tenantId}
+  - {from: Tenant, to: ProtectionGroup, type: has_many, via: tenantIds}
+  - {from: DrPlan, to: Site, type: belongs_to, via: siteId}
+  - {from: DrPlan, to: App, type: has_many, via: appIds}
+polymorphism:
+  discriminator: environment
+  note: >-
+    The single largest structural fact about these contracts: nearly every
+    protection, registration and recovery request is a union keyed on an
+    `environment` value (kVMware, kAWS, kAzure, kO365, kSQL, kOracle, kCassandra,
+    kMongoDB, kHdfs, kHive, kHbase, kCouchbase, kPhysical, kNetapp, kIsilon and
+    more). The GUID-suffixed `Common*Params<uuid>` schemas are the generated
+    envelopes for those unions. An agent must select the environment-specific
+    parameter block, not fill a flat body.
+render: null
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

@@ -1,0 +1,53 @@
+# Cohesity
+
+> Cohesity is an enterprise data security and management company providing backup, disaster recovery, archive and cyber resilience across on-premises, cloud and SaaS workloads. Following the merger with Veritas, the combined company protects enterprise data while powering automation, orchestration and AI-driven recovery. The programmable surface is the Cohesity REST API in two concurrent generations (v1 and v2), exposed per-cluster and through the Helios SaaS control plane, plus a Helios Reporting service, a Site Continuity DR service, and a Model Context Protocol server for Gaia Data Insights.
+
+Provider record: https://apis.io/providers/cohesity/
+Repository: https://github.com/api-evangelist/cohesity
+
+## APIs
+- [Cohesity REST API v1 (cluster / Helios)](https://developer.cohesity.com/apidocs/versions/): 379 operations. Base `/irisservices/api/v1/public`. Protection sources, protection jobs, restore tasks, views, storage domains, alerts and notification rules.
+- [Cohesity REST API v2 (cluster / Helios)](https://developer.cohesity.com/apidocs/versions/): 263 operations. Base `/v2`. Protection groups, runs, policies, source registrations, recoveries, failover and data tiering.
+- [Helios Reporting service API](https://developer.cohesity.com/apidocs/helios-reporting): 20 operations. Base `https://helios.cohesity.com/heliosreporting/api/v1`. Report catalog, previews, schedules and exports.
+- [Site Continuity v2 service API](https://developer.cohesity.com/apidocs/site-continuity): 25 operations. Base `https://helios.cohesity.com/v2/mcm/site-continuity/v2`. Sites, apps, DR plans, actions and health checks.
+
+## Specs
+- openapi/cohesity-cluster-v1-openapi.yml — Swagger 2.0, harvested verbatim from https://developer.cohesity.com/apidocs/6.5.1_v1.yaml
+- openapi/cohesity-cluster-v2-openapi.yml — Swagger 2.0, harvested verbatim from https://developer.cohesity.com/apidocs/6.5.1_v2.yaml
+- openapi/cohesity-helios-reporting-openapi.yml — Swagger 2.0, harvested verbatim from https://developer.cohesity.com/apidocs/helios_reporting_swagger_v1.yaml
+- openapi/cohesity-site-continuity-openapi.yml — Swagger 2.0, harvested verbatim from https://developer.cohesity.com/apidocs/site_continuity2_api_spec.yaml
+
+## Agent surface
+- MCP: Cohesity Gaia MCP (preview) — remote, Streamable HTTP at `/mcp`, four tools (gaia_datasets, gaia_dataset_topics, gaia_ask, gaia_search), apiKey auth, GAIA_VIEW privilege. See mcp/cohesity-mcp.yml.
+- Agent skills: skills/_index.yml — protect a workload, recover and reverse, alert webhooks, Helios reporting.
+- No A2A agent card is published on any Cohesity host.
+- No idempotency mechanism exists on any of the 687 published operations.
+
+## Docs
+- [Developer Portal (current)](https://developers.cohesity.com/)
+- [Developer Portal (legacy, still serves the downloadable specs)](https://developer.cohesity.com/)
+- [Getting started + authorization](https://developers.cohesity.com/docs/getting-started)
+- [API version index](https://developer.cohesity.com/cohesity-versions.html)
+- [Product documentation](https://docs.cohesity.com/)
+- [Postman workspace](https://www.postman.com/cohesity/)
+- [Cohesity Cloud Services Postman collection](https://api.cohesity.com/)
+
+## Auth
+- API key in the `apiKey` header (Helios and cluster).
+- Cluster access token or session ID for on-prem.
+- Helios OAuth 2.0 / OIDC authorization code with PKCE — https://helios.cohesity.com/.well-known/openid-configuration
+- MFA is supported for interactive sign-in but Cohesity states it does not support automation.
+
+## Operations
+- [Status page (Atlassian Statuspage, machine-readable)](https://status.cohesity.com/api/v2/summary.json)
+- [Security advisories](https://github.com/cohesity/SecAdvisory)
+- [Trust center and certifications](https://www.cohesity.com/trust/)
+- [Support](https://www.cohesity.com/support/)
+
+## SDKs
+- [cohesity-sdk (PyPI)](https://pypi.org/project/cohesity-sdk/)
+- [cohesity-management-sdk (PyPI)](https://pypi.org/project/cohesity-management-sdk/)
+- [go-sdk](https://pkg.go.dev/github.com/cohesity/go-sdk)
+- [Cohesity.PowerShell (PowerShell Gallery)](https://www.powershellgallery.com/packages/Cohesity.PowerShell)
+- [cohesity.dataprotect (Ansible Galaxy)](https://galaxy.ansible.com/ui/repo/published/cohesity/dataprotect/)
+- [cohesity/cohesity (Terraform Registry)](https://registry.terraform.io/providers/cohesity/cohesity/latest)

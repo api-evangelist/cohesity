@@ -1,0 +1,92 @@
+generated: '2026-09-05'
+method: derived
+source: >-
+  openapi/cohesity-cluster-v1-openapi.yml (NotificationRule,
+  WebHookDeliveryTarget, DeliveryRuleProto_DeliveryTarget definitions and the
+  /public/alertNotificationRules operations)
+spec_type: Webhooks
+asyncapi_published: false
+asyncapi_note: >-
+  Cohesity publishes NO AsyncAPI document. /asyncapi.yaml and /asyncapi.json were
+  probed on developer.cohesity.com, developers.cohesity.com, docs.cohesity.com,
+  api.cohesity.com and helios.cohesity.com and the GitHub org was searched; none
+  exists. Nothing is fabricated here - what follows is the webhook surface that
+  is genuinely declared in the published cluster specification.
+model:
+  style: alert-rule-driven outbound HTTP callback
+  description: >-
+    Cohesity does not publish a topic/event catalog. It publishes an alert engine
+    plus a rule engine: a consumer creates a NotificationRule that matches alerts
+    by category, type and severity, and attaches delivery targets. One of those
+    target types is a webhook - an arbitrary external API URL Cohesity invokes
+    when a matching alert fires. The event catalog is therefore the ALERT
+    catalog, and subscription is a REST write, not a portal toggle.
+  subscription_is_an_api_call: true
+delivery_targets:
+  - type: webhook
+    schema: WebHookDeliveryTarget
+    fields:
+      - {name: externalApiUrl, type: string, description: The external API URL Cohesity invokes when a matching alert is raised.}
+      - {name: curlOptions, type: string, description: curl options used to invoke the external API URL.}
+    note: >-
+      The delivery mechanism is a server-side curl invocation with
+      caller-supplied options, not a signed webhook envelope. No signing secret,
+      no signature header, no delivery-id and no documented retry policy appear
+      anywhere in the specification - a consumer cannot verify that a callback
+      came from Cohesity.
+  - type: email
+    schema: EmailDeliveryTarget
+    fields: [emailAddress, locale, recipientType]
+  - type: snmp
+    field: snmpEnabled
+  - type: syslog
+    field: syslogEnabled
+operations:
+  - {operationId: GetNotificationRules, method: GET, path: /public/alertNotificationRules, spec: openapi/cohesity-cluster-v1-openapi.yml}
+  - {operationId: CreateNotificationRule, method: POST, path: /public/alertNotificationRules, spec: openapi/cohesity-cluster-v1-openapi.yml}
+  - {operationId: UpdateNotificationRule, method: PUT, path: /public/alertNotificationRules, spec: openapi/cohesity-cluster-v1-openapi.yml}
+  - {operationId: DeleteNotificationRule, method: DELETE, path: '/public/alertNotificationRules/{ruleId}', spec: openapi/cohesity-cluster-v1-openapi.yml}
+  - {operationId: GetAlertCategories, method: GET, path: /public/alertCategories, spec: openapi/cohesity-cluster-v1-openapi.yml}
+  - {operationId: GetAlertTypes, method: GET, path: /public/alertTypes, spec: openapi/cohesity-cluster-v1-openapi.yml}
+  - {operationId: GetAlerts, method: GET, path: /public/alerts, spec: openapi/cohesity-cluster-v1-openapi.yml}
+  - {operationId: GetAlertById, method: GET, path: '/public/alerts/{id}', spec: openapi/cohesity-cluster-v1-openapi.yml}
+  - {operationId: GetActiveAlertsStats, method: GET, path: /public/stats/alerts, spec: openapi/cohesity-cluster-v1-openapi.yml}
+event_categories:
+  source: NotificationRule.categories enum, openapi/cohesity-cluster-v1-openapi.yml
+  values:
+    - {id: kDisk, description: Alerts that are related to Disk.}
+    - {id: kNode, description: Alerts that are related to Node.}
+    - {id: kCluster, description: Alerts that are related to Cluster.}
+    - {id: kNodeHealth, description: Alerts that are related to Node Health.}
+    - {id: kClusterHealth, description: Alerts that are related to Cluster Health.}
+    - {id: kBackupRestore, description: Alerts that are related to Backup/Restore.}
+    - {id: kEncryption, description: Alerts that are related to Encryption.}
+    - {id: kArchivalRestore, description: Alerts that are related to Archival/Restore.}
+    - {id: kRemoteReplication, description: Alerts that are related to Remote Replication.}
+    - {id: kQuota, description: Alerts that are related to Quota.}
+    - {id: kLicense, description: Alerts that are related to License.}
+    - {id: kHeliosProActiveWellness, description: Alerts that are related to Helios ProActive Wellness.}
+    - {id: kHeliosAnalyticsJobs, description: Alerts that are related to Helios Analytics Jobs.}
+    - {id: kHeliosSignatureJobs, description: Alerts that are related to Helios Signature Jobs.}
+    - {id: kSecurity, description: Alerts that are related to Security.}
+    - {id: kAppsInfra, description: Alerts that are related to applications infra.}
+    - {id: kAntivirus, description: Alerts that are related to antivirus.}
+    - {id: kArchivalCopy, description: Alerts that are related to archival copies.}
+severities:
+  source: NotificationRule.severities enum
+  values: [kCritical, kWarning, kInfo]
+alert_types:
+  enumerated_in_spec: false
+  note: >-
+    Individual alert types are integers (alertTypeList) whose meanings are
+    resolved at runtime via GetAlertTypes; no static list is published, so none
+    is recorded here.
+gaps:
+  - No AsyncAPI document.
+  - No webhook payload schema is published - only the alert object returned by GetAlerts.
+  - No signature/HMAC verification mechanism.
+  - No documented retry or delivery-guarantee policy.
+  - No delivery log or replay endpoint.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

@@ -1,0 +1,164 @@
+generated: '2026-09-05'
+method: derived
+source: >-
+  openapi/*.yml (parameters, responses, securityDefinitions) plus
+  https://developers.cohesity.com/docs/getting-started and
+  https://developer.cohesity.com/docs/whats-new-65
+authentication:
+  style: api-key-header
+  header: apiKey
+  alternatives: [cluster access token, cluster session id, Helios OAuth 2.0 authorization code + PKCE]
+  detail: authentication/cohesity-authentication.yml
+idempotency:
+  supported: false
+  coverage: none
+  header: null
+  scope: []
+  retention: null
+  note: >-
+    No idempotency mechanism exists anywhere in Cohesity's published surface. All
+    687 operations across the four published specs were scanned for an
+    idempotency key parameter or header and none was found, and no Cohesity docs
+    page documents replay protection. This matters more than usual for this
+    provider: the write surface includes recovery, failover and protection-source
+    deletion, where a retried request is a re-run of a destructive or expensive
+    operation. An agent must treat every Cohesity write as non-replay-safe and
+    reconcile by polling the run/recovery object rather than by retrying.
+reversibility:
+  grade: documented
+  window_stated: false
+  note: >-
+    Cohesity exposes a genuine reversal surface - cancel, tear-down and revert
+    operations for the long-running actions an agent is most likely to trigger -
+    but no published document states a time window inside which any of them
+    works, so this is graded `documented` rather than `verified`. The practical
+    window is "while the run is still in progress", which the API implies but
+    does not state.
+  operations:
+    - action: Start a recovery
+      forward: CreateRecovery
+      reversal: CancelRecoveryById
+      spec: openapi/cohesity-cluster-v2-openapi.yml
+      window: null
+      window_note: In-flight only; a completed recovery cannot be cancelled.
+    - action: Recovery already applied to a target
+      forward: CreateRecovery
+      reversal: TearDownRecoveryById
+      spec: openapi/cohesity-cluster-v2-openapi.yml
+      window: null
+      window_note: Tears down the resources a completed recovery created; no window published.
+    - action: Run a protection group
+      forward: CreateProtectionGroupRun
+      reversal: CancelProtectionGroupRun
+      spec: openapi/cohesity-cluster-v2-openapi.yml
+      window: null
+    - action: Run object protection
+      forward: null
+      reversal: CancelObjectRuns
+      spec: openapi/cohesity-cluster-v2-openapi.yml
+      window: null
+    - action: Fail over a protected object
+      forward: null
+      reversal: CancelFailover
+      spec: openapi/cohesity-cluster-v2-openapi.yml
+      window: null
+    - action: Fail over a view
+      forward: null
+      reversal: CancelViewFailover
+      spec: openapi/cohesity-cluster-v2-openapi.yml
+      window: null
+    - action: Apply a patch
+      forward: null
+      reversal: RevertPatches
+      spec: openapi/cohesity-cluster-v2-openapi.yml
+      window: null
+    - action: Start a restore task (v1)
+      forward: CreateRecoverTask
+      reversal: CancelRestoreTask
+      spec: openapi/cohesity-cluster-v1-openapi.yml
+      window: null
+    - action: Run a protection job (v1)
+      forward: null
+      reversal: CancelProtectionJobRun
+      spec: openapi/cohesity-cluster-v1-openapi.yml
+      window: null
+  not_reversible:
+    - {operation: DeleteProtectionSourceRegistration, spec: openapi/cohesity-cluster-v2-openapi.yml, note: No undo operation is published; re-registration is a fresh create.}
+    - {operation: DeleteNotificationRule, spec: openapi/cohesity-cluster-v1-openapi.yml, note: No undo operation is published.}
+dry_run_mode:
+  supported: false
+  note: >-
+    No published operation accepts a dry-run/preview/validate-only flag. The
+    nearest published rehearsal is the Site Continuity health check
+    (SCInitiateHealthCheck), which validates a DR plan without executing it -
+    that is DR-plan-specific, not a general dry-run contract.
+pagination:
+  styles:
+    - style: opaque-cookie
+      params: [paginationCookie, cookie]
+      applies: v1 and v2 list operations
+      note: >-
+        The dominant style. The server returns an opaque continuation cookie the
+        client echoes back; there is no documented total count.
+    - style: count-and-offset
+      params: [maxCount, pageCount, count, startIndex, startOffset]
+      applies: assorted v1 list operations
+    - style: time-window
+      params: [startTimeUsecs, endTimeUsecs, fromTimeUsecs, toTimeUsecs, createdAfterUsecs, createdBeforeUsecs]
+      note: >-
+        Time filters are MICROSECONDS since epoch throughout (`*Usecs`), not
+        milliseconds or seconds. A client that passes milliseconds gets a silently
+        empty result rather than an error.
+  response_fields: []
+  response_note: >-
+    Pagination style is not uniform and no single response envelope carries the
+    continuation token; it is per-schema.
+filtering:
+  common_params: [ids, names, tenantIds, includeTenants, allUnderHierarchy, environments, statuses]
+  note: >-
+    `tenantIds`, `includeTenants` and `allUnderHierarchy` are the multi-tenancy
+    triad and appear on 47/24/28 operations respectively. An agent operating in a
+    service-provider tenancy must set them deliberately - the defaults scope to
+    the calling tenant only.
+field_expansion:
+  supported: partial
+  note: >-
+    No generic expand/fields syntax. Individual operations take boolean include
+    flags (e.g. includeLastRunInfo, includeTenants, includeVMFolders).
+versioning:
+  scheme: uri-path
+  versions: [v1, v2]
+  v1_base: /irisservices/api/v1/public
+  v2_base: /v2
+  current_cluster_release: '7.1'
+  note: >-
+    Two concurrent generations, not a migration. v1 (`/irisservices/api/v1/public`)
+    and v2 (`/v2`) are both live, are documented separately per cluster release,
+    and use incompatible error envelopes. Release versions carry their own docs
+    sets (6.5.1, 6.6.0x, 6.8.1, 7.0, 7.1).
+  docs: https://developer.cohesity.com/cohesity-versions.html
+request_tracing:
+  request_id_header: null
+  note: No request-id or correlation-id header is documented or declared in any spec.
+error_envelope:
+  format: vendor-envelope
+  detail: errors/cohesity-problem-types.yml
+rate_limit_signaling:
+  headers: []
+  status_on_exhaustion: null
+  detail: rate-limits/cohesity-rate-limits.yml
+  note: >-
+    No rate-limit response headers are declared in any published spec or docs
+    page. The only rate limit Cohesity publishes anywhere is the Power Platform
+    connector's 100 calls / 60 seconds per connection.
+event_surface:
+  detail: asyncapi/cohesity-webhooks.yml
+cross_links:
+  errors: errors/cohesity-problem-types.yml
+  lifecycle: lifecycle/cohesity-lifecycle.yml
+  authentication: authentication/cohesity-authentication.yml
+  scopes: scopes/cohesity-scopes.yml
+  rate_limits: rate-limits/cohesity-rate-limits.yml
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

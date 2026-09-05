@@ -1,17 +1,17 @@
-generated: '2026-07-11'
+generated: '2026-09-05'
 method: probed
 source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
 hosts:
 - host: www.cohesity.com
   https: true
   tls_version: TLSv1.3
-  cert_expires: Aug 20 09:38:01 2026 GMT
+  cert_expires: Oct 29 09:32:33 2026 GMT
   hsts: true
   hsts_max_age: 31536000
 - host: developer.cohesity.com
   https: true
   tls_version: TLSv1.3
-  cert_expires: Sep 19 18:23:48 2026 GMT
+  cert_expires: Nov 19 22:28:18 2026 GMT
   hsts: true
   hsts_max_age: 31556952
 - host: helios.cohesity.com
@@ -24,12 +24,12 @@ domains:
 - domain: cohesity.com
   dnssec: false
   caa:
-  - 0 issuewild "letsencrypt.org"
   - 0 issuewild "pki.goog"
   - 0 issue "amazontrust.com"
   - 0 issue "digicert.com"
   - 0 issue "godaddy.com"
   - 0 issue "letsencrypt.org"
+  - 0 issue "pki.goog"
   spf: true
   dmarc: true
   dmarc_policy: reject

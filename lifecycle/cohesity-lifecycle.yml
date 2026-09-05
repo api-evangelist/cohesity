@@ -1,0 +1,79 @@
+generated: '2026-09-05'
+method: searched
+source: >-
+  https://developer.cohesity.com/cohesity-versions.html,
+  https://developer.cohesity.com/docs/whats-new-65,
+  https://status.cohesity.com/, https://www.cohesity.com/support/
+versioning:
+  scheme: uri-path
+  generations: [v1, v2]
+  current: v2
+  concurrent: true
+  cluster_releases: ['7.1', '7.0', '6.8.1', '6.6.0x', '6.5.1']
+  docs: https://developer.cohesity.com/cohesity-versions.html
+  note: >-
+    Versioning is two-dimensional: an API generation (v1 / v2) crossed with a
+    cluster software release (6.5.1 through 7.1). Each pairing has its own docs
+    set and its own "What's New" changelog.
+deprecation:
+  policy_url: https://developer.cohesity.com/docs/whats-new-65
+  policy_published: true
+  sunset_header: false
+  deprecation_header: false
+  mechanism: >-
+    Deprecations are announced per release in the "What's New" changelog under an
+    explicit "Deprecated APIs" table listing resource, method and path. There is
+    no RFC 8594 Sunset/Deprecation header support and no `deprecated: true` flag
+    on any operation in the published specs (all 687 were checked - zero carry the
+    flag), so a deprecation is discoverable only by reading the release notes.
+  documented_deprecations_65:
+    - {method: GET, path: /public/clusters/gflag}
+    - {method: PUT, path: /public/clusters/gflag}
+    - {method: POST, path: /public/export/config}
+    - {method: PUT, path: /public/import/config}
+    - {method: GET, path: /public/network/interfaces}
+  documentation_lifecycle:
+    - >-
+      developer.cohesity.com/apidocs/* now carries a banner reading "This API
+      documentation is unmaintained, please look at specific cluster's RestAPI
+      docs page." - the whole legacy portal is self-declared unmaintained.
+    - >-
+      developers.cohesity.com is the current developer portal; developer.cohesity.com
+      is the retained legacy one that still serves the only downloadable specs.
+deprecated_operations: []
+deprecated_operations_note: >-
+  No operation in any published Cohesity specification carries `deprecated: true`.
+  The five deprecations above are documented in prose only and could not be
+  bound to an operationId in the harvested 6.5.1 specs.
+sla:
+  url: null
+  uptime_target: null
+  note: >-
+    No public SLA or uptime target was found. Cohesity is an enterprise
+    contract-negotiated vendor; availability commitments sit in the subscription
+    agreement at https://www.cohesity.com/agreements/, not on a public page.
+status_page:
+  url: https://status.cohesity.com/
+  name: Cohesity Helios Status
+  provider: Atlassian Statuspage
+  api: https://status.cohesity.com/api/v2/summary.json
+  api_status: 200
+  components_tracked: true
+  history: true
+  note: >-
+    Machine-readable. The Statuspage v2 API answers unauthenticated, so an agent
+    can poll component health (e.g. "Cohesity Cloud Services Portal") before
+    acting.
+support:
+  url: https://www.cohesity.com/support/
+  knowledge_base: https://www.cohesity.com/support/searchkb/
+  incident_response: https://www.cohesity.com/support/cyber-events-response-team/
+  email: support@cohesity.com
+  sdk_contact: cohesity-api-sdks@cohesity.com
+security_advisories:
+  url: https://github.com/cohesity/SecAdvisory
+  format: markdown per advisory in a public GitHub repository
+  identifiers: [CVE, COH-YYYY-NNNN]
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

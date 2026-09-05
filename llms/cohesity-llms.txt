@@ -2,6 +2,8 @@
 
 > Official Cohesity Developer Portal with APIs, SDKs, guides, and documentation to build, automate, and integrate with Cohesity products.
 
+Append .md to any documentation page URL to get its markdown version.
+
 ## Guides
 - [Getting Started with Cohesity](https://developers.cohesity.com/docs/getting-started.md): This document provides an API list for interfacing with the Cohesity Cluster, including information on authorization methods and example workflows for getting views, adding a protection job, and retrieving object information.
 

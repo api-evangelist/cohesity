@@ -1,0 +1,30 @@
+generated: '2026-09-05'
+method: generated
+source: >-
+  Authored from the four Cohesity specifications harvested into openapi/ on
+  2026-09-05. Every operationId referenced in every skill was verified to exist
+  verbatim in the named spec file.
+note: >-
+  Cohesity publishes no AGENTS.md and no first-party agent skills; these were
+  searched for on developer.cohesity.com, developers.cohesity.com,
+  docs.cohesity.com and the github.com/cohesity organization and none exist.
+skills:
+  - file: cohesity-protect-a-workload.md
+    name: Protect a workload with Cohesity
+    api: openapi/cohesity-cluster-v2-openapi.yml
+    operations: [GetProtectionSources, GetSourceRegistrations, GetProtectedObjectsOfAnyType, GetProtectionPolicies, CreateProtectionPolicy, CreateProtectionGroup, GetProtectionGroups, CreateProtectionGroupRun, GetProtectionGroupRuns, CancelProtectionGroupRun]
+  - file: cohesity-recover-and-reverse.md
+    name: Recover data with Cohesity and reverse it if wrong
+    api: openapi/cohesity-cluster-v2-openapi.yml
+    operations: [GetProtectedObjectsOfAnyType, GetObjectSnapshots, GetPITRangesForProtectedObject, CreateRecovery, GetRecoveries, GetRecoveryById, CancelRecoveryById, TearDownRecoveryById, CreateDownloadFilesAndFoldersRecovery]
+  - file: cohesity-alert-webhooks.md
+    name: Subscribe to Cohesity alerts via webhook
+    api: openapi/cohesity-cluster-v1-openapi.yml
+    operations: [GetAlertCategories, GetAlertTypes, GetAlerts, GetAlertById, GetNotificationRules, CreateNotificationRule, UpdateNotificationRule, DeleteNotificationRule, GetActiveAlertsStats]
+  - file: cohesity-helios-reporting.md
+    name: Pull Cohesity Helios reports
+    api: openapi/cohesity-helios-reporting-openapi.yml
+    operations: [GetReports, GetReportById, GetReportType, GetReportPreview, GetComponents, GetComponentPreview, GetSchedules, CreateSchedule, UpdateSchedule, RunScheduleOnDemand, ExportReport, GetTasks, GetTaskById, GetArtifactForTask]
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

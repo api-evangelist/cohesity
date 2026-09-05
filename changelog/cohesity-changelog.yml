@@ -1,0 +1,66 @@
+generated: '2026-09-05'
+method: searched
+source: https://developer.cohesity.com/cohesity-versions.html
+docs: https://developer.cohesity.com/docs/whats-new-65
+note: >-
+  Cohesity publishes a per-release, per-generation API changelog rather than a
+  dated running feed. Each cluster release has a separate "What's New" page for
+  the v1 and the v2 API, each listing newly added, modified and deprecated
+  operations as tables of resource / method / path. The pages are NOT dated -
+  they are keyed to the software release, so no ISO date is recorded below for
+  any entry; asserting one would be an invention.
+scheme: release-keyed (cluster release x API generation)
+current_version: '7.1'
+dated: false
+entries:
+  - version: '7.1'
+    api_generations: [v1, v2]
+    date: null
+    urls:
+      - https://developer.cohesity.com/docs/whats-new-71-v1
+      - https://developer.cohesity.com/docs/whats-new-71-v2
+  - version: '7.0'
+    api_generations: [v1, v2]
+    date: null
+    urls:
+      - https://developer.cohesity.com/docs/whats-new-70-v1
+      - https://developer.cohesity.com/docs/whats-new-70-v2
+  - version: '6.8.1'
+    api_generations: [v1, v2]
+    date: null
+    urls:
+      - https://developer.cohesity.com/docs/whats-new-681-v1
+      - https://developer.cohesity.com/docs/whats-new-681-v2
+  - version: '6.6.0x'
+    api_generations: [v1, v2]
+    date: null
+    urls:
+      - https://developer.cohesity.com/docs/whats-new-660x-v1
+      - https://developer.cohesity.com/docs/whats-new-660x-v2
+  - version: '6.5.1'
+    api_generations: [v1, v2]
+    date: null
+    url: https://developer.cohesity.com/docs/whats-new-65
+    breaking: false
+    additions:
+      - 'GET /public/cluster/backgroundActivitySchedule - get the MapReduce service throttling schedule'
+      - 'PUT /public/cluster/backgroundActivitySchedule - update the MapReduce service throttling schedule'
+      - 'GET /public/interface - show network interfaces'
+      - 'DELETE /public/ip, PUT /public/ip - manage cluster IP settings'
+      - 'GET /public/licenseUsage - current license usage of a cluster'
+      - 'POST /public/protectionSources/diagnostics/{id} - collect protection-source diagnostics'
+      - 'GET /public/protectionSources/exchangeDagHosts'
+      - 'GET /public/restore/office365/onedrive/documents - list OneDrive files and folders'
+      - 'PUT /public/tags/apply, PUT /public/tags/remove - apply or remove tags on existing objects'
+    deprecations:
+      - 'GET /public/clusters/gflag'
+      - 'PUT /public/clusters/gflag'
+      - 'POST /public/export/config'
+      - 'PUT /public/import/config'
+      - 'GET /public/network/interfaces'
+related:
+  sdk_changelog: https://github.com/cohesity/community-automation-samples/blob/master/CHANGELOG.md
+  security_advisories: https://github.com/cohesity/SecAdvisory
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

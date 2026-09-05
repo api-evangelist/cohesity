@@ -3,100 +3,61 @@ specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
 provider: Cohesity
 providerId: cohesity
+generated: '2026-09-05'
+method: searched
+source: >-
+  https://developers.cohesity.com/docs/getting-started,
+  https://developer.cohesity.com/apidocs/versions/, openapi/*.yml,
+  https://learn.microsoft.com/en-us/connectors/cohesitygaiamcp/
 created: '2026-05-04'
-# Provenance stamped 2026-08-11: this artifact was written by the API Evangelist
-# bulk sweep dated 2026-05-04, not harvested from the provider. See roadmap#35.
-method: generated
-modified: '2026-05-04'
-tags:
-  - Automation
-  - Backup
-  - Cyber Resilience
-  - Data Management
-  - Data Protection
-  - Data Security
-  - DataProtect
-  - Disaster Recovery
-  - Helios
-  - Orchestration
-  - Rate Limiting
-  - Quotas
-  - Throttling
-description: Machine-readable rate limit definitions for the Cohesity API surface. Captures per-tier quotas,
-  burst behavior, response signaling, and recovery semantics. Defaults are scaffold values to be replaced
-  with published provider limits.
-headers:
-  limit: X-RateLimit-Limit
-  remaining: X-RateLimit-Remaining
-  reset: X-RateLimit-Reset
-  retryAfter: Retry-After
-  policy: RateLimit-Policy
+modified: '2026-09-05'
+limit_count: 1
+headers_published: false
+description: >-
+  Cohesity publishes essentially no API rate limits. This file replaces a
+  2026-05-04 bulk-sweep scaffold that invented free/professional/enterprise
+  tiers at 10/100/1000 requests per minute plus monthly quotas and a full
+  X-RateLimit-* header set; none of that is published by Cohesity and it has all
+  been removed. The four published specifications were searched for rate-limit
+  response headers, 429 responses and throttling parameters: there are none. The
+  only quantitative limit Cohesity publishes anywhere applies to the Microsoft
+  Power Platform connector, not to the REST API itself.
+headers: {}
+headers_note: >-
+  No X-RateLimit-*, RateLimit-* or Retry-After header is declared in any
+  published Cohesity specification or documented on any Cohesity docs page. An
+  agent gets no runtime budget signal from this API.
 responseCodes:
-  throttled: 429
-  quotaExceeded: 429
-  serviceUnavailable: 503
+  throttled: null
+  note: >-
+    No operation in any of the four published specs declares a 429 response. All
+    687 operations declare only a `default` error response.
 limits:
-  - tier: free
-    name: Free Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 10
-    burst: 20
-    timeFrame: minute
-    applies:
-      - Cohesity Helios REST API
-      - Cohesity DataProtect REST API
-  - tier: free
-    name: Free Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 1000
-    timeFrame: month
-    applies:
-      - Cohesity Helios REST API
-      - Cohesity DataProtect REST API
-  - tier: professional
-    name: Professional Tier Default
-    scope: api-key
-    metric: requests_per_minute
+  - name: Cohesity Gaia MCP / Gaia connector - Power Platform connection limit
+    scope: per-connection
     limit: 100
-    burst: 200
-    timeFrame: minute
-    applies:
-      - Cohesity Helios REST API
-      - Cohesity DataProtect REST API
-  - tier: professional
-    name: Professional Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 100000
-    timeFrame: month
-    applies:
-      - Cohesity Helios REST API
-      - Cohesity DataProtect REST API
-  - tier: enterprise
-    name: Enterprise Negotiated Limit
-    scope: contract
-    metric: requests_per_minute
-    limit: 1000
-    burst: 5000
-    timeFrame: minute
-    applies:
-      - Cohesity Helios REST API
-      - Cohesity DataProtect REST API
-policies:
-  - name: Backoff Strategy
-    description: Clients should implement exponential backoff with jitter, honoring the Retry-After header
-      when present.
-  - name: Burst Handling
-    description: Short bursts above the steady-state limit are tolerated up to the documented burst ceiling
-      before throttling engages.
-  - name: Quota Reset
-    description: Monthly quotas reset at the start of each calendar month in UTC. Per-minute and per-second
-      windows reset on a sliding-window basis.
-  - name: Fair Use
-    description: Even on uncapped enterprise tiers, sustained usage that materially impacts shared infrastructure
-      may be subject to fair-use throttling.
+    window: 60s
+    metric: calls
+    applies: [Cohesity Gaia MCP, Cohesity Gaia]
+    source: https://learn.microsoft.com/en-us/connectors/cohesitygaiamcp/
+    note: >-
+      This is the Microsoft Power Platform connector throttle, published by
+      Microsoft for the connector wrapper. It is the only numeric API rate limit
+      associated with Cohesity anywhere in public. It does NOT describe the
+      Cohesity REST API or the raw MCP server.
+platform_throttling:
+  note: >-
+    Cohesity does publish resource throttling that is often mistaken for API rate
+    limiting but is not: `rateLimitBytesPerSec` on replication/archival transfers
+    and the MapReduce background-activity throttling schedule
+    (/public/cluster/backgroundActivitySchedule). These govern data movement
+    bandwidth, not request rates, and are recorded here only so they are not
+    miscounted as API limits.
+policies: []
+evidence:
+  - {url: 'https://developers.cohesity.com/docs/getting-started', status: 200, finding: no rate limits documented}
+  - {url: 'https://developer.cohesity.com/apidocs/versions/', status: 200, finding: no rate limits documented}
+  - {url: 'https://learn.microsoft.com/en-us/connectors/cohesitygaiamcp/', status: 200, finding: '100 calls / 60 seconds per connection'}
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com

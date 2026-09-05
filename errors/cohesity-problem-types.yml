@@ -1,0 +1,90 @@
+generated: '2026-09-05'
+method: derived
+source: >-
+  openapi/cohesity-cluster-v1-openapi.yml, openapi/cohesity-cluster-v2-openapi.yml,
+  openapi/cohesity-helios-reporting-openapi.yml,
+  openapi/cohesity-site-continuity-openapi.yml (default responses + Error
+  definitions), plus a live unauthenticated request to helios.cohesity.com
+format: vendor-envelope
+rfc9457: false
+note: >-
+  Cohesity does NOT use RFC 9457 problem+json. Every operation in every published
+  spec declares exactly one error response - the `default` response - carrying a
+  vendor error envelope. Enumerated HTTP status codes are almost entirely absent:
+  across 687 operations only three name a 404 explicitly, so a client cannot tell
+  from the contract which statuses an operation can return. That is the single
+  largest error-semantics gap in this provider's contracts and is recorded here
+  rather than filled in.
+envelope:
+  media_type: application/json
+  variants:
+    - name: Error
+      spec: openapi/cohesity-cluster-v1-openapi.yml
+      fields:
+        - {name: errorCode, type: integer, description: Specifies the error code.}
+        - {name: errorMessage, type: string, description: Specifies the error message.}
+    - name: Error
+      spec: openapi/cohesity-cluster-v2-openapi.yml
+      fields:
+        - {name: errorCode, type: string, description: Specifies the error code.}
+        - {name: message, type: string, description: Specifies the error message.}
+      note: >-
+        The v2 envelope renames `errorMessage` to `message` and changes
+        `errorCode` from integer to string. A client written against v1 will not
+        parse a v2 error, and vice versa.
+    - name: Error
+      spec: openapi/cohesity-helios-reporting-openapi.yml
+      fields:
+        - {name: errorCode, type: integer}
+        - {name: errorMessage, type: string}
+    - name: SCError
+      spec: openapi/cohesity-site-continuity-openapi.yml
+      fields:
+        - {name: errorCode, type: SCErrorCode, description: Enumerated string error code.}
+        - {name: errorMessage, type: string}
+  observed:
+    example: '{"errorCode":"KStatusUnauthorized","message":"Authentication failed: Unauthorized access."}'
+    source: 'POST https://helios.cohesity.com/v2/... (unauthenticated), 2026-09-05, HTTP 401'
+    note: >-
+      Confirms the v2 string-code envelope in production and shows the `kStatus*`
+      code family that the specs do not enumerate.
+problems:
+  - status: default
+    title: Vendor error envelope
+    schema: Error
+    applies_to: all 687 published operations
+    source_operation: 'openapi/cohesity-cluster-v1-openapi.yml, openapi/cohesity-cluster-v2-openapi.yml, openapi/cohesity-helios-reporting-openapi.yml, openapi/cohesity-site-continuity-openapi.yml'
+  - status: 401
+    code: KStatusUnauthorized
+    title: 'Authentication failed: Unauthorized access.'
+    remediation: >-
+      Supply a valid Helios or cluster API key in the `apiKey` header, or an
+      access token / session ID for an on-prem cluster.
+    evidence: observed live on helios.cohesity.com 2026-09-05
+  - status: 404
+    title: Resource not found
+    source_operation: openapi/cohesity-cluster-v1-openapi.yml
+    note: One of only three explicitly enumerated non-2xx statuses in the whole published surface.
+error_codes:
+  - registry: SCErrorCode
+    spec: openapi/cohesity-site-continuity-openapi.yml
+    description: Specifies all the error codes that are returned by API server.
+    values: [kNoError, kValidationError, kInternalError]
+  - registry: kStatus* (Helios/Iris)
+    spec: null
+    description: >-
+      Observed in production responses (e.g. KStatusUnauthorized) but not
+      enumerated in any published Cohesity specification or docs page. No code
+      list is asserted here because none is published.
+gaps:
+  - >-
+    No 4xx/5xx responses are enumerated per operation - only a `default` catch-all.
+  - >-
+    No published error-code reference page was found on developer.cohesity.com,
+    developers.cohesity.com or docs.cohesity.com.
+  - >-
+    The v1 and v2 envelopes are structurally incompatible (errorMessage/integer vs
+    message/string) and no document states the difference.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

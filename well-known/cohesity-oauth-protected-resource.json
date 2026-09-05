@@ -1,0 +1,19 @@
+{
+    "authorization_servers": [
+        "https://helios.cohesity.com"
+    ],
+    "bearer_methods_supported": [
+        "header"
+    ],
+    "jwks_uri": "https://helios.cohesity.com/oauth2/jwks.json",
+    "resource": "https://helios.cohesity.com",
+    "resource_name": "Cohesity Data Cloud",
+    "scopes_supported": [
+        "openid",
+        "email",
+        "profile",
+        "cohesity_gaia_viewer",
+        "cohesity_user",
+        "cohesity_viewer"
+    ]
+}

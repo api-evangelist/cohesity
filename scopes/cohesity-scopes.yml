@@ -1,0 +1,69 @@
+generated: '2026-09-05'
+method: probed
+source: https://helios.cohesity.com/.well-known/openid-configuration
+docs: https://developers.cohesity.com/docs/getting-started
+note: >-
+  The published Cohesity OpenAPI documents declare only an apiKey security scheme
+  and carry no oauth2 flows, so derive-oauth-scopes.py returned nothing. The scope
+  set below was read from the live OIDC / RFC 8414 discovery documents Helios
+  serves, which is where Cohesity's OAuth surface is actually described. Scope
+  descriptions are NOT published by Cohesity - the discovery documents list names
+  only - so no description is asserted for the three vendor-specific scopes.
+schemes:
+  - name: Helios OAuth 2.0 / OpenID Connect
+    source: well-known/cohesity-openid-configuration.json
+    issuer: https://helios.cohesity.com
+    flows:
+      - flow: authorizationCode
+        authorizationUrl: https://helios.cohesity.com/oauth2/authorize
+        tokenUrl: https://helios.cohesity.com/oauth2/token
+        pkce: [S256]
+    revocation_endpoint: https://helios.cohesity.com/oauth2/revoke
+    jwks_uri: https://helios.cohesity.com/oauth2/jwks.json
+    grant_types: [authorization_code, refresh_token]
+    token_endpoint_auth_methods: [client_secret_basic, client_secret_post, none]
+scopes:
+  - scope: openid
+    description: Standard OpenID Connect scope requesting an ID token.
+    flows: [authorizationCode]
+    standard: oidc-core
+    sources: [well-known/cohesity-openid-configuration.json]
+  - scope: email
+    description: Standard OpenID Connect scope releasing the email and email_verified claims.
+    flows: [authorizationCode]
+    standard: oidc-core
+    sources: [well-known/cohesity-openid-configuration.json]
+  - scope: profile
+    description: Standard OpenID Connect scope releasing the basic profile claims.
+    flows: [authorizationCode]
+    standard: oidc-core
+    sources: [well-known/cohesity-openid-configuration.json]
+  - scope: cohesity_user
+    description: null
+    flows: [authorizationCode]
+    sources: [well-known/cohesity-openid-configuration.json, well-known/cohesity-oauth-protected-resource.json]
+    note: Vendor-specific Cohesity scope; no description published in the discovery document or the docs.
+  - scope: cohesity_viewer
+    description: null
+    flows: [authorizationCode]
+    sources: [well-known/cohesity-openid-configuration.json, well-known/cohesity-oauth-protected-resource.json]
+    note: Vendor-specific Cohesity scope; no description published.
+  - scope: cohesity_gaia_viewer
+    description: null
+    flows: [authorizationCode]
+    sources: [well-known/cohesity-openid-configuration.json, well-known/cohesity-oauth-protected-resource.json]
+    note: >-
+      Vendor-specific Gaia read scope. The Cohesity Gaia MCP connector reference
+      separately states that all Gaia MCP tools require the GAIA_VIEW privilege;
+      no Cohesity document states the relationship between that privilege and this
+      scope, so none is asserted here.
+protected_resource:
+  resource: https://helios.cohesity.com
+  resource_name: Cohesity Data Cloud
+  authorization_servers: [https://helios.cohesity.com]
+  bearer_methods_supported: [header]
+  source: well-known/cohesity-oauth-protected-resource.json
+  spec: RFC 9728
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

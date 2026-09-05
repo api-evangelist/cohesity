@@ -1,0 +1,244 @@
+generated: '2026-09-05'
+method: probed
+source: live GET of the named /.well-known/ path list on every host in apis.yml plus api.cohesity.com
+note: Only helios.cohesity.com serves any /.well-known/ document. It serves three real JSON documents
+  - an OIDC discovery document, an RFC 8414 OAuth authorization-server metadata document, and an RFC 9728
+  OAuth protected-resource metadata document naming the resource 'Cohesity Data Cloud'. The same host
+  answers HTTP 200 with an Angular SPA shell for every other /.well-known/ path including a random negative-control
+  path, so those rows are recorded as misses, not hits. No security.txt, no api-catalog, no agent card
+  and no AAuth resource document was found on any Cohesity host.
+hosts:
+- host: https://cohesity.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/cohesity-negative-control-7f3ab91c.json
+    status: 404
+    note: negative control - correctly 404
+  hit_count: 0
+  path_echo_control: passed
+- host: https://www.cohesity.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/cohesity-negative-control-7f3ab91c.json
+    status: 404
+    note: negative control - correctly 404
+  hit_count: 0
+  path_echo_control: passed
+- host: https://developer.cohesity.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/cohesity-negative-control-7f3ab91c.json
+    status: 404
+    note: negative control - correctly 404
+  hit_count: 0
+  path_echo_control: passed
+- host: https://developers.cohesity.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/cohesity-negative-control-7f3ab91c.json
+    status: 404
+    note: negative control - correctly 404
+  hit_count: 0
+  path_echo_control: passed
+- host: https://docs.cohesity.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/cohesity-negative-control-7f3ab91c.json
+    status: 404
+    note: negative control - correctly 404
+  hit_count: 0
+  path_echo_control: passed
+- host: https://api.cohesity.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/cohesity-negative-control-7f3ab91c.json
+    status: 404
+    note: negative control - correctly 404
+  hit_count: 0
+  path_echo_control: passed
+- host: https://helios.cohesity.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    content_type: text/html
+    note: SPA catch-all shell, not a document - counted as a MISS
+  - path: /.well-known/openid-configuration
+    status: 200
+    content_type: application/json
+    file: cohesity-openid-configuration.json
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    content_type: application/json
+    file: cohesity-oauth-authorization-server.json
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    content_type: application/json
+    file: cohesity-oauth-protected-resource.json
+  - path: /.well-known/api-catalog
+    status: 200
+    content_type: text/html
+    note: SPA catch-all shell, not a document - counted as a MISS
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    content_type: text/html
+    note: SPA catch-all shell, not a document - counted as a MISS
+  - path: /.well-known/ucp.json
+    status: 200
+    content_type: text/html
+    note: SPA catch-all shell, not a document - counted as a MISS
+  - path: /.well-known/acp.json
+    status: 200
+    content_type: text/html
+    note: SPA catch-all shell, not a document - counted as a MISS
+  - path: /.well-known/aauth-resource.json
+    status: 200
+    content_type: text/html
+    note: SPA catch-all shell, not a document - counted as a MISS
+  - path: /.well-known/agent-card.json
+    status: 200
+    content_type: text/html
+    note: SPA catch-all shell, not a document - counted as a MISS
+  - path: /.well-known/agent.json
+    status: 200
+    content_type: text/html
+    note: SPA catch-all shell, not a document - counted as a MISS
+  - path: /.well-known/cohesity-negative-control-7f3ab91c.json
+    status: 200
+    content_type: text/html
+    note: negative control also answers 200 with the same Angular shell; only the three application/json
+      bodies above are real documents
+  hit_count: 3
+  path_echo_control: html-catch-all
+  soft_404_control:
+    path: /.well-known/cohesity-negative-control-7f3ab91c.json
+    status: 200
+    content_type: text/html
+    verdict: host answers 200 with an Angular SPA shell for any unmatched path; hits were accepted only
+      where the response was application/json AND carried the required fields (issuer + jwks_uri for the
+      OAuth/OIDC metadata, authorization_servers + resource for RFC 9728)
