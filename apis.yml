@@ -70,62 +70,6 @@ description: Cohesity is a data security and management company providing backup
   per-cluster (DataProtect/cluster API) and via the Helios global control plane, with versioned v1 and
   v2 endpoints, API-key authentication, and SDKs for Python, PowerShell, Ansible, Terraform, and ServiceNow.
 apis:
-- aid: cohesity:cohesity-accesstokens-api
-  name: Cohesity Access Tokens API
-  description: The AccessTokens API from Cohesity — 1 operation(s) for accesstokens.
-  humanURL: https://developer.cohesity.com/helios-api.html
-  baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
-  tags:
-  - AccessTokens
-  properties:
-  - type: OpenAPI
-    url: openapi/cohesity-accesstokens-api-openapi.yml
-  - type: Documentation
-    url: https://developer.cohesity.com/helios-api.html
-  - type: GettingStarted
-    url: https://developer.cohesity.com/docs/helios-getting-started
-  - type: APIReference
-    url: https://developer.cohesity.com/apidocs/versions/
-  - type: Postman
-    url: https://api.cohesity.com/
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/versions/
-  - type: APIReference
-    url: https://developers.cohesity.com/page/api-reference
-  - type: GettingStarted
-    url: https://developers.cohesity.com/docs/getting-started
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/helios-reporting
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/site-continuity
-- aid: cohesity:cohesity-activedirectory-api
-  name: Cohesity Active Directory API
-  description: The ActiveDirectory API from Cohesity — 13 operation(s) for activedirectory.
-  humanURL: https://developer.cohesity.com/helios-api.html
-  baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
-  tags:
-  - ActiveDirectory
-  properties:
-  - type: OpenAPI
-    url: openapi/cohesity-activedirectory-api-openapi.yml
-  - type: Documentation
-    url: https://developer.cohesity.com/helios-api.html
-  - type: GettingStarted
-    url: https://developer.cohesity.com/docs/helios-getting-started
-  - type: APIReference
-    url: https://developer.cohesity.com/apidocs/versions/
-  - type: Postman
-    url: https://api.cohesity.com/
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/versions/
-  - type: APIReference
-    url: https://developers.cohesity.com/page/api-reference
-  - type: GettingStarted
-    url: https://developers.cohesity.com/docs/getting-started
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/helios-reporting
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/site-continuity
 - aid: cohesity:cohesity-alerts-api
   name: Cohesity Alerts API
   description: The Alerts API from Cohesity — 8 operation(s) for alerts.
@@ -332,34 +276,6 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/cohesity-audit-api-openapi.yml
-  - type: Documentation
-    url: https://developer.cohesity.com/helios-api.html
-  - type: GettingStarted
-    url: https://developer.cohesity.com/docs/helios-getting-started
-  - type: APIReference
-    url: https://developer.cohesity.com/apidocs/versions/
-  - type: Postman
-    url: https://api.cohesity.com/
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/versions/
-  - type: APIReference
-    url: https://developers.cohesity.com/page/api-reference
-  - type: GettingStarted
-    url: https://developers.cohesity.com/docs/getting-started
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/helios-reporting
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/site-continuity
-- aid: cohesity:cohesity-auditlog-api
-  name: Cohesity Audit Log API
-  description: The AuditLog API from Cohesity — 4 operation(s) for auditlog.
-  humanURL: https://developer.cohesity.com/helios-api.html
-  baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
-  tags:
-  - AuditLog
-  properties:
-  - type: OpenAPI
-    url: openapi/cohesity-auditlog-api-openapi.yml
   - type: Documentation
     url: https://developer.cohesity.com/helios-api.html
   - type: GettingStarted
@@ -688,7 +604,8 @@ apis:
     url: https://developer.cohesity.com/apidocs/site-continuity
 - aid: cohesity:cohesity-dmaastenantcertificate-api
   name: Cohesity D Maa S Tenant Certificate API
-  description: The DMaaSTenantCertificate API from Cohesity — 2 operation(s) for dmaastenantcertificate.
+  description: >-
+    The DMaaSTenantCertificate API from Cohesity — 2 operation(s) for dmaastenantcertificate.
   humanURL: https://developer.cohesity.com/helios-api.html
   baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
   tags:
@@ -724,34 +641,6 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/cohesity-drplan-api-openapi.yml
-  - type: Documentation
-    url: https://developer.cohesity.com/helios-api.html
-  - type: GettingStarted
-    url: https://developer.cohesity.com/docs/helios-getting-started
-  - type: APIReference
-    url: https://developer.cohesity.com/apidocs/versions/
-  - type: Postman
-    url: https://api.cohesity.com/
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/versions/
-  - type: APIReference
-    url: https://developers.cohesity.com/page/api-reference
-  - type: GettingStarted
-    url: https://developers.cohesity.com/docs/getting-started
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/helios-reporting
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/site-continuity
-- aid: cohesity:cohesity-externalconnection-api
-  name: Cohesity External Connection API
-  description: The ExternalConnection API from Cohesity — 4 operation(s) for externalconnection.
-  humanURL: https://developer.cohesity.com/helios-api.html
-  baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
-  tags:
-  - ExternalConnection
-  properties:
-  - type: OpenAPI
-    url: openapi/cohesity-externalconnection-api-openapi.yml
   - type: Documentation
     url: https://developer.cohesity.com/helios-api.html
   - type: GettingStarted
@@ -882,34 +771,6 @@ apis:
     url: https://developer.cohesity.com/apidocs/helios-reporting
   - type: Documentation
     url: https://developer.cohesity.com/apidocs/site-continuity
-- aid: cohesity:cohesity-healthchecks-api
-  name: Cohesity Health Checks API
-  description: The HealthChecks API from Cohesity — 1 operation(s) for healthchecks.
-  humanURL: https://developer.cohesity.com/helios-api.html
-  baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
-  tags:
-  - HealthChecks
-  properties:
-  - type: OpenAPI
-    url: openapi/cohesity-healthchecks-api-openapi.yml
-  - type: Documentation
-    url: https://developer.cohesity.com/helios-api.html
-  - type: GettingStarted
-    url: https://developer.cohesity.com/docs/helios-getting-started
-  - type: APIReference
-    url: https://developer.cohesity.com/apidocs/versions/
-  - type: Postman
-    url: https://api.cohesity.com/
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/versions/
-  - type: APIReference
-    url: https://developers.cohesity.com/page/api-reference
-  - type: GettingStarted
-    url: https://developers.cohesity.com/docs/getting-started
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/helios-reporting
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/site-continuity
 - aid: cohesity:cohesity-heliosregistration-api
   name: Cohesity Helios Registration API
   description: The HeliosRegistration API from Cohesity — 3 operation(s) for heliosregistration.
@@ -976,34 +837,6 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/cohesity-interface-api-openapi.yml
-  - type: Documentation
-    url: https://developer.cohesity.com/helios-api.html
-  - type: GettingStarted
-    url: https://developer.cohesity.com/docs/helios-getting-started
-  - type: APIReference
-    url: https://developer.cohesity.com/apidocs/versions/
-  - type: Postman
-    url: https://api.cohesity.com/
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/versions/
-  - type: APIReference
-    url: https://developers.cohesity.com/page/api-reference
-  - type: GettingStarted
-    url: https://developers.cohesity.com/docs/getting-started
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/helios-reporting
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/site-continuity
-- aid: cohesity:cohesity-interfacegroup-api
-  name: Cohesity Interface Group API
-  description: The InterfaceGroup API from Cohesity — 2 operation(s) for interfacegroup.
-  humanURL: https://developer.cohesity.com/helios-api.html
-  baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
-  tags:
-  - InterfaceGroup
-  properties:
-  - type: OpenAPI
-    url: openapi/cohesity-interfacegroup-api-openapi.yml
   - type: Documentation
     url: https://developer.cohesity.com/helios-api.html
   - type: GettingStarted
@@ -1134,37 +967,10 @@ apis:
     url: https://developer.cohesity.com/apidocs/helios-reporting
   - type: Documentation
     url: https://developer.cohesity.com/apidocs/site-continuity
-- aid: cohesity:cohesity-kmsconfiguration-api
-  name: Cohesity Kms Configuration API
-  description: The KmsConfiguration API from Cohesity — 1 operation(s) for kmsconfiguration.
-  humanURL: https://developer.cohesity.com/helios-api.html
-  baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
-  tags:
-  - KmsConfiguration
-  properties:
-  - type: OpenAPI
-    url: openapi/cohesity-kmsconfiguration-api-openapi.yml
-  - type: Documentation
-    url: https://developer.cohesity.com/helios-api.html
-  - type: GettingStarted
-    url: https://developer.cohesity.com/docs/helios-getting-started
-  - type: APIReference
-    url: https://developer.cohesity.com/apidocs/versions/
-  - type: Postman
-    url: https://api.cohesity.com/
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/versions/
-  - type: APIReference
-    url: https://developers.cohesity.com/page/api-reference
-  - type: GettingStarted
-    url: https://developers.cohesity.com/docs/getting-started
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/helios-reporting
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/site-continuity
 - aid: cohesity:cohesity-kmsconfigurationresponse-api
   name: Cohesity Kms Configuration Response API
-  description: The KmsConfigurationResponse API from Cohesity — 1 operation(s) for kmsconfigurationresponse.
+  description: >-
+    The KmsConfigurationResponse API from Cohesity — 1 operation(s) for kmsconfigurationresponse.
   humanURL: https://developer.cohesity.com/helios-api.html
   baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
   tags:
@@ -1192,7 +998,8 @@ apis:
     url: https://developer.cohesity.com/apidocs/site-continuity
 - aid: cohesity:cohesity-kmsupdaterequestparameters-api
   name: Cohesity Kms Update Request Parameters API
-  description: The KmsUpdateRequestParameters API from Cohesity — 1 operation(s) for kmsupdaterequestparameters.
+  description: >-
+    The KmsUpdateRequestParameters API from Cohesity — 1 operation(s) for kmsupdaterequestparameters.
   humanURL: https://developer.cohesity.com/helios-api.html
   baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
   tags:
@@ -1360,8 +1167,9 @@ apis:
     url: https://developer.cohesity.com/apidocs/site-continuity
 - aid: cohesity:cohesity-network-information-service-nis-api
   name: Cohesity Network Information Service (NIS) API
-  description: The Network Information Service (NIS) API from Cohesity — 4 operation(s) for network information
-    service (nis).
+  description: >-
+    The Network Information Service (NIS) API from Cohesity — 4 operation(s) for network information service
+    (nis).
   humanURL: https://developer.cohesity.com/helios-api.html
   baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
   tags:
@@ -1397,34 +1205,6 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/cohesity-network-reset-api-openapi.yml
-  - type: Documentation
-    url: https://developer.cohesity.com/helios-api.html
-  - type: GettingStarted
-    url: https://developer.cohesity.com/docs/helios-getting-started
-  - type: APIReference
-    url: https://developer.cohesity.com/apidocs/versions/
-  - type: Postman
-    url: https://api.cohesity.com/
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/versions/
-  - type: APIReference
-    url: https://developers.cohesity.com/page/api-reference
-  - type: GettingStarted
-    url: https://developers.cohesity.com/docs/getting-started
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/helios-reporting
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/site-continuity
-- aid: cohesity:cohesity-nodegroups-api
-  name: Cohesity Node Groups API
-  description: The NodeGroups API from Cohesity — 2 operation(s) for nodegroups.
-  humanURL: https://developer.cohesity.com/helios-api.html
-  baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
-  tags:
-  - NodeGroups
-  properties:
-  - type: OpenAPI
-    url: openapi/cohesity-nodegroups-api-openapi.yml
   - type: Documentation
     url: https://developer.cohesity.com/helios-api.html
   - type: GettingStarted
@@ -1723,34 +1503,6 @@ apis:
     url: https://developer.cohesity.com/apidocs/helios-reporting
   - type: Documentation
     url: https://developer.cohesity.com/apidocs/site-continuity
-- aid: cohesity:cohesity-protectiongroups-api
-  name: Cohesity Protection Groups API
-  description: The ProtectionGroups API from Cohesity — 11 operation(s) for protectiongroups.
-  humanURL: https://developer.cohesity.com/helios-api.html
-  baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
-  tags:
-  - ProtectionGroups
-  properties:
-  - type: OpenAPI
-    url: openapi/cohesity-protectiongroups-api-openapi.yml
-  - type: Documentation
-    url: https://developer.cohesity.com/helios-api.html
-  - type: GettingStarted
-    url: https://developer.cohesity.com/docs/helios-getting-started
-  - type: APIReference
-    url: https://developer.cohesity.com/apidocs/versions/
-  - type: Postman
-    url: https://api.cohesity.com/
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/versions/
-  - type: APIReference
-    url: https://developers.cohesity.com/page/api-reference
-  - type: GettingStarted
-    url: https://developers.cohesity.com/docs/getting-started
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/helios-reporting
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/site-continuity
 - aid: cohesity:cohesity-protectionjobs-api
   name: Cohesity Protection Jobs API
   description: The ProtectionJobs API from Cohesity — 6 operation(s) for protectionjobs.
@@ -1789,34 +1541,6 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/cohesity-protectionobjects-api-openapi.yml
-  - type: Documentation
-    url: https://developer.cohesity.com/helios-api.html
-  - type: GettingStarted
-    url: https://developer.cohesity.com/docs/helios-getting-started
-  - type: APIReference
-    url: https://developer.cohesity.com/apidocs/versions/
-  - type: Postman
-    url: https://api.cohesity.com/
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/versions/
-  - type: APIReference
-    url: https://developers.cohesity.com/page/api-reference
-  - type: GettingStarted
-    url: https://developers.cohesity.com/docs/getting-started
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/helios-reporting
-  - type: Documentation
-    url: https://developer.cohesity.com/apidocs/site-continuity
-- aid: cohesity:cohesity-protectionpolicies-api
-  name: Cohesity Protection Policies API
-  description: The ProtectionPolicies API from Cohesity — 7 operation(s) for protectionpolicies.
-  humanURL: https://developer.cohesity.com/helios-api.html
-  baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
-  tags:
-  - ProtectionPolicies
-  properties:
-  - type: OpenAPI
-    url: openapi/cohesity-protectionpolicies-api-openapi.yml
   - type: Documentation
     url: https://developer.cohesity.com/helios-api.html
   - type: GettingStarted
@@ -2601,6 +2325,286 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/cohesity-vlan-api-openapi.yml
+  - type: Documentation
+    url: https://developer.cohesity.com/helios-api.html
+  - type: GettingStarted
+    url: https://developer.cohesity.com/docs/helios-getting-started
+  - type: APIReference
+    url: https://developer.cohesity.com/apidocs/versions/
+  - type: Postman
+    url: https://api.cohesity.com/
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/versions/
+  - type: APIReference
+    url: https://developers.cohesity.com/page/api-reference
+  - type: GettingStarted
+    url: https://developers.cohesity.com/docs/getting-started
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/helios-reporting
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/site-continuity
+- aid: cohesity:cohesity-access-tokens-api
+  name: Cohesity Access Tokens API
+  description: The Access Tokens API from Cohesity — 1 operation(s) for access tokens.
+  humanURL: https://developer.cohesity.com/helios-api.html
+  baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
+  tags:
+  - Access Tokens
+  properties:
+  - type: OpenAPI
+    url: openapi/cohesity-access-tokens-api-openapi.yml
+  - type: Documentation
+    url: https://developer.cohesity.com/helios-api.html
+  - type: GettingStarted
+    url: https://developer.cohesity.com/docs/helios-getting-started
+  - type: APIReference
+    url: https://developer.cohesity.com/apidocs/versions/
+  - type: Postman
+    url: https://api.cohesity.com/
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/versions/
+  - type: APIReference
+    url: https://developers.cohesity.com/page/api-reference
+  - type: GettingStarted
+    url: https://developers.cohesity.com/docs/getting-started
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/helios-reporting
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/site-continuity
+- aid: cohesity:cohesity-active-directory-api
+  name: Cohesity Active Directory API
+  description: The Active Directory API from Cohesity — 13 operation(s) for active directory.
+  humanURL: https://developer.cohesity.com/helios-api.html
+  baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
+  tags:
+  - Active Directory
+  properties:
+  - type: OpenAPI
+    url: openapi/cohesity-active-directory-api-openapi.yml
+  - type: Documentation
+    url: https://developer.cohesity.com/helios-api.html
+  - type: GettingStarted
+    url: https://developer.cohesity.com/docs/helios-getting-started
+  - type: APIReference
+    url: https://developer.cohesity.com/apidocs/versions/
+  - type: Postman
+    url: https://api.cohesity.com/
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/versions/
+  - type: APIReference
+    url: https://developers.cohesity.com/page/api-reference
+  - type: GettingStarted
+    url: https://developers.cohesity.com/docs/getting-started
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/helios-reporting
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/site-continuity
+- aid: cohesity:cohesity-audit-log-api
+  name: Cohesity Audit Log API
+  description: The Audit Log API from Cohesity — 4 operation(s) for audit log.
+  humanURL: https://developer.cohesity.com/helios-api.html
+  baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
+  tags:
+  - Audit Log
+  properties:
+  - type: OpenAPI
+    url: openapi/cohesity-audit-log-api-openapi.yml
+  - type: Documentation
+    url: https://developer.cohesity.com/helios-api.html
+  - type: GettingStarted
+    url: https://developer.cohesity.com/docs/helios-getting-started
+  - type: APIReference
+    url: https://developer.cohesity.com/apidocs/versions/
+  - type: Postman
+    url: https://api.cohesity.com/
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/versions/
+  - type: APIReference
+    url: https://developers.cohesity.com/page/api-reference
+  - type: GettingStarted
+    url: https://developers.cohesity.com/docs/getting-started
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/helios-reporting
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/site-continuity
+- aid: cohesity:cohesity-external-connection-api
+  name: Cohesity External Connection API
+  description: The External Connection API from Cohesity — 4 operation(s) for external connection.
+  humanURL: https://developer.cohesity.com/helios-api.html
+  baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
+  tags:
+  - External Connection
+  properties:
+  - type: OpenAPI
+    url: openapi/cohesity-external-connection-api-openapi.yml
+  - type: Documentation
+    url: https://developer.cohesity.com/helios-api.html
+  - type: GettingStarted
+    url: https://developer.cohesity.com/docs/helios-getting-started
+  - type: APIReference
+    url: https://developer.cohesity.com/apidocs/versions/
+  - type: Postman
+    url: https://api.cohesity.com/
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/versions/
+  - type: APIReference
+    url: https://developers.cohesity.com/page/api-reference
+  - type: GettingStarted
+    url: https://developers.cohesity.com/docs/getting-started
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/helios-reporting
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/site-continuity
+- aid: cohesity:cohesity-health-checks-api
+  name: Cohesity Health Checks API
+  description: The Health Checks API from Cohesity — 1 operation(s) for health checks.
+  humanURL: https://developer.cohesity.com/helios-api.html
+  baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
+  tags:
+  - Health Checks
+  properties:
+  - type: OpenAPI
+    url: openapi/cohesity-health-checks-api-openapi.yml
+  - type: Documentation
+    url: https://developer.cohesity.com/helios-api.html
+  - type: GettingStarted
+    url: https://developer.cohesity.com/docs/helios-getting-started
+  - type: APIReference
+    url: https://developer.cohesity.com/apidocs/versions/
+  - type: Postman
+    url: https://api.cohesity.com/
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/versions/
+  - type: APIReference
+    url: https://developers.cohesity.com/page/api-reference
+  - type: GettingStarted
+    url: https://developers.cohesity.com/docs/getting-started
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/helios-reporting
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/site-continuity
+- aid: cohesity:cohesity-interface-group-api
+  name: Cohesity Interface group API
+  description: The Interface group API from Cohesity — 2 operation(s) for interface group.
+  humanURL: https://developer.cohesity.com/helios-api.html
+  baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
+  tags:
+  - Interface group
+  properties:
+  - type: OpenAPI
+    url: openapi/cohesity-interface-group-api-openapi.yml
+  - type: Documentation
+    url: https://developer.cohesity.com/helios-api.html
+  - type: GettingStarted
+    url: https://developer.cohesity.com/docs/helios-getting-started
+  - type: APIReference
+    url: https://developer.cohesity.com/apidocs/versions/
+  - type: Postman
+    url: https://api.cohesity.com/
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/versions/
+  - type: APIReference
+    url: https://developers.cohesity.com/page/api-reference
+  - type: GettingStarted
+    url: https://developers.cohesity.com/docs/getting-started
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/helios-reporting
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/site-continuity
+- aid: cohesity:cohesity-kms-configuration-api
+  name: Cohesity KMS Configuration API
+  description: The KMS Configuration API from Cohesity — 1 operation(s) for kms configuration.
+  humanURL: https://developer.cohesity.com/helios-api.html
+  baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
+  tags:
+  - KMS Configuration
+  properties:
+  - type: OpenAPI
+    url: openapi/cohesity-kms-configuration-api-openapi.yml
+  - type: Documentation
+    url: https://developer.cohesity.com/helios-api.html
+  - type: GettingStarted
+    url: https://developer.cohesity.com/docs/helios-getting-started
+  - type: APIReference
+    url: https://developer.cohesity.com/apidocs/versions/
+  - type: Postman
+    url: https://api.cohesity.com/
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/versions/
+  - type: APIReference
+    url: https://developers.cohesity.com/page/api-reference
+  - type: GettingStarted
+    url: https://developers.cohesity.com/docs/getting-started
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/helios-reporting
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/site-continuity
+- aid: cohesity:cohesity-node-groups-api
+  name: Cohesity Node Groups API
+  description: The Node Groups API from Cohesity — 2 operation(s) for node groups.
+  humanURL: https://developer.cohesity.com/helios-api.html
+  baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
+  tags:
+  - Node Groups
+  properties:
+  - type: OpenAPI
+    url: openapi/cohesity-node-groups-api-openapi.yml
+  - type: Documentation
+    url: https://developer.cohesity.com/helios-api.html
+  - type: GettingStarted
+    url: https://developer.cohesity.com/docs/helios-getting-started
+  - type: APIReference
+    url: https://developer.cohesity.com/apidocs/versions/
+  - type: Postman
+    url: https://api.cohesity.com/
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/versions/
+  - type: APIReference
+    url: https://developers.cohesity.com/page/api-reference
+  - type: GettingStarted
+    url: https://developers.cohesity.com/docs/getting-started
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/helios-reporting
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/site-continuity
+- aid: cohesity:cohesity-protection-groups-api
+  name: Cohesity Protection Groups API
+  description: The Protection Groups API from Cohesity — 11 operation(s) for protection groups.
+  humanURL: https://developer.cohesity.com/helios-api.html
+  baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
+  tags:
+  - Protection Groups
+  properties:
+  - type: OpenAPI
+    url: openapi/cohesity-protection-groups-api-openapi.yml
+  - type: Documentation
+    url: https://developer.cohesity.com/helios-api.html
+  - type: GettingStarted
+    url: https://developer.cohesity.com/docs/helios-getting-started
+  - type: APIReference
+    url: https://developer.cohesity.com/apidocs/versions/
+  - type: Postman
+    url: https://api.cohesity.com/
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/versions/
+  - type: APIReference
+    url: https://developers.cohesity.com/page/api-reference
+  - type: GettingStarted
+    url: https://developers.cohesity.com/docs/getting-started
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/helios-reporting
+  - type: Documentation
+    url: https://developer.cohesity.com/apidocs/site-continuity
+- aid: cohesity:cohesity-protection-policies-api
+  name: Cohesity Protection Policies API
+  description: The Protection Policies API from Cohesity — 7 operation(s) for protection policies.
+  humanURL: https://developer.cohesity.com/helios-api.html
+  baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
+  tags:
+  - Protection Policies
+  properties:
+  - type: OpenAPI
+    url: openapi/cohesity-protection-policies-api-openapi.yml
   - type: Documentation
     url: https://developer.cohesity.com/helios-api.html
   - type: GettingStarted
