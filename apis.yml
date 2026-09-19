@@ -216,6 +216,8 @@ apis:
   humanURL: https://developer.cohesity.com/helios-api.html
   baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
   tags:
+  - Application
+  tags_raw:
   - Applications
   properties:
   - type: OpenAPI
@@ -440,6 +442,8 @@ apis:
   humanURL: https://developer.cohesity.com/helios-api.html
   baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
   tags:
+  - Cluster
+  tags_raw:
   - Clusters
   properties:
   - type: OpenAPI
@@ -552,6 +556,8 @@ apis:
   humanURL: https://developer.cohesity.com/helios-api.html
   baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
   tags:
+  - Dashboards
+  tags_raw:
   - Dashboard
   properties:
   - type: OpenAPI
@@ -749,6 +755,8 @@ apis:
   humanURL: https://developer.cohesity.com/helios-api.html
   baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
   tags:
+  - Group
+  tags_raw:
   - Groups
   properties:
   - type: OpenAPI
@@ -833,6 +841,8 @@ apis:
   humanURL: https://developer.cohesity.com/helios-api.html
   baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
   tags:
+  - Interfaces
+  tags_raw:
   - Interface
   properties:
   - type: OpenAPI
@@ -889,6 +899,8 @@ apis:
   humanURL: https://developer.cohesity.com/helios-api.html
   baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
   tags:
+  - IP
+  tags_raw:
   - Ip
   properties:
   - type: OpenAPI
@@ -1086,7 +1098,8 @@ apis:
   description: The Miscellaneous API from Cohesity — 1 operation(s) for miscellaneous.
   humanURL: https://developer.cohesity.com/helios-api.html
   baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
-  tags:
+  tags: []
+  tags_raw:
   - Miscellaneous
   properties:
   - type: OpenAPI
@@ -1143,6 +1156,8 @@ apis:
   humanURL: https://developer.cohesity.com/helios-api.html
   baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
   tags:
+  - Networks
+  tags_raw:
   - Network
   properties:
   - type: OpenAPI
@@ -1229,6 +1244,8 @@ apis:
   humanURL: https://developer.cohesity.com/helios-api.html
   baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
   tags:
+  - Node
+  tags_raw:
   - Nodes
   properties:
   - type: OpenAPI
@@ -1257,6 +1274,8 @@ apis:
   humanURL: https://developer.cohesity.com/helios-api.html
   baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
   tags:
+  - Notification
+  tags_raw:
   - Notifications
   properties:
   - type: OpenAPI
@@ -1845,6 +1864,8 @@ apis:
   humanURL: https://developer.cohesity.com/helios-api.html
   baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
   tags:
+  - Schedule
+  tags_raw:
   - Schedules
   properties:
   - type: OpenAPI
@@ -2097,6 +2118,8 @@ apis:
   humanURL: https://developer.cohesity.com/helios-api.html
   baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
   tags:
+  - Task
+  tags_raw:
   - Tasks
   properties:
   - type: OpenAPI
@@ -2125,6 +2148,8 @@ apis:
   humanURL: https://developer.cohesity.com/helios-api.html
   baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
   tags:
+  - Tenants
+  tags_raw:
   - Tenant
   properties:
   - type: OpenAPI
@@ -2209,6 +2234,8 @@ apis:
   humanURL: https://developer.cohesity.com/helios-api.html
   baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
   tags:
+  - User
+  tags_raw:
   - Users
   properties:
   - type: OpenAPI
@@ -2237,6 +2264,8 @@ apis:
   humanURL: https://developer.cohesity.com/helios-api.html
   baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
   tags:
+  - Vault
+  tags_raw:
   - Vaults
   properties:
   - type: OpenAPI
@@ -2405,6 +2434,8 @@ apis:
   humanURL: https://developer.cohesity.com/helios-api.html
   baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
   tags:
+  - Audit Logs
+  tags_raw:
   - Audit Log
   properties:
   - type: OpenAPI
