@@ -1,0 +1,357 @@
+openapi: 3.2.0
+info:
+  description: Cohesity API provides a RESTful interface to access the various data management operations on Cohesity cluster and Helios.
+  title: Cohesity REST Node Groups API
+  version: '2.0'
+servers:
+- url: /v2
+tags:
+- name: Node Groups
+paths:
+  /nodeGroups:
+    get:
+      description: List node groups.
+      tags:
+      - Node Groups
+      summary: List Node Groups based on provided filtering parameters
+      operationId: GetNodeGroups
+      parameters:
+      - description: Filter node groups by a list of node group names.
+        name: groupNames
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - description: Filter node groups by a node group type.
+        name: groupType
+        in: query
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          $ref: '#/components/responses/GetNodeGroupsResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    post:
+      description: Create the Node Group and returns the newly created node group object.
+      tags:
+      - Node Groups
+      summary: Create a Node Group
+      operationId: CreateNodeGroup
+      responses:
+        '201':
+          $ref: '#/components/responses/CreateNodeGroupResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NodeGroupRequest'
+        description: Request to create a Node Group.
+        required: true
+  /nodeGroups/{groupName}:
+    get:
+      description: Returns Node Group for given Group Name.
+      tags:
+      - Node Groups
+      summary: List Node Groups for a given Group Name
+      operationId: GetNodeGroupByName
+      parameters:
+      - description: Specifies a unique id of Node Group to return.
+        name: groupName
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/GetNodeGroupByNameResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    put:
+      description: Specifies the request to update the existing Node Group. On successful update, returns the updated node group object.
+      tags:
+      - Node Groups
+      summary: Update a Node Group
+      operationId: UpdateNodeGroup
+      parameters:
+      - description: Specifies a unique name of the Node Group to update.
+        name: groupName
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/UpdateNodeGroupResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NodeGroupRequest'
+        description: Request to update a Node Group.
+        required: true
+    delete:
+      description: Deletes a Node Group based on given node group name.
+      tags:
+      - Node Groups
+      summary: Delete a Node Group
+      operationId: DeleteNodeGroup
+      parameters:
+      - description: Specifies a unique name of the Node Group to delete.
+        name: groupName
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+components:
+  schemas:
+    SubnetInfo:
+      description: Subnet information.
+      type: object
+      title: SubnetInfo
+      properties:
+        subnetIp:
+          description: Subnet IP.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        netmaskBits:
+          description: Subnet netmask bits.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-order: 1
+        gateway:
+          description: Gateway.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+    BgpInstance:
+      description: BGP instance.
+      type: object
+      title: bgpInstance
+      properties:
+        localAS:
+          description: Local AS.
+          type:
+          - integer
+          - 'null'
+          format: uint32
+          x-order: 0
+        peers:
+          description: List of bgp peer groups.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BgpPeer'
+          x-order: 1
+        timers:
+          description: BGP timers.
+          x-order: 2
+          $ref: '#/components/schemas/BgpTimers'
+    BgpTimers:
+      description: BGP protocol timers.
+      type: object
+      title: BgpTimers
+      properties:
+        keepAlive:
+          description: Keep alive interval in seconds.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-order: 0
+        holdTime:
+          description: Hold time in seconds.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-order: 1
+    NodeGroup:
+      description: Specifies common fields required to define Node Group.
+      type: object
+      title: Node Group
+      required:
+      - name
+      properties:
+        name:
+          description: Specifies the name of the Node Group.
+          type: string
+          x-order: 0
+        node-ids:
+          description: List of Node Ids that are part of this node group.
+          type:
+          - array
+          - 'null'
+          title: Node Ids
+          items:
+            type: integer
+            format: int64
+          x-order: 1
+        id:
+          description: Id of the node group.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-order: 2
+        type:
+          description: Type of the node group.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-order: 3
+        bgpInstance:
+          description: BGP config information.
+          x-order: 4
+          $ref: '#/components/schemas/BgpInstance'
+        subnetInfo:
+          description: Subnet information in node group.
+          x-order: 5
+          $ref: '#/components/schemas/SubnetInfo'
+        dnsServersInfo:
+          description: DNS servers information in node group.
+          x-order: 6
+          $ref: '#/components/schemas/DnsServersInfo'
+    BgpPeer:
+      description: BGP peer information.
+      type: object
+      title: BgpPeer
+      properties:
+        addressOrTag:
+          description: IP Address.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        description:
+          description: Peer's description.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        remoteAS:
+          description: Remote AS.
+          type:
+          - integer
+          - 'null'
+          format: uint32
+          x-order: 2
+        timers:
+          description: Bgp timers.
+          x-order: 3
+          $ref: '#/components/schemas/BgpTimers'
+    NodeGroupRequest:
+      description: Specifies the request to create a Node Group.
+      title: Node Group Request.
+      allOf:
+      - $ref: '#/components/schemas/NodeGroup'
+      - type: object
+    DnsServersInfo:
+      description: List of DNS servers in cluster.
+      type: object
+      title: DnsServersInfo
+      properties:
+        dnsServers:
+          description: List of DNS servers in cluster.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 0
+    NodeGroupResponse:
+      description: Specifies the details of Node Groups.
+      title: Node Group Response
+      properties:
+        nodeGroups:
+          description: Specifies the details of a Node Group.
+          type:
+          - array
+          - 'null'
+          title: Node Groups
+          items:
+            $ref: '#/components/schemas/NodeGroup'
+          x-order: 0
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+  responses:
+    GetNodeGroupByNameResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NodeGroupResponse'
+    CreateNodeGroupResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NodeGroupResponse'
+    NoContentResponse:
+      description: No Content
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UpdateNodeGroupResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NodeGroupResponse'
+    GetNodeGroupsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NodeGroupResponse'
+  securitySchemes:
+    APIKeyHeader:
+      in: header
+      name: apiKey
+      type: apiKey

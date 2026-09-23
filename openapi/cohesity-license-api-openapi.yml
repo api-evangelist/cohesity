@@ -1,0 +1,318 @@
+openapi: 3.2.0
+info:
+  description: 'This API list provides operations for interfacing with the Cohesity
+
+    Cluster.'
+  title: Cohesity REST License API
+  version: '1.0'
+servers:
+- url: https://<CLUSTER_VIP>/irisservices/api/v1
+tags:
+- name: License
+paths:
+  /public/licenseUsage:
+    get:
+      description: 'Sends a request to retrieve information about the current license usage
+
+        of the cluster and the enitled license capacity of the Cohesity Account.'
+      tags:
+      - License
+      summary: Get the current license usage of a Cohesity Cluster
+      operationId: LicenseUsage
+      responses:
+        '200':
+          $ref: '#/components/responses/LicenseUsageResponse'
+        default:
+          $ref: '#/components/responses/Error'
+components:
+  schemas:
+    DailyUsage:
+      type: object
+      properties:
+        dailyUsage:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int64
+          x-go-name: DailyUsageVal
+        featureName:
+          type:
+          - string
+          - 'null'
+          x-go-name: FeatureName
+      x-go-package: cohesity/nexus/server/common
+    LicenseAccountUsageRsp:
+      description: Structure to hold account usage response
+      type: object
+      properties:
+        featureOverusage:
+          description: Holds information about consumption usage of overused features
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Overusage'
+          x-go-name: FeatureOverusages
+        freeSetupMode:
+          description: Free Setup Mode
+          type:
+          - boolean
+          - 'null'
+          x-go-name: FreeSetupMode
+        isTrial:
+          description: Check if trial license.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IsTrial
+        last12MonthsAvgEntitlement:
+          description: Holds monthly avg usage values of feature
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/MonthlyEntitlement'
+          x-go-name: MonthEnt
+        last12MonthsAvgUsage:
+          description: Holds monthly avg usage values of feature
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/MonthlyUsage'
+          x-go-name: MonthUse
+        last30DaysEntitlement:
+          description: Holds daily entitled capacity values of feature
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/DailyEntitlement'
+          x-go-name: DayEnt
+        last30DaysUsage:
+          description: Holds daily usage values of feature
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/DailyUsage'
+          x-go-name: DayUse
+        lastUpdateTime:
+          description: Last time, this report was updated.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: LastUpdateTime
+        licensedUsage:
+          description: 'LicenseFeatureUsages holds information about each feature
+
+            from license orders.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/LicensedUsage'
+          x-go-name: LicenseFeatureUsages
+        trialExpiration:
+          description: Trial expiration period.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: TrialExpirationTime
+        usage:
+          description: 'Creating a map of cluster id and feature usage to make it consistent
+
+            display usage UI for the helios server license page UI.'
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/FeatureUsage'
+          x-go-name: Usage
+      x-go-package: cohesity/nexus/server/common
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    MonthlyUsage:
+      type: object
+      properties:
+        featureName:
+          type:
+          - string
+          - 'null'
+          x-go-name: FeatureName
+        monthlyAvgUsage:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int64
+          x-go-name: MonthlyUsageVal
+      x-go-package: cohesity/nexus/server/common
+    MonthlyEntitlement:
+      type: object
+      properties:
+        featureName:
+          type:
+          - string
+          - 'null'
+          x-go-name: FeatureName
+        monthlyAvgEntitlement:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int64
+          x-go-name: MonthlyEntitlementVal
+      x-go-package: cohesity/nexus/server/common
+    FeatureUsage:
+      type: object
+      title: Structure to hold feature usage on cluster side.
+      properties:
+        currentUsageGiB:
+          description: Feature usage by the cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: FeatureUsagesGb
+        featureName:
+          description: Name of feature.
+          type:
+          - string
+          - 'null'
+          x-go-name: FeatureName
+        numVm:
+          description: Number of VM spinned.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumVm
+      x-go-package: cohesity/nexus/server/common
+    LicensedUsage:
+      type: object
+      title: Structure to hold feature usage on cluster side.
+      properties:
+        capacityGiB:
+          description: Feature usage by the cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: CapacityGb
+        expiryTime:
+          description: 'Expiry time(epoch) of each feature.
+
+            There could be multiple expiry time for the given SKU.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ExpiryTimeInSecs
+        featureName:
+          description: Name of feature.
+          type:
+          - string
+          - 'null'
+          x-go-name: FeatureName
+        licenseType:
+          description: Type of License
+          type:
+          - string
+          - 'null'
+          x-go-name: LicenseType
+        numVm:
+          description: Number of VM spinned.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumVm
+      x-go-package: cohesity/nexus/server/common
+    Overusage:
+      type: object
+      properties:
+        featureName:
+          description: Name of feature.
+          type:
+          - string
+          - 'null'
+          x-go-name: FeatureName
+        overusedGiB:
+          description: Feature overusage by the cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: FeatureOverusedGb
+        overusedVm:
+          description: Number of overused VM spinned.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumVmOverused
+      x-go-package: cohesity/nexus/server/common
+    DailyEntitlement:
+      type: object
+      properties:
+        dailyEntitlement:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int64
+          x-go-name: DailyEntitlementVal
+        featureName:
+          type:
+          - string
+          - 'null'
+          x-go-name: FeatureName
+      x-go-package: cohesity/nexus/server/common
+  responses:
+    LicenseUsageResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LicenseAccountUsageRsp'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'

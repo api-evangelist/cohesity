@@ -1,0 +1,2874 @@
+openapi: 3.2.0
+info:
+  description: Cohesity API provides a RESTful interface to access the various data management operations on Cohesity cluster and Helios.
+  title: Cohesity REST Platform API
+  version: '2.0'
+servers:
+- url: /v2
+tags:
+- name: Platform
+paths:
+  /alertsSummary:
+    get:
+      description: Get alerts summary grouped by category.
+      tags:
+      - Platform
+      summary: Get alerts summary
+      operationId: GetAlertSummary
+      parameters:
+      - description: Filter by start time. Specify the start time as a Unix epoch Timestamp (in microseconds). By default it is current time minus a day.
+        name: startTimeUsecs
+        in: query
+        schema:
+          type: integer
+          format: int64
+      - description: Filter by end time. Specify the end time as a Unix epoch Timestamp (in microseconds). By default it is current time.
+        name: endTimeUsecs
+        in: query
+        schema:
+          type: integer
+          format: int64
+      - description: 'IncludeTenants specifies if alerts of all the tenants under the
+
+          hierarchy of the logged in user''s organization should be used to
+
+          compute summary.'
+        name: includeTenants
+        in: query
+        schema:
+          type: boolean
+      - description: 'TenantIds contains ids of the tenants for which alerts are to be
+
+          used to compute summary.'
+        name: tenantIds
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - description: 'Specifies list of alert states to filter alerts by. If not specified,
+
+          only open alerts will be used to get summary.'
+        name: statesList
+        in: query
+        schema:
+          type: array
+          items:
+            enum:
+            - kResolved
+            - kOpen
+            - kNote
+            - kSuppressed
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/GetAlertsSummary'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /chassis:
+    get:
+      description: Get list of all chassis info that are part of cluster.
+      tags:
+      - Platform
+      summary: Get list of chassis
+      operationId: GetChassis
+      parameters:
+      - description: Filters chassis that have no rack assigned.
+        name: noRackAssigned
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/ChassisListResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /chassis/{id}:
+    get:
+      description: Get a chassis info by id.
+      tags:
+      - Platform
+      summary: Get a chassis by chassis id
+      operationId: GetChassisById
+      parameters:
+      - description: Specifies the id of chassis.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/ChassisResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    patch:
+      description: Update selected properties of chassis info by id.
+      tags:
+      - Platform
+      summary: Update a chassis by chassis id
+      operationId: UpdateChassisById
+      parameters:
+      - description: Specifies the id of chassis.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/ChassisResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Chassis'
+        description: Specifies the parameters to update chassis.
+  /clusters:
+    get:
+      description: Retrieve some summary information about the Cluster Configuration.
+      tags:
+      - Platform
+      summary: Retrieve Cluster Configuration
+      operationId: GetCluster
+      responses:
+        '200':
+          $ref: '#/components/responses/ClusterResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    put:
+      description: Update the Cluster with the given configuration.
+      tags:
+      - Platform
+      summary: Update a cluster
+      operationId: UpdateCluster
+      responses:
+        '200':
+          $ref: '#/components/responses/ClusterResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cluster'
+        description: Specifies the parameters to update cluster.
+        required: true
+    post:
+      description: Create a cluster with given network and cluster configuration.
+      tags:
+      - Platform
+      summary: Create a cluster
+      operationId: CreateCluster
+      responses:
+        '201':
+          $ref: '#/components/responses/ClusterResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateClusterParams'
+        description: Specifies the parameters to create cluster.
+        required: true
+  /clusters/amqp-target-config:
+    get:
+      description: Fetch AMQP target config on the cluster.
+      tags:
+      - Platform
+      summary: Get AMQP Target Config
+      operationId: GetAMQPTargetConfig
+      responses:
+        '200':
+          $ref: '#/components/responses/ClusterAMQPTargetConfigResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    put:
+      description: Updates AMQP target config on the cluster.
+      tags:
+      - Platform
+      summary: Update AMQP Target Config
+      operationId: UpdateAMQPTargetConfig
+      responses:
+        '200':
+          $ref: '#/components/responses/ClusterAMQPTargetConfigResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClusterAMQPTargetConfig'
+        description: Specifies the parameters to update cluster AMQP target config.
+        required: true
+    delete:
+      description: Delete AMQP target config on the cluster.
+      tags:
+      - Platform
+      summary: Delete AMQP Target Config
+      operationId: DeleteAMQPTargetConfig
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /disks/assimilate:
+    post:
+      description: Assimilate list of disks from one or more nodes of cluster.
+      tags:
+      - Platform
+      summary: Assimilate disks
+      operationId: DisksAssimilate
+      responses:
+        '200':
+          $ref: '#/components/responses/DiskAssimilationResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClusterFreeDisks'
+        description: Specifies the parameter to assimilate disks.
+        required: true
+  /disks/discover:
+    get:
+      description: Discover disks that are ready for activation
+      tags:
+      - Platform
+      summary: Discover new disks
+      operationId: DiscoverDisks
+      responses:
+        '200':
+          $ref: '#/components/responses/DiscoverDisksResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /disks/identify:
+    post:
+      description: Turn on/off led light of a disk.
+      tags:
+      - Platform
+      summary: Identify a disk
+      operationId: DiskIdentify
+      responses:
+        '200':
+          $ref: '#/components/responses/DiskIdentifyResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DiskIdentify'
+        description: Specifies the parameter to identify disk.
+        required: true
+  /disks/local:
+    get:
+      description: Get list of local disks.
+      tags:
+      - Platform
+      summary: Get list of disks
+      operationId: ListDisks
+      parameters:
+      - description: Specifies node id of the node to get list of disks
+        name: nodeId
+        in: query
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/DisksResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /disks/remote:
+    get:
+      description: Get remote disks.
+      tags:
+      - Platform
+      summary: Get remote disks
+      operationId: GetRemoteDisks
+      parameters:
+      - description: Specifies a list of disk ids, only disks having these ids will be returned.
+        name: diskIds
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - description: Specifies a list of node ids, only disks in these nodes will be returned.
+        name: nodeIds
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - description: Specifies a list of disk tiers, only disks with given tiers will be returned.
+        name: tiers
+        in: query
+        schema:
+          type: array
+          items:
+            enum:
+            - PCIeSSD
+            - SATA-SSD
+            - SATA-HDD
+            - CLOUD
+            type: string
+      - description: This field is deprecated. Providing this queryparam will not have any impact. Please use fileSystem query param to filter instead.
+        name: mountPath
+        in: query
+        schema:
+          type: string
+      - description: Specified file system name to search. only disks with file system name that partially matches the specified name will be returned.
+        name: fileSystem
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/GetRemoteDisksResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    post:
+      description: Add a remote disk.
+      tags:
+      - Platform
+      summary: Add remote disk
+      operationId: AddRemoteDisk
+      responses:
+        '201':
+          $ref: '#/components/responses/AddRemoteDiskResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoteDisks'
+        description: Specifies the remote disk configuration.
+        required: true
+  /disks/remote/{id}:
+    delete:
+      description: Remove a remote disk.
+      tags:
+      - Platform
+      summary: Remove remote disk
+      operationId: RemoveRemoteDisk
+      parameters:
+      - description: Specifies the id of the remote disk to remove.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /disks/{id}/remove:
+    post:
+      description: Mark disk for removal or cancel removal if a disk is already marked for removal.
+      tags:
+      - Platform
+      summary: Mark Disk for removal
+      operationId: MarkDiskRemoval
+      parameters:
+      - description: Specifies unique id of the disk to mark for removal.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/DiskRemovalResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DiskRemovalParams'
+        description: Specifies parameters to mark/cancel disk removal.
+        required: true
+  /network-interfaces:
+    get:
+      description: Get a list of interfaces present on the node or cluster.
+      tags:
+      - Platform
+      summary: Get list of interfaces
+      operationId: GetNetworkInterfaces
+      responses:
+        '200':
+          $ref: '#/components/responses/GetNetworkInterfacesResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /nodePower:
+    post:
+      description: Reboot or shutdown nodes in cluster.
+      tags:
+      - Platform
+      summary: Reboot or shutdown nodes in cluster
+      operationId: SetNodePower
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NodePowerOperation'
+        description: Specifies the reboot or shutdown operation.
+        required: true
+  /nodes/{id}/identify:
+    post:
+      description: Turn on/off LED light of a node to identify.
+      tags:
+      - Platform
+      summary: Identify node
+      operationId: Identify node
+      parameters:
+      - description: Specifies id of node to identify.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/NodeIdentifyResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NodeIdentifyParams'
+        description: Specifies the parameter to identify node.
+        required: true
+  /nodes/{id}/remove:
+    post:
+      description: Mark node for removal or Cancel if a node is already marked for removal.
+      tags:
+      - Platform
+      summary: Mark Node for removal
+      operationId: MarkNodeRemoval
+      parameters:
+      - description: Specifies id of node to cancel removal.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/NodeRemovalResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NodeRemovalParams'
+        description: Specifies parameters to initiate/cancel node removal .
+        required: true
+  /racks:
+    get:
+      description: Get list of all racks that are part of cluster.
+      tags:
+      - Platform
+      summary: Get list of racks
+      operationId: GetRacks
+      responses:
+        '200':
+          $ref: '#/components/responses/RacksResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    post:
+      description: Create list of racks and optionally also assign list of chassis to each rack
+      tags:
+      - Platform
+      summary: Create racks
+      operationId: CreateRacks
+      responses:
+        '201':
+          $ref: '#/components/responses/RacksResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Racks'
+        description: Specifies the parameters to create racks.
+        required: true
+    delete:
+      description: Delete all the racks.
+      tags:
+      - Platform
+      summary: Delete all the racks
+      operationId: DeleteRacks
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    patch:
+      description: Updates list of racks with name, chassis list or/and location
+      tags:
+      - Platform
+      summary: Update racks
+      operationId: UpdateRacks
+      responses:
+        '200':
+          $ref: '#/components/responses/RacksResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Racks'
+        description: Specifies the parameters to update racks.
+        required: true
+  /racks/{id}:
+    get:
+      description: Get a rack info by id.
+      tags:
+      - Platform
+      summary: Get a rack by rack id
+      operationId: GetRackById
+      parameters:
+      - description: Specifies the id of rack.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/RackResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    delete:
+      description: Delete a given rack by id.
+      tags:
+      - Platform
+      summary: Delete a rack by id
+      operationId: DeleteRackById
+      parameters:
+      - description: Specifies a unique id of the rack.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    patch:
+      description: Update selected properties of a rack given by id.
+      tags:
+      - Platform
+      operationId: UpdateRackById
+      parameters:
+      - description: Specifies the id of rack.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/RackResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Rack'
+        description: Specifies the parameters to update rack.
+      summary: Update rack by id
+      x-summary-source: derived
+  /remote-storage:
+    get:
+      description: Get summary about list of registered remote storage servers.
+      tags:
+      - Platform
+      summary: Get Registered Remote Storage Servers List
+      operationId: GetRegisteredRemoteStorageList
+      responses:
+        '200':
+          $ref: '#/components/responses/RegisteredRemoteStorageListResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    post:
+      description: Register a remote storage to be used for disaggregated storage.
+      tags:
+      - Platform
+      summary: Register Remote Storage
+      operationId: RegisterNewRemoteStorage
+      responses:
+        '201':
+          $ref: '#/components/responses/RemoteStorageRegistrationResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoteStorageInfo'
+        description: Specifies the parameters to register a remote storage management server.
+        required: true
+  /remote-storage/{id}:
+    get:
+      description: Get details of remote storage given by id.
+      tags:
+      - Platform
+      summary: Get remote storage details
+      operationId: GetRemoteStorageDetails
+      parameters:
+      - description: Specifies the id of the registered remote storage.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - x-go-name: IncludeAvailableSpace
+        description: Specifies whether to include available capacity on remote storage.
+        name: includeAvailableSpace
+        in: query
+        schema:
+          type: boolean
+          default: false
+      - x-go-name: IncludeAvailableDataVips
+        description: Specifies whether to include available data vips on remote storage.
+        name: includeAvailableDataVips
+        in: query
+        schema:
+          type: boolean
+          default: false
+      - x-go-name: IncludeArrayInfo
+        description: Includes flashblade specific info like name, software os and version of pure flashblade.
+        name: includeArrayInfo
+        in: query
+        schema:
+          type: boolean
+          default: false
+      responses:
+        '200':
+          $ref: '#/components/responses/RemoteStorageRegistrationResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    delete:
+      description: Delete remote storage registration.
+      tags:
+      - Platform
+      summary: Delete Remote Storage Registration
+      operationId: DeleteRemoteStorageRegistration
+      parameters:
+      - description: Specifies the registration id of the registered remote storage.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    patch:
+      description: Update Registered Remote Storage Config.
+      tags:
+      - Platform
+      summary: Update Remote Storage Config
+      operationId: UpdateRemoteStorageRegistration
+      parameters:
+      - description: Specifies the registration id of the registered remote storage.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/RemoteStorageRegistrationResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoteStorageInfo'
+        description: Specifies the parameters to update the registration.
+        required: true
+  /support-channel-config:
+    get:
+      description: Get support channel configuration.
+      tags:
+      - Platform
+      summary: Get support channel configuration
+      operationId: GetSupportChannelConfig
+      responses:
+        '200':
+          $ref: '#/components/responses/GetSupportChannelConfigResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    put:
+      description: Update support channel configuration.
+      tags:
+      - Platform
+      summary: Update support channel configuration
+      operationId: UpdateSupportChannelConfig
+      responses:
+        '200':
+          $ref: '#/components/responses/GetSupportChannelConfigResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SupportChannelConfig'
+        description: Specifies the support channel configuration.
+        required: true
+  /syslogAuditTags:
+    get:
+      description: Get cluster audit tags.
+      tags:
+      - Platform
+      summary: Get cluster audit tags
+      operationId: GetSyslogAuditTags
+      responses:
+        '200':
+          $ref: '#/components/responses/SyslogAuditTagResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    post:
+      description: Update cluster audit tags.
+      tags:
+      - Platform
+      summary: Update cluster audit tags
+      operationId: UpdateSyslogAuditTags
+      responses:
+        '200':
+          $ref: '#/components/responses/SyslogAuditTagResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyslogAuditTag'
+        description: Specifies syslog audit tag to update.
+  /syslogProgramNames:
+    get:
+      description: Get supported program names to configure for a syslog server.
+      tags:
+      - Platform
+      summary: Get supported program names
+      operationId: GetSupportedSyslogProgramNames
+      responses:
+        '200':
+          $ref: '#/components/responses/SyslogProgramNamesResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /syslogs:
+    get:
+      description: Get list of syslog servers.
+      tags:
+      - Platform
+      summary: Get list of syslog servers
+      operationId: GetSyslogServers
+      responses:
+        '200':
+          $ref: '#/components/responses/GetSyslogServersResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    post:
+      description: Add a new syslog server
+      tags:
+      - Platform
+      summary: Add Syslog Server
+      operationId: AddSyslogServer
+      responses:
+        '201':
+          $ref: '#/components/responses/AddSyslogServerResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyslogServer'
+        description: Specifies parameters to add syslog server.
+        required: true
+    delete:
+      description: Delete all syslog servers.
+      tags:
+      - Platform
+      summary: Remove syslog servers
+      operationId: RemoveSyslogServers
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /syslogs/{id}:
+    get:
+      description: Get a syslog server by id.
+      tags:
+      - Platform
+      summary: Get a syslog server by id
+      operationId: GetSyslogServerById
+      parameters:
+      - description: Specifies the id of syslog server.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          $ref: '#/components/responses/SyslogServerResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    put:
+      description: Update syslog server by id.
+      tags:
+      - Platform
+      summary: Update a syslog server by id
+      operationId: UpdateSyslogServerById
+      parameters:
+      - description: Specifies the id of syslog server.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          $ref: '#/components/responses/SyslogServerResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyslogServer'
+        description: Specifies the body of syslog server body to update.
+    delete:
+      description: Delete syslog server by id.
+      tags:
+      - Platform
+      summary: Remove syslog server by id
+      operationId: RemoveSyslogServer
+      parameters:
+      - description: Specifies a unique id of the syslog server.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    patch:
+      description: Patch syslog server by id.
+      tags:
+      - Platform
+      summary: Patch a syslog server by id
+      operationId: PatchSyslogServerById
+      parameters:
+      - description: Specifies the id of syslog server.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          $ref: '#/components/responses/SyslogServerResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyslogServer'
+        description: Specifies the body of syslog server fields to patch.
+  /syslogs/{id}/status:
+    get:
+      description: Check syslog server reachability by given Id.
+      tags:
+      - Platform
+      summary: Get a syslog server reachability status
+      operationId: GetSyslogServerStatusById
+      parameters:
+      - description: Specifies the id of syslog server.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          $ref: '#/components/responses/SyslogServerStatusResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+components:
+  schemas:
+    SyslogServerStatus:
+      description: Remote system logging server.
+      type: object
+      title: SyslogServerStatus
+      properties:
+        id:
+          description: The id of the syslog server.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-order: 0
+        isReachable:
+          description: Specify if the syslog server is reachable or not.
+          type:
+          - boolean
+          - 'null'
+          x-order: 1
+        message:
+          description: Description for current status.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+    DiskRemovalParams:
+      description: Specifies parameters to initiate/cancel disk removal.
+      type: object
+      title: Disk Removal Parameters.
+      required:
+      - cancel
+      properties:
+        cancel:
+          description: If true, cancels disk removal which is already in progress.
+          type:
+          - boolean
+          - 'null'
+          x-order: 0
+    Cluster:
+      description: Specifies the cluster details.
+      type: object
+      title: Create Cluster Response.
+      properties:
+        id:
+          description: Specifies the cluster id of the new cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+          readOnly: true
+        incarnationId:
+          description: Specifies the incarnation id of the new cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+          readOnly: true
+        name:
+          description: Name of the new cluster.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        description:
+          description: Description of the cluster.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+        type:
+          description: Specifies the type of the new cluster.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Physical
+          - Virtual
+          - Cloud
+          - Rigel
+          - Unknown
+          x-order: 4
+          readOnly: true
+        localTenantId:
+          description: Specifies the local tenant id. Only applicable on Helios.
+          type:
+          - string
+          - 'null'
+          x-order: 5
+          readOnly: true
+        tenantId:
+          description: Specifies the globally unique tenant id. Only applicable on Helios.
+          type:
+          - string
+          - 'null'
+          x-order: 6
+          readOnly: true
+        regionId:
+          description: Specifies the region id on which this cluster is present. Only applicable on Helios for DMaaS clusters.
+          type:
+          - string
+          - 'null'
+          x-order: 7
+          readOnly: true
+        rigelClusterParams:
+          description: Specifies the Rigel specific parameters.
+          x-order: 8
+          $ref: '#/components/schemas/RigelClusterConfigParams'
+        swVersion:
+          description: Software version of the new cluster.
+          type:
+          - string
+          - 'null'
+          x-order: 9
+          readOnly: true
+        networkConfig:
+          description: Network config of the new cluster.
+          x-order: 10
+          $ref: '#/components/schemas/ClusterCreateNetworkConfig'
+        proxyServerConfig:
+          description: Specifies the proxy to use for external HTTP traffic.
+          x-order: 11
+          $ref: '#/components/schemas/ClusterProxyServerConfig'
+        enableEncryption:
+          description: Specifies whether or not encryption is enabled. If encryption is enabled, all data on the Cluster will be encrypted.
+          type:
+          - boolean
+          - 'null'
+          x-order: 12
+          readOnly: true
+    NodeIdentifyParams:
+      description: Specifies the parameter to identify node.
+      type: object
+      title: Node Identify Request Parameters.
+      required:
+      - identify
+      properties:
+        identify:
+          description: Turn on/off node led light if set to true/false respectively.
+          type:
+          - boolean
+          - 'null'
+          x-order: 0
+    AlertsSummaryResponse:
+      description: Specifies the response of alerts summary.
+      type: object
+      properties:
+        alertsSummary:
+          description: Specifies a list of alerts summary grouped by category.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AlertGroupSummary'
+          x-order: 0
+    ClusterAMQPTargetConfig:
+      description: Specifies the AMQP target config.
+      type: object
+      properties:
+        serverIp:
+          description: Specifies the server ip.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        username:
+          description: Specifies the username.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        password:
+          description: Specifies the password.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        virtualHost:
+          description: Specifies the virtual host.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+        exchange:
+          description: Specifies the exchange.
+          type:
+          - string
+          - 'null'
+          x-order: 4
+        filerId:
+          description: Specifies the filer id.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 5
+        certificate:
+          description: Specifies the certificate.
+          type:
+          - string
+          - 'null'
+          x-order: 6
+    DisksList:
+      description: Specifies the list of disks that belong to node.
+      type: object
+      title: List of Disks
+      properties:
+        disksList:
+          description: Specifies the list of disks.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Disk'
+          x-order: 0
+    NodePowerOperation:
+      type: object
+      title: NodePowerOperation
+      required:
+      - operation
+      properties:
+        operation:
+          description: The operation clould be poweroff, reboot.
+          type:
+          - string
+          - 'null'
+          enum:
+          - poweroff
+          - reboot
+          x-order: 0
+        nodeId:
+          description: Id of the node to do the specified operation.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+    ClusterCreateCloudParams:
+      description: Params for Cloud Edition Cluster Creation
+      title: Cloud Cluster Params.
+      properties:
+        nodeIps:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            type: string
+          x-order: 0
+    SupportChannelConfig:
+      description: Specifies the support channel configuration.
+      type: object
+      title: Support channel configuration.
+      required:
+      - isEnabled
+      - endTimeUsecs
+      properties:
+        isEnabled:
+          description: Specifies id the support channel is enabled.
+          type:
+          - boolean
+          - 'null'
+          x-order: 0
+        endTimeUsecs:
+          description: Specifies the support channel expiry time.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+    RemoveNode:
+      description: Specifies details of node removal response.
+      type: object
+      title: Node Removal Response.
+      properties:
+        markedForRemoval:
+          description: If true, Node is marked for removal.
+          type:
+          - boolean
+          - 'null'
+          x-order: 0
+        id:
+          description: Specifies id of the node.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+    FreeDisk:
+      description: Specifies the details of a free disk.
+      type: object
+      title: FreeDisk
+      required:
+      - serialNumber
+      properties:
+        location:
+          description: Specifies the location of disk.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        serialNumber:
+          description: Specifies serial number of disk.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        path:
+          description: Specifies path of disk.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        sizeInBytes:
+          description: Size of disk.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 3
+    Racks:
+      description: Specifies info about list of racks.
+      type: object
+      title: List of Racks
+      properties:
+        racks:
+          description: Specifies list of racks
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Rack'
+          x-order: 0
+    FlashBladeRegistrationInfo:
+      description: Specifies the information specific to flashblade registration.
+      type: object
+      required:
+      - apiToken
+      properties:
+        ip:
+          description: Specifies management ip of pure flashblade server.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        apiToken:
+          description: Specifies the api token of the pure flashblade.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    RemoveDisk:
+      description: Specifies details of disk removal response.
+      type: object
+      title: Disk Removal Response.
+      properties:
+        markedForRemoval:
+          description: If true, Disk is marked for removal.
+          type:
+          - boolean
+          - 'null'
+          x-order: 0
+        id:
+          description: Specifies id of the disk.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+    ClusterManualNetworkConfig:
+      description: Specifies all of the parameters needed for network configuration of the new Cluster using manual configuration.
+      type: object
+      title: Cluster Network Config.
+      required:
+      - gateway
+      - subnetIp
+      - subnetMask
+      - dnsServers
+      properties:
+        gateway:
+          description: Specifies the gateway of the new cluster network.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        subnetIp:
+          description: Specifies the ip subnet ip of the cluster network.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        subnetMask:
+          description: Specifies the ip subnet mask of the cluster network.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        dnsServers:
+          description: Specifies the list of Dns Servers new cluster should be configured with.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 3
+    RigelClusterConfigParams:
+      description: Params for Rigel Cluster Creation
+      title: Rigel Cluster Params.
+      properties:
+        nodes:
+          description: Specifies the Nodes present in this Cluster.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/RigelClusterNode'
+          x-order: 0
+        claimToken:
+          description: Specifies the token which is used to claim this Cluster to Helios.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+          readOnly: true
+    RemoteStorageInfo:
+      description: Specifies the remote storage Registration parameters.
+      title: Remote storage Registration parameters.
+      allOf:
+      - $ref: '#/components/schemas/CommonRemoteStorageInfo'
+      - type: object
+        properties:
+          flashbladeParams:
+            description: Specifies the parameters to register a Pure Storage flashblade as remote storage
+            type:
+            - object
+            - 'null'
+            x-cohesity-discriminator-value: FlashBlade
+            x-order: 0
+            $ref: '#/components/schemas/FlashbladeParams'
+    AddRemoteDiskResponseBody:
+      description: Specifies the response of creating remote disk.
+      type: object
+      properties:
+        remoteDisks:
+          description: Specifies a list of remote disk creating status.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CreateRemoteDiskStatus'
+          x-order: 0
+    ClusterDhcpNetworkConfig:
+      description: Specifies all of the parameters needed for network configuration of the new Cluster using DHCP.
+      type: object
+      title: Cluster Network Config.
+      required:
+      - dnsServers
+      properties:
+        gateway:
+          description: Specifies the gateway of the new cluster network.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+          readOnly: true
+        subnetIp:
+          description: Specifies the ip subnet ip of the cluster network.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+          readOnly: true
+        subnetMask:
+          description: Specifies the ip subnet mask of the cluster network.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+          readOnly: true
+        dnsServers:
+          description: Specifies the list of Dns Servers new cluster should be configured with.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 3
+    ClusterCreateNetworkConfig:
+      description: Specifies all of the parameters needed for network configuration of the new Cluster.
+      type: object
+      title: Cluster Network Config.
+      required:
+      - useDhcp
+      - ntpServers
+      - domainNames
+      properties:
+        ntpServers:
+          description: Specifies the list of NTP Servers new cluster should be configured with.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 0
+        domainNames:
+          description: Specifies the list of Domain Names new cluster should be configured with.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 1
+        vipHostName:
+          description: Specifies the FQDN hostname of the cluster.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        ipPreference:
+          description: Specifies IP preference of the cluster to be Ipv4/Ipv6. It is Ipv4 by default.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Ipv4
+          - Ipv6
+          x-order: 3
+        useDhcp:
+          description: Specifies whether or not to use DHCP to configure the network of the Cluster.
+          type:
+          - boolean
+          - 'null'
+          x-order: 4
+        dhcpNetworkConfig:
+          description: Specifies the parameters needed for DHCP based network configuration.
+          x-order: 5
+          $ref: '#/components/schemas/ClusterDhcpNetworkConfig'
+        manualNetworkConfig:
+          description: Specifies the parameters needed for manual network configuration.
+          x-order: 6
+          $ref: '#/components/schemas/ClusterManualNetworkConfig'
+    RemoteDisks:
+      description: Specifies a list of remote disks.
+      type: object
+      title: Remote disks
+      properties:
+        remoteDisks:
+          description: Specifies a list of remote disks.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/RemoteDisk'
+          x-order: 0
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    ClusterProxyServerConfig:
+      description: Specifies the parameters of the proxy server to be used for external traffic.
+      type:
+      - object
+      - 'null'
+      title: Cluster Proxy Server Config.
+      required:
+      - ip
+      - port
+      properties:
+        name:
+          description: Specifies the unique name of the proxy server.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+          readOnly: true
+        ip:
+          description: Specifies the IP address of the proxy server.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        port:
+          description: Specifies the port on which the server is listening.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-order: 2
+        username:
+          description: Specifies the username for the proxy.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+        password:
+          description: Specifies the password for the proxy.
+          type:
+          - string
+          - 'null'
+          x-order: 4
+    ChassisList:
+      description: Specifies the list of hardware chassis.
+      type: object
+      title: List of chassis
+      properties:
+        chassis:
+          description: Specifies the list of chassis.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Chassis'
+          x-order: 0
+    SyslogServers:
+      description: Specifies the list of syslog servers.
+      type: object
+      title: List of syslog servers
+      properties:
+        syslogServers:
+          description: Specifies the list of syslog servers.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SyslogServer'
+          x-order: 0
+    AlertGroupSummary:
+      description: Specifies alerts summary grouped for an alert category.
+      type: object
+      properties:
+        category:
+          description: Category of alerts by which summary is grouped.
+          type: string
+          enum:
+          - kDisk
+          - kNode
+          - kCluster
+          - kChassis
+          - kPowerSupply
+          - kCPU
+          - kMemory
+          - kTemperature
+          - kFan
+          - kNIC
+          - kFirmware
+          - kNodeHealth
+          - kOperatingSystem
+          - kDataPath
+          - kMetadata
+          - kIndexing
+          - kHelios
+          - kAppMarketPlace
+          - kLicense
+          - kSecurity
+          - kUpgrade
+          - kClusterManagement
+          - kAuditLog
+          - kNetworking
+          - kConfiguration
+          - kStorageUsage
+          - kFaultTolerance
+          - kBackupRestore
+          - kArchivalRestore
+          - kRemoteReplication
+          - kQuota
+          - kCDP
+          x-order: 0
+        type:
+          description: Type/bucket that this alert category belongs to.
+          type: string
+          x-order: 1
+        warningCount:
+          description: Specifies count of warning alerts.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
+        criticalCount:
+          description: Specifies count of critical alerts.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 3
+        infoCount:
+          description: Specifies count of info alerts.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 4
+        totalCount:
+          description: Specifies count of total alerts.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 5
+    NetworkInterface:
+      description: Specifies the parameters of a network interface.
+      type: object
+      title: Network Interface
+      properties:
+        name:
+          description: Specifies the name of the network interface.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        type:
+          description: Specifies the type of the network interface.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Physical
+          - Bond
+          - Bridge
+          - Group
+          - Vlan
+          - VlanPhysical
+          - VlanBond
+          - VlanGroup
+          - VlanBridge
+          - Invalid
+          x-order: 1
+        staticIP:
+          description: Specifies the static IP of the network interface.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        virtualIP:
+          description: Specifies the virtual IP of the network interface.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+        gateway:
+          description: Specifies the gateway of the network interface.
+          type:
+          - string
+          - 'null'
+          x-order: 4
+        mtu:
+          description: Specifies the MTU of the network interface.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-order: 5
+        subnet:
+          description: Specifies the subnet of the network interface.
+          type:
+          - string
+          - 'null'
+          x-order: 6
+        isUp:
+          description: Specifies whether or not the interface is up.
+          type:
+          - boolean
+          - 'null'
+          x-order: 7
+        group:
+          description: Specifies the group to which this interface belongs.
+          type:
+          - string
+          - 'null'
+          x-order: 8
+        role:
+          description: Specifies the interface role.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Primary
+          - Secondary
+          - Undefined
+          x-order: 9
+        defaultRoute:
+          description: Specifies whether or not this interface is the default route.
+          type:
+          - boolean
+          - 'null'
+          x-order: 10
+        bondSlaveNames:
+          description: Specifies the names of the bond slaves for this interface.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 11
+        bondSlaveSlots:
+          description: Specifies the slots of the bond slaves for this interface.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 12
+        bondingMode:
+          description: Specifies the bonding mode of this interface.
+          type:
+          - string
+          - 'null'
+          enum:
+          - ActiveBackup
+          - 802_3ad
+          - BalanceAlb
+          - Invalid
+          x-order: 13
+        macAddress:
+          description: Specifies the MAC address of this interface.
+          type:
+          - string
+          - 'null'
+          x-order: 14
+        isConnected:
+          description: Specifies whether or not this interface is connected.
+          type:
+          - boolean
+          - 'null'
+          x-order: 15
+        speed:
+          description: Specifies the speed of this interface.
+          type:
+          - string
+          - 'null'
+          enum:
+          - 1Gbit/s
+          - 10Gbit/s
+          - 25Gbit/s
+          - 40Gbit/s
+          - 100Gbit/s
+          - Unknown
+          x-order: 16
+    ClusterCreateNodeParams:
+      description: Node params required for cluster creation
+      type: object
+      title: Node Specific Params.
+      required:
+      - nodeId
+      - nodeIp
+      properties:
+        nodeId:
+          description: Specifies the node id of the node.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        nodeIp:
+          description: Specifies the node ip address which is either in ipv4/ipv6 format.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    NodeRemovalParams:
+      description: Specifies parameters to initiate/cancel node removal.
+      type: object
+      title: Node Removal Parameters.
+      required:
+      - cancel
+      properties:
+        cancel:
+          description: If true, cancels node removal that is already in progress.
+          type:
+          - boolean
+          - 'null'
+          x-order: 0
+    ClusterCreatePhysicalParams:
+      description: Params for Physical Edition Cluster Creation
+      title: Physical Cluster Params.
+      properties:
+        nodes:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/ClusterCreateNodeParams'
+          x-order: 0
+    NodeInterfaces:
+      description: Specifies the interfaces present on a Node.
+      type: object
+      title: Node Interfaces
+      properties:
+        id:
+          description: Specifies the id of the node.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        interfaces:
+          description: Specifies the list of network interfaces present on this Node.
+          type: array
+          items:
+            $ref: '#/components/schemas/NetworkInterface'
+          x-order: 1
+    CreateRemoteDiskStatus:
+      description: Specifies the status of creating remote disk.
+      type: object
+      properties:
+        mountPath:
+          description: Specifies the NFS mount path of the remote disk.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        nodeId:
+          description: Specifies the node id of the disk. If not specified, the disk will be evenly distributed across all the nodes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+        tier:
+          description: Specifies the tier of the disk
+          type:
+          - string
+          - 'null'
+          enum:
+          - PCIeSSD
+          - SATA-SSD
+          - SATA-HDD
+          - CLOUD
+          x-order: 2
+        status:
+          description: Specifies the creating status of this disk.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Succeeded
+          - Failed
+          x-order: 3
+        message:
+          description: Specifies the error message when creating remote disk fails.
+          type:
+          - string
+          - 'null'
+          x-order: 4
+    Chassis:
+      description: Specifies information about hardware chassis.
+      type: object
+      title: Chassis specific response.
+      properties:
+        id:
+          description: Specifies the id of the chassis used to uniquely identify a chassis.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        hardwareModel:
+          description: Specifies the hardware model of the chassis.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        name:
+          description: Specifies the name of the chassis.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        serialNumber:
+          description: Specifies the serial number of the chassis.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+        nodeIds:
+          description: Specifies list of ids of all the nodes in chassis.
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int64
+          x-order: 4
+        rackId:
+          description: Rack Id that this chassis belong to
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 5
+    SyslogAuditTag:
+      description: Cohesity audit tag name.
+      type: object
+      title: SyslogAuditTag
+      properties:
+        clusterAudit:
+          description: Cluster audit tagging name.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        filerAudit:
+          description: Filer audit tagging name.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        dataProtectionEventsAudit:
+          description: Data protection events audit tagging name.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        alertAudit:
+          description: Alert audit tagging name.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+    SyslogServer:
+      description: Specifies information about syslog server.
+      type: object
+      title: Syslog Server.
+      properties:
+        id:
+          description: The id of the syslog server.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-order: 0
+        ip:
+          description: Specifies the IP address or hostname of the syslog server.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        port:
+          description: Specifies the port where the syslog server listens.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-order: 2
+        protocol:
+          description: Specifies the protocol used to send the logs.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+        name:
+          description: Specifies a unique name for the syslog server on the Cluster.
+          type:
+          - string
+          - 'null'
+          x-order: 4
+        enabled:
+          description: Specifies whether to enable the syslog server on the Cluster.
+          type:
+          - boolean
+          - 'null'
+          x-order: 5
+        facilityList:
+          description: Send enabled syslog facilities related logs to logging server.
+          type: array
+          items:
+            type: string
+          x-order: 6
+        programNameList:
+          description: Send programes related logs to logging server.
+          type: array
+          items:
+            type: string
+          x-order: 7
+        msgPatternList:
+          description: Send logs including the msg patterns to logging server.
+          type: array
+          items:
+            type: string
+          x-order: 8
+        rawMsgPatternList:
+          description: Send logs including the msg patterns to logging server.
+          type: array
+          items:
+            type: string
+          x-order: 9
+        isTlsEnabled:
+          description: Specify whether to enable tls support.
+          type:
+          - boolean
+          - 'null'
+          x-order: 10
+        caCertificate:
+          description: Syslog server CA certificate.
+          type:
+          - string
+          - 'null'
+          x-order: 11
+    FlashbladeParams:
+      description: Specifies the information related to Registered Pure Flashblade.
+      type: object
+      properties:
+        registrationParams:
+          description: Specifies the parameters to register a VMware Protection Source.
+          type:
+          - object
+          - 'null'
+          x-order: 0
+          $ref: '#/components/schemas/FlashBladeRegistrationInfo'
+        uuid:
+          description: Specifies uuid of the pure flashblade server.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+          readOnly: true
+        assignedDataVips:
+          description: Specifies list of data vips that are assigned to cohesity cluster to create nfs share mountpoints.
+          type:
+          - array
+          - 'null'
+          minItems: 1
+          items:
+            type: string
+          x-order: 2
+        assignedCapacityBytes:
+          description: Specifies the capacity in bytes assigned on pure flashblade for remote storage usage on cohesity cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 3
+        isDedicatedStorage:
+          description: If true, cohesity cluster uses all available capacity on pure flashblade for remote storage.
+          type:
+          - boolean
+          - 'null'
+          x-order: 4
+        availableDataVips:
+          description: Available data vips configured on pure flashblade.
+          type: array
+          items:
+            type:
+            - string
+            - 'null'
+          x-order: 5
+          readOnly: true
+        availableCapacity:
+          description: Available capacity on pure flashblade.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 6
+          readOnly: true
+        createdFileSystemCount:
+          description: Number of new file systems created on pure flashblade when assignedCapacityBytes is updated.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 7
+          readOnly: true
+        updatedFileSystemCount:
+          description: Number of file systems that are updated on pure flashblade when assignedCapacityBytes is updated.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 8
+          readOnly: true
+        softwareOsVersion:
+          description: Software OS and version running on pure flashblade
+          type:
+          - string
+          - 'null'
+          x-order: 9
+          readOnly: true
+        name:
+          description: Name of the pure flashblade specified on pure storage.
+          type:
+          - string
+          - 'null'
+          x-order: 10
+          readOnly: true
+        totalCapacity:
+          description: Total capacity of pure flashblade.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 11
+          readOnly: true
+    RigelClusterNode:
+      description: Params for a Rigel Cluster Node
+      title: Rigel Cluster Node
+      required:
+      - nodeIp
+      properties:
+        nodeIp:
+          description: Specifies the IP address of the Node.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        nodeId:
+          description: Specifies the ID of the Node.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+    RegisteredRemoteStorageList:
+      description: Specifies information about registered remote storage servers which are used by cohesity cluster.
+      type: object
+      title: Registered Remote Storage List
+      properties:
+        remoteStorages:
+          description: Specifies the list of registered remote storage info.
+          type: array
+          items:
+            $ref: '#/components/schemas/RemoteStorageInfo'
+          x-order: 0
+    Disk:
+      description: Specifies the details of a disk that belongs to a node.
+      type: object
+      title: Disk details
+      properties:
+        id:
+          description: Specifies id to uniquely identify a disk.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        serialNumber:
+          description: Specifies serial number of disk.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        capacityInBytes:
+          description: Specifies capacity of disk in bytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
+        model:
+          description: Specifies product model of disk.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+        nodeId:
+          description: Specifies node id of the node that this disk belong to.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 4
+        status:
+          description: Specifies status of the disk.
+          type: string
+          enum:
+          - Online
+          - Offline
+          - Removing
+          - OkToRemove
+          - Blacklist
+          - New
+          - Empty
+          - Unknown
+          - Activating
+          x-order: 5
+        type:
+          description: Specifies type of the disk.
+          type: string
+          enum:
+          - SystemDisk
+          - BootDisk
+          - DataDisk
+          - NvmeSsdDisk
+          - SataSsdDisk
+          - HddDisk
+          - Unknown
+          x-order: 6
+        location:
+          description: Specifies location of the disk in node.
+          type:
+          - string
+          - 'null'
+          x-order: 7
+    RemoteDisk:
+      description: Specifies the configuration of a remote disk.
+      type: object
+      title: Remote disk
+      required:
+      - mountPath
+      - tier
+      properties:
+        id:
+          description: Specifies the disk id.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+          readOnly: true
+        mountPath:
+          description: Specifies the NFS mount path of the remote disk.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        nodeId:
+          description: Specifies the node id of the disk. If not specified, the disk will be evenly distributed across all the nodes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
+        tier:
+          description: Specifies the tier of the disk
+          type:
+          - string
+          - 'null'
+          enum:
+          - PCIeSSD
+          - SATA-SSD
+          - SATA-HDD
+          - CLOUD
+          x-order: 3
+        capacityBytes:
+          description: Specifies the logical capacity of the disk in bytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 4
+          readOnly: true
+        usedCapacityBytes:
+          description: Specifies the logical used capacity of remote disk in bytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 5
+          readOnly: true
+        status:
+          description: Specifies the status of a remote disk.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Active
+          - Offline
+          - Deleting
+          - Deleted
+          - DataVipNotReachable
+          - FileSystemNotAccessible
+          - FileSystemDeleted
+          - Mounting
+          - Migrating
+          - Unknown
+          x-order: 6
+          readOnly: true
+        fileSystemName:
+          description: Specifies the name of filesystem on remote storage.
+          type:
+          - string
+          - 'null'
+          x-order: 7
+        dataVip:
+          description: Specifies the data vip used to mount the filesystem.
+          type:
+          - string
+          - 'null'
+          x-order: 8
+        nodeIp:
+          description: Specifies ip address of the node that this remote disk is mounted on.
+          type:
+          - string
+          - 'null'
+          x-order: 9
+        usedCapacityBytesPhysical:
+          description: Specifies the physical used capacity of remote disk in bytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 10
+          readOnly: true
+        capacityBytesPhysical:
+          description: Specifies the physical capacity of the disk in bytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 11
+          readOnly: true
+    Rack:
+      description: Specifies information about rack.
+      type: object
+      title: Rack specific response.
+      properties:
+        id:
+          description: Specifies unique id of the rack.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        name:
+          description: Specifies name of the rack
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        location:
+          description: Specifies location of the rack.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        chassisIds:
+          description: List of chassis ids that are part of the rack.
+          type: array
+          items:
+            type: integer
+            format: int64
+          x-order: 3
+    ClusterCreateVirtualParams:
+      description: Params for Virtual Edition Cluster Creation
+      title: Virtual Cluster Params.
+      properties:
+        nodes:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/ClusterCreateNodeParams'
+          x-order: 0
+    DiskIdentify:
+      description: Specifies the parameters needed to identify disk.
+      type: object
+      title: Disk identify params.
+      required:
+      - nodeId
+      - serialNumber
+      - identify
+      properties:
+        nodeId:
+          description: Specifies the node id of node that disk belongs to.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        serialNumber:
+          description: Specifies serial number of disk.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        identify:
+          description: Turn on/off led light if it is set to true/false
+          type:
+          - boolean
+          - 'null'
+          x-order: 2
+    ClusterInterfaces:
+      description: Specifies the interfaces present on a Cluster grouped by the Node where they are present.
+      type: object
+      title: Cluster Interfaces
+      properties:
+        nodes:
+          description: Specifies the list of nodes present in the cluster. If the request was sent to a free node, then this list will have exactly one entry.
+          type: array
+          items:
+            $ref: '#/components/schemas/NodeInterfaces'
+          x-order: 0
+    ClusterFreeDisks:
+      description: Sepcifies the free disks of cluster.
+      type: object
+      title: ClusterFreeDisks
+      required:
+      - nodeFreeDisks
+      properties:
+        nodeFreeDisks:
+          description: Specifies list of free disks of cluster.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/NodeFreeDisks'
+          x-order: 0
+    NodeFreeDisks:
+      description: Sepcifies the free disks of a node.
+      type: object
+      title: NodeFreeDisks
+      required:
+      - nodeId
+      - freeDisks
+      properties:
+        nodeId:
+          description: Specifies the id of a node.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        freeDisks:
+          description: Specifies list of free disks of node.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FreeDisk'
+          x-order: 1
+        chassisSerial:
+          description: Chassis serial number.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        slot:
+          description: Slot number of node
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 3
+        errorMessage:
+          description: Error message of disks assimilation request.
+          type:
+          - string
+          - 'null'
+          x-order: 4
+          readOnly: true
+    ClusterCreateRigelParams:
+      description: Params for Rigel Cluster Creation
+      title: Rigel Cluster Params.
+      required:
+      - nodes
+      - claimToken
+      properties:
+        nodes:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/RigelClusterNode'
+          x-order: 0
+        claimToken:
+          description: Specifies the token which will be used to claim this Cluster to Helios.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    CreateClusterParams:
+      description: Specifies the parameters required to create cluster.
+      type: object
+      title: Create Cluster Request Parameters.
+      required:
+      - name
+      - type
+      - enableEncryption
+      - networkConfig
+      properties:
+        name:
+          description: Specifies the name of the new cluster.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        type:
+          description: Specifies the type of the new cluster.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Physical
+          - Virtual
+          - Cloud
+          - Rigel
+          - Unknown
+          x-order: 1
+        enableEncryption:
+          description: Specifies whether or not to enable encryption. If encryption is enabled, all data on the Cluster will be encrypted. This can only be enabled at Cluster creation time and cannot be disabled later.
+          type:
+          - boolean
+          - 'null'
+          x-order: 2
+        networkConfig:
+          description: Specifies all of the parameters needed for network configuration of the new Cluster.
+          type:
+          - object
+          - 'null'
+          x-order: 3
+          $ref: '#/components/schemas/ClusterCreateNetworkConfig'
+        proxyServerConfig:
+          description: Specifies the proxy to use for external HTTP traffic.
+          x-order: 4
+          $ref: '#/components/schemas/ClusterProxyServerConfig'
+        physicalClusterParams:
+          description: Specifies the parameters which are specific to creation of physical cluster. It is required if clusterType is Physical.
+          x-order: 5
+          $ref: '#/components/schemas/ClusterCreatePhysicalParams'
+        virtualClusterParams:
+          description: Specifies the parameters which are specific to creation of virtual cluster. It is required if clusterType is Virtual.
+          x-order: 6
+          $ref: '#/components/schemas/ClusterCreateVirtualParams'
+        cloudClusterParams:
+          description: Specifies the parameters which are specific to creation of cloud cluster. It is required if clusterType is Cloud.
+          x-order: 7
+          $ref: '#/components/schemas/ClusterCreateCloudParams'
+        rigelClusterParams:
+          description: Specifies the parameters which are specific to creation of rigel cluster. It is required if clusterType is Rigel.
+          x-order: 8
+          $ref: '#/components/schemas/ClusterCreateRigelParams'
+    CommonRemoteStorageInfo:
+      description: Specifies the details of common remote storage info.
+      type: object
+      title: Common Remote Storage Info
+      required:
+      - product
+      properties:
+        id:
+          description: Specifies unique id of the registered remote storage.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+          readOnly: true
+        product:
+          description: Specifies the product type of the remote storage.
+          type:
+          - string
+          - 'null'
+          enum:
+          - FlashBlade
+          x-order: 1
+      x-cohesity-discriminator-details:
+        propertyName: product
+  responses:
+    DiscoverDisksResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ClusterFreeDisks'
+    DisksResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DisksList'
+    DiskAssimilationResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ClusterFreeDisks'
+    DiskIdentifyResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DiskIdentify'
+    NoContentResponse:
+      description: No Content
+    RegisteredRemoteStorageListResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RegisteredRemoteStorageList'
+    AddSyslogServerResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SyslogServer'
+    NodeIdentifyResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NodeIdentifyParams'
+    SyslogServerResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SyslogServer'
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    AddRemoteDiskResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AddRemoteDiskResponseBody'
+    GetRemoteDisksResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RemoteDisks'
+    ChassisResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Chassis'
+    DiskRemovalResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RemoveDisk'
+    SyslogAuditTagResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SyslogAuditTag'
+    RacksResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Racks'
+    GetSupportChannelConfigResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SupportChannelConfig'
+    ClusterResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Cluster'
+    GetNetworkInterfacesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ClusterInterfaces'
+    SyslogProgramNamesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: string
+    SyslogServerStatusResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SyslogServerStatus'
+    ClusterAMQPTargetConfigResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ClusterAMQPTargetConfig'
+    NodeRemovalResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RemoveNode'
+    RackResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Rack'
+    GetAlertsSummary:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AlertsSummaryResponse'
+    RemoteStorageRegistrationResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RemoteStorageInfo'
+    GetSyslogServersResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SyslogServers'
+    ChassisListResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ChassisList'
+  securitySchemes:
+    APIKeyHeader:
+      in: header
+      name: apiKey
+      type: apiKey

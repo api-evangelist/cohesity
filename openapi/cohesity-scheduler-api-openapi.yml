@@ -1,0 +1,521 @@
+openapi: 3.2.0
+info:
+  description: 'This API list provides operations for interfacing with the Cohesity
+
+    Cluster.'
+  title: Cohesity REST Scheduler API
+  version: '1.0'
+servers:
+- url: https://<CLUSTER_VIP>/irisservices/api/v1
+tags:
+- name: Scheduler
+paths:
+  /public/scheduler:
+    get:
+      description: 'Returns all the email report scheduler jobs that are scheduled to run.
+
+        An email report scheduler job generates a report with the specified parameters
+
+        and sends that report to the specified email accounts according to the defined
+
+        schedule.'
+      tags:
+      - Scheduler
+      summary: List the email report schedule jobs that are scheduled to run
+      operationId: GetSchedulerJobs
+      parameters:
+      - x-go-name: Ids
+        description: Specifies ids of scheduler jobs to fetch.
+        name: ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - x-go-name: TenantIds
+        description: 'TenantIds contains ids of the tenants for which objects are to be
+
+          returned.'
+        name: tenantIds
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - x-go-name: AllUnderHierarchy
+        description: 'AllUnderHierarchy specifies if objects of all the tenants under the
+
+          hierarchy of the logged in user''s organization should be returned.'
+        name: allUnderHierarchy
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/GetSchedulerJobsResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    put:
+      description: Returns the updated email report scheduler job.
+      tags:
+      - Scheduler
+      summary: Update an existing email report schedule job
+      operationId: UpdateSchedulerJob
+      responses:
+        '200':
+          $ref: '#/components/responses/UpdateSchedulerJobResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SchedulerProto_SchedulerJob'
+        description: Update Job Parameter.
+    post:
+      description: 'Returns the created email report scheduler job.
+
+        An email report scheduler job generates a report with the specified parameters
+
+        and sends that report to the specified email accounts according to the defined
+
+        schedule.
+
+        This operation may also be used to send a report once (with no schedule),
+
+        by setting the EnableRecurring field to false.'
+      tags:
+      - Scheduler
+      summary: Create an email report scheduler job
+      operationId: CreateSchedulerJob
+      responses:
+        '200':
+          $ref: '#/components/responses/EmailReportResponse'
+        '201':
+          $ref: '#/components/responses/CreateSchedulerJobResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SchedulerProto_SchedulerJob'
+        required: true
+    delete:
+      description: Specify a list of email report schedule job ids to unschedule and delete.
+      tags:
+      - Scheduler
+      summary: Delete one or more email report schedule jobs
+      operationId: DeleteSchedulerJobs
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: integer
+                format: int64
+        description: Array of ids
+components:
+  schemas:
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    SchedulerProto:
+      description: Specifies the scheduler structure which holds the various schedule jobs.
+      type: object
+      title: Scheduler Proto.
+      properties:
+        schedulerJobs:
+          description: The array of the various scheduler jobs.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SchedulerProto_SchedulerJob'
+          x-go-name: SchedulerJobs
+      x-go-package: iris/base/scheduler.pb
+    SchedulerProto_SchedulerJob_ScheduleJobParameters_ReportJobParameter:
+      type: object
+      title: Specifies the Report Job Parameters structure.
+      properties:
+        receiverEmails:
+          description: Specifies the list of receiver email addresses.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: ReceiverEmails
+        reports:
+          description: The list of reports to be sent in the mail.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SchedulerProto_SchedulerJob_ScheduleJobParameters_ReportJobParameter_Report'
+          x-go-name: Reports
+      x-go-package: iris/base/scheduler.pb
+    SchedulerProto_SchedulerJob_ScheduleJobParameters:
+      type: object
+      title: Specifies the Scheduled Job parameters.
+      properties:
+        reportJobParameter:
+          $ref: '#/components/schemas/SchedulerProto_SchedulerJob_ScheduleJobParameters_ReportJobParameter'
+      x-go-package: iris/base/scheduler.pb
+    SchedulerProto_SchedulerJob:
+      description: Specifies the structure of the scheduler job along with its attributes.
+      type: object
+      title: Scheduler Job.
+      properties:
+        enableRecurringEmail:
+          description: The boolean which specifies if this job is to be scheduled or not.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: EnableRecurringEmail
+        id:
+          description: The unique id for the scheduled job assigned by the cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Id
+        name:
+          description: The name of the scheduled job given by the user.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        scheduleJobParameters:
+          $ref: '#/components/schemas/SchedulerProto_SchedulerJob_ScheduleJobParameters'
+        schedules:
+          description: The frequency of schedule execution.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SchedulerProto_SchedulerJob_Schedule'
+          x-go-name: Schedules
+        tenantId:
+          description: Specifies id of tenant who created the scheduler job.
+          type:
+          - string
+          - 'null'
+          x-go-name: TenantId
+        type:
+          description: 'Specifies the type of the job.
+
+            The enum which defines the Job type of the job.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kSchedulerJobReport
+          x-go-name: Type
+      x-go-package: iris/base/scheduler.pb
+    SchedulerProto_SchedulerJob_ScheduleJobParameters_ReportJobParameter_Report_Parameters:
+      type: object
+      title: Specifies the report parameters.
+      properties:
+        allUnderHierarchy:
+          description: 'Specifies if subtenants of the given tenants should be
+
+            considered for report generation.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: AllUnderHierarchy
+        compactVersion:
+          description: Specifies the Cohesity Agent software version.
+          type:
+          - string
+          - 'null'
+          x-go-name: CompactVersion
+        consecutiveFailures:
+          description: Specifies the number of consecutive failures.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: ConsecutiveFailures
+        environment:
+          description: Specifies the Environment for the entity being protected.
+          type:
+          - string
+          - 'null'
+          x-go-name: Environment
+        groupBy:
+          description: Specifies if the report should be grouped by any field.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: GroupBy
+        healthStatus:
+          description: Specifies the Cohesity Agent health status.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: HealthStatus
+        hostOsType:
+          description: Specifies the OS type on which Cohesity Agent is installed.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: HostOsType
+        jobId:
+          description: Specifies the id of the job for which to get the report data.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: JobId
+        jobName:
+          description: Specifies the name of the job for which to get the report data.
+          type:
+          - string
+          - 'null'
+          x-go-name: JobName
+        lastNDays:
+          description: 'Specifies the number of days from current date for which the
+
+            report data is to be fetched.'
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: LastNDays
+        objectIds:
+          description: Specifies the object ids for which to get the report data.
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int64
+          x-go-name: ObjectIds
+        objectType:
+          description: Specifies the object type for which to get the report data.
+          type:
+          - string
+          - 'null'
+          x-go-name: ObjectType
+        registeredSourceId:
+          description: 'Specifies the registered source for which
+
+            to get the report data.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: RegisteredSourceId
+        registeredSourceIds:
+          description: 'Specifies the registered sources for which
+
+            to get the report data.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int64
+          x-go-name: RegisteredSourceIds
+        rollup:
+          description: 'Specifies the rollup(day/week/month) for protected object trends
+
+            report.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Rollup
+        runStatus:
+          description: Specifies the run status for which to get the report data.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: RunStatus
+        sid:
+          description: Specifies the sid of the user.
+          type:
+          - string
+          - 'null'
+          x-go-name: Sid
+        tenantIdVec:
+          description: Specifies tenant ids for which report needs to be generated.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: TenantIdVec
+        timezone:
+          description: Specifies the timezone.
+          type:
+          - string
+          - 'null'
+          x-go-name: Timezone
+        unixUid:
+          description: Specifies the unix uid of the user.
+          type:
+          - integer
+          - 'null'
+          format: uint32
+          x-go-name: UnixUid
+        vaultIds:
+          description: Specifies the vault ids for which to get the report data.
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int64
+          x-go-name: VaultIds
+        viewBoxId:
+          description: Specifies the view box for which to get the report data.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ViewBoxId
+        viewName:
+          description: Specifies the view name for which the report is required.
+          type:
+          - string
+          - 'null'
+          x-go-name: ViewName
+        viewboxIds:
+          description: Specifies the viewbox ids to filter by.
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int64
+          x-go-name: ViewboxIds
+        vmName:
+          description: Specifies the VM name for which to get the report data.
+          type:
+          - string
+          - 'null'
+          x-go-name: VmName
+      x-go-package: iris/base/scheduler.pb
+    SchedulerProto_SchedulerJob_Schedule:
+      description: A message which specifies the schedule of execution of the job.
+      type: object
+      title: Schedule.
+      properties:
+        day:
+          description: The day of the week when schedule should be executed (0-6).
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Day
+        hour:
+          description: The hour of the day when schedule should be executed (0-23).
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Hour
+        timezone:
+          description: The timezone for the execution of the schedule.
+          type:
+          - string
+          - 'null'
+          x-go-name: Timezone
+      x-go-package: iris/base/scheduler.pb
+    SchedulerProto_SchedulerJob_ScheduleJobParameters_ReportJobParameter_Report:
+      type: object
+      title: Specifies the type and parameters of a report.
+      properties:
+        name:
+          description: Specifies the report name.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        outputFormat:
+          description: Specifies the output format of the report.
+          type:
+          - string
+          - 'null'
+          x-go-name: OutputFormat
+        parameters:
+          $ref: '#/components/schemas/SchedulerProto_SchedulerJob_ScheduleJobParameters_ReportJobParameter_Report_Parameters'
+        subjectLine:
+          description: Specifies the subject line for report.
+          type:
+          - string
+          - 'null'
+          x-go-name: SubjectLine
+        type:
+          description: Specifies the report type.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Type
+      x-go-package: iris/base/scheduler.pb
+  responses:
+    UpdateSchedulerJobResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SchedulerProto_SchedulerJob'
+    CreateSchedulerJobResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SchedulerProto_SchedulerJob'
+    NoContentResponse:
+      description: No Content
+    EmailReportResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SchedulerProto_SchedulerJob_ScheduleJobParameters_ReportJobParameter'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    GetSchedulerJobsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SchedulerProto'

@@ -1,0 +1,476 @@
+openapi: 3.2.0
+info:
+  title: Cohesity Tags API
+  version: '1.0'
+  description: 'Operations tagged Tags across 2 of this provider''s published API definitions: cohesity-cluster-v1-openapi-original.yml, cohesity-cluster-v2-openapi-original.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://<CLUSTER_VIP>/irisservices/api/v1
+- url: /v2
+tags:
+- name: Tags
+paths:
+  /public/tags/apply:
+    put:
+      description: Returns No Error if tagging done properly
+      tags:
+      - Tags
+      summary: Apply Tags on existing objects in the Cohesity Cluster
+      operationId: ApplyTags
+      responses:
+        '200':
+          $ref: '#/components/responses/TagsOperationResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TagsOperationParameters'
+        description: Request to add or update document tags.
+    servers:
+    - url: https://<CLUSTER_VIP>/irisservices/api/v1
+  /public/tags/remove:
+    put:
+      description: Returns No Error if tagging done properly
+      tags:
+      - Tags
+      summary: Remove Tags on existing objects in the Cohesity Cluster
+      operationId: RemoveTags
+      responses:
+        '200':
+          $ref: '#/components/responses/TagsOperationResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TagsOperationParameters'
+        description: Request to add or update document tags.
+    servers:
+    - url: https://<CLUSTER_VIP>/irisservices/api/v1
+  /tags:
+    get:
+      description: 'If no parameters are specified, all tags are returned.
+
+        Specifying parameters filters the results that are returned.'
+      tags:
+      - Tags
+      summary: Get tags based on filters
+      operationId: GetTags
+      parameters:
+      - description: 'Filter by a list of Tag Ids. If Ids are mentioned all other fields
+
+          will be ignored.'
+        name: ids
+        in: query
+        schema:
+          type: array
+          items:
+            pattern: ^\d+:\d+:[A-Z0-9-]+$
+            type: string
+      - description: Filter by a list of Tag names.
+        name: names
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - description: Filter by a list of Namespaces.
+        name: namespaces
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - description: 'TenantIds contains ids of the tenants for which tags are to be
+
+          returned.'
+        name: tenantIds
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - description: 'IncludeTenants specifies if tags of all the tenants under the
+
+          hierarchy of the logged in user''s organization should be returned.
+
+          False, by default.'
+        name: includeTenants
+        in: query
+        schema:
+          type: boolean
+      - description: 'Specifies if tags marked for deletion should be shown. These are
+
+          tags which are undergoing deletion. False, by default.'
+        name: includeMarkedForDeletion
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/GetTagsResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    post:
+      description: Creates a Tag.
+      tags:
+      - Tags
+      summary: Create a Tag
+      operationId: CreateTag
+      responses:
+        '201':
+          $ref: '#/components/responses/TagResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+        description: Request to create a Tag.
+        required: true
+    servers:
+    - url: /v2
+  /tags/{id}:
+    get:
+      description: Get Tag by id.
+      tags:
+      - Tags
+      summary: Get Tag by id
+      operationId: GetTagById
+      parameters:
+      - description: Specifies the Id of the tag.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^\d+:\d+:[A-Z0-9-]+$
+      responses:
+        '200':
+          $ref: '#/components/responses/TagResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    put:
+      description: Updates a Tag by id.
+      tags:
+      - Tags
+      summary: Update a Tag
+      operationId: UpdateTag
+      parameters:
+      - description: Specifies the Id of the tag.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^\d+:\d+:[A-Z0-9-]+$
+      responses:
+        '200':
+          $ref: '#/components/responses/TagResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+        description: Request to update a tag.
+        required: true
+    delete:
+      description: Deletes a Tag by id.
+      tags:
+      - Tags
+      summary: Delete a Tag
+      operationId: DeleteTag
+      parameters:
+      - description: Specifies the Id of the tag.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^\d+:\d+:[A-Z0-9-]+$
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    servers:
+    - url: /v2
+components:
+  schemas:
+    TagsOperationResult:
+      type: object
+      title: TagsOperationResult specifies the result of tagging operation.
+      properties:
+        docErrors:
+          description: DocErrors are document errors incurred in yoda service while tagging.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DocError'
+          x-go-name: DocErrors
+      x-go-package: cohesity/iris/server/data/public
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    TagsOperationParameters:
+      type: object
+      title: TagsOperationParameters specifies tagging details.
+      properties:
+        clusterId:
+          description: ClusterId is the Id of the cluster used for constructing JobUid.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ClusterId
+        clusterIncarnationId:
+          description: 'ClusterIncarnationId is the incarnation Id of the cluster used for
+
+            constructing JobUid.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ClusterIncarnationId
+        documentIds:
+          description: DocumentIds are list of documents to be tagged.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: DocumentIds
+        entityId:
+          description: EntityId is the Id of the entity where the file resides.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: EntityId
+        jobId:
+          description: JobId is the Id of the job that took the snapshot.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: JobId
+        jobInstanceIds:
+          description: JobInstanceIds to tag corresponding snapshots.
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int64
+          x-go-name: JobInstanceIds
+        tags:
+          description: Tags are list of tags that will be operated on to corresponding objects.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Tags
+      x-go-package: cohesity/iris/server/data/public
+    DocError:
+      type: object
+      title: DocError are document error incurred in yoda service while tagging.
+      properties:
+        documentId:
+          description: DocumentId is document which caused the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: DocumentId
+        errorString:
+          description: ErrorString is the error converted to string.
+          type:
+          - string
+          - 'null'
+          x-go-name: ErrorString
+      x-go-package: cohesity/iris/server/data/public
+    GetTagsResult:
+      description: List tags result
+      type: array
+      title: List tags result.
+      items:
+        $ref: '#/components/schemas/Tag'
+    Tag:
+      description: Tag details
+      type: object
+      title: Tag.
+      required:
+      - name
+      - namespace
+      properties:
+        id:
+          description: Specifies unique id of the Tag.
+          type:
+          - string
+          - 'null'
+          pattern: ^\d+:\d+:[A-Z0-9-]+$
+          x-order: 0
+          readOnly: true
+        name:
+          description: Name of the Tag. Name has to be unique under Namespace.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        namespace:
+          description: 'Namespace of the Tag. This is used to filter tags based on
+
+            application or usecase. For example all tags related to vcenter can
+
+            be put under one namespace or different departments could have their
+
+            own namespaces e.g. finance/tag1 or operations/tag2 etc.'
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        tenantId:
+          description: Tenant Id to whom the Tag belongs.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+          readOnly: true
+        description:
+          description: Description of the Tag.
+          type:
+          - string
+          - 'null'
+          x-order: 4
+        createdTimeUsecs:
+          description: 'Specifies the timestamp in microseconds since the epoch
+
+            when this Tag was created.'
+          type:
+          - integer
+          - 'null'
+          format: uint64
+          x-order: 5
+          readOnly: true
+        lastUpdatedTimeUsecs:
+          description: 'Specifies the timestamp in microseconds since the epoch
+
+            when this Tag was last updated.'
+          type:
+          - integer
+          - 'null'
+          format: uint64
+          x-order: 6
+          readOnly: true
+        markedForDeletion:
+          description: If true, Tag is marked for deletion.
+          type:
+          - boolean
+          - 'null'
+          x-order: 7
+          readOnly: true
+        uiColor:
+          description: Color of the tag in UI.
+          type:
+          - string
+          - 'null'
+          x-order: 8
+        uiPathElements:
+          description: Path of the tag for UI nesting purposes.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-omitempty: true
+          x-order: 9
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+  responses:
+    TagsOperationResponse:
+      description: Tags Operation Response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TagsOperationResult'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    GetTagsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetTagsResult'
+    NoContentResponse:
+      description: No Content
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    TagResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Tag'
+  securitySchemes:
+    APIKeyHeader:
+      in: header
+      name: apiKey
+      type: apiKey
+x-refined-from:
+- cohesity-cluster-v1-openapi-original.yml
+- cohesity-cluster-v2-openapi-original.yml

@@ -1,0 +1,407 @@
+openapi: 3.2.0
+info:
+  description: 'This API list provides operations for interfacing with the Cohesity
+
+    Cluster.'
+  title: Cohesity REST SMB File Opens API
+  version: '1.0'
+servers:
+- url: https://<CLUSTER_VIP>/irisservices/api/v1
+tags:
+- name: SMBFileOpens
+paths:
+  /public/smbFileOpens:
+    get:
+      description: 'If no parameters are specified, all active SMB file opens currently on the
+
+        Cohesity Cluster are returned. Specifying parameters filters the results that
+
+        are returned.'
+      tags:
+      - SMBFileOpens
+      summary: List the active SMB file opens that match the filter criteria specified using…
+      operationId: GetSmbFileOpens
+      parameters:
+      - x-go-name: FilePath
+        description: 'Specifies the filepath in the view relative to the root filesystem.
+
+          If this field is specified, viewName field must also be specified.'
+        name: filePath
+        in: query
+        schema:
+          type: string
+      - x-go-name: ViewName
+        description: 'Specifies the name of the View in which to search. If a view name is not
+
+          specified, all the views in the Cluster is searched.
+
+          This field is mandatory if filePath field is specified.'
+        name: viewName
+        in: query
+        schema:
+          type: string
+      - x-go-name: PageCount
+        description: 'Specifies the maximum number of active opens to return in the response.
+
+          This field cannot be set above 1000. If this is not set, maximum of 1000
+
+          entries are returned.'
+        name: pageCount
+        in: query
+        schema:
+          type: integer
+          format: int32
+      - x-go-name: Cookie
+        description: 'Specifies the opaque string returned in the previous response.
+
+          If this is set, next set of active opens just after the previous
+
+          response are returned. If this is not set, first set of active opens
+
+          are returned.'
+        name: cookie
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/GetSmbFileOpensResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    post:
+      description: Returns nothing upon success.
+      tags:
+      - SMBFileOpens
+      summary: Closes an active SMB file open
+      operationId: CloseSmbFileOpen
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CloseSmbFileOpenParameters'
+        description: Request to close an active SMB file open.
+        required: true
+components:
+  schemas:
+    SmbActiveFilePath:
+      description: Specifies a file path in an SMB view that has active sessions and opens.
+      type: object
+      title: Active SMB file path.
+      properties:
+        activeSessions:
+          description: Specifies the sessions where the file is open.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SmbActiveSession'
+          x-go-name: ActiveSessions
+        filePath:
+          description: Specifies the filepath in the view.
+          type:
+          - string
+          - 'null'
+          x-go-name: FilePath
+        viewId:
+          description: 'Specifies the id of the View assigned by the Cohesity Cluster.
+
+            Either viewName or viewId must be specified.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ViewId
+        viewName:
+          description: Specifies the name of the View.
+          type:
+          - string
+          - 'null'
+          x-go-name: ViewName
+      x-go-package: cohesity/iris/server/data/public
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    SmbActiveFileOpensResponse:
+      description: Query response to SMB active file opens.
+      type: object
+      title: SMB Active File Open Response.
+      properties:
+        activeFilePaths:
+          description: Specifies the active opens for an SMB file in a view.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SmbActiveFilePath'
+          x-go-name: ActiveFilePaths
+        cookie:
+          description: 'Specifies an opaque string to pass to get the next set of active opens.
+
+            If null is returned, this response is the last set of active opens.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Cookie
+      x-go-package: cohesity/iris/server/data/public
+    CloseSmbFileOpenParameters:
+      description: Specifies parameters required to force close an active SMB file open.
+      type: object
+      title: Close SMB File Open Parameters.
+      properties:
+        filePath:
+          description: 'Specifies the filepath in the view relative to the root filesystem.
+
+            If this field is specified, viewName field must also be specified.'
+          type:
+          - string
+          - 'null'
+          x-go-name: FilePath
+        openId:
+          description: Specifies the id of the active open.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: OpenId
+        viewName:
+          description: 'Specifies the name of the View in which to search. If a view name is not
+
+            specified, all the views in the Cluster is searched.
+
+            This field is mandatory if filePath field is specified.'
+          type:
+          - string
+          - 'null'
+          x-go-name: ViewName
+      x-go-package: cohesity/iris/server/data/public
+    SmbActiveOpen:
+      description: Specifies an active open of an SMB file, its access and sharing information.
+      type: object
+      title: SMB Active Open File.
+      properties:
+        accessInfoList:
+          description: 'Specifies the access information.
+
+            ''kFileReadData'' indicates the right to read data from the file or named
+
+            pipe.
+
+            ''kFileWriteData'' indicates the right to write data into the file or named
+
+            pipe beyond the end of the file.
+
+            ''kFileAppendData'' indicates the right to append data into the file or named
+
+            pipe.
+
+            ''kFileReadEa'' indicates the right to read the extended attributes of the
+
+            file or named pipe.
+
+            ''kFileWriteEa'' indicates the right to write or change the extended
+
+            attributes to the file or named pipe.
+
+            ''kFileExecute'' indicates the right to delete entries within a directory.
+
+            ''kFileDeleteChild'' indicates the right to execute the file.
+
+            ''kFileReadAttributes'' indicates the right to read the attributes of the
+
+            file.
+
+            ''kFileWriteAttributes'' indicates the right to change the attributes of the
+
+            file.
+
+            ''kDelete'' indicates the right to delete the file.
+
+            ''kReadControl'' indicates the right to read the security descriptor for the
+
+            file or named pipe.
+
+            ''kWriteDac'' indicates the right to change the discretionary access control
+
+            list (DACL) in the security descriptor for the file or named pipe. For
+
+            the DACL data structure, see ACL in [MS-DTYP].
+
+            ''kWriteOwner'' indicates the right to change the owner in the security
+
+            descriptor for the file or named pipe.
+
+            ''kSynchronize'' is used only by SMB2 clients.
+
+            ''kAccessSystemSecurity'' indicates the right to read or change the system
+
+            access control list (SACL) in the security descriptor for the file or
+
+            named pipe. For the SACL data structure, see ACL in [MS-DTYP].<42>
+
+            ''kMaximumAllowed'' indicates that the client is requesting an open to the
+
+            file with the highest level of access the client has on this file.
+
+            If no access is granted for the client on this file, the server MUST
+
+            fail the open with STATUS_ACCESS_DENIED.
+
+            ''kGenericAll'' indicates a request for all the access flags that are
+
+            previously listed except kMaximumAllowed and kAccessSystemSecurity.
+
+            ''kGenericExecute'' indicates a request for the following combination of
+
+            access flags listed above:
+
+            kFileReadAttributes| kFileExecute| kSynchronize| kReadControl.
+
+            ''kGenericWrite'' indicates a request for the following combination of
+
+            access flags listed above:
+
+            kFileWriteData| kFileAppendData| kFileWriteAttributes| kFileWriteEa|
+
+            kSynchronize| kReadControl.
+
+            ''kGenericRead'' indicates a request for the following combination of
+
+            access flags listed above:
+
+            kFileReadData| kFileReadAttributes| kFileReadEa| kSynchronize|
+
+            kReadControl.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            enum:
+            - kFileReadData
+            - kFileWriteData
+            - kFileAppendData
+            - kFileReadEa
+            - kFileWriteEa
+            - kFileExecute
+            - kFileDeleteChild
+            - kFileReadAttributes
+            - kFileWriteAttributes
+            - kDelete
+            - kReadControl
+            - kWriteDac
+            - kWriteOwner
+            - kSynchronize
+            - kAccessSystemSecurity
+            - kMaximumAllowed
+            - kGenericAll
+            - kGenericExecute
+            - kGenericWrite
+            - kGenericRead
+          x-go-name: AccessInfoList
+        openId:
+          description: Specifies the id of the active open.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: OpenId
+        othersCanDelete:
+          description: Specifies whether others are allowed to delete.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: OthersCanDelete
+        othersCanRead:
+          description: Specifies whether others are allowed to read.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: OthersCanRead
+        othersCanWrite:
+          description: Specifies whether others are allowed to write.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: OthersCanWrite
+      x-go-package: cohesity/iris/server/data/public
+    SmbActiveSession:
+      description: Specifies an active session and its opens.
+      type: object
+      title: SMB Active Session.
+      properties:
+        activeOpens:
+          description: Specifies the list of active opens of the file in this session.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SmbActiveOpen'
+          x-go-name: ActiveOpens
+        clientIp:
+          description: Specifies the IP address from which the file is still open.
+          type:
+          - string
+          - 'null'
+          x-go-name: ClientIp
+        domain:
+          description: Specifies the domain of the user.
+          type:
+          - string
+          - 'null'
+          x-go-name: Domain
+        serverIp:
+          description: Specifies the IP address of the server where the file exists.
+          type:
+          - string
+          - 'null'
+          x-go-name: ServerIp
+        sessionId:
+          description: Specifies the id of the session.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: SessionId
+        username:
+          description: Specifies the username who keeps the file open.
+          type:
+          - string
+          - 'null'
+          x-go-name: Username
+      x-go-package: cohesity/iris/server/data/public
+  responses:
+    NoContentResponse:
+      description: No Content
+    GetSmbFileOpensResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SmbActiveFileOpensResponse'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'

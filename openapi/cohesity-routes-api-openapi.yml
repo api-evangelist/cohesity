@@ -1,0 +1,180 @@
+openapi: 3.2.0
+info:
+  description: 'This API list provides operations for interfacing with the Cohesity
+
+    Cluster.'
+  title: Cohesity REST Routes API
+  version: '1.0'
+servers:
+- url: https://<CLUSTER_VIP>/irisservices/api/v1
+tags:
+- name: Routes
+paths:
+  /public/routes:
+    get:
+      description: Returns the Static Routes for the Cohesity Cluster.
+      tags:
+      - Routes
+      summary: List the Static Routes for the Cohesity Cluster
+      operationId: GetRoutes
+      responses:
+        '200':
+          $ref: '#/components/responses/GetRoutesResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    post:
+      description: Returns the create status upon completion.
+      tags:
+      - Routes
+      summary: Create a Static Route on the Cohesity Cluster
+      operationId: AddRoute
+      responses:
+        '200':
+          $ref: '#/components/responses/AddRouteResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Route'
+    delete:
+      description: Returns the delete status upon completion.
+      tags:
+      - Routes
+      summary: Delete the specified Static Route from the Cohesity Cluster
+      operationId: DeleteRoute
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteRouteParam'
+components:
+  schemas:
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    Route:
+      description: Specifies the settings of a Static Route.
+      type: object
+      title: Route.
+      properties:
+        description:
+          description: Specifies a description of the Static Route.
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+        destNetwork:
+          description: 'Destination network.
+
+
+            Specifies the destination network of the Static Route.
+
+            overrideDescription: true'
+          type:
+          - string
+          - 'null'
+          x-go-name: DestNetwork
+        ifName:
+          description: 'Specifies the network interfaces name to use for communicating with the
+
+            destination network.'
+          type:
+          - string
+          - 'null'
+          x-go-name: IfName
+        ifaceGroupName:
+          description: 'Specifies the network interfaces group or interface group with vlan id to
+
+            use for communicating with the destination network.'
+          type:
+          - string
+          - 'null'
+          x-go-name: IfaceGroupName
+        nextHop:
+          description: Specifies the next hop to the destination network.
+          type:
+          - string
+          - 'null'
+          x-go-name: NextHop
+      x-go-package: cohesity/iris/server/data/public
+    DeleteRouteParam:
+      description: Specifies the delete param of a Static Route.
+      type: object
+      title: Delete Route Parameters.
+      properties:
+        destNetwork:
+          description: 'Destination network.
+
+
+            Specifies the destination network of the Static Route.
+
+            overrideDescription: true'
+          type:
+          - string
+          - 'null'
+          x-go-name: DestNetwork
+        ifName:
+          description: 'Specifies the network interfaces name to use for communicating with the
+
+            destination network.'
+          type:
+          - string
+          - 'null'
+          x-go-name: IfName
+        ifaceGroupName:
+          description: 'Specifies the network interfaces group or vlan interface group to
+
+            use for communicating with the destination network.'
+          type:
+          - string
+          - 'null'
+          x-go-name: IfaceGroupName
+      x-go-package: cohesity/iris/server/data/public
+  responses:
+    AddRouteResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Route'
+    NoContentResponse:
+      description: No Content
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    GetRoutesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            description: Specifies a list of the Static Routes.
+            type: array
+            title: Array of Static Routes.
+            items:
+              $ref: '#/components/schemas/Route'

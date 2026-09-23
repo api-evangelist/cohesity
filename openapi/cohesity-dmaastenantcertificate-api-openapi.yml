@@ -1,0 +1,206 @@
+openapi: 3.2.0
+info:
+  description: Cohesity API provides a RESTful interface to access the various data management operations on Cohesity cluster and Helios.
+  title: Cohesity REST D Maa S Tenant Certificate API
+  version: '2.0'
+servers:
+- url: /v2
+tags:
+- name: DMaaSTenantCertificate
+paths:
+  /dmaas-tenant-certificate:
+    get:
+      description: Get DMaaS tenant certificates on the cluster.
+      tags:
+      - DMaaSTenantCertificate
+      summary: Get DMaaS tenant certificates on the cluster
+      operationId: GetDmaasTenantCerts
+      parameters:
+      - description: TenantIds contains ids of the tenants for which tenants are returned. If no tenant id is specified, all tenant certificates are returned.
+        name: tenantIds
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/GetDmaasTenantCertsResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    post:
+      description: Add a DMaaS tenant certificate to the cluster.
+      tags:
+      - DMaaSTenantCertificate
+      summary: Add a DMaaS tenant certificate to the cluster
+      operationId: AddDmaasTenantCert
+      responses:
+        '201':
+          $ref: '#/components/responses/AddDmaasTenantCertResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddDmaasTenantCertRequest'
+        description: Specifies the parameters to add the tenant certificate.
+        required: true
+  /dmaas-tenant-certificate/{tenantId}:
+    delete:
+      description: Delete a tenant certificate.
+      tags:
+      - DMaaSTenantCertificate
+      summary: Delete a tenant certificate
+      operationId: DeleteDmaasTenantCert
+      parameters:
+      - description: Specifies the id of tenant.
+        name: tenantId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+components:
+  schemas:
+    TenantDmaasCerts:
+      description: Specifies a list of tenant certificates.
+      type: object
+      title: Tenant Dmaas Certificates.
+      properties:
+        certificates:
+          description: Specifies a list of tenant certificates.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TenantDmaasCert'
+          x-order: 0
+    TenantDmaasCert:
+      description: Specifies the parameters to of a tenant certificate.
+      type: object
+      title: Tenant Dmaas Certificate.
+      properties:
+        tenantId:
+          description: The id of the tenant.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        certificate:
+          description: Specifies the tenant certificate.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        privateKey:
+          description: Specifies the tenant private key.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        connectorCaChain:
+          description: Specifies the CA chain that is used to sign the connector certificate.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+        passphrase:
+          description: Specifies the passphrase used to encode the private key.
+          type:
+          - string
+          - 'null'
+          x-order: 4
+    AddDmaasTenantCertRequest:
+      description: Specifies the parameters to add an Orion tenant certificate.
+      type: object
+      title: Add Tenant Cert Request.
+      required:
+      - tenantId
+      - certificate
+      - privateKey
+      - connectorCaChain
+      properties:
+        tenantId:
+          description: The id of the tenant.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        certificate:
+          description: Specifies the tenant certificate.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        privateKey:
+          description: Specifies the tenant private key.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        connectorCaChain:
+          description: Specifies the CA chain that is used to sign the connector certificate.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+        passphrase:
+          description: Specifies the passphrase used to encode the private key.
+          type:
+          - string
+          - 'null'
+          x-order: 4
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+  responses:
+    GetDmaasTenantCertsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TenantDmaasCerts'
+    NoContentResponse:
+      description: No Content
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    AddDmaasTenantCertResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AddDmaasTenantCertRequest'
+  securitySchemes:
+    APIKeyHeader:
+      in: header
+      name: apiKey
+      type: apiKey

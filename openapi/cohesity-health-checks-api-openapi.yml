@@ -1,0 +1,103 @@
+openapi: 3.2.0
+info:
+  version: 1.0.0
+  description: Public APIs for Site Continuity v2 service.
+  title: Site Continuity v2 Service Health Checks API
+  termsOfService: https://cohesity.com
+  contact:
+    email: support@cohesity.com
+servers:
+- url: https://helios.cohesity.com/v2/mcm/site-continuity/v2
+security:
+- ApiKeyAuth: []
+tags:
+- name: Health Checks
+paths:
+  /health-checks:
+    post:
+      description: 'ROLES: DRAAS_MODIFY
+
+
+        Initiates an on demand health check on the specified DR plans.'
+      tags:
+      - Health Checks
+      summary: Initiates a health check
+      operationId: SCInitiateHealthCheck
+      responses:
+        204:
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/SCErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SCInitiateHealthCheckParams'
+        description: Specifies the parameters to initiate a health check. If the API request succeeds, clients should query the respective resource to track the status of the health check. For example - if the health check was triggered on a DR plan, then a subsequent GET API call on DR plans will return the latest status associated with the health check.
+        required: true
+components:
+  schemas:
+    SCErrorCode:
+      description: Specifies all the error codes that are returned by API server
+      type: string
+      enum:
+      - kNoError
+      - kValidationError
+      - kInternalError
+    SCError:
+      description: Specifies the error object with error code and a message.
+      type: object
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          $ref: '#/components/schemas/SCErrorCode'
+        errorMessage:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+    SCInitiateHealthCheckParams:
+      description: Specifies the parameters required to initiate a health check.
+      type: object
+      required:
+      - checkType
+      properties:
+        checkType:
+          description: Specifies the type of the resource on which the health check should be initiated.
+          type:
+          - string
+          - 'null'
+          enum:
+          - DRPlan
+        drPlanHealthCheckParams:
+          description: Specifies the parameters required for initiating health check on a DR plan.
+          type:
+          - object
+          - 'null'
+          $ref: '#/components/schemas/SCDRPlanHealthCheckParams'
+    SCDRPlanHealthCheckParams:
+      description: Specifies the parameters associated with DR plan health check.
+      type: object
+      required:
+      - drPlanId
+      properties:
+        drPlanId:
+          description: Specifies the unique identifier for the DR plan.
+          type:
+          - integer
+          - 'null'
+          format: int64
+  responses:
+    NoContentResponse:
+      description: No Content
+    SCErrorResponse:
+      description: Specifies the common error definition.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SCError'
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: apiKey

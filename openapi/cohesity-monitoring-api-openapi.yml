@@ -1,0 +1,654 @@
+openapi: 3.2.0
+info:
+  description: 'This API list provides operations for interfacing with the Cohesity
+
+    Cluster.'
+  title: Cohesity REST Monitoring API
+  version: '1.0'
+servers:
+- url: https://<CLUSTER_VIP>/irisservices/api/v1
+tags:
+- name: Monitoring
+paths:
+  /public/monitoring/jobRunInfo:
+    get:
+      description: Returns the run details for the job run.
+      tags:
+      - Monitoring
+      summary: List info related to a job run
+      operationId: GetJobRunInfo
+      parameters:
+      - x-go-name: JobType
+        description: Specifies the job type of the needed run.
+        name: jobType
+        in: query
+        required: true
+        schema:
+          type: string
+      - x-go-name: JobId
+        description: Specifies the job id of the needed run.
+        name: jobId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - x-go-name: JobRunId
+        description: Specifies the job run id of the needed run.
+        name: jobRunId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/GetJobRunInfoResponse'
+        default:
+          $ref: '#/components/responses/Error'
+  /public/monitoring/jobs:
+    get:
+      description: 'Returns the job runs for the filters.
+
+
+        Specifying parameters can alter the results that are returned.'
+      tags:
+      - Monitoring
+      summary: List runs of all the jobs
+      operationId: GetAllJobRuns
+      parameters:
+      - x-go-name: JobTypes
+        description: Specifies the job types for which runs are needed.
+        name: jobTypes
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - x-go-name: StartTimeMsecs
+        description: Specifies the start time of the time range of interest.
+        name: startTimeMsecs
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - x-go-name: EndTimeMsecs
+        description: Specifies the end time of the time range of interest.
+        name: endTimeMsecs
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - x-go-name: EnvTypes
+        description: 'Specifies the environment types of the job.
+
+          Supported environment types such as ''kView'', ''kSQL'', ''kVMware'', etc.
+
+          NOTE: ''kPuppeteer'' refers to Cohesity''s Remote Adapter.
+
+          ''kVMware'' indicates the VMware Protection Source environment.
+
+          ''kHyperV'' indicates the HyperV Protection Source environment.
+
+          ''kSQL'' indicates the SQL Protection Source environment.
+
+          ''kView'' indicates the View Protection Source environment.
+
+          ''kPuppeteer'' indicates the Cohesity''s Remote Adapter.
+
+          ''kPhysical'' indicates the physical Protection Source environment.
+
+          ''kPure'' indicates the Pure Storage Protection Source environment.
+
+          ''Nimble'' indicates the Nimble Storage Protection Source environment.
+
+          ''kAzure'' indicates the Microsoft''s Azure Protection Source environment.
+
+          ''kNetapp'' indicates the Netapp Protection Source environment.
+
+          ''kAgent'' indicates the Agent Protection Source environment.
+
+          ''kGenericNas'' indicates the Generic Network Attached Storage Protection
+
+          Source environment.
+
+          ''kAcropolis'' indicates the Acropolis Protection Source environment.
+
+          ''kPhsicalFiles'' indicates the Physical Files Protection Source environment.
+
+          ''kIsilon'' indicates the Dell EMC''s Isilon Protection Source environment.
+
+          ''kGPFS'' indicates IBM''s GPFS Protection Source environment.
+
+          ''kKVM'' indicates the KVM Protection Source environment.
+
+          ''kAWS'' indicates the AWS Protection Source environment.
+
+          ''kExchange'' indicates the Exchange Protection Source environment.
+
+          ''kHyperVVSS'' indicates the HyperV VSS Protection Source
+
+          environment.
+
+          ''kOracle'' indicates the Oracle Protection Source environment.
+
+          ''kGCP'' indicates the Google Cloud Platform Protection Source environment.
+
+          ''kFlashBlade'' indicates the Flash Blade Protection Source environment.
+
+          ''kAWSNative'' indicates the AWS Native Protection Source environment.
+
+          ''kO365'' indicates the Office 365 Protection Source environment.
+
+          ''kO365Outlook'' indicates Office 365 outlook Protection Source environment.
+
+          ''kHyperFlex'' indicates the Hyper Flex Protection Source environment.
+
+          ''kGCPNative'' indicates the GCP Native Protection Source environment.
+
+          ''kAzureNative'' indicates the Azure Native Protection Source environment.
+
+          ''kKubernetes'' indicates a Kubernetes Protection Source environment.
+
+          ''kElastifile'' indicates Elastifile Protection Source environment.
+
+          ''kAD'' indicates Active Directory Protection Source environment.
+
+          ''kRDSSnapshotManager'' indicates AWS RDS Protection Source environment.
+
+          ''kCassandra'' indicates Cassandra Protection Source environment.
+
+          ''kMongoDB'' indicates MongoDB Protection Source environment.
+
+          ''kCouchbase'' indicates Couchbase Protection Source environment.
+
+          ''kHdfs'' indicates Hdfs Protection Source environment.
+
+          ''kHive'' indicates Hive Protection Source environment.
+
+          ''kHBase'' indicates HBase Protection Source environment.'
+        name: envTypes
+        in: query
+        schema:
+          type: array
+          items:
+            enum:
+            - kVMware
+            - kHyperV
+            - kSQL
+            - kView
+            - kPuppeteer
+            - kPhysical
+            - kPure
+            - kNimble
+            - kAzure
+            - kNetapp
+            - kAgent
+            - kGenericNas
+            - kAcropolis
+            - kPhysicalFiles
+            - kIsilon
+            - kGPFS
+            - kKVM
+            - kAWS
+            - kExchange
+            - kHyperVVSS
+            - kOracle
+            - kGCP
+            - kFlashBlade
+            - kAWSNative
+            - kO365
+            - kO365Outlook
+            - kHyperFlex
+            - kGCPNative
+            - kAzureNative
+            - kKubernetes
+            - kElastifile
+            - kAD
+            - kRDSSnapshotManager
+            - kCassandra
+            - kMongoDB
+            - kCouchbase
+            - kHdfs
+            - kHive
+            - kHBase
+            type: string
+      - x-go-name: Page
+        description: Specifies the page number in case of pagination of response.
+        name: page
+        in: query
+        schema:
+          type: integer
+          format: int32
+      - x-go-name: PageSize
+        description: Specifies the size of the page in case of pagination of response.
+        name: pageSize
+        in: query
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          $ref: '#/components/responses/GetAllJobRunsResponse'
+        default:
+          $ref: '#/components/responses/Error'
+  /public/monitoring/objectDetails:
+    get:
+      description: Returns the objects details for the job run.
+      tags:
+      - Monitoring
+      summary: List details of objects in a job run
+      operationId: GetRunObjectsDetails
+      parameters:
+      - x-go-name: JobType
+        description: Specifies the job type of the needed run.
+        name: jobType
+        in: query
+        required: true
+        schema:
+          type: string
+      - x-go-name: JobId
+        description: Specifies the job id of the needed run.
+        name: jobId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - x-go-name: JobRunId
+        description: Specifies the job run id of the needed run.
+        name: jobRunId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/GetObjectsDetailsResponse'
+        default:
+          $ref: '#/components/responses/Error'
+components:
+  schemas:
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    GetAllJobRunsResult:
+      description: 'Specifies the common result structure of the response of all runs info (
+
+        protection, replication, archival etc.).'
+      type: object
+      properties:
+        endTimeMsecs:
+          description: Specifies the end time of the run.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: EndTimeMsecs
+        envType:
+          description: 'Specifies the environment type of the job.
+
+            Supported environment types such as ''kView'', ''kSQL'', ''kVMware'', etc.
+
+            NOTE: ''kPuppeteer'' refers to Cohesity''s Remote Adapter.
+
+            ''kVMware'' indicates the VMware Protection Source environment.
+
+            ''kHyperV'' indicates the HyperV Protection Source environment.
+
+            ''kSQL'' indicates the SQL Protection Source environment.
+
+            ''kView'' indicates the View Protection Source environment.
+
+            ''kPuppeteer'' indicates the Cohesity''s Remote Adapter.
+
+            ''kPhysical'' indicates the physical Protection Source environment.
+
+            ''kPure'' indicates the Pure Storage Protection Source environment.
+
+            ''Nimble'' indicates the Nimble Storage Protection Source environment.
+
+            ''kAzure'' indicates the Microsoft''s Azure Protection Source environment.
+
+            ''kNetapp'' indicates the Netapp Protection Source environment.
+
+            ''kAgent'' indicates the Agent Protection Source environment.
+
+            ''kGenericNas'' indicates the Generic Network Attached Storage Protection
+
+            Source environment.
+
+            ''kAcropolis'' indicates the Acropolis Protection Source environment.
+
+            ''kPhsicalFiles'' indicates the Physical Files Protection Source environment.
+
+            ''kIsilon'' indicates the Dell EMC''s Isilon Protection Source environment.
+
+            ''kGPFS'' indicates IBM''s GPFS Protection Source environment.
+
+            ''kKVM'' indicates the KVM Protection Source environment.
+
+            ''kAWS'' indicates the AWS Protection Source environment.
+
+            ''kExchange'' indicates the Exchange Protection Source environment.
+
+            ''kHyperVVSS'' indicates the HyperV VSS Protection Source
+
+            environment.
+
+            ''kOracle'' indicates the Oracle Protection Source environment.
+
+            ''kGCP'' indicates the Google Cloud Platform Protection Source environment.
+
+            ''kFlashBlade'' indicates the Flash Blade Protection Source environment.
+
+            ''kAWSNative'' indicates the AWS Native Protection Source environment.
+
+            ''kO365'' indicates the Office 365 Protection Source environment.
+
+            ''kO365Outlook'' indicates Office 365 outlook Protection Source environment.
+
+            ''kHyperFlex'' indicates the Hyper Flex Protection Source environment.
+
+            ''kGCPNative'' indicates the GCP Native Protection Source environment.
+
+            ''kAzureNative'' indicates the Azure Native Protection Source environment.
+
+            ''kKubernetes'' indicates a Kubernetes Protection Source environment.
+
+            ''kElastifile'' indicates Elastifile Protection Source environment.
+
+            ''kAD'' indicates Active Directory Protection Source environment.
+
+            ''kRDSSnapshotManager'' indicates AWS RDS Protection Source environment.
+
+            ''kCassandra'' indicates Cassandra Protection Source environment.
+
+            ''kMongoDB'' indicates MongoDB Protection Source environment.
+
+            ''kCouchbase'' indicates Couchbase Protection Source environment.
+
+            ''kHdfs'' indicates Hdfs Protection Source environment.
+
+            ''kHive'' indicates Hive Protection Source environment.
+
+            ''kHBase'' indicates HBase Protection Source environment.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kVMware
+          - kHyperV
+          - kSQL
+          - kView
+          - kPuppeteer
+          - kPhysical
+          - kPure
+          - kNimble
+          - kAzure
+          - kNetapp
+          - kAgent
+          - kGenericNas
+          - kAcropolis
+          - kPhysicalFiles
+          - kIsilon
+          - kGPFS
+          - kKVM
+          - kAWS
+          - kExchange
+          - kHyperVVSS
+          - kOracle
+          - kGCP
+          - kFlashBlade
+          - kAWSNative
+          - kO365
+          - kO365Outlook
+          - kHyperFlex
+          - kGCPNative
+          - kAzureNative
+          - kKubernetes
+          - kElastifile
+          - kAD
+          - kRDSSnapshotManager
+          - kCassandra
+          - kMongoDB
+          - kCouchbase
+          - kHdfs
+          - kHive
+          - kHBase
+          x-go-name: EnvType
+        jobId:
+          description: Specifies the job id.
+          type:
+          - string
+          - 'null'
+          x-go-name: JobId
+        jobName:
+          description: Specifies the job name.
+          type:
+          - string
+          - 'null'
+          x-go-name: JobName
+        jobRunId:
+          description: Specifies the job run id.
+          type:
+          - string
+          - 'null'
+          x-go-name: JobRunId
+        jobType:
+          description: 'Specifies the job type, protection, replication, archival, apollo,
+
+            indexing etc.'
+          type:
+          - string
+          - 'null'
+          x-go-name: JobType
+        startTimeMsecs:
+          description: Specifies the start time of the run.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: StartTimeMsecs
+        viewBoxId:
+          description: Specifies the view box id.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ViewBoxId
+      x-go-package: cohesity/iris/server/data/public
+    GetObjectsDetailsResult:
+      type: object
+      title: Specifies the common result structure of the objects response of a job run.
+      properties:
+        endTimeMsecs:
+          description: Specifies the end time of the run.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: EndTimeMsecs
+        entityEnv:
+          description: Specifies the entity environment of the object.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: EntityEnv
+        entityId:
+          description: Specifies the entity id of the object.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: EntityId
+        entityName:
+          description: Specifies the name of the entity.
+          type:
+          - string
+          - 'null'
+          x-go-name: EntityName
+        jobId:
+          description: Specifies the job id.
+          type:
+          - string
+          - 'null'
+          x-go-name: JobId
+        jobRunId:
+          description: Specifies the job run id.
+          type:
+          - string
+          - 'null'
+          x-go-name: JobRunId
+        jobType:
+          description: 'Specifies the job type, protection, replication, archival, apollo,
+
+            indexing etc.'
+          type:
+          - string
+          - 'null'
+          x-go-name: JobType
+        startTimeMsecs:
+          description: Specifies the start time of the run.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: StartTimeMsecs
+        status:
+          description: Specifies status of the object run.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Status
+      x-go-package: cohesity/iris/server/data/public
+    GetJobRunInfoResult:
+      type: object
+      title: Specifies the common result structure of the response of a job run.
+      properties:
+        bytesTransferred:
+          description: Specifies bytes transferred in the run.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: BytesTransferred
+        endTimeUsecs:
+          description: Specifies the end time of the run.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: EndTimeUsecs
+        failureEntities:
+          description: Specifies the number of failed objects in the run.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: FailureEntities
+        jobId:
+          description: Specifies the job id.
+          type:
+          - string
+          - 'null'
+          x-go-name: JobId
+        jobRunId:
+          description: Specifies the job run id.
+          type:
+          - string
+          - 'null'
+          x-go-name: JobRunId
+        jobType:
+          description: 'Specifies the job type, protection, replication, archival, apollo,
+
+            indexing etc.'
+          type:
+          - string
+          - 'null'
+          x-go-name: JobType
+        slaViolated:
+          description: Specifies if the sla was violated the run.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: SlaViolated
+        startTimeUsecs:
+          description: Specifies the start time of the run.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: StartTimeUsecs
+        status:
+          description: Specifies status of the run
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Status
+        successEntities:
+          description: Specifies the number successful objects in the run.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: SuccessEntities
+        totalEntities:
+          description: Specifies the number of objects in the run.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: TotalEntities
+      x-go-package: cohesity/iris/server/data/public
+  responses:
+    GetObjectsDetailsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/GetObjectsDetailsResult'
+    GetAllJobRunsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/GetAllJobRunsResult'
+    GetJobRunInfoResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetJobRunInfoResult'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'

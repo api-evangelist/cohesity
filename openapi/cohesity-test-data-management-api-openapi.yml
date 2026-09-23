@@ -1,0 +1,2190 @@
+openapi: 3.2.0
+info:
+  description: Cohesity API provides a RESTful interface to access the various data management operations on Cohesity cluster and Helios.
+  title: Cohesity REST Test Data Management API
+  version: '2.0'
+servers:
+- url: /v2
+tags:
+- name: Test Data Management
+paths:
+  /tdm/objects:
+    get:
+      description: Get all TDM objects matching specified optional filter criteria.
+      tags:
+      - Test Data Management
+      summary: Get all TDM objects
+      operationId: GetTdmObjects
+      parameters:
+      - description: Get the objects matching specifies IDs.
+        name: ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - description: Get the objects matching specified environments.
+        name: environments
+        in: query
+        schema:
+          type: array
+          items:
+            enum:
+            - kSQL
+            - kOracle
+            type: string
+      - description: Get the objects matching specified name.
+        name: name
+        in: query
+        schema:
+          type: string
+      - description: Get the objects belonging to the specified TDM task IDs.
+        name: taskIds
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - description: Get the objects matching specified statuses.
+        name: statuses
+        in: query
+        schema:
+          type: array
+          items:
+            enum:
+            - scheduled
+            - inProgress
+            - succeeded
+            - failed
+            - canceled
+            type: string
+      - description: Get the next set of objects by specifying the cookie string, as received from the server in the last call.
+        name: paginationCookie
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/GetTdmObjectsResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /tdm/objects/{id}:
+    get:
+      description: Get a TDM object by specifying its ID.
+      tags:
+      - Test Data Management
+      summary: Get TDM object by ID
+      operationId: GetTdmObjectById
+      parameters:
+      - description: Specifies the ID of the TDM object.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/GetTdmObjectResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /tdm/objects/{id}/timeline-events:
+    get:
+      description: Get the collection of timeline events of a TDM object by specifying its ID.
+      tags:
+      - Test Data Management
+      summary: Get timeline events of object
+      operationId: GetTdmTimelineEventsByObjectId
+      parameters:
+      - description: Specifies the ID of the TDM object.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - description: Get the events created after the specified time (in usecs from epoch).
+        name: createdAfter
+        in: query
+        schema:
+          type: integer
+          format: int64
+      - description: Get the events created before the specified time (in usecs from epoch).
+        name: createdBefore
+        in: query
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/GetTdmObjectTimelineEventsResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /tdm/snapshots/{id}:
+    put:
+      description: Update the details of a snapshot by specifying its ID.
+      tags:
+      - Test Data Management
+      summary: Update a snapshot by ID
+      operationId: UpdateTdmSnapshotById
+      parameters:
+      - description: Specifies the ID of the snapshot.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/UpdateTdmSnapshotResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTdmSnapshotRequest'
+        description: Specifies the parameters to update the snapshot.
+        required: true
+    delete:
+      description: Delete a snapshot by specifying its ID.
+      tags:
+      - Test Data Management
+      summary: Delete a snapshot by ID
+      operationId: DeleteTdmSnapshotById
+      parameters:
+      - description: Specifies the ID of the snapshot.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /tdm/tasks:
+    get:
+      description: Get all the TDM tasks matching specified optional filter criteria.
+      tags:
+      - Test Data Management
+      summary: Get all TDM tasks
+      operationId: GetTdmTasks
+      parameters:
+      - description: Get the tasks matching specified IDs.
+        name: ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - description: Get the tasks matching specified actions.
+        name: actions
+        in: query
+        schema:
+          type: array
+          items:
+            enum:
+            - clone
+            - teardown
+            - refresh
+            - snapshot
+            - rewind
+            type: string
+      - description: Get the tasks matching specified environments.
+        name: environments
+        in: query
+        schema:
+          type: array
+          items:
+            enum:
+            - kSQL
+            - kOracle
+            type: string
+      - description: Get the tasks created after the specified time (in usecs from epoch).
+        name: createdAfterUsecs
+        in: query
+        schema:
+          type: integer
+          format: int64
+      - description: Get the tasks created before the specified time (in usecs from epoch).
+        name: createdBeforeUsecs
+        in: query
+        schema:
+          type: integer
+          format: int64
+      - description: Get the tasks matching specified statuses.
+        name: statuses
+        in: query
+        schema:
+          type: array
+          items:
+            enum:
+            - scheduled
+            - inProgress
+            - succeeded
+            - failed
+            - canceled
+            type: string
+      - description: Get the tasks for the specified TDM object IDs.
+        name: objectIds
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - description: Get the next set of tasks by specifying the cookie string, as received from the server in the last call.
+        name: paginationCookie
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/GetTdmTasksResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    post:
+      description: Create a task for the Test Data Management (TDM) workflow.
+      tags:
+      - Test Data Management
+      summary: Create a TDM task
+      operationId: CreateTdmTask
+      responses:
+        '201':
+          $ref: '#/components/responses/CreateTdmTaskResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              x-cohesity-discriminator-ref: CommonTdmTaskRequestParams
+              $ref: '#/components/schemas/CommonTdmTaskRequestParams4b65913c-05f2-4bdd-b9d7-66a297c749d1'
+        description: Specifies the parameters to create a TDM task.
+        required: true
+  /tdm/tasks/{id}:
+    get:
+      description: Get a TDM task by ID.
+      tags:
+      - Test Data Management
+      summary: Get a TDM task by ID
+      operationId: GetTdmTaskById
+      parameters:
+      - description: Specifies the ID of the TDM task.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/GetTdmTaskResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+components:
+  schemas:
+    TdmRefreshTaskResponseParams:
+      description: Specifies the response parameters for a refresh task.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/CommonTdmRefreshTaskResponseParams'
+      - type: object
+        properties:
+          oracleParams:
+            x-cohesity-discriminator-value: kOracle
+            x-order: 0
+            $ref: '#/components/schemas/OracleCloneRefreshTask'
+    CommonPostBackupScriptParams:
+      description: Specifies the common params for PostBackup scripts.
+      title: Common PostBackup Script Params
+      allOf:
+      - $ref: '#/components/schemas/CommonPrePostScriptParams'
+    ObjectSnapshot:
+      description: Specifies an Object Snapshot.
+      type: object
+      title: Object Snapshot.
+      properties:
+        id:
+          description: Specifies the id of the snapshot.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        snapshotTargetType:
+          description: Specifies the target type where the Object's snapshot resides.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Local
+          - Archival
+          x-order: 1
+        indexingStatus:
+          description: Specifies the indexing status of objects in this snapshot.<br> 'InProgress' indicates the indexing is in progress.<br> 'Done' indicates indexing is done.<br> 'NoIndex' indicates indexing is not applicable.<br> 'Error' indicates indexing failed with error.
+          type:
+          - string
+          - 'null'
+          enum:
+          - InProgress
+          - Done
+          - NoIndex
+          - Error
+          x-order: 2
+        protectionGroupId:
+          description: Specifies id of the Protection Group.
+          type:
+          - string
+          - 'null'
+          pattern: ^\d+:\d+:\d+$
+          x-order: 3
+        protectionGroupName:
+          description: Specifies name of the Protection Group.
+          type:
+          - string
+          - 'null'
+          x-order: 4
+        protectionGroupRunId:
+          description: Specifies id of the Protection Group Run.
+          type:
+          - string
+          - 'null'
+          pattern: ^\d+:\d+$
+          x-order: 5
+        runInstanceId:
+          description: Specifies the instance id of the protection run which create the snapshot.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 6
+        runStartTimeUsecs:
+          description: Specifies the start time of the run in micro seconds.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 7
+        sourceGroupId:
+          description: Specifies the source protection group id in case of replication.
+          type:
+          - string
+          - 'null'
+          x-order: 8
+        runType:
+          description: Specifies the type of protection run created this snapshot.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kRegular
+          - kFull
+          - kLog
+          - kSystem
+          - kHydrateCDP
+          x-order: 9
+        environment:
+          description: Specifies the snapshot environment.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kVMware
+          - kHyperV
+          - kAzure
+          - kKVM
+          - kAWS
+          - kAcropolis
+          - kGCP
+          - kPhysical
+          - kPhysicalFiles
+          - kIsilon
+          - kNetapp
+          - kGenericNas
+          - kFlashBlade
+          - kElastifile
+          - kGPFS
+          - kPure
+          - kNimble
+          - kSQL
+          - kOracle
+          - kExchange
+          - kAD
+          - kView
+          - kO365
+          - kHyperFlex
+          - kKubernetes
+          - kCassandra
+          - kMongoDB
+          - kCouchbase
+          - kHdfs
+          - kHive
+          - kHBase
+          - kUDA
+          x-order: 10
+        snapshotTimestampUsecs:
+          description: Specifies the timestamp in Unix time epoch in microseconds when the snapshot is taken for the specified Object.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 11
+        expiryTimeUsecs:
+          description: Specifies the expiry time of the snapshot in Unix timestamp epoch in microseconds. If the snapshot has no expiry, this property will not be set.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 12
+        externalTargetInfo:
+          description: Specifies the external target information if this is an archival snapshot.
+          allOf:
+          - $ref: '#/components/schemas/ArchivalTargetSummaryInfo'
+          - {}
+          x-order: 13
+        storageDomainId:
+          description: Specifies the Storage Domain id where the snapshot of object is present.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 14
+        hasDataLock:
+          description: Specifies if this snapshot has datalock.
+          type:
+          - boolean
+          - 'null'
+          x-order: 15
+        onLegalHold:
+          description: Specifies if this snapshot is on legalhold.
+          type:
+          - boolean
+          - 'null'
+          x-order: 16
+        objectId:
+          description: Specifies the object id which the snapshot is taken from.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 17
+        objectName:
+          description: Specifies the object name which the snapshot is taken from.
+          type:
+          - string
+          - 'null'
+          x-order: 18
+        sourceId:
+          description: Specifies the object source id which the snapshot is taken from.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 19
+        physicalParams:
+          description: Specifies the parameters specific to Physical type snapshot.
+          allOf:
+          - $ref: '#/components/schemas/PhysicalSnapshotParams'
+          - {}
+          x-order: 20
+        hypervParams:
+          description: Specifies the parameters specific to HyperV type snapshot.
+          allOf:
+          - $ref: '#/components/schemas/HypervSnapshotParams'
+          - {}
+          x-order: 21
+        awsParams:
+          description: Specifies the parameters specific to AWS type snapshot.
+          allOf:
+          - $ref: '#/components/schemas/AwsSnapshotParams'
+          - {}
+          x-order: 22
+        azureParams:
+          description: Specifies the parameters specific to Azure type snapshot.
+          allOf:
+          - $ref: '#/components/schemas/AzureSnapshotParams'
+          - {}
+          x-order: 23
+        netappParams:
+          description: Specifies the parameters specific to NetApp type snapshot.
+          allOf:
+          - $ref: '#/components/schemas/NetappObjectParams'
+          - {}
+          x-order: 24
+        isilonParams:
+          description: Specifies the parameters specific to Isilon type snapshot.
+          allOf:
+          - $ref: '#/components/schemas/IsilonObjectParams'
+          - {}
+          x-order: 25
+        gpfsParams:
+          description: Specifies the parameters specific to GPFS type snapshot.
+          allOf:
+          - $ref: '#/components/schemas/CommonNasObjectParams'
+          - {}
+          x-order: 26
+        flashbladeParams:
+          description: Specifies the parameters specific to Flashblade type snapshot.
+          allOf:
+          - $ref: '#/components/schemas/FlashbladeObjectParams'
+          - {}
+          x-order: 27
+        genericNasParams:
+          description: Specifies the parameters specific to Generic NAS type snapshot.
+          allOf:
+          - $ref: '#/components/schemas/CommonNasObjectParams'
+          - {}
+          x-order: 28
+        elastifileParams:
+          description: Specifies the parameters specific to NetApp type snapshot.
+          allOf:
+          - $ref: '#/components/schemas/CommonNasObjectParams'
+          - {}
+          x-order: 29
+    TierLevelSettings:
+      description: 'Specifies the settings tier levels configured with each archival target. The tier settings need to be applied in specific order and default tier should always be passed as first entry in tiers array. The following example illustrates how to configure tiering input for AWS tiering. Same type of input structure applied to other cloud platforms also. <br>If user wants to achieve following tiering for backup, <br>User Desired Tiering- <br><t>1.Archive Full back up for 12 Months <br><t>2.Tier Levels <br><t><t>[1,12] [ <br><t><t><t>s3 (1 to 2 months), (default tier) <br><t><t><t>s3 Intelligent tiering (3 to 6 months), <br><t><t><t>s3 One Zone (7 to 9 months) <br><t><t><t>Glacier (10 to 12 months)] <br><t>API Input <br><t><t>1.tiers-[ <br><t><t><t>{''tierType'': ''S3'',''moveAfterUnit'':''months'', <br><t><t><t>''moveAfter'':2 - move from s3 to s3Inte after 2 months}, <br><t><t><t>{''tierType'': ''S3Inte'',''moveAfterUnit'':''months'', <br><t><t><t>''moveAfter'':4 - move from S3Inte to Glacier after 4 months}, <br><t><t><t>{''tierType'': ''Glacier'', ''moveAfterUnit'':''months'', <br><t><t><t>''moveAfter'': 3 - move from Glacier to S3 One Zone after 3 months }, <br><t><t><t>{''tierType'': ''S3 One Zone'', ''moveAfterUnit'': nil, <br><t><t><t>''moveAfter'': nil - For the last record, ''moveAfter'' and ''moveAfterUnit'' <br><t><t><t>will be ignored since there are no further tier for data movement } <br><t><t><t>}]'
+      type: object
+      required:
+      - cloudPlatform
+      properties:
+        cloudPlatform:
+          description: Specifies the cloud platform to enable tiering.
+          type:
+          - string
+          - 'null'
+          enum:
+          - AWS
+          - Azure
+          - Oracle
+          - Google
+          x-order: 0
+        awsTiering:
+          description: Specifies the settings for AWS Tiers.
+          type:
+          - object
+          - 'null'
+          x-order: 1
+          $ref: '#/components/schemas/AWSTiers'
+        azureTiering:
+          description: Specifies the settings for Azure Tiers.
+          type:
+          - object
+          - 'null'
+          x-order: 2
+          $ref: '#/components/schemas/AzureTiers'
+        googleTiering:
+          description: Specifies the settings for Google Tiers.
+          type:
+          - object
+          - 'null'
+          x-order: 3
+          $ref: '#/components/schemas/GoogleTiers'
+        oracleTiering:
+          description: Specifies the settings for Oracle Tiers.
+          type:
+          - object
+          - 'null'
+          x-order: 4
+          $ref: '#/components/schemas/OracleTiers'
+    PaginationInfo:
+      description: Specifies information needed to support pagination.
+      type: object
+      properties:
+        cookie:
+          description: Specifies a cookie which can be passed in by the user in order to retrieve the next page of results.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+    FlashbladeObjectParams:
+      description: Specifies the common parameters for Flashblade objects.
+      type: object
+      properties:
+        supportedNasMountProtocols:
+          description: Specifies a list of NAS mount protocols supported by this object.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            enum:
+            - kNfs
+            - kCifs2
+            - kHttp
+          x-order: 0
+    OracleTiers:
+      description: Specifies Oracle tiers.
+      type: object
+      required:
+      - tiers
+      properties:
+        tiers:
+          description: Specifies the tiers that are used to move the archived backup from current tier to next tier. The order of the tiers determines which tier will be used next for moving the archived backup. The first tier input should always be default tier where backup will be acrhived. Each tier specifies how much time after the backup will be moved to next tier from the current tier.
+          type:
+          - array
+          - 'null'
+          minLength: 1
+          items:
+            $ref: '#/components/schemas/OracleTier'
+          x-order: 0
+    CommonOracleCloneParams:
+      description: Specifies the common properties of an Oracle clone.
+      type: object
+      required:
+      - dbName
+      - homeFolder
+      - baseFolder
+      properties:
+        dbName:
+          description: Specifies the name of the cloned database.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        homeFolder:
+          description: Specifies the home folder for the cloned database.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        baseFolder:
+          description: Specifies the base folder of Oracle installation on the target host.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        sga:
+          description: Specifies the System Global Area (SGA) for the clone database.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+    CommonNasObjectParams:
+      description: Specifies the common parameters for NAS objects.
+      type: object
+      properties:
+        supportedNasMountProtocols:
+          description: Specifies a list of NAS mount protocols supported by this object.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            enum:
+            - kNoProtocol
+            - kNfs3
+            - kCifs1
+            - kCifs2
+            - kCifs3
+          x-order: 0
+    CommonTdmObjectResponseParams:
+      description: Specifies the common parameters for a TDM object response.
+      type: object
+      required:
+      - id
+      - environment
+      properties:
+        id:
+          description: Specifies the unique ID of the object.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        name:
+          description: Specifies the name of the object.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        status:
+          description: Specifies the current status of the object.
+          type:
+          - string
+          - 'null'
+          enum:
+          - scheduled
+          - inProgress
+          - succeeded
+          - failed
+          - canceled
+          x-order: 2
+        environment:
+          description: Specifies the environment of the object.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kSQL
+          - kOracle
+          x-order: 3
+        createdByUser:
+          description: Specifies the user, who created the object.
+          allOf:
+          - $ref: '#/components/schemas/User'
+          x-order: 4
+        lastAction:
+          description: Specifies the details of the last action performed on this object.
+          allOf:
+          - $ref: '#/components/schemas/TdmObjectTimelineEvent'
+          x-order: 5
+        sizeBytes:
+          description: Specifies the size (in bytes) of the object.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 6
+        parent:
+          description: Specifies the parent of the object.
+          allOf:
+          - $ref: '#/components/schemas/ObjectSummary'
+          x-order: 7
+      x-cohesity-discriminator-details:
+        propertyName: environment
+    User:
+      description: Specifies a user object.
+      type: object
+      title: User
+      properties:
+        name:
+          description: Specifies the name of the user.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        sid:
+          description: Specifies the sid of the user.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        domain:
+          description: Specifies the domain of the user.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+    CommonTdmCloneTaskResponseParams:
+      description: Specifies the common response params for a TDM clone task.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/CommonTdmCloneTaskParams'
+      - type: object
+        properties:
+          snapshot:
+            description: Specifies the details of the snapshot used for cloning.
+            allOf:
+            - $ref: '#/components/schemas/ObjectSnapshot'
+            x-order: 0
+          parent:
+            description: Specifies the details of the parent object of the clone.
+            allOf:
+            - $ref: '#/components/schemas/ObjectSummary'
+            x-order: 1
+          target:
+            description: Specifies the details of the target, where the clone is created.
+            allOf:
+            - $ref: '#/components/schemas/ObjectSummary'
+            x-order: 2
+          view:
+            description: Specifies the details of the view, which is used for the clone.
+            allOf:
+            - $ref: '#/components/schemas/ViewParams'
+            x-order: 3
+    ObjectIdentifier:
+      description: Specifies the basic info to identify an object.
+      title: Object Identifier.
+      properties:
+        id:
+          description: Specifies object id.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        name:
+          description: Specifies the name of the object.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        sourceId:
+          description: Specifies registered source id to which object belongs.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
+        sourceName:
+          description: Specifies registered source name to which object belongs.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+        environment:
+          description: Specifies the environment of the object.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kVMware
+          - kHyperV
+          - kAzure
+          - kKVM
+          - kAWS
+          - kAcropolis
+          - kGCP
+          - kPhysical
+          - kPhysicalFiles
+          - kIsilon
+          - kNetapp
+          - kGenericNas
+          - kFlashBlade
+          - kElastifile
+          - kGPFS
+          - kPure
+          - kNimble
+          - kSQL
+          - kOracle
+          - kExchange
+          - kAD
+          - kView
+          - kO365
+          - kHyperFlex
+          - kKubernetes
+          - kCassandra
+          - kMongoDB
+          - kCouchbase
+          - kHdfs
+          - kHive
+          - kHBase
+          - kUDA
+          x-order: 4
+    ObjectTypeVCenterParams:
+      type: object
+      title: Object Type VCenter Params
+      properties:
+        isCloudEnv:
+          description: Specifies that registered vCenter source is a VMC (VMware Cloud) environment or not.
+          type:
+          - boolean
+          - 'null'
+          x-order: 0
+    CommonTdmTaskResponseParams81bccdc8-f441-4a25-a03e-85698b230b37:
+      description: Specifies the common parameters for a TDM task response.
+      type: object
+      required:
+      - id
+      - action
+      properties:
+        id:
+          description: Specifies the unique ID of the task.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        name:
+          description: Specifies the name of the task.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        startTimeUsecs:
+          description: Specifies the time (in usecs from epoch) when the task was started.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
+        endTimeUsecs:
+          description: Specifies the time (in usecs from epoch) when the task was completed.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 3
+        status:
+          description: Specifies the current status of the task.
+          type:
+          - string
+          - 'null'
+          enum:
+          - scheduled
+          - inProgress
+          - succeeded
+          - failed
+          - canceled
+          x-order: 4
+        action:
+          description: Specifies the TDM Task action.
+          type:
+          - string
+          - 'null'
+          enum:
+          - clone
+          - teardown
+          - refresh
+          - snapshot
+          - rewind
+          x-order: 5
+        createdByUser:
+          description: Specifies the user, who created this task.
+          allOf:
+          - $ref: '#/components/schemas/User'
+          x-order: 6
+        progressTaskId:
+          description: Specifies the ID for tracking progress of this task.
+          type:
+          - string
+          - 'null'
+          x-order: 7
+      x-cohesity-discriminator-details:
+        propertyName: action
+      x-discriminator:
+        mapping:
+          clone: '#/definitions/CommonTdmTaskResponseParams81bccdc8-f441-4a25-a03e-85698b230b37TdmCloneTaskResponseParamsWrapper'
+          refresh: '#/definitions/CommonTdmTaskResponseParams81bccdc8-f441-4a25-a03e-85698b230b37TdmRefreshTaskResponseParamsWrapper'
+        propertyName: action
+    ArchivalTargetTierInfo:
+      description: Specifies the tier info for archival.
+      title: Archival Target Tier Info
+      allOf:
+      - $ref: '#/components/schemas/TierLevelSettings'
+      - type: object
+        properties:
+          currentTierType:
+            description: Specifies the type of the current tier where the snapshot resides. This will be specified if the run is a CAD run.
+            type:
+            - string
+            - 'null'
+            enum:
+            - kAmazonS3Standard
+            - kAmazonS3StandardIA
+            - kAmazonS3OneZoneIA
+            - kAmazonS3IntelligentTiering
+            - kAmazonS3Glacier
+            - kAmazonS3GlacierDeepArchive
+            - kAzureTierHot
+            - kAzureTierCool
+            - kAzureTierArchive
+            - kGoogleStandard
+            - kGoogleRegional
+            - kGoogleMultiRegional
+            - kGoogleNearline
+            - kGoogleColdline
+            - kOracleTierStandard
+            - kOracleTierArchive
+            x-order: 0
+    AzureTier:
+      description: Specifies the settings for a Azure tier.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/CommonCloudTierSettings'
+      - type: object
+        required:
+        - tierType
+        properties:
+          tierType:
+            description: Specifies the Azure tier types.
+            type:
+            - string
+            - 'null'
+            enum:
+            - kAzureTierHot
+            - kAzureTierCool
+            - kAzureTierArchive
+            x-order: 0
+    CommonTdmObjectTimelineEventsResponseParams:
+      description: Specifies the common parameters for the TDM object timeline events response.
+      type: object
+      required:
+      - id
+      - action
+      properties:
+        id:
+          description: Specifies the unique ID of the event.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        createdAt:
+          description: Specifies the time (in usecs from epoch) at which the event was created.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+        createdByUser:
+          description: Specifies the user, who triggered the event.
+          allOf:
+          - $ref: '#/components/schemas/User'
+          x-order: 2
+        status:
+          description: Specifies the current status of the event.
+          type:
+          - string
+          - 'null'
+          enum:
+          - scheduled
+          - inProgress
+          - succeeded
+          - failed
+          - canceled
+          x-order: 3
+        errorMessage:
+          description: Specifies the error message if the event is in failed state.
+          type:
+          - string
+          - 'null'
+          x-order: 4
+        description:
+          description: Specifies the description of the event, as provided by the user.
+          type:
+          - string
+          - 'null'
+          x-order: 5
+        eventGroupId:
+          description: Specifies the ID of the group this event belongs to. Events with same group ID are considered to be a single timeline for the TDM object. Different group IDs mean different timelines for the TDM object.
+          type:
+          - string
+          - 'null'
+          x-order: 6
+        action:
+          description: Specifies the action for the event.
+          type:
+          - string
+          - 'null'
+          enum:
+          - clone
+          - teardown
+          - refresh
+          - snapshot
+          - rewind
+          x-order: 7
+      x-cohesity-discriminator-details:
+        propertyName: action
+    UpdateTdmSnapshotRequest:
+      description: Specifies the request parameters to update a TDM snapshot.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/CommonTdmCloneSnapshotParams'
+    OracleCloneTask:
+      description: Specifies the information about an Oracle clone task.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/PrePostScriptParams'
+      - $ref: '#/components/schemas/CommonOracleCloneParams'
+    NetappObjectParams:
+      description: Specifies the common parameters for Netapp objects.
+      type: object
+      properties:
+        supportedNasMountProtocols:
+          description: Specifies a list of NAS mount protocols supported by this object.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            enum:
+            - kNfs
+            - kCifs
+            - kIscsi
+            - kFc
+            - kFcache
+            - kHttp
+            - kNdmp
+            - kManagement
+            - kNvme
+          x-order: 0
+        volumeType:
+          description: Specifies the Netapp volume type.
+          type:
+          - string
+          - 'null'
+          enum:
+          - ReadWrite
+          - LoadSharing
+          - DataProtection
+          - DataCache
+          - Temp
+          - UnkownType
+          x-order: 1
+    GoogleTiers:
+      description: Specifies Google tiers.
+      type: object
+      required:
+      - tiers
+      properties:
+        tiers:
+          description: Specifies the tiers that are used to move the archived backup from current tier to next tier. The order of the tiers determines which tier will be used next for moving the archived backup. The first tier input should always be default tier where backup will be acrhived. Each tier specifies how much time after the backup will be moved to next tier from the current tier.
+          type:
+          - array
+          - 'null'
+          minLength: 1
+          items:
+            $ref: '#/components/schemas/GoogleTier'
+          x-order: 0
+    PrePostScriptParams:
+      description: Specifies the params for pre and post scripts.
+      type: object
+      title: Pre and Post Script Params.
+      properties:
+        preScript:
+          description: Specifies the pre backup script params. This script will be executed before starting backup run.
+          type:
+          - object
+          - 'null'
+          x-order: 0
+          $ref: '#/components/schemas/CommonPreBackupScriptParams'
+        postScript:
+          description: Specifies the post backup script params. This script will be executed after backup run finishes.
+          type:
+          - object
+          - 'null'
+          x-order: 1
+          $ref: '#/components/schemas/CommonPostBackupScriptParams'
+    CommonPreBackupScriptParams:
+      description: Specifies the common params for PreBackup scripts.
+      title: Common PreBackup Script Params
+      allOf:
+      - $ref: '#/components/schemas/CommonPrePostScriptParams'
+      - type: object
+        properties:
+          continueOnError:
+            description: Specifies if the script needs to continue even if there is an occurence of an error. If this flag is set to true, then Backup Run will start even if the pre backup script fails. If not specified or false, then backup run will not start when script fails.
+            type:
+            - boolean
+            - 'null'
+            x-order: 0
+    CommonTdmObjectResponseParamsa153f0a0-cd89-4b59-836b-6ec803e6e173:
+      description: Specifies the common parameters for a TDM object response.
+      type: object
+      required:
+      - id
+      - environment
+      properties:
+        id:
+          description: Specifies the unique ID of the object.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        name:
+          description: Specifies the name of the object.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        status:
+          description: Specifies the current status of the object.
+          type:
+          - string
+          - 'null'
+          enum:
+          - scheduled
+          - inProgress
+          - succeeded
+          - failed
+          - canceled
+          x-order: 2
+        environment:
+          description: Specifies the environment of the object.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kSQL
+          - kOracle
+          x-order: 3
+        createdByUser:
+          description: Specifies the user, who created the object.
+          allOf:
+          - $ref: '#/components/schemas/User'
+          x-order: 4
+        lastAction:
+          description: Specifies the details of the last action performed on this object.
+          allOf:
+          - $ref: '#/components/schemas/TdmObjectTimelineEvent'
+          x-order: 5
+        sizeBytes:
+          description: Specifies the size (in bytes) of the object.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 6
+        parent:
+          description: Specifies the parent of the object.
+          allOf:
+          - $ref: '#/components/schemas/ObjectSummary'
+          x-order: 7
+      x-cohesity-discriminator-details:
+        propertyName: environment
+      x-discriminator:
+        mapping:
+          oracle: '#/definitions/CommonTdmObjectResponseParamsa153f0a0-cd89-4b59-836b-6ec803e6e173OracleCloneObjectWrapper'
+        propertyName: environment
+    OracleTier:
+      description: Specifies the settings for a Oracle tier.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/CommonCloudTierSettings'
+      - type: object
+        required:
+        - tierType
+        properties:
+          tierType:
+            description: Specifies the Oracle tier types.
+            type:
+            - string
+            - 'null'
+            enum:
+            - kOracleTierStandard
+            - kOracleTierArchive
+            x-order: 0
+    CommonTdmTaskRequestParams4b65913c-05f2-4bdd-b9d7-66a297c749d1:
+      description: Specifies the common parameters used in TDM Task Creation.
+      type: object
+      required:
+      - action
+      properties:
+        name:
+          description: Specifies the name of the task.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        action:
+          description: Specifies the TDM Task action.
+          type:
+          - string
+          - 'null'
+          enum:
+          - clone
+          - teardown
+          - refresh
+          - snapshot
+          - rewind
+          x-order: 1
+      x-cohesity-discriminator-details:
+        propertyName: action
+      x-discriminator:
+        mapping:
+          clone: '#/definitions/CommonTdmTaskRequestParams4b65913c-05f2-4bdd-b9d7-66a297c749d1TdmCloneTaskRequestParamsWrapper'
+          snapshot: '#/definitions/CommonTdmTaskRequestParams4b65913c-05f2-4bdd-b9d7-66a297c749d1TdmSnapshotTaskParamsWrapper'
+          refresh: '#/definitions/CommonTdmTaskRequestParams4b65913c-05f2-4bdd-b9d7-66a297c749d1TdmRefreshTaskRequestParamsWrapper'
+          teardown: '#/definitions/CommonTdmTaskRequestParams4b65913c-05f2-4bdd-b9d7-66a297c749d1TdmTeardownTaskRequestParamsWrapper'
+        propertyName: action
+    CommonTdmCloneSnapshotParams:
+      description: Specifies the common properties of a clone snapshot.
+      type: object
+      properties:
+        label:
+          description: Specifies the label for the snapshot.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+    ArchivalTargetSummaryInfo:
+      description: Specifies archival target summary information.
+      type: object
+      title: Archival target.
+      properties:
+        targetId:
+          description: Specifies the archival target ID.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        archivalTaskId:
+          description: Specifies the archival task id. This is a protection group UID which only applies when archival type is 'Tape'.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        targetName:
+          description: Specifies the archival target name.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        targetType:
+          description: Specifies the archival target type.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Tape
+          - Cloud
+          - Nas
+          x-order: 3
+        tierSettings:
+          description: Specifies the tier level settings configured with archival target. This will be specified if the run is a CAD run.
+          type:
+          - object
+          - 'null'
+          x-order: 4
+          $ref: '#/components/schemas/ArchivalTargetTierInfo'
+    CommonTdmRefreshTaskResponseParams:
+      description: Specifies the common response params for a TDM refresh task.
+      type: object
+      required:
+      - environment
+      properties:
+        environment:
+          description: Specifies the environment of the TDM refresh task.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kOracle
+          x-order: 0
+        parent:
+          description: Specifies the details of the parent object of the clone.
+          allOf:
+          - $ref: '#/components/schemas/ObjectSummary'
+          x-order: 1
+        target:
+          description: Specifies the details of the target, where the clone is created.
+          allOf:
+          - $ref: '#/components/schemas/ObjectSummary'
+          x-order: 2
+        snapshot:
+          description: Specifies the details of the snapshot used for refresh.
+          allOf:
+          - $ref: '#/components/schemas/ObjectSnapshot'
+          x-order: 3
+        view:
+          description: Specifies the details of the view, which is used for the clone.
+          allOf:
+          - $ref: '#/components/schemas/ViewParams'
+          x-order: 4
+      x-cohesity-discriminator-details:
+        propertyName: environment
+    OracleCloneRefreshTask:
+      description: Specifies the information about an Oracle refresh task.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/OracleCloneObject'
+    AWSTiers:
+      description: Specifies aws tiers.
+      type: object
+      required:
+      - tiers
+      properties:
+        tiers:
+          description: Specifies the tiers that are used to move the archived backup from current tier to next tier. The order of the tiers determines which tier will be used next for moving the archived backup. The first tier input should always be default tier where backup will be acrhived. Each tier specifies how much time after the backup will be moved to next tier from the current tier.
+          type:
+          - array
+          - 'null'
+          minLength: 1
+          items:
+            $ref: '#/components/schemas/AWSTier'
+          x-order: 0
+    TdmObject:
+      description: Specifies a TDM object.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/CommonTdmObjectResponseParams'
+      - type: object
+        properties:
+          oracleParams:
+            x-cohesity-discriminator-value: oracle
+            x-order: 0
+            $ref: '#/components/schemas/OracleCloneObject'
+    IsilonObjectParams:
+      description: Specifies the common parameters for Isilon objects.
+      type: object
+      properties:
+        supportedNasMountProtocols:
+          description: Specifies a list of NAS mount protocols supported by this object.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            enum:
+            - kNfs
+            - kSmb
+          x-order: 0
+    ViewParams:
+      description: Specifies the details about a view.
+      type: object
+      title: View
+      properties:
+        id:
+          description: Specifies the ID of the view.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        name:
+          description: Specifies the name of the view.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    TdmObjectTimelineEvents:
+      description: Specifies a collection of TDM object's timeline events.
+      type: object
+      properties:
+        events:
+          description: Specifies the collection of the timeline events, filtered by the specified criteria.
+          type:
+          - array
+          - 'null'
+          items:
+            x-cohesity-discriminator-ref: CommonTdmObjectTimelineEventsResponseParams
+            $ref: '#/components/schemas/CommonTdmObjectTimelineEventsResponseParams5c6067d0-8782-441a-b331-2583cdaaf89b'
+          x-order: 0
+    TdmObjectTimelineEvent:
+      description: Specifies a TDM object timeline event.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/CommonTdmObjectTimelineEventsResponseParams'
+      - type: object
+        properties:
+          cloneParams:
+            x-cohesity-discriminator-value: clone
+            x-order: 0
+            $ref: '#/components/schemas/TdmCloneTaskResponseParams'
+          snapshotParams:
+            x-cohesity-discriminator-value: snapshot
+            x-order: 1
+            $ref: '#/components/schemas/TdmSnapshot'
+    AWSTier:
+      description: Specifies the settings for a aws tier.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/CommonCloudTierSettings'
+      - type: object
+        required:
+        - tierType
+        properties:
+          tierType:
+            description: Specifies the AWS tier types.
+            type:
+            - string
+            - 'null'
+            enum:
+            - kAmazonS3Standard
+            - kAmazonS3StandardIA
+            - kAmazonS3OneZoneIA
+            - kAmazonS3IntelligentTiering
+            - kAmazonS3Glacier
+            - kAmazonS3GlacierDeepArchive
+            x-order: 0
+    CommonTdmObjectTimelineEventsResponseParams5c6067d0-8782-441a-b331-2583cdaaf89b:
+      description: Specifies the common parameters for the TDM object timeline events response.
+      type: object
+      required:
+      - id
+      - action
+      properties:
+        id:
+          description: Specifies the unique ID of the event.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        createdAt:
+          description: Specifies the time (in usecs from epoch) at which the event was created.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+        createdByUser:
+          description: Specifies the user, who triggered the event.
+          allOf:
+          - $ref: '#/components/schemas/User'
+          x-order: 2
+        status:
+          description: Specifies the current status of the event.
+          type:
+          - string
+          - 'null'
+          enum:
+          - scheduled
+          - inProgress
+          - succeeded
+          - failed
+          - canceled
+          x-order: 3
+        errorMessage:
+          description: Specifies the error message if the event is in failed state.
+          type:
+          - string
+          - 'null'
+          x-order: 4
+        description:
+          description: Specifies the description of the event, as provided by the user.
+          type:
+          - string
+          - 'null'
+          x-order: 5
+        eventGroupId:
+          description: Specifies the ID of the group this event belongs to. Events with same group ID are considered to be a single timeline for the TDM object. Different group IDs mean different timelines for the TDM object.
+          type:
+          - string
+          - 'null'
+          x-order: 6
+        action:
+          description: Specifies the action for the event.
+          type:
+          - string
+          - 'null'
+          enum:
+          - clone
+          - teardown
+          - refresh
+          - snapshot
+          - rewind
+          x-order: 7
+      x-cohesity-discriminator-details:
+        propertyName: action
+      x-discriminator:
+        mapping:
+          clone: '#/definitions/CommonTdmObjectTimelineEventsResponseParams5c6067d0-8782-441a-b331-2583cdaaf89bTdmCloneTaskResponseParamsWrapper'
+          snapshot: '#/definitions/CommonTdmObjectTimelineEventsResponseParams5c6067d0-8782-441a-b331-2583cdaaf89bTdmSnapshotWrapper'
+        propertyName: action
+    OracleCloneObject:
+      description: Specifies the information about an Oracle clone object.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/CommonOracleCloneParams'
+      - type: object
+        properties:
+          dbVersion:
+            description: Specifies the version of the Oracle database.
+            type:
+            - string
+            - 'null'
+            x-order: 0
+    CommonPrePostScriptParams:
+      description: Specifies the path to the remote script and any common parameters expected by the remote script.
+      type: object
+      title: Common PrePost Script Params
+      required:
+      - path
+      properties:
+        path:
+          description: Specifies the absolute path to the script on the remote host.
+          type: string
+          x-order: 0
+        params:
+          description: 'Specifies the arguments or parameters and values to pass into the remote script. For example if the script expects values for the ''database'' and ''user'' parameters, specify the parameters and values using the following string: "database=myDatabase user=me".'
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        timeoutSecs:
+          description: Specifies the timeout of the script in seconds. The script will be killed if it exceeds this value. By default, no timeout will occur if left empty.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          minimum: 1
+          x-order: 2
+        isActive:
+          description: Specifies whether the script should be enabled, default value set to true.
+          type:
+          - boolean
+          - 'null'
+          x-order: 3
+    TdmTask:
+      description: Specifies a TDM task.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/CommonTdmTaskResponseParams'
+      - type: object
+        properties:
+          cloneParams:
+            x-cohesity-discriminator-value: clone
+            x-order: 0
+            $ref: '#/components/schemas/TdmCloneTaskResponseParams'
+          refreshParams:
+            x-cohesity-discriminator-value: refresh
+            x-order: 1
+            $ref: '#/components/schemas/TdmRefreshTaskResponseParams'
+    GoogleTier:
+      description: Specifies the settings for a Google tier.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/CommonCloudTierSettings'
+      - type: object
+        required:
+        - tierType
+        properties:
+          tierType:
+            description: Specifies the Google tier types.
+            type:
+            - string
+            - 'null'
+            enum:
+            - kGoogleStandard
+            - kGoogleRegional
+            - kGoogleMultiRegional
+            - kGoogleNearline
+            - kGoogleColdline
+            x-order: 0
+    TdmSnapshot:
+      description: Specifies the response params for a TDM snapshot.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/CommonTdmCloneSnapshotParams'
+      - type: object
+        required:
+        - id
+        properties:
+          id:
+            description: Specifies the ID of the snapshot.
+            type:
+            - string
+            - 'null'
+            x-order: 0
+          isAutomated:
+            description: Specifies whether the snapshot was taken automatically by the scheduler.
+            type:
+            - boolean
+            - 'null'
+            x-order: 1
+          createdAt:
+            description: Specifies the time (in usecs from epoch) when the snapshot was created.
+            type:
+            - integer
+            - 'null'
+            format: int64
+            x-order: 2
+          updatedAt:
+            description: Specifies the time (in usecs from epoch) when the snapshot was last updated.
+            type:
+            - integer
+            - 'null'
+            format: int64
+            x-order: 3
+          createdByUser:
+            description: Specifies the details of the user, who created the snapshot. This will be null for snapshots, that are taken by system, such as a scheduler.
+            allOf:
+            - $ref: '#/components/schemas/User'
+            x-order: 4
+          updatedByUser:
+            description: Specifies the details of the user, who last updated the snapshot.
+            allOf:
+            - $ref: '#/components/schemas/User'
+            x-order: 5
+    TdmCloneTaskResponseParams:
+      description: Specifies the response parameters for a clone task.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/CommonTdmCloneTaskResponseParams'
+      - type: object
+        properties:
+          oracleParams:
+            x-order: 0
+            $ref: '#/components/schemas/OracleCloneTask'
+    ObjectSummary:
+      description: Specifies the Object Summary.
+      title: Object Summary
+      allOf:
+      - $ref: '#/components/schemas/ObjectIdentifier'
+      - type: object
+        properties:
+          objectHash:
+            description: Specifies the hash identifier of the object.
+            type:
+            - string
+            - 'null'
+            x-order: 0
+          objectType:
+            description: Specifies the type of the object.
+            type:
+            - string
+            - 'null'
+            enum:
+            - kCluster
+            - kVserver
+            - kVolume
+            - kVCenter
+            - kStandaloneHost
+            - kvCloudDirector
+            - kFolder
+            - kDatacenter
+            - kComputeResource
+            - kClusterComputeResource
+            - kResourcePool
+            - kDatastore
+            - kHostSystem
+            - kVirtualMachine
+            - kVirtualApp
+            - kStoragePod
+            - kNetwork
+            - kDistributedVirtualPortgroup
+            - kTagCategory
+            - kTag
+            - kOpaqueNetwork
+            - kOrganization
+            - kVirtualDatacenter
+            - kCatalog
+            - kOrgMetadata
+            - kStoragePolicy
+            - kVirtualAppTemplate
+            - kDomain
+            - kOutlook
+            - kMailbox
+            - kUsers
+            - kGroups
+            - kSites
+            - kUser
+            - kGroup
+            - kSite
+            - kApplication
+            - kGraphUser
+            - kPublicFolders
+            - kPublicFolder
+            - kTeams
+            - kTeam
+            - kKeyspace
+            - kTable
+            - kDatabase
+            - kCollection
+            - kBucket
+            - kNamespace
+            - kSCVMMServer
+            - kStandaloneCluster
+            - kHostGroup
+            - kHypervHost
+            - kHostCluster
+            - kCustomProperty
+            - kSubscription
+            - kResourceGroup
+            - kStorageAccount
+            - kStorageKey
+            - kStorageContainer
+            - kStorageBlob
+            - kNetworkSecurityGroup
+            - kVirtualNetwork
+            - kSubnet
+            - kComputeOptions
+            - kSnapshotManagerPermit
+            - kAvailabilitySet
+            - kOVirtManager
+            - kHost
+            - kStorageDomain
+            - kVNicProfile
+            - kIAMUser
+            - kRegion
+            - kAvailabilityZone
+            - kEC2Instance
+            - kVPC
+            - kInstanceType
+            - kKeyPair
+            - kRDSOptionGroup
+            - kRDSParameterGroup
+            - kRDSInstance
+            - kRDSSubnet
+            - kRDSTag
+            - kAuroraCluster
+            - kAccount
+            - kSubTaskPermit
+            - kProject
+            - kLabel
+            - kMetadata
+            - kVPCConnector
+            - kPrismCentral
+            - kOtherHypervisorCluster
+            - kDfsGroup
+            - kDfsTopDir
+            - kZone
+            - kMountPoint
+            - kStorageArray
+            - kFileSystem
+            - kContainer
+            - kFilesystem
+            - kFileset
+            - kViewBox
+            - kView
+            - kWindowsCluster
+            - kOracleRACCluster
+            - kOracleAPCluster
+            - kService
+            - kPVC
+            - kRootContainer
+            - kDAGRootContainer
+            - kExchangeNode
+            - kExchangeDAGDatabaseCopy
+            - kExchangeStandaloneDatabase
+            - kExchangeDAG
+            - kExchangeDAGDatabase
+            - kDomainController
+            - kInstance
+            - kAAG
+            - kAAGRootContainer
+            - kRACRootContainer
+            - kTableSpace
+            - kPDB
+            - kObject
+            x-order: 1
+          logicalSizeBytes:
+            description: Specifies the logical size of object in bytes.
+            type:
+            - integer
+            - 'null'
+            format: int64
+            x-order: 2
+          uuid:
+            description: Specifies the uuid which is a unique identifier of the object.
+            type:
+            - string
+            - 'null'
+            x-order: 3
+          protectionType:
+            description: Specifies the protection type of the object if any.
+            type:
+            - string
+            - 'null'
+            enum:
+            - kAgent
+            - kNative
+            - kSnapshotManager
+            - kRDSSnapshotManager
+            - kAuroraSnapshotManager
+            - kFile
+            - kVolume
+            x-order: 4
+          osType:
+            description: Specifies the operating system type of the object.
+            type:
+            - string
+            - 'null'
+            enum:
+            - kLinux
+            - kWindows
+            - kAix
+            - kSolaris
+            - kSapHana
+            - kOther
+            x-order: 5
+          vCenterSummary:
+            description: Specifies the vCenter object details.
+            type:
+            - object
+            - 'null'
+            x-order: 6
+            $ref: '#/components/schemas/ObjectTypeVCenterParams'
+    AzureTiers:
+      description: Specifies Azure tiers.
+      type: object
+      required:
+      - tiers
+      properties:
+        tiers:
+          description: Specifies the tiers that are used to move the archived backup from current tier to next tier. The order of the tiers determines which tier will be used next for moving the archived backup. The first tier input should always be default tier where backup will be acrhived. Each tier specifies how much time after the backup will be moved to next tier from the current tier.
+          type:
+          - array
+          - 'null'
+          minLength: 1
+          items:
+            $ref: '#/components/schemas/AzureTier'
+          x-order: 0
+    TdmTasks:
+      description: Specifies a collection of TDM tasks.
+      type: object
+      properties:
+        tasks:
+          description: Specifies the collection of TDM tasks, filtered by the specified criteria.
+          type:
+          - array
+          - 'null'
+          items:
+            x-cohesity-discriminator-ref: CommonTdmTaskResponseParams
+            $ref: '#/components/schemas/CommonTdmTaskResponseParams81bccdc8-f441-4a25-a03e-85698b230b37'
+          x-order: 0
+        paginationInfo:
+          x-order: 1
+          $ref: '#/components/schemas/PaginationInfo'
+    HypervSnapshotParams:
+      description: Specifies parameters of HyperV type snapshots.
+      type: object
+      properties:
+        protectionType:
+          description: Specifies the protection type of HyperV snapshots.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kAuto
+          - kRCT
+          - kVSS
+          x-order: 0
+    CommonTdmTaskResponseParams:
+      description: Specifies the common parameters for a TDM task response.
+      type: object
+      required:
+      - id
+      - action
+      properties:
+        id:
+          description: Specifies the unique ID of the task.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        name:
+          description: Specifies the name of the task.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        startTimeUsecs:
+          description: Specifies the time (in usecs from epoch) when the task was started.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
+        endTimeUsecs:
+          description: Specifies the time (in usecs from epoch) when the task was completed.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 3
+        status:
+          description: Specifies the current status of the task.
+          type:
+          - string
+          - 'null'
+          enum:
+          - scheduled
+          - inProgress
+          - succeeded
+          - failed
+          - canceled
+          x-order: 4
+        action:
+          description: Specifies the TDM Task action.
+          type:
+          - string
+          - 'null'
+          enum:
+          - clone
+          - teardown
+          - refresh
+          - snapshot
+          - rewind
+          x-order: 5
+        createdByUser:
+          description: Specifies the user, who created this task.
+          allOf:
+          - $ref: '#/components/schemas/User'
+          x-order: 6
+        progressTaskId:
+          description: Specifies the ID for tracking progress of this task.
+          type:
+          - string
+          - 'null'
+          x-order: 7
+      x-cohesity-discriminator-details:
+        propertyName: action
+    TdmObjects:
+      description: Specifies a collection of TDM objects.
+      type: object
+      properties:
+        objects:
+          description: Specifies the collection of TDM objects, filtered by the specified criteria.
+          type: array
+          items:
+            x-cohesity-discriminator-ref: CommonTdmObjectResponseParams
+            $ref: '#/components/schemas/CommonTdmObjectResponseParamsa153f0a0-cd89-4b59-836b-6ec803e6e173'
+          x-order: 0
+        paginationInfo:
+          x-order: 1
+          $ref: '#/components/schemas/PaginationInfo'
+    CommonCloudTierSettings:
+      description: Specifies the common settings required for configuring cloud tiering.
+      type: object
+      properties:
+        moveAfterUnit:
+          description: Specifies the unit for moving the data from current tier to next tier. This unit will be a base unit for the 'moveAfter' field specified below.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Days
+          - Weeks
+          - Months
+          - Years
+          x-order: 0
+        moveAfter:
+          description: Specifies the time period after which the backup will be moved from current tier to next tier.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+    AzureSnapshotParams:
+      description: Specifies parameters of Azure type snapshots.
+      type: object
+      properties:
+        protectionType:
+          description: Specifies the protection type of Azure snapshots.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kAgent
+          - kNative
+          - kSnapshotManager
+          x-order: 0
+    CommonTdmCloneTaskParams:
+      description: Specifies the common params for a TDM clone task.
+      type: object
+      required:
+      - environment
+      properties:
+        environment:
+          description: Specifies the environment of the TDM Clone task.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kSQL
+          - kOracle
+          x-order: 0
+        protectionGroupId:
+          description: Specifies the ID of an existing protection group, which should start protecting this clone. Specifying this implies that the clone is eligible for automated snapshots based on the policy configuration. If this is specified, policyId should also be specified and protectionGroupName should not be specified.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        protectionGroupName:
+          description: Specifies the name of a new protection group, which should be created to protect this clone. Specifying this implies that the clone is eligible for automated snapshots based on the policy configuration. If this is specified, policyId should also be specified and protectionGroupId should not be specified.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        policyId:
+          description: Specifies the ID of the policy, which should be used to protect this clone. This is useful for automatic snapshots. This must be specified if either of protectionGroupId and protectionGroupName is specified.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+    PhysicalSnapshotParams:
+      description: Specifies paramsters of Physical type snapshots.
+      type: object
+      properties:
+        protectionType:
+          description: Specifies the protection type of Physical snapshots.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kFile
+          - kVolume
+          x-order: 0
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    AwsSnapshotParams:
+      description: Specifies parameters of AWS type snapshots.
+      type: object
+      properties:
+        protectionType:
+          description: Specifies the protection type of AWS snapshots.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kAgent
+          - kNative
+          - kSnapshotManager
+          - kRDSSnapshotManager
+          - kAuroraSnapshotManager
+          x-order: 0
+  responses:
+    GetTdmTaskResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TdmTask'
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    GetTdmObjectResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TdmObject'
+    GetTdmTasksResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TdmTasks'
+    GetTdmObjectTimelineEventsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TdmObjectTimelineEvents'
+    GetTdmObjectsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TdmObjects'
+    NoContentResponse:
+      description: No Content
+    UpdateTdmSnapshotResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TdmSnapshot'
+    CreateTdmTaskResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            x-cohesity-discriminator-ref: CommonTdmTaskResponseParams
+            $ref: '#/components/schemas/CommonTdmTaskResponseParams81bccdc8-f441-4a25-a03e-85698b230b37'
+  securitySchemes:
+    APIKeyHeader:
+      in: header
+      name: apiKey
+      type: apiKey

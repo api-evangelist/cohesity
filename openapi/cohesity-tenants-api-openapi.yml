@@ -1,0 +1,308 @@
+openapi: 3.2.0
+info:
+  description: Cohesity API provides a RESTful interface to access the various data management operations on Cohesity cluster and Helios.
+  title: Cohesity REST Tenants API
+  version: '2.0'
+servers:
+- url: /v2
+tags:
+- name: Tenants
+paths:
+  /tenants/swift:
+    get:
+      description: Get a Swift configuration.
+      tags:
+      - Tenants
+      summary: Get a Swift configuration
+      operationId: GetTenantSwift
+      parameters:
+      - description: Specifies the tenant Id.
+        name: tenantId
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/GetSwiftResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    put:
+      description: Update a Swift configuration.
+      tags:
+      - Tenants
+      summary: Update a Swift configuration
+      operationId: UpdateTenantSwift
+      responses:
+        '200':
+          $ref: '#/components/responses/UpdateSwiftResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SwiftParams'
+        description: Specifies the parameters to update a Swift configuration.
+        required: true
+  /tenants/swift/register:
+    post:
+      description: Register Swift service on Keystone server.
+      tags:
+      - Tenants
+      summary: Register Swift service on a Keystone server
+      operationId: RegisterSwift
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterSwiftParams'
+        description: Specifies the parameters to register a Swift service on Keystone server.
+        required: true
+  /tenants/swift/unregister:
+    post:
+      description: Unregister Swift service from Keystone server.
+      tags:
+      - Tenants
+      summary: Unregister Swift service from a Keystone server
+      operationId: UnregisterSwift
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UnregisterSwiftParams'
+        description: Specifies the parameters to unregister a Swift service from Keystone server.
+        required: true
+components:
+  schemas:
+    KeystoneScopeParams:
+      description: Specifies scope paramteres of a Keystone.
+      type: object
+      required:
+      - type
+      properties:
+        type:
+          description: Specifies the scope type.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Project
+          - Domain
+          x-order: 0
+        projectScopeParams:
+          description: Specifies the parameter for project type scope.
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/ProjectScopeParams'
+          - {}
+          x-order: 1
+        domainScopeParams:
+          description: Specifies the parameters for domain type scope.
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/DomainScopeParams'
+          - {}
+          x-order: 2
+    ProjectScopeParams:
+      description: Specifies the parameters for project type scope.
+      type: object
+      required:
+      - projectName
+      - domainName
+      properties:
+        projectName:
+          description: Specifies the project name.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        domainName:
+          description: Specifies the domain name of the project.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    KeystoneAdminParams:
+      description: Specifies administrator credentials of a Keystone.
+      type: object
+      required:
+      - domain
+      - username
+      properties:
+        domain:
+          description: Specifies the administrator domain name.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        username:
+          description: Specifies the username of Keystone administrator.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        password:
+          description: Specifies the password of Keystone administrator.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+    RegisterSwiftParams:
+      description: Specifies the parameters to register a Swift service on Keystone server.
+      type: object
+      required:
+      - tenantId
+      properties:
+        tenantId:
+          description: Specifies the tenant Id who's Swift service will be registered.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        keystoneCredentials:
+          description: Specifies the credentials of the Keystone server. Keystone configuration associated to the tenant will be used if this field is not specified.
+          type:
+          - object
+          - 'null'
+          x-order: 1
+          $ref: '#/components/schemas/KeystoneCredentials'
+    KeystoneCredentials:
+      description: Specifies user credentials of a Keystone server.
+      type: object
+      required:
+      - adminCreds
+      - scope
+      properties:
+        adminCreds:
+          description: Specifies parameters related to Keystone administrator.
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/KeystoneAdminParams'
+          - {}
+          x-order: 0
+        scope:
+          description: Specifies parameters related to Keystone scope.
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/KeystoneScopeParams'
+          - {}
+          x-order: 1
+    SwiftParams:
+      description: Specifies the parameters to update a Swift configuration.
+      type: object
+      required:
+      - tenantId
+      properties:
+        tenantId:
+          description: Specifies the tenant Id who will use this Swift configuration.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        keystoneId:
+          description: Specifies the associated Keystone configuration Id.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+        operatorRoles:
+          description: Specifies a list of roles that can operate on Cohesity Swift service.
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            type: string
+          x-order: 2
+    DomainScopeParams:
+      description: Specifies the parameters for domain type scope
+      type: object
+      required:
+      - domainName
+      properties:
+        domainName:
+          description: Specifies the domain name.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+    UnregisterSwiftParams:
+      description: Specifies the parameters to unregister a Swift service from Keystone server.
+      type: object
+      required:
+      - tenantId
+      properties:
+        tenantId:
+          description: Specifies the tenant Id who's Swift service will be unregistered.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        keystoneCredentials:
+          description: Specifies the credentials of the Keystone server. Keystone configuration associated to the tenant will be used if this field is not specified.
+          type:
+          - object
+          - 'null'
+          x-order: 1
+          $ref: '#/components/schemas/KeystoneCredentials'
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+  responses:
+    GetSwiftResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SwiftParams'
+    UpdateSwiftResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SwiftParams'
+    NoContentResponse:
+      description: No Content
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    APIKeyHeader:
+      in: header
+      name: apiKey
+      type: apiKey

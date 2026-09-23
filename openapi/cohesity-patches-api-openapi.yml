@@ -1,0 +1,651 @@
+openapi: 3.2.0
+info:
+  description: Cohesity API provides a RESTful interface to access the various data management operations on Cohesity cluster and Helios.
+  title: Cohesity REST Patches API
+  version: '2.0'
+servers:
+- url: /v2
+tags:
+- name: Patches
+paths:
+  /patch-management/applied-patches:
+    get:
+      description: Returns a list of currently applied patches that are running on the cluster.
+      tags:
+      - Patches
+      summary: Get applied patches
+      operationId: GetAppliedPatches
+      parameters:
+      - description: Specifies optional service name whose current patch is returned. If it is not specified, all the applied patches are returned.
+        name: service
+        in: query
+        schema:
+          type: string
+      - description: Specifies whether to return the details of all the fixes in the patch. By default, returns only the most recent fix made for the service in the patch.
+        name: includeDetails
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/GetAppliedPatchesResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    post:
+      description: Revert an applied service patch and its dependencies.
+      tags:
+      - Patches
+      summary: Revert patches
+      operationId: RevertPatches
+      responses:
+        '201':
+          $ref: '#/components/responses/RevertPatchesResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RevertPatchesRequest'
+        description: Request to revert patches.
+        required: true
+  /patch-management/available-patches:
+    get:
+      description: Returns a list of patches that are available and ready to apply on the cluster.
+      tags:
+      - Patches
+      summary: Get available patches
+      operationId: GetAvailablePatches
+      parameters:
+      - description: Specifies optional service name whose available patch is returned. If it is not specified, available patches for all the serivces are returned.
+        name: service
+        in: query
+        schema:
+          type: string
+      - description: Specifies whether to return the description of all the fixes in the patch. By default, returns only the most recent fix made for the service in the patch.
+        name: includeDetails
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/GetAvailablePatchesResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    put:
+      description: Import a patch or a hotfix to the cluster.
+      tags:
+      - Patches
+      summary: Import patches
+      operationId: ImportPatches
+      responses:
+        '201':
+          $ref: '#/components/responses/ImportPatchesResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          multipart/formData:
+            schema:
+              type: object
+              properties:
+                fileName:
+                  type: string
+                checksum:
+                  type: string
+                patch:
+                  type: string
+                  format: binary
+              required:
+              - fileName
+              - checksum
+              - patch
+    post:
+      description: Apply a service patch and its dependencies.
+      tags:
+      - Patches
+      summary: Apply patches
+      operationId: ApplyPatches
+      responses:
+        '201':
+          $ref: '#/components/responses/ApplyPatchesResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplyPatchesRequest'
+        description: Request to apply patches.
+        required: true
+  /patch-management/operation-status:
+    get:
+      description: Returns the status of the current or the last patch operation. There can be only one active patch operation at any given time.
+      tags:
+      - Patches
+      summary: Get patch operation status
+      operationId: GetPatchOperationStatus
+      parameters:
+      - description: Specifies whether to return details of all service patch opertions on all nodes. By default, returns whether there is a patch operation in progress or not.
+        name: includeDetails
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/GetPatchOperationStatusResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /patch-management/patches-history:
+    get:
+      description: Get the history of all the patch management operations.
+      tags:
+      - Patches
+      summary: Get patches history
+      operationId: GetPatchesHistory
+      parameters:
+      - description: Specifies optional service name whose patch operation history is returned. If it is not specified, patch operations of all the serivces are returned.
+        name: service
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/GetPatchesHistoryResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+components:
+  schemas:
+    PatchOperation:
+      description: Specifies a patch operation.
+      title: Patch Operation.
+      properties:
+        service:
+          description: Specifies the name of the service.
+          type: string
+          x-order: 0
+        component:
+          description: Specifies the description of the service.
+          type: string
+          x-order: 1
+        version:
+          description: Specifies the version of the patch.
+          type: string
+          x-order: 2
+        versionReplaced:
+          description: Specifies the version it replaced.
+          type: string
+          x-order: 3
+        operation:
+          description: Specifies what patch management operation was performed
+          type: string
+          x-order: 4
+        operationTimeMsecs:
+          description: Specifies the time when the patch operation was done in Unix epoch in milliseconds.
+          type: integer
+          format: int64
+          x-order: 5
+        user:
+          description: Specifies the user who performed the operation.
+          type: string
+          x-order: 6
+        domain:
+          description: Specifies the domain of the user.
+          type: string
+          x-order: 7
+    FixedIssue:
+      description: Specifies the description of a fixed issue.
+      title: Fixed Issue.
+      properties:
+        id:
+          description: Specifies a unique number of the bug.
+          type: integer
+          format: int64
+          x-order: 0
+        releaseNote:
+          description: Specifies the description of fix made for the issue.
+          type: string
+          x-order: 1
+    PatchesHistory:
+      description: Specifies the history of patch operations.
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchOperation'
+    AppliedPatch:
+      description: Specifies the description of an applied patch.
+      title: Applied Patch.
+      properties:
+        service:
+          description: Specifies the name of the service.
+          type: string
+          x-order: 0
+        component:
+          description: Specifies the description of the service.
+          type: string
+          x-order: 1
+        version:
+          description: Specifies the version of the patch.
+          type: string
+          x-order: 2
+        versionReplaced:
+          description: Specifies the version it replaced.
+          type: string
+          x-order: 3
+        patchLevel:
+          description: Specifies the number of patches applied so far for this service.
+          type: integer
+          format: int64
+          x-order: 4
+        appliedTimeMsecs:
+          description: Specifies the time when the patch was applied in Unix epoch in milliseconds.
+          type: integer
+          format: int64
+          x-order: 5
+        count:
+          description: Specifies the number of fixed issues.
+          type: integer
+          format: int64
+          x-order: 6
+        dependencies:
+          description: Specifies the services for which their patches were applied together. They will also be reverted together.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 7
+        fixedIssues:
+          description: Specifies the details of the issues fixed in the patch.
+          type: array
+          items:
+            $ref: '#/components/schemas/FixedIssue'
+          x-order: 8
+    ServicePatchLevels:
+      description: Patch levels of a service and its dependencies.
+      type: array
+      items:
+        $ref: '#/components/schemas/ServicePatchLevel'
+    AppliedPatches:
+      description: Specifies the applied patches on the cluster.
+      type: array
+      title: Applied Patches.
+      items:
+        $ref: '#/components/schemas/AppliedPatch'
+    ApplyPatchesRequest:
+      description: Specifies the request to apply a patch.
+      type: object
+      title: Apply patch.
+      properties:
+        service:
+          description: Specifies the name of the service whose patch should be applied.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        all:
+          description: Specifies all the available patches should be applied.
+          type:
+          - boolean
+          - 'null'
+          x-order: 1
+    PatchDetail:
+      description: Detail of a patch. It gives the service and version information of the the patch.
+      properties:
+        service:
+          description: Specifies the name of the service.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        component:
+          description: Specifies the user friendly name of the service.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        version:
+          description: Specifies the existing version of the service. This is the available service patch version if exists. If there is no patch available, then it is the applied patch version if applied. If both don't exist, it is the base version of the service.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        import_version:
+          description: Specifies the version of the imported service patch.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+        status:
+          description: Specifies the status of the patch whether it is accepted or rejected. A patch is rejected if it is older than the version available or applied on the cluster.
+          type:
+          - string
+          - 'null'
+          x-order: 4
+    RevertPatchesRequest:
+      description: Specifies the request to revert a patch. An optional patch level can be specified. When a patch level is specified, system keeps reverting patches until the given patch level is reverted. If no patch level is specified, just the last applied patch is reverted.
+      type: object
+      title: Revert patch.
+      required:
+      - service
+      properties:
+        service:
+          description: Specifies the name of the service whose patch should be reverted.
+          type: string
+          x-order: 0
+        patchLevel:
+          description: Specifies optional patch level upto which the patches should be reverted. If given, it should be between 1 and the current patch level inclusive.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+    AvailablePatch:
+      description: Specifies the description of an available patch.
+      title: Available Patch.
+      properties:
+        service:
+          description: Specifies the name of the service.
+          type: string
+          x-order: 0
+        component:
+          description: Specifies the description of the service.
+          type: string
+          x-order: 1
+        version:
+          description: Specifies the version of the patch.
+          type: string
+          x-order: 2
+        count:
+          description: Specifies the number of fixed issues.
+          type: integer
+          format: int64
+          x-order: 3
+        dependencies:
+          description: Specifies the services for which their patches must be applied together.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 4
+        fixedIssues:
+          description: Specifies the details of the issues fixed in the patch.
+          type: array
+          items:
+            $ref: '#/components/schemas/FixedIssue'
+          x-order: 5
+    ServiceUnitProgress:
+      description: Specifies the progress of one patch operation for one service at one patch level.
+      title: Patch Operation Service Unit Progress.
+      properties:
+        service:
+          description: Specifies the service which is patched.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        inProgress:
+          description: Specifies whether a operation is in progress for the service.
+          type:
+          - boolean
+          - 'null'
+          x-order: 1
+        percentage:
+          description: Specifies the percentage of completion of the patch unit operation.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
+        timeRemainingSeconds:
+          description: Specifies the time remaining to complete the patch operation for the service.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 3
+        timeTakenSeconds:
+          description: Specifies the time taken so far in this patch unit operation for the service.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 4
+        nodesProgress:
+          description: Specifies the details of patch operation for each service at each patch level.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/NodeUnitProgress'
+          x-order: 5
+        serviceMessage:
+          description: Specifies a message about the patch unit operation.
+          type:
+          - string
+          - 'null'
+          x-order: 6
+    AvailablePatches:
+      description: Specifies the available patches for the cluster.
+      type: array
+      title: Available Patches.
+      items:
+        $ref: '#/components/schemas/AvailablePatch'
+    ServicePatchLevel:
+      description: Patch level of a service. It is the number of patches applied for the service on the cluster. If a service is never patched the patch level is 0. If two patches were applied, patch level is 2.
+      properties:
+        service:
+          description: Specifies the name of the service.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        patchLevel:
+          description: Specifies patch level of the service after the patch operation.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+        patchVersion:
+          description: Specifies the version of the service patch after the patch operation.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        startLevel:
+          description: Specifies patch level of the service before the patch operation.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 3
+        startVersion:
+          description: Specifies the version of the service running on the cluster before the patch operation.
+          type:
+          - string
+          - 'null'
+          x-order: 4
+    NodeUnitProgress:
+      description: Specifies the progress of the patch operation on a node.
+      title: Patch Operation Node Unit Progress.
+      properties:
+        nodeIp:
+          description: Specifies the IP address of the node.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        inProgress:
+          description: Specifies whether a operation is in progress on the node.
+          type:
+          - boolean
+          - 'null'
+          x-order: 1
+        patchLevelTransition:
+          description: Specifies the patch level transition of the patch operation. For Apply operation, patch level goes up for each operation. For Revert operation, patch level goes down. Patch level zero is the base level where no patch was applied.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        percentage:
+          description: Specifies the percentage of completion of the patch operation on the node.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 3
+        timeTakenSeconds:
+          description: Specifies the time taken so far in this patch unit operation on the node.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 4
+        nodeMessage:
+          description: Specifies a message about the patch operation on the node.
+          type:
+          - string
+          - 'null'
+          x-order: 5
+    PatchesDetails:
+      description: Details of patches in a patch or a hotfix.
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchDetail'
+    PatchOperationStatus:
+      description: Specifies the status of the current or the last patch operation.
+      title: Patch Operation Status.
+      properties:
+        inProgress:
+          description: Specifies whether a operation is in progress now.
+          type:
+          - boolean
+          - 'null'
+          x-order: 0
+        operation:
+          description: Specifies the patch operation. It is either apply or revert patch operation.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        percentage:
+          description: Specifies the percentage of completion of the current patch operation in progress or the last patch operation completed.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
+        timeRemainingSeconds:
+          description: Specifies the time remaining to complete the patch operation.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 3
+        timeTakenSeconds:
+          description: Specifies the time taken so far to complete the patch operation.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 4
+        servicesProgress:
+          description: Specifies the details of patch operation services at each patch level.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ServiceUnitProgress'
+          x-order: 5
+        operationMessage:
+          description: Specifies a message about the patch operation.
+          type:
+          - string
+          - 'null'
+          x-order: 6
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+  responses:
+    RevertPatchesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ServicePatchLevels'
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    GetPatchesHistoryResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PatchesHistory'
+    GetPatchOperationStatusResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PatchOperationStatus'
+    GetAppliedPatchesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AppliedPatches'
+    ImportPatchesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PatchesDetails'
+    ApplyPatchesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ServicePatchLevels'
+    GetAvailablePatchesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AvailablePatches'
+  securitySchemes:
+    APIKeyHeader:
+      in: header
+      name: apiKey
+      type: apiKey

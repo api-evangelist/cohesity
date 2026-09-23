@@ -1,0 +1,209 @@
+openapi: 3.2.0
+info:
+  description: 'This API list provides operations for interfacing with the Cohesity
+
+    Cluster.'
+  title: Cohesity REST Interface Group API
+  version: '1.0'
+servers:
+- url: https://<CLUSTER_VIP>/irisservices/api/v1
+tags:
+- name: Interface group
+paths:
+  /public/interfaceGroups:
+    get:
+      description: Returns the interface groups for the Cohesity Cluster.
+      tags:
+      - Interface group
+      summary: List the interface groups for the Cohesity Cluster
+      operationId: GetInterfaceGroups
+      responses:
+        '200':
+          $ref: '#/components/responses/GetInterfaceGroupsResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    put:
+      description: Returns the update status upon completion.
+      tags:
+      - Interface group
+      summary: Update an interface group on the Cohesity Cluster
+      operationId: UpdateInterfaceGroup
+      responses:
+        '200':
+          $ref: '#/components/responses/UpdateInterfaceGroupResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InterfaceGroup'
+    post:
+      description: Returns the create status upon completion.
+      tags:
+      - Interface group
+      summary: Create an interface group on the Cohesity Cluster
+      operationId: CreateInterfaceGroup
+      responses:
+        '201':
+          $ref: '#/components/responses/CreateInterfaceGroupResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InterfaceGroup'
+  /public/interfaceGroups/{name}:
+    delete:
+      description: Returns the delete status upon completion.
+      tags:
+      - Interface group
+      summary: Delete the specified interface group from the Cohesity Cluster
+      operationId: DeleteInterfaceGroup
+      parameters:
+      - x-go-name: Name
+        description: Request to delete one interface group.
+        name: name
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/Error'
+components:
+  schemas:
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    ProductModelInterfaceTuple:
+      description: Specifies a group of product model and interface set.
+      type: object
+      title: Product model and interface tuple.
+      properties:
+        ifaceName:
+          description: Specifies the name of the interface.
+          type:
+          - string
+          - 'null'
+          x-go-name: IfaceName
+        productModelName:
+          description: Specifies the product model name.
+          type:
+          - string
+          - 'null'
+          x-go-name: ProductModelName
+      x-go-package: cohesity/iris/server/data/public
+    BondingOpts:
+      description: Bonding Opts
+      type: object
+      properties:
+        lacpRate:
+          type:
+          - string
+          - 'null'
+          x-go-name: LacpRate
+        mode:
+          type:
+          - string
+          - 'null'
+          x-go-name: Mode
+        xmitHashPolicy:
+          type:
+          - string
+          - 'null'
+          x-go-name: XmitHashPolicy
+      x-go-package: cohesity/iris/server/data/public
+    InterfaceGroup:
+      description: Specifies the settings of an interface group.
+      type: object
+      title: InterfaceGroup.
+      properties:
+        id:
+          description: 'Interface group Id.
+
+
+            Specifies the id of the interface group.'
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Id
+        modelInterfaceLists:
+          description: Specifies the product model and interface lists.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ProductModelInterfaceTuple'
+          x-go-name: ModelInterfaceLists
+        name:
+          description: Specifies the name of the interface group.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        networkParams:
+          $ref: '#/components/schemas/NetworkParams'
+      x-go-package: cohesity/iris/server/data/public
+    NetworkParams:
+      type: object
+      properties:
+        bondingOpts:
+          $ref: '#/components/schemas/BondingOpts'
+        mtu:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Mtu
+      x-go-package: cohesity/iris/server/data/public
+  responses:
+    NoContentResponse:
+      description: No Content
+    UpdateInterfaceGroupResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InterfaceGroup'
+    GetInterfaceGroupsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            title: Specifies a list of the interface groups.
+            items:
+              $ref: '#/components/schemas/InterfaceGroup'
+    CreateInterfaceGroupResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InterfaceGroup'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'

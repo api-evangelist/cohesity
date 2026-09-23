@@ -1,0 +1,174 @@
+openapi: 3.2.0
+info:
+  description: Cohesity API provides a RESTful interface to access the various data management operations on Cohesity cluster and Helios.
+  title: Cohesity REST Miscellaneous API
+  version: '2.0'
+servers:
+- url: /v2
+tags:
+- name: Miscellaneous
+paths:
+  /data-protect/filter/objects:
+    post:
+      description: List all the filtered objects using given regular expressions and wildcard supported search strings. We are currenly supporting this for only SQL adapter.
+      tags:
+      - Miscellaneous
+      summary: List all the filtered objects
+      operationId: FilterObjects
+      responses:
+        '200':
+          $ref: '#/components/responses/FilterObjectsResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FilterObjectsRequest'
+        description: Specifies the parameters to filter objects.
+        required: true
+components:
+  responses:
+    FilterObjectsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FilteredObjectsResponseBody'
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Filter:
+      description: Specifies the filter details.
+      type: object
+      properties:
+        filterString:
+          description: Specifies the filter string using wildcard supported strings or regular expressions.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        isRegularExpression:
+          description: Specifies whether the provided filter string is a regular expression or not. This need to be explicitly set to true if user is trying to filter by regular expressions. Not providing this value in case of regular expression can result in unintended results. The default value is assumed to be false.
+          type:
+          - boolean
+          - 'null'
+          default: false
+          x-order: 1
+    FilteredObjectsResponseBody:
+      description: Specifies the filter details.
+      type: object
+      properties:
+        filteredObjects:
+          description: Specifies the list of filtered Objects.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FilteredObject'
+          x-order: 0
+    FilteredObject:
+      description: Specifies the filter details.
+      type: object
+      properties:
+        id:
+          description: Specifies object id.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        sourceId:
+          description: Specifies the source id to which this object belongs to.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+    FilterObjectsRequest:
+      description: Specifies the filter details.
+      type: object
+      required:
+      - filterType
+      - filters
+      - objectIds
+      properties:
+        filterType:
+          description: Specifies the type of filtering user wants to perform. Currently, we only support exclude type of filter.
+          type:
+          - string
+          - 'null'
+          enum:
+          - exclude
+          x-order: 0
+        filters:
+          description: Specifies the list of filters that need to be applied on given list of discovered objects.
+          type:
+          - array
+          - 'null'
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/Filter'
+          x-order: 1
+        objectIds:
+          description: Specifies a list of non leaf object ids to filter the leaf level objects. Non leaf object such host (physical or vm) or database instance can be specified.
+          type:
+          - array
+          - 'null'
+          minItems: 1
+          uniqueItems: true
+          items:
+            type: integer
+            format: int64
+          x-order: 2
+        applicationEnvironment:
+          description: Specifies the type of application enviornment needed for filtering to be applied on. This is needed because in case of applications like SQL, Oracle, a single source can contain multiple application enviornments.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kSQL
+          x-order: 3
+        tenantIds:
+          description: TenantIds contains list of the tenant for which objects are to be returned.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 4
+        includeTenants:
+          description: If true, the response will include objects which belongs to all tenants which the current user has permission to see. Default value is false.
+          type:
+          - boolean
+          - 'null'
+          default: false
+          x-order: 5
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+  securitySchemes:
+    APIKeyHeader:
+      in: header
+      name: apiKey
+      type: apiKey

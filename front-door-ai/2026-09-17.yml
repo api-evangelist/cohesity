@@ -1,0 +1,29 @@
+# Front Door AI Index — cohesity — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: cohesity
+  lexicon_version: '1.0'
+  probed_at: '2026-09-17'
+  host: www.cohesity.com
+  final_host: www.cohesity.com
+  ownership: own
+  owner: cohesity
+  shares_host_with: null
+  inherited_from: null
+  verdict: scored
+  score: 13
+  host_score: 13
+  density: 10.02
+  words: 1298
+  tiers:
+    agentic: 1
+    core: 11
+    model: 1
+  ambiguous: 6
+  top_terms:
+    AI: 11
+    agent: 5
+    AI agent: 1
+    Anthropic: 1
+    intelligence: 1

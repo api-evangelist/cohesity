@@ -1,0 +1,452 @@
+openapi: 3.2.0
+info:
+  description: 'This API list provides operations for interfacing with the Cohesity
+
+    Cluster.'
+  title: Cohesity REST Groups API
+  version: '1.0'
+servers:
+- url: https://<CLUSTER_VIP>/irisservices/api/v1
+tags:
+- name: Groups
+paths:
+  /public/groups:
+    get:
+      description: 'If no parameters are specified, all groups currently on the Cohesity Cluster
+
+        are returned. Specifying parameters filters the results that are returned.'
+      tags:
+      - Groups
+      summary: List the groups that match the filter criteria specified using parameters
+      operationId: GetGroups
+      parameters:
+      - x-go-name: Name
+        description: 'Optionally specify a group name to filter by. All groups containing name
+
+          will be returned.'
+        name: name
+        in: query
+        schema:
+          type: string
+      - x-go-name: Domain
+        description: 'If no domain is specified, all groups on the Cohesity Cluster are searched.
+
+          If a domain is specified, only groups on the Cohesity Cluster
+
+          associated with that domain are searched.'
+        name: domain
+        in: query
+        schema:
+          type: string
+      - x-go-name: FilterByOwnedDomains
+        description: 'If FilterByOwnedDomains is set to true, then the groups are filtered
+
+          to show only the ones that are in the domains owned by the current tenant
+
+          or user.'
+        name: filterByOwnedDomains
+        in: query
+        schema:
+          type: boolean
+      - x-go-name: TenantIds
+        description: 'TenantIds contains ids of the tenants for which objects are to be
+
+          returned.'
+        name: tenantIds
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - x-go-name: AllUnderHierarchy
+        description: 'AllUnderHierarchy specifies if objects of all the tenants under the
+
+          hierarchy of the logged in user''s organization should be returned.'
+        name: allUnderHierarchy
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/GetGroupsResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    put:
+      description: Returns the group that was updated on the Cohesity Cluster.
+      tags:
+      - Groups
+      summary: Update an existing group on the Cohesity Cluster.
+      operationId: UpdateGroup
+      responses:
+        '200':
+          $ref: '#/components/responses/UpdateGroupResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupParameters'
+        description: Request to update a group.
+    post:
+      description: 'If an Active Directory domain is specified, a new group is added to the
+
+        Cohesity Cluster for the specified Active Directory group principal.
+
+        If the LOCAL domain is specified, a new group is created directly in
+
+        the default LOCAL domain on the Cohesity Cluster.
+
+
+        Returns the created or added group.'
+      tags:
+      - Groups
+      summary: Create or add a new group to the Cohesity Cluster
+      operationId: CreateGroup
+      responses:
+        '201':
+          $ref: '#/components/responses/CreateGroupResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupParameters'
+        description: Request to add or create a Group.
+    delete:
+      description: 'If the group on the Cohesity Cluster was added for an Active Directory user,
+
+        the referenced principal group on the Active Directory domain is NOT deleted.
+
+        Only the group on the Cohesity Cluster is deleted.
+
+
+        Returns Success if the specified groups are deleted.'
+      tags:
+      - Groups
+      summary: Delete one or more groups on the Cohesity Cluster
+      operationId: DeleteGroups
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupDeleteParameters'
+        description: Request to delete one or more groups on the Cohesity Cluster.
+components:
+  schemas:
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    GroupParameters:
+      description: 'Specifies the settings used to add/create a new group or modify an existing
+
+        group.'
+      type: object
+      title: Group Request.
+      properties:
+        description:
+          description: Specifies a description of the group.
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+        domain:
+          description: Specifies the domain of the group.
+          type:
+          - string
+          - 'null'
+          x-go-name: Domain
+        name:
+          description: Specifies the name of the group.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        restricted:
+          description: 'Whether the group is a restricted group. Users belonging to a restricted
+
+            group can only view objects they have permissions to.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: Restricted
+        roles:
+          description: 'Array of Roles.
+
+
+            Specifies the Cohesity roles to associate with the group such as
+
+            ''Admin'', ''Ops'' or ''View''.
+
+            The Cohesity roles determine privileges on the Cohesity Cluster
+
+            for all the users in this group.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Roles
+        smbPrincipals:
+          description: 'Specifies the SMB principals. Principals will be added to this group only
+
+            if IsSmbPrincipalOnly set to true.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SmbPrincipal'
+          x-go-name: SmbPrincipals
+        tenantIds:
+          description: 'Specifies the tenants to which the group belongs to. If not specified,
+
+            session user''s tenant id is assumed.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: TenantIds
+        users:
+          description: 'Specifies the SID of users who are members of the group.
+
+            This field is used only for local groups.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Users
+      x-go-package: cohesity/iris/server/data/public
+    GroupDeleteParameters:
+      description: Specifies the groups to delete on the Cohesity Cluster.
+      type: object
+      title: Delete Groups Request.
+      properties:
+        domain:
+          description: 'Specifies the domain associated with the groups to delete.
+
+            Only groups associated with the same domain can be deleted
+
+            by a single request.
+
+            If no domain is specified, the specified groups are deleted from the
+
+            LOCAL domain on the Cohesity Cluster.
+
+            If a non-LOCAL domain is specified, the specified groups are deleted
+
+            on the Cohesity Cluster. However, the referenced group principals on the
+
+            Active Directory are not deleted.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Domain
+        names:
+          description: 'Array of Groups.
+
+
+            Specifies the list of groups to delete on the Cohesity Cluster.
+
+            Only groups from the same domain can be deleted by a single request.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Names
+      x-go-package: cohesity/iris/server/data/public
+    Group:
+      description: Specifies details about the group.
+      type: object
+      title: Group Details.
+      properties:
+        createdTimeMsecs:
+          description: Specifies the epoch time in milliseconds when the group was created/added.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: CreatedTimeMsecs
+        description:
+          description: Specifies a description of the group.
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+        domain:
+          description: Specifies the domain of the group.
+          type:
+          - string
+          - 'null'
+          x-go-name: Domain
+        lastUpdatedTimeMsecs:
+          description: Specifies the epoch time in milliseconds when the group was last modified.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: LastUpdatedTimeMsecs
+        name:
+          description: Specifies the name of the group.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        restricted:
+          description: 'Whether the group is a restricted group. Users belonging to a restricted
+
+            group can only view objects they have permissions to.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: Restricted
+        roles:
+          description: 'Array of Roles.
+
+
+            Specifies the Cohesity roles to associate with the group such as
+
+            ''Admin'', ''Ops'' or ''View''.
+
+            The Cohesity roles determine privileges on the Cohesity Cluster
+
+            for all the users in this group.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Roles
+        sid:
+          description: Specifies the unique Security ID (SID) of the group.
+          type:
+          - string
+          - 'null'
+          x-go-name: Sid
+        smbPrincipals:
+          description: 'Specifies the SMB principals. Principals will be added to this group only
+
+            if IsSmbPrincipalOnly set to true.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SmbPrincipal'
+          x-go-name: SmbPrincipals
+        tenantIds:
+          description: 'Specifies the tenants to which the group belongs to. If not specified,
+
+            session user''s tenant id is assumed.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: TenantIds
+        usernames:
+          description: 'Specifies the username of users who are members of the group.
+
+            This field is used only for local groups.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Usernames
+        users:
+          description: 'Specifies the SID of users who are members of the group.
+
+            This field is used only for local groups.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Users
+      x-go-package: cohesity/iris/server/data/public
+    SmbPrincipal:
+      type: object
+      title: Specifies struct with SMB principal details.
+      properties:
+        domain:
+          description: Specifies domain name of the principal.
+          type:
+          - string
+          - 'null'
+          x-go-name: Domain
+        name:
+          description: Specifies name of the SMB principal which may be a group or user.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        sid:
+          description: 'Specifies unique Security ID (SID) of the principal that look similar to
+
+            windows domain SID.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Sid
+        type:
+          description: Specifies the type. This can be a user or a group.
+          type:
+          - string
+          - 'null'
+          x-go-name: Type
+      x-go-package: cohesity/iris/server/data/public
+  responses:
+    NoContentResponse:
+      description: No Content
+    GetGroupsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            description: Specifies the groups that match the specified filter criteria.
+            type: array
+            title: Array of Groups.
+            items:
+              $ref: '#/components/schemas/Group'
+    UpdateGroupResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Group'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    CreateGroupResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Group'

@@ -1,0 +1,4187 @@
+openapi: 3.2.0
+info:
+  description: Cohesity API provides a RESTful interface to access the various data management operations on Cohesity cluster and Helios.
+  title: Cohesity REST Protection Groups API
+  version: '2.0'
+servers:
+- url: /v2
+tags:
+- name: Protection Groups
+paths:
+  /data-protect/protection-groups:
+    get:
+      description: Get the list of Protection Groups.
+      tags:
+      - Protection Groups
+      summary: Get the list of Protection Groups
+      operationId: GetProtectionGroups
+      parameters:
+      - description: Filter by a list of Protection Group ids.
+        name: ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - description: Filter by a list of Protection Group names.
+        name: names
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - description: Filter by Policy ids that are associated with Protection Groups. Only Protection Groups associated with the specified Policy ids, are returned.
+        name: policyIds
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - description: Filter by Storage Domain id. Only Protection Groups writing data to this Storage Domain will be returned.
+        name: storageDomainId
+        in: query
+        schema:
+          type: integer
+          format: int64
+      - description: Whether to only return Protection Groups with a datalock.
+        name: includeGroupsWithDatalockOnly
+        in: query
+        schema:
+          type: boolean
+      - description: Filter by environment types such as 'kVMware', 'kView', etc. Only Protection Groups protecting the specified environment types are returned.
+        name: environments
+        in: query
+        schema:
+          type: array
+          items:
+            enum:
+            - kVMware
+            - kHyperV
+            - kAzure
+            - kGCP
+            - kKVM
+            - kAcropolis
+            - kAWS
+            - kPhysical
+            - kGPFS
+            - kElastifile
+            - kNetapp
+            - kGenericNas
+            - kIsilon
+            - kFlashBlade
+            - kPure
+            - kSQL
+            - kExchange
+            - kAD
+            - kOracle
+            - kView
+            - kRemoteAdapter
+            - kO365
+            - kKubernetes
+            - kCassandra
+            - kMongoDB
+            - kCouchbase
+            - kHdfs
+            - kHive
+            - kHBase
+            - kUDA
+            type: string
+      - name: office365Workloads
+        in: query
+        schema:
+          type: array
+          items:
+            enum:
+            - kMailbox
+            - kOneDrive
+            - kSharePoint
+            - kPublicFolders
+            - kGroups
+            - kTeams
+            type: string
+      - description: Filter by Inactive or Active Protection Groups. If not set, all Inactive and Active Protection Groups are returned. If true, only Active Protection Groups are returned. If false, only Inactive Protection Groups are returned. When you create a Protection Group on a Primary Cluster with a replication schedule, the Cluster creates an Inactive copy of the Protection Group on the Remote Cluster. In addition, when an Active and running Protection Group is deactivated, the Protection Group becomes Inactive.
+        name: isActive
+        in: query
+        schema:
+          type: boolean
+      - description: If true, return only Protection Groups that have been deleted but still have Snapshots associated with them. If false, return all Protection Groups except those Protection Groups that have been deleted and still have Snapshots associated with them. A Protection Group that is deleted with all its Snapshots is not returned for either of these cases.
+        name: isDeleted
+        in: query
+        schema:
+          type: boolean
+      - description: Filter by paused or non paused Protection Groups, If not set, all paused and non paused Protection Groups are returned. If true, only paused Protection Groups are returned. If false, only non paused Protection Groups are returned.
+        name: isPaused
+        in: query
+        schema:
+          type: boolean
+      - description: Filter by last local backup run status.<br> 'Running' indicates that the run is still running.<br> 'Canceled' indicates that the run has been canceled.<br> 'Canceling' indicates that the run is in the process of being canceled.<br> 'Failed' indicates that the run has failed.<br> 'Missed' indicates that the run was unable to take place at the scheduled time because the previous run was still happening.<br> 'Succeeded' indicates that the run has finished successfully.<br> 'SucceededWithWarning' indicates that the run finished successfully, but there were some warning messages.
+        name: lastRunLocalBackupStatus
+        in: query
+        schema:
+          type: array
+          items:
+            enum:
+            - Accepted
+            - Running
+            - Canceled
+            - Canceling
+            - Failed
+            - Missed
+            - Succeeded
+            - SucceededWithWarning
+            - OnHold
+            type: string
+      - description: Filter by last remote replication run status.<br> 'Running' indicates that the run is still running.<br> 'Canceled' indicates that the run has been canceled.<br> 'Canceling' indicates that the run is in the process of being canceled.<br> 'Failed' indicates that the run has failed.<br> 'Missed' indicates that the run was unable to take place at the scheduled time because the previous run was still happening.<br> 'Succeeded' indicates that the run has finished successfully.<br> 'SucceededWithWarning' indicates that the run finished successfully, but there were some warning messages.
+        name: lastRunReplicationStatus
+        in: query
+        schema:
+          type: array
+          items:
+            enum:
+            - Accepted
+            - Running
+            - Canceled
+            - Canceling
+            - Failed
+            - Missed
+            - Succeeded
+            - SucceededWithWarning
+            - OnHold
+            type: string
+      - description: Filter by last cloud archival run status.<br> 'Running' indicates that the run is still running.<br> 'Canceled' indicates that the run has been canceled.<br> 'Canceling' indicates that the run is in the process of being canceled.<br> 'Failed' indicates that the run has failed.<br> 'Missed' indicates that the run was unable to take place at the scheduled time because the previous run was still happening.<br> 'Succeeded' indicates that the run has finished successfully.<br> 'SucceededWithWarning' indicates that the run finished successfully, but there were some warning messages.
+        name: lastRunArchivalStatus
+        in: query
+        schema:
+          type: array
+          items:
+            enum:
+            - Accepted
+            - Running
+            - Canceled
+            - Canceling
+            - Failed
+            - Missed
+            - Succeeded
+            - SucceededWithWarning
+            - OnHold
+            type: string
+      - description: Filter by last cloud spin run status.<br> 'Running' indicates that the run is still running.<br> 'Canceled' indicates that the run has been canceled.<br> 'Canceling' indicates that the run is in the process of being canceled.<br> 'Failed' indicates that the run has failed.<br> 'Missed' indicates that the run was unable to take place at the scheduled time because the previous run was still happening.<br> 'Succeeded' indicates that the run has finished successfully.<br> 'SucceededWithWarning' indicates that the run finished successfully, but there were some warning messages.
+        name: lastRunCloudSpinStatus
+        in: query
+        schema:
+          type: array
+          items:
+            enum:
+            - Accepted
+            - Running
+            - Canceled
+            - Canceling
+            - Failed
+            - Missed
+            - Succeeded
+            - SucceededWithWarning
+            - OnHold
+            type: string
+      - description: Filter by last any run status.<br> 'Running' indicates that the run is still running.<br> 'Canceled' indicates that the run has been canceled.<br> 'Canceling' indicates that the run is in the process of being canceled.<br> 'Failed' indicates that the run has failed.<br> 'Missed' indicates that the run was unable to take place at the scheduled time because the previous run was still happening.<br> 'Succeeded' indicates that the run has finished successfully.<br> 'SucceededWithWarning' indicates that the run finished successfully, but there were some warning messages.
+        name: lastRunAnyStatus
+        in: query
+        schema:
+          type: array
+          items:
+            enum:
+            - Accepted
+            - Running
+            - Canceled
+            - Canceling
+            - Failed
+            - Missed
+            - Succeeded
+            - SucceededWithWarning
+            - OnHold
+            type: string
+      - description: If true, return Protection Groups for which last run SLA was violated.
+        name: isLastRunSlaViolated
+        in: query
+        schema:
+          type: boolean
+      - description: TenantIds contains ids of the tenants for which objects are to be returned.
+        name: tenantIds
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - description: If true, the response will include Protection Groups which were created by all tenants which the current user has permission to see. If false, then only Protection Groups created by the current user will be returned.
+        name: includeTenants
+        in: query
+        schema:
+          type: boolean
+      - description: If true, the response will include last run info. If it is false or not specified, the last run info won't be returned.
+        name: includeLastRunInfo
+        in: query
+        schema:
+          type: boolean
+      - description: If true, the response will not include the list of excluded source IDs in groups that contain this field. This can be set to true in order to improve performance if excluded source IDs are not needed by the user.
+        name: pruneExcludedSourceIds
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/GetProtectionGroupsResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    post:
+      description: Create a Protection Group.
+      tags:
+      - Protection Groups
+      summary: Create a Protection Group
+      operationId: CreateProtectionGroup
+      responses:
+        '201':
+          $ref: '#/components/responses/CreateOrUpdateProtectionGroupResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              x-cohesity-discriminator-ref: CommonProtectionGroupRequestParams
+              $ref: '#/components/schemas/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659'
+        description: Specifies the parameters to create a Protection Group.
+        required: true
+  /data-protect/protection-groups/states:
+    post:
+      description: Perform an action like pause, resume, active, deactivate on all specified Protection Groups. Note that the pause or resume actions will take effect from next Protection Run. Also, user can specify only one type of action on all the Protection Groups. Deactivate and activate actions are independent of pause and resume state. Deactivate and activate actions are useful in case of failover situations. Returns success if the state of all the Protection Groups state is changed successfully.
+      tags:
+      - Protection Groups
+      summary: Perform an action like pause, resume, active, deactivate on all specified…
+      operationId: UpdateProtectionGroupsState
+      responses:
+        '200':
+          $ref: '#/components/responses/UpdateProtectionGroupsStateResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProtectionGroupsStateRequest'
+        description: Specifies the parameters to perform an action of list of Protection Groups.
+        required: true
+  /data-protect/protection-groups/{id}:
+    get:
+      description: Returns the Protection Group corresponding to the specified Group id.
+      tags:
+      - Protection Groups
+      summary: List details about single Protection Group
+      operationId: GetProtectionGroupById
+      parameters:
+      - description: Specifies a unique id of the Protection Group.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - description: If true, the response will include last run info. If it is false or not specified, the last run info won't be returned.
+        name: includeLastRunInfo
+        in: query
+        schema:
+          type: boolean
+      - description: If true, the response will not include the list of excluded source IDs in groups that contain this field. This can be set to true in order to improve performance if excluded source IDs are not needed by the user.
+        name: pruneExcludedSourceIds
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/GetProtectionGroupResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    put:
+      description: Update the specified Protection Group.
+      tags:
+      - Protection Groups
+      summary: Update a Protection Group
+      operationId: UpdateProtectionGroup
+      parameters:
+      - description: Specifies the id of the Protection Group.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/CreateOrUpdateProtectionGroupResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              x-cohesity-discriminator-ref: CommonProtectionGroupRequestParams
+              $ref: '#/components/schemas/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659'
+        description: Specifies the parameters to update a Protection Group.
+        required: true
+    delete:
+      description: Returns Success if the Protection Group is deleted.
+      tags:
+      - Protection Groups
+      summary: Delete a Protection Group
+      operationId: DeleteProtectionGroup
+      parameters:
+      - description: Specifies a unique id of the Protection Group.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - description: Specifies if Snapshots generated by the Protection Group should also be deleted when the Protection Group is deleted.
+        name: deleteSnapshots
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /data-protect/protection-groups/{id}/runs:
+    get:
+      description: Get the runs for a particular Protection Group.
+      tags:
+      - Protection Groups
+      summary: Get the list of runs for a Protection Group
+      operationId: GetProtectionGroupRuns
+      parameters:
+      - description: Specifies a unique id of the Protection Group.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - description: Specifies the protection run id.
+        name: runId
+        in: query
+        schema:
+          type: string
+          pattern: ^\d+:\d+$
+      - description: Filter by a start time. Specify the start time as a Unix epoch Timestamp (in microseconds).
+        name: startTimeUsecs
+        in: query
+        schema:
+          type: integer
+          format: int64
+      - description: Filter by a end time. Specify the start time as a Unix epoch Timestamp (in microseconds).
+        name: endTimeUsecs
+        in: query
+        schema:
+          type: integer
+          format: int64
+      - description: TenantIds contains ids of the tenants for which objects are to be returned.
+        name: tenantIds
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - description: If true, the response will include Protection Group Runs which were created by all tenants which the current user has permission to see. If false, then only Protection Group Runs created by the current user will be returned.
+        name: includeTenants
+        in: query
+        schema:
+          type: boolean
+      - description: Filter by run type. Only protection run matching the specified types will be returned.
+        name: runTypes
+        in: query
+        schema:
+          type: array
+          items:
+            enum:
+            - kAll
+            - kLog
+            - kSystem
+            - kIncremental
+            - kFull
+            type: string
+          uniqueItems: true
+      - description: Specifies if the result includes the object details for each protection run. If set to true, details of the protected object will be returned. If set to false or not specified, details will not be returned.
+        name: includeObjectDetails
+        in: query
+        schema:
+          type: boolean
+      - description: Specifies a list of local backup status, runs matching the status will be returned.<br> 'Running' indicates that the run is still running.<br> 'Canceled' indicates that the run has been canceled.<br> 'Canceling' indicates that the run is in the process of being canceled.<br> 'Failed' indicates that the run has failed.<br> 'Missed' indicates that the run was unable to take place at the scheduled time because the previous run was still happening.<br> 'Succeeded' indicates that the run has finished successfully.<br> 'SucceededWithWarning' indicates that the run finished successfully, but there were some warning messages.
+        name: localBackupRunStatus
+        in: query
+        schema:
+          type: array
+          items:
+            enum:
+            - Accepted
+            - Running
+            - Canceled
+            - Canceling
+            - Failed
+            - Missed
+            - Succeeded
+            - SucceededWithWarning
+            - OnHold
+            type: string
+      - description: Specifies a list of replication status, runs matching the status will be returned.<br> 'Running' indicates that the run is still running.<br> 'Canceled' indicates that the run has been canceled.<br> 'Canceling' indicates that the run is in the process of being canceled.<br> 'Failed' indicates that the run has failed.<br> 'Missed' indicates that the run was unable to take place at the scheduled time because the previous run was still happening.<br> 'Succeeded' indicates that the run has finished successfully.<br> 'SucceededWithWarning' indicates that the run finished successfully, but there were some warning messages.
+        name: replicationRunStatus
+        in: query
+        schema:
+          type: array
+          items:
+            enum:
+            - Accepted
+            - Running
+            - Canceled
+            - Canceling
+            - Failed
+            - Missed
+            - Succeeded
+            - SucceededWithWarning
+            - OnHold
+            type: string
+      - description: Specifies a list of archival status, runs matching the status will be returned.<br> 'Running' indicates that the run is still running.<br> 'Canceled' indicates that the run has been canceled.<br> 'Canceling' indicates that the run is in the process of being canceled.<br> 'Failed' indicates that the run has failed.<br> 'Missed' indicates that the run was unable to take place at the scheduled time because the previous run was still happening.<br> 'Succeeded' indicates that the run has finished successfully.<br> 'SucceededWithWarning' indicates that the run finished successfully, but there were some warning messages.
+        name: archivalRunStatus
+        in: query
+        schema:
+          type: array
+          items:
+            enum:
+            - Accepted
+            - Running
+            - Canceled
+            - Canceling
+            - Failed
+            - Missed
+            - Succeeded
+            - SucceededWithWarning
+            - OnHold
+            type: string
+      - description: Specifies a list of cloud spin status, runs matching the status will be returned.<br> 'Running' indicates that the run is still running.<br> 'Canceled' indicates that the run has been canceled.<br> 'Canceling' indicates that the run is in the process of being canceled.<br> 'Failed' indicates that the run has failed.<br> 'Missed' indicates that the run was unable to take place at the scheduled time because the previous run was still happening.<br> 'Succeeded' indicates that the run has finished successfully.<br> 'SucceededWithWarning' indicates that the run finished successfully, but there were some warning messages.
+        name: cloudSpinRunStatus
+        in: query
+        schema:
+          type: array
+          items:
+            enum:
+            - Accepted
+            - Running
+            - Canceled
+            - Canceling
+            - Failed
+            - Missed
+            - Succeeded
+            - SucceededWithWarning
+            - OnHold
+            type: string
+      - description: Specifies the max number of runs. If not specified, at most 100 runs will be returned.
+        name: numRuns
+        in: query
+        schema:
+          type: integer
+          format: int64
+      - description: Specifies whether to exclude non restorable runs. Run is treated restorable only if there is atleast one object snapshot (which may be either a local or an archival snapshot) which is not deleted or expired. Default value is false.
+        name: excludeNonRestorableRuns
+        in: query
+        schema:
+          type: boolean
+          default: false
+      responses:
+        '200':
+          $ref: '#/components/responses/GetProtectionGroupRunsResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    put:
+      description: 'Update runs for a particular Protection Group. A user can perform the following actions: 1. Extend or reduce retention of a local, replication and archival snapshots. 2. Can perform resync operation on failed copy snapshots attempts in this Run. 3. Add new replication and archival snapshot targets to the Run. 4. Add or remove legal hold on the snapshots. Only a user with DSO role can perform this operation. 5. Delete the snapshots that were created as a part of this Run. 6. Apply datalock on existing snapshots where a user cannot manually delete snapshots before the expiry time.'
+      tags:
+      - Protection Groups
+      summary: Update runs for a particular Protection Group
+      operationId: UpdateProtectionGroupRun
+      parameters:
+      - description: Specifies a unique id of the Protection Group.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '207':
+          $ref: '#/components/responses/UpdateProtectionGroupRunResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProtectionGroupRunRequestBody'
+        description: Specifies the parameters to update a Protection Group Run.
+        required: true
+    post:
+      description: Create a new protection run. This can be used to start a run for a Protection Group on demand, ignoring the schedule and retention specified in the protection policy.
+      tags:
+      - Protection Groups
+      summary: Create a new protection run
+      operationId: CreateProtectionGroupRun
+      parameters:
+      - description: Specifies a unique id of the Protection Group.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          $ref: '#/components/responses/CreateProtectionGroupRunResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProtectionGroupRunRequest'
+        description: Specifies the parameters to start a protection run.
+        required: true
+  /data-protect/protection-groups/{id}/runs/{runId}:
+    get:
+      description: Get a run for a particular Protection Group.
+      tags:
+      - Protection Groups
+      summary: Get a run for a Protection Group
+      operationId: GetProtectionGroupRun
+      parameters:
+      - description: Specifies a unique id of the Protection Group.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - description: Specifies a unique run id of the Protection Group run.
+        name: runId
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^\d+:\d+$
+      - description: TenantIds contains ids of the tenants for which the run is to be returned.
+        name: tenantIds
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - description: If true, the response will include Protection Group Runs which were created by all tenants which the current user has permission to see. If false, then only Protection Groups created by the current user will be returned. If it's not specified, it is true by default.
+        name: includeTenants
+        in: query
+        schema:
+          type: boolean
+      - description: Specifies if the result includes the object details for a protection run. If set to true, details of the protected object will be returned. If set to false or not specified, details will not be returned.
+        name: includeObjectDetails
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/GetProtectionGroupRunResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /data-protect/protection-groups/{id}/runs/{runId}/cancel:
+    post:
+      description: Cancel protection run for a given protection group ID and run ID.
+      tags:
+      - Protection Groups
+      summary: Cancel protection group run
+      operationId: CancelProtectionGroupRun
+      parameters:
+      - description: Specifies a unique id of the Protection Group.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - description: Specifies a unique run id of the Protection Group run.
+        name: runId
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^\d+:\d+$
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CancelProtectionGroupRunRequest'
+        description: Specifies the parameters to cancel a protection run.
+        required: true
+  /data-protect/protection-groups/{id}/runs/{runId}/debug-logs:
+    get:
+      description: Get the debug logs for all objects of a run for a particular Protection Group.
+      tags:
+      - Protection Groups
+      summary: Get the debug logs for a run from a Protection Group
+      operationId: GetRunDebugLogs
+      parameters:
+      - description: Specifies a unique id of the Protection Group.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^\d+:\d+:\d+$
+      - description: Specifies a unique run id of the Protection Group run.
+        name: runId
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^\d+:\d+$
+      - description: 'Specifies the id of the object for which debug logs are to be returned. '
+        name: objectId
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /data-protect/protection-groups/{id}/runs/{runId}/objects/{objectId}/debug-logs:
+    get:
+      description: Get the debug logs for a particular object of a run for a particular Protection Group.
+      tags:
+      - Protection Groups
+      summary: Get the debug logs for a particular object in a run from a Protection Group
+      operationId: GetRunDebugLogsForObject
+      parameters:
+      - description: Specifies a unique id of the Protection Group.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^\d+:\d+:\d+$
+      - description: Specifies a unique run id of the Protection Group run.
+        name: runId
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^\d+:\d+$
+      - description: 'Specifies the id of the object for which debug logs are to be returned. '
+        name: objectId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /data-protect/protection-groups/{id}/runs/{runId}/objects/{objectId}/downloadMessages:
+    get:
+      description: Get an CSV error report for given objectId and run id. Each row in CSV report contains the File Path, error/warning code and error/warning message.
+      tags:
+      - Protection Groups
+      summary: Get the CSV of errors/warnings for a given run and an object
+      operationId: GetRunErrorsReport
+      parameters:
+      - description: Specifies a unique id of the Protection Group.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - description: Specifies a unique run id of the Protection Group run.
+        name: runId
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^\d+:\d+$
+      - description: 'Specifies the id of the object for which errors/warnings are to be returned. '
+        name: objectId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /data-protect/runs/summary:
+    get:
+      description: Get a list of protection runs.
+      tags:
+      - Protection Groups
+      summary: Get the list of runs
+      operationId: GetProtectionRuns
+      parameters:
+      - description: Filter by a start time. Specify the start time as a Unix epoch Timestamp (in microseconds), only runs executing after this time will be returned. By default it is endTimeUsecs minus an hour.
+        name: startTimeUsecs
+        in: query
+        schema:
+          type: integer
+          format: int64
+      - description: Filter by a end time. Specify the start time as a Unix epoch Timestamp (in microseconds), only runs executing before this time will be returned. By default it is current time.
+        name: endTimeUsecs
+        in: query
+        schema:
+          type: integer
+          format: int64
+      - description: Specifies a list of status, runs matching the status will be returned.<br> 'Running' indicates that the run is still running.<br> 'Canceled' indicates that the run has been canceled.<br> 'Canceling' indicates that the run is in the process of being canceled.<br> 'Failed' indicates that the run has failed.<br> 'Missed' indicates that the run was unable to take place at the scheduled time because the previous run was still happening.<br> 'Succeeded' indicates that the run has finished successfully.<br> 'SucceededWithWarning' indicates that the run finished successfully, but there were some warning messages.
+        name: runStatus
+        in: query
+        schema:
+          type: array
+          items:
+            enum:
+            - Accepted
+            - Running
+            - Canceled
+            - Canceling
+            - Failed
+            - Missed
+            - Succeeded
+            - SucceededWithWarning
+            - OnHold
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/GetProtectionRunsResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /data-protect/runs/{runId}/progress:
+    get:
+      description: Get the progress of a run.
+      tags:
+      - Protection Groups
+      summary: Get the progress of a run
+      operationId: GetProtectionRunProgress
+      parameters:
+      - description: Specifies a unique run id of the Protection Run.
+        name: runId
+        in: path
+        required: true
+        schema:
+          type: string
+      - description: Specifies the objects whose progress will be returned. This only applies to protection group runs and will be ignored for object runs. If the objects are specified, the run progress will not be returned and only the progress of the specified objects will be returned.
+        name: objects
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - description: TenantIds contains ids of the tenants for which the run is to be returned.
+        name: tenantIds
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - description: If true, the response will include Protection Group Runs which were created by all tenants which the current user has permission to see. If false, then only Protection Groups created by the current user will be returned. If it's not specified, it is true by default.
+        name: includeTenants
+        in: query
+        schema:
+          type: boolean
+      - description: Specifies whether to return finished tasks. By default only active tasks are returned.
+        name: includeFinishedTasks
+        in: query
+        schema:
+          type: boolean
+      - description: Specifies the time after which the progress task starts in Unix epoch Timestamp(in microseconds).
+        name: startTimeUsecs
+        in: query
+        schema:
+          type: integer
+          format: int64
+      - description: Specifies the time before which the progress task ends in Unix epoch Timestamp(in microseconds).
+        name: endTimeUsecs
+        in: query
+        schema:
+          type: integer
+          format: int64
+      - description: Specifies the maximum number of tasks to return.
+        name: maxTasksNum
+        in: query
+        schema:
+          type: integer
+          format: int32
+      - description: Specifies whether to return objects. By default all the task tree are returned.
+        name: excludeObjectDetails
+        in: query
+        schema:
+          type: boolean
+      - description: Specifies whether to include event logs
+        name: includeEventLogs
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/GetProtectionRunProgress'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+components:
+  schemas:
+    AwsCloudSpinParams:
+      description: Specifies various resources when converting and deploying a VM to AWS.
+      type: object
+      title: AWS Parameters.
+      required:
+      - region
+      properties:
+        region:
+          description: Specifies id of the AWS region in which to deploy the VM.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        vpcId:
+          description: Specifies id of the Virtual Private Cloud to chose for the instance type.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+        subnetId:
+          description: Specifies id of the subnet within above VPC.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
+    AzureTargetConfig:
+      description: Specifies the configuration for adding Azure as replication target
+      type: object
+      title: Azure Target Configuration
+      required:
+      - sourceId
+      properties:
+        sourceId:
+          description: Specifies the source id of the Azure protection source registered on Cohesity cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        name:
+          description: Specifies the name of the Azure Replication target.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+          readOnly: true
+        resourceGroup:
+          description: Specifies id of the Azure resource group used to filter regions in UI.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
+        resourceGroupName:
+          description: Specifies name of the Azure resource group used to filter regions in UI.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+          readOnly: true
+        storageAccount:
+          description: Specifies id of the storage account of Azure replication target which will contain storage container.
+          type:
+          - integer
+          - 'null'
+          x-order: 4
+          readOnly: true
+        storageAccountName:
+          description: Specifies name of the storage account of Azure replication target which will contain storage container.
+          type:
+          - string
+          - 'null'
+          x-order: 5
+          readOnly: true
+        storageContainer:
+          description: Specifies id of the storage container of Azure Replication target.
+          type:
+          - integer
+          - 'null'
+          x-order: 6
+          readOnly: true
+        storageContainerName:
+          description: Specifies name of the storage container of Azure Replication target.
+          type:
+          - string
+          - 'null'
+          x-order: 7
+          readOnly: true
+        storageResourceGroup:
+          description: Specifies id of the storage resource group of Azure Replication target.
+          type:
+          - integer
+          - 'null'
+          x-order: 8
+          readOnly: true
+        storageResourceGroupName:
+          description: Specifies name of the storage resource group of Azure Replication target.
+          type:
+          - string
+          - 'null'
+          x-order: 9
+          readOnly: true
+    ProtectionGroups:
+      description: Protection Group  response.
+      type: object
+      properties:
+        protectionGroups:
+          description: Specifies the list of Protection Groups which were returned by the request.
+          type:
+          - array
+          - 'null'
+          items:
+            x-cohesity-discriminator-ref: CommonProtectionGroupResponseParams
+            $ref: '#/components/schemas/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801'
+          x-order: 0
+    ArchivalTargetProgressInfo:
+      description: Specifies the progress of an archival run target.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ArchivalTargetSummaryInfo'
+      - $ref: '#/components/schemas/ProgressTaskInfo'
+      - type: object
+        properties:
+          objects:
+            description: Specifies progress for objects.
+            type:
+            - array
+            - 'null'
+            items:
+              $ref: '#/components/schemas/ObjectProgressInfo'
+            x-order: 0
+    ObjectTypeVCenterParams:
+      type: object
+      title: Object Type VCenter Params
+      properties:
+        isCloudEnv:
+          description: Specifies that registered vCenter source is a VMC (VMware Cloud) environment or not.
+          type:
+          - boolean
+          - 'null'
+          x-order: 0
+    BackupRunSummary:
+      description: Specifies summary information about local snapshot run across all objects.
+      type: object
+      title: Summary information for local snapshot run.
+      properties:
+        runType:
+          description: Type of Protection Group run. 'kRegular' indicates an incremental (CBT) backup. Incremental backups utilizing CBT (if supported) are captured of the target protection objects. The first run of a kRegular schedule captures all the blocks. 'kFull' indicates a full (no CBT) backup. A complete backup (all blocks) of the target protection objects are always captured and Change Block Tracking (CBT) is not utilized. 'kLog' indicates a Database Log backup. Capture the database transaction logs to allow rolling back to a specific point in time. 'kSystem' indicates system volume backup. It produces an image for bare metal recovery.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kRegular
+          - kFull
+          - kLog
+          - kSystem
+          - kHydrateCDP
+          x-order: 0
+        isSlaViolated:
+          description: Indicated if SLA has been violated for this run.
+          type:
+          - boolean
+          - 'null'
+          x-order: 1
+        startTimeUsecs:
+          description: Specifies the start time of backup run in Unix epoch Timestamp(in microseconds).
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
+        endTimeUsecs:
+          description: Specifies the end time of backup run in Unix epoch Timestamp(in microseconds).
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 3
+        status:
+          description: Status of the backup run. 'Running' indicates that the run is still running. 'Canceled' indicates that the run has been canceled. 'Canceling' indicates that the run is in the process of being canceled. 'Failed' indicates that the run has failed. 'Missed' indicates that the run was unable to take place at the scheduled time because the previous run was still happening. 'Succeeded' indicates that the run has finished successfully. 'SucceededWithWarning' indicates that the run finished successfully, but there were some warning messages.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Accepted
+          - Running
+          - Canceled
+          - Canceling
+          - Failed
+          - Missed
+          - Succeeded
+          - SucceededWithWarning
+          - OnHold
+          x-order: 4
+        messages:
+          description: Message about the backup run.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 5
+        successfulObjectsCount:
+          description: Specifies the count of objects for which backup was successful.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 6
+        failedObjectsCount:
+          description: Specifies the count of objects for which backup failed.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 7
+        cancelledObjectsCount:
+          description: Specifies the count of objects for which backup was cancelled.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 8
+        successfulAppObjectsCount:
+          description: Specifies the count of app objects for which backup was successful.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-order: 9
+        failedAppObjectsCount:
+          description: Specifies the count of app objects for which backup failed.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-order: 10
+        cancelledAppObjectsCount:
+          description: Specifies the count of app objects for which backup was cancelled.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-order: 11
+        localSnapshotStats:
+          description: Statistics about local snapshot (across all objects).
+          x-order: 12
+          $ref: '#/components/schemas/BackupDataStats'
+        indexingTaskId:
+          description: Progress monitor task for indexing.
+          type:
+          - string
+          - 'null'
+          x-order: 13
+        progressTaskId:
+          description: Progress monitor task id for local backup run.
+          type:
+          - string
+          - 'null'
+          x-order: 14
+        dataLock:
+          description: "Specifies WORM retention type for the local backeup. When a WORM retention type is specified, the snapshots of the Protection Groups using this policy will be kept until the maximum of the snapshot retention time. During that time, the snapshots cannot be deleted. \n'Compliance' implies WORM retention is set for compliance reason. \n'Administrative' implies WORM retention is set for administrative purposes."
+          type:
+          - string
+          - 'null'
+          enum:
+          - Compliance
+          - Administrative
+          x-order: 15
+        localTaskId:
+          description: Task ID for a local protection run.
+          type:
+          - string
+          - 'null'
+          x-order: 16
+    GoogleTiers:
+      description: Specifies Google tiers.
+      type: object
+      required:
+      - tiers
+      properties:
+        tiers:
+          description: Specifies the tiers that are used to move the archived backup from current tier to next tier. The order of the tiers determines which tier will be used next for moving the archived backup. The first tier input should always be default tier where backup will be acrhived. Each tier specifies how much time after the backup will be moved to next tier from the current tier.
+          type:
+          - array
+          - 'null'
+          minLength: 1
+          items:
+            $ref: '#/components/schemas/GoogleTier'
+          x-order: 0
+    CreateProtectionGroupRunRequest:
+      description: Specifies the request to create a protection run. On success, the system will accept the request and return the Protection Group id for which the run is supposed to start. The actual run may start at a later time if the system is busy. Consumers must query the Protection Group to see the run.
+      type: object
+      required:
+      - runType
+      properties:
+        runType:
+          description: Type of protection run. 'kRegular' indicates an incremental (CBT) backup. Incremental backups utilizing CBT (if supported) are captured of the target protection objects. The first run of a kRegular schedule captures all the blocks. 'kFull' indicates a full (no CBT) backup. A complete backup (all blocks) of the target protection objects are always captured and Change Block Tracking (CBT) is not utilized. 'kLog' indicates a Database Log backup. Capture the database transaction logs to allow rolling back to a specific point in time. 'kSystem' indicates system volume backup. It produces an image for bare metal recovery.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kRegular
+          - kFull
+          - kLog
+          - kSystem
+          - kHydrateCDP
+          x-order: 0
+        objects:
+          description: Specifies the list of objects to be protected by this Protection Group run. These can be leaf objects or non-leaf objects in the protection hierarchy. This must be specified only if a subset of objects from the Protection Groups needs to be protected.
+          type: array
+          items:
+            $ref: '#/components/schemas/RunObject'
+          x-order: 1
+        targetsConfig:
+          description: Specifies the remote, archival or cloudSpin targets where the snapshot is backed up.
+          type:
+          - object
+          - 'null'
+          x-order: 2
+          $ref: '#/components/schemas/RunTargetsConfiguration'
+    UpdateProtectionGroupRunRequestBody:
+      description: Specifies the params to update a list of Protection Group Runs.
+      type: object
+      title: Update Protection Group Run Request Body.
+      required:
+      - updateProtectionGroupRunParams
+      properties:
+        updateProtectionGroupRunParams:
+          type:
+          - array
+          - 'null'
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/UpdateProtectionGroupRunParams'
+          x-order: 0
+    ProtectionGroupAlertingPolicy:
+      description: Specifies a policy for alerting users of the status of a Protection Group.
+      type: object
+      required:
+      - backupRunStatus
+      properties:
+        backupRunStatus:
+          description: Specifies the run status for which the user would like to receive alerts.
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+            - kSuccess
+            - kFailure
+            - kSlaViolation
+          x-order: 0
+        alertTargets:
+          description: Specifies a list of targets to receive the alerts.
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertTarget'
+          x-order: 1
+    ProtectionRunsSummary:
+      description: Specifies a list of summaries of protection runs.
+      type: object
+      properties:
+        protectionRunsSummary:
+          description: Specifies a list of summaries of protection runs.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ProtectionRunSummary'
+          x-order: 0
+    AzureCloudSpinParams:
+      description: Specifies various resources when converting and deploying a VM to Azure.
+      type: object
+      title: Azure Parameters.
+      properties:
+        networkResourceGroupId:
+          description: Specifies id of the resource group for the selected virtual network.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        resourceGroupId:
+          description: Specifies id of the Azure resource group. Its value is globally unique within Azure.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+        storageAccountId:
+          description: Specifies id of the storage account that will contain the storage container within which we will create the blob that will become the VHD disk for the cloned VM.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
+        storageContainerId:
+          description: Specifies id of the storage container within the above storage account.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 3
+        storageResourceGroupId:
+          description: Specifies id of the resource group for the selected storage account.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 4
+        availabilitySetId:
+          description: Specifies the availability set.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 5
+        tempVmResourceGroupId:
+          description: Specifies id of the temporary Azure resource group.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 6
+        tempVmStorageAccountId:
+          description: Specifies id of the temporary VM storage account that will contain the storage container within which we will create the blob that will become the VHD disk for the cloned VM.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 7
+        tempVmStorageContainerId:
+          description: Specifies id of the temporary VM storage container within the above storage account.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 8
+        tempVmSubnetId:
+          description: Specifies Id of the temporary VM subnet within the above virtual network.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 9
+        tempVmVirtualNetworkId:
+          description: Specifies Id of the temporary VM Virtual Network.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 10
+    Tenant:
+      description: Specifies a tenant object.
+      type: object
+      title: Tenant
+      properties:
+        id:
+          description: Specifies the id of the tenant.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        name:
+          description: Specifies the name of the tenant.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    AWSTier:
+      description: Specifies the settings for a aws tier.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/CommonCloudTierSettings'
+      - type: object
+        required:
+        - tierType
+        properties:
+          tierType:
+            description: Specifies the AWS tier types.
+            type:
+            - string
+            - 'null'
+            enum:
+            - kAmazonS3Standard
+            - kAmazonS3StandardIA
+            - kAmazonS3OneZoneIA
+            - kAmazonS3IntelligentTiering
+            - kAmazonS3Glacier
+            - kAmazonS3GlacierDeepArchive
+            x-order: 0
+    UpdateExistingArchivalSnapshotConfig:
+      description: Specifies the configuration about updating an existing Archival Snapshot Run.
+      type: object
+      title: Update Archival Snapshot Config.
+      required:
+      - id
+      - archivalTargetType
+      properties:
+        id:
+          description: Specifies the id of the archival target.
+          type: integer
+          format: int64
+          x-order: 0
+        archivalTargetType:
+          description: Specifies the snapshot's archival target type from which recovery has been performed.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Tape
+          - Cloud
+          - Nas
+          x-order: 1
+        enableLegalHold:
+          description: Specifies whether to retain the snapshot for legal purpose. If set to true, the snapshots cannot be deleted until the retention period. Note that using this option may cause the Cluster to run out of space. If set to false explicitly, the hold is removed, and the snapshots will expire as specified in the policy of the Protection Group. If this field is not specified, there is no change to the hold of the run. This field can be set only by a User having Data Security Role.
+          type:
+          - boolean
+          - 'null'
+          x-order: 2
+        deleteSnapshot:
+          description: Specifies whether to delete the snapshot. When this is set to true, all other params will be ignored.
+          type:
+          - boolean
+          - 'null'
+          x-order: 3
+        resync:
+          description: Specifies whether to retry the archival operation in case if earlier attempt failed. If not specified or set to false, archival is not retried.
+          type:
+          - boolean
+          - 'null'
+          x-order: 4
+        dataLock:
+          description: "Specifies WORM retention type for the snapshots. When a WORM retention type is specified, the snapshots of the Protection Groups using this policy will be kept until the maximum of the snapshot retention time. During that time, the snapshots cannot be deleted. \n'Compliance' implies WORM retention is set for compliance reason. \n'Administrative' implies WORM retention is set for administrative purposes."
+          type:
+          - string
+          - 'null'
+          enum:
+          - Compliance
+          - Administrative
+          x-order: 5
+        daysToKeep:
+          description: Specifies number of days to retain the snapshots. If positive, then this value is added to exisiting expiry time thereby increasing  the retention period of the snapshot. Conversly, if this value is negative, then value is subtracted to existing expiry time thereby decreasing the retention period of the snaphot. Here, by this operation if expiry time goes below current time then snapshot is immediately deleted.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 6
+    RunReplicationConfig:
+      description: Specifies settings for copying Snapshots to Remote Clusters. This also specifies the retention policy that should be applied to Snapshots after they have been copied to the specified target.
+      type: object
+      title: Replication Target Configuration
+      required:
+      - id
+      properties:
+        id:
+          description: Specifies id of Remote Cluster to copy the Snapshots to.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        retention:
+          description: Specifies the Retention period of snapshot in days, months or years to retain copied Snapshots on the target.
+          type:
+          - object
+          - 'null'
+          x-order: 1
+          $ref: '#/components/schemas/Retention'
+    TierLevelSettings:
+      description: 'Specifies the settings tier levels configured with each archival target. The tier settings need to be applied in specific order and default tier should always be passed as first entry in tiers array. The following example illustrates how to configure tiering input for AWS tiering. Same type of input structure applied to other cloud platforms also. <br>If user wants to achieve following tiering for backup, <br>User Desired Tiering- <br><t>1.Archive Full back up for 12 Months <br><t>2.Tier Levels <br><t><t>[1,12] [ <br><t><t><t>s3 (1 to 2 months), (default tier) <br><t><t><t>s3 Intelligent tiering (3 to 6 months), <br><t><t><t>s3 One Zone (7 to 9 months) <br><t><t><t>Glacier (10 to 12 months)] <br><t>API Input <br><t><t>1.tiers-[ <br><t><t><t>{''tierType'': ''S3'',''moveAfterUnit'':''months'', <br><t><t><t>''moveAfter'':2 - move from s3 to s3Inte after 2 months}, <br><t><t><t>{''tierType'': ''S3Inte'',''moveAfterUnit'':''months'', <br><t><t><t>''moveAfter'':4 - move from S3Inte to Glacier after 4 months}, <br><t><t><t>{''tierType'': ''Glacier'', ''moveAfterUnit'':''months'', <br><t><t><t>''moveAfter'': 3 - move from Glacier to S3 One Zone after 3 months }, <br><t><t><t>{''tierType'': ''S3 One Zone'', ''moveAfterUnit'': nil, <br><t><t><t>''moveAfter'': nil - For the last record, ''moveAfter'' and ''moveAfterUnit'' <br><t><t><t>will be ignored since there are no further tier for data movement } <br><t><t><t>}]'
+      type: object
+      required:
+      - cloudPlatform
+      properties:
+        cloudPlatform:
+          description: Specifies the cloud platform to enable tiering.
+          type:
+          - string
+          - 'null'
+          enum:
+          - AWS
+          - Azure
+          - Oracle
+          - Google
+          x-order: 0
+        awsTiering:
+          description: Specifies the settings for AWS Tiers.
+          type:
+          - object
+          - 'null'
+          x-order: 1
+          $ref: '#/components/schemas/AWSTiers'
+        azureTiering:
+          description: Specifies the settings for Azure Tiers.
+          type:
+          - object
+          - 'null'
+          x-order: 2
+          $ref: '#/components/schemas/AzureTiers'
+        googleTiering:
+          description: Specifies the settings for Google Tiers.
+          type:
+          - object
+          - 'null'
+          x-order: 3
+          $ref: '#/components/schemas/GoogleTiers'
+        oracleTiering:
+          description: Specifies the settings for Oracle Tiers.
+          type:
+          - object
+          - 'null'
+          x-order: 4
+          $ref: '#/components/schemas/OracleTiers'
+    BackupAttempt:
+      description: Specifies a backup attempt for an object.
+      type: object
+      title: Attempt information for an object.
+      properties:
+        startTimeUsecs:
+          description: Specifies the start time of attempt in Unix epoch Timestamp(in microseconds) for an object.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        endTimeUsecs:
+          description: Specifies the end time of attempt in Unix epoch Timestamp(in microseconds) for an object.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+        admittedTimeUsecs:
+          description: Specifies the time at which the backup task was admitted to run in Unix epoch Timestamp(in microseconds) for an object.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
+        permitGrantTimeUsecs:
+          description: Specifies the time when gatekeeper permit is granted to the backup task. If the backup task is rescheduled due to errors, the field is updated to the time when permit is granted again.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 3
+        queueDurationUsecs:
+          description: Specifies the duration between the startTime and when gatekeeper permit is granted to the backup task. If the backup task is rescheduled due to errors, the field is updated considering the time when permit is granted again. Queue duration = PermitGrantTimeUsecs - StartTimeUsecs
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 4
+        snapshotCreationTimeUsecs:
+          description: Specifies the time at which the source snapshot was taken in Unix epoch Timestamp(in microseconds) for an object.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 5
+        status:
+          description: Status of the attempt for an object. 'Running' indicates that the run is still running. 'Canceled' indicates that the run has been canceled. 'Canceling' indicates that the run is in the process of being canceled. 'Failed' indicates that the run has failed. 'Missed' indicates that the run was unable to take place at the scheduled time because the previous run was still happening. 'Succeeded' indicates that the run has finished successfully. 'SucceededWithWarning' indicates that the run finished successfully, but there were some warning messages.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Accepted
+          - Running
+          - Canceled
+          - Canceling
+          - Failed
+          - Missed
+          - Succeeded
+          - SucceededWithWarning
+          - OnHold
+          x-order: 6
+        stats:
+          description: Statistics about backup data for an object.
+          x-order: 7
+          $ref: '#/components/schemas/BackupDataStats'
+        progressTaskId:
+          description: Progress monitor task for an object..
+          type:
+          - string
+          - 'null'
+          x-order: 8
+        message:
+          description: A message about the error if encountered while performing backup.
+          type:
+          - string
+          - 'null'
+          x-order: 9
+    OracleTiers:
+      description: Specifies Oracle tiers.
+      type: object
+      required:
+      - tiers
+      properties:
+        tiers:
+          description: Specifies the tiers that are used to move the archived backup from current tier to next tier. The order of the tiers determines which tier will be used next for moving the archived backup. The first tier input should always be default tier where backup will be acrhived. Each tier specifies how much time after the backup will be moved to next tier from the current tier.
+          type:
+          - array
+          - 'null'
+          minLength: 1
+          items:
+            $ref: '#/components/schemas/OracleTier'
+          x-order: 0
+    ArchivalRunSummary:
+      description: Specifies summary information about archival run.
+      type: object
+      title: Summary information for archival run.
+      properties:
+        archivalTargetResults:
+          description: Archival results for each archival target.
+          type: array
+          items:
+            $ref: '#/components/schemas/ArchivalTargetResult'
+          x-order: 0
+    ObjectIdentifier:
+      description: Specifies the basic info to identify an object.
+      title: Object Identifier.
+      properties:
+        id:
+          description: Specifies object id.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        name:
+          description: Specifies the name of the object.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        sourceId:
+          description: Specifies registered source id to which object belongs.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
+        sourceName:
+          description: Specifies registered source name to which object belongs.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+        environment:
+          description: Specifies the environment of the object.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kVMware
+          - kHyperV
+          - kAzure
+          - kKVM
+          - kAWS
+          - kAcropolis
+          - kGCP
+          - kPhysical
+          - kPhysicalFiles
+          - kIsilon
+          - kNetapp
+          - kGenericNas
+          - kFlashBlade
+          - kElastifile
+          - kGPFS
+          - kPure
+          - kNimble
+          - kSQL
+          - kOracle
+          - kExchange
+          - kAD
+          - kView
+          - kO365
+          - kHyperFlex
+          - kKubernetes
+          - kCassandra
+          - kMongoDB
+          - kCouchbase
+          - kHdfs
+          - kHive
+          - kHBase
+          - kUDA
+          x-order: 4
+    ArchivalTargetTierInfo:
+      description: Specifies the tier info for archival.
+      title: Archival Target Tier Info
+      allOf:
+      - $ref: '#/components/schemas/TierLevelSettings'
+      - type: object
+        properties:
+          currentTierType:
+            description: Specifies the type of the current tier where the snapshot resides. This will be specified if the run is a CAD run.
+            type:
+            - string
+            - 'null'
+            enum:
+            - kAmazonS3Standard
+            - kAmazonS3StandardIA
+            - kAmazonS3OneZoneIA
+            - kAmazonS3IntelligentTiering
+            - kAmazonS3Glacier
+            - kAmazonS3GlacierDeepArchive
+            - kAzureTierHot
+            - kAzureTierCool
+            - kAzureTierArchive
+            - kGoogleStandard
+            - kGoogleRegional
+            - kGoogleMultiRegional
+            - kGoogleNearline
+            - kGoogleColdline
+            - kOracleTierStandard
+            - kOracleTierArchive
+            x-order: 0
+    ReplicationRunSummary:
+      description: Specifies summary information about replication run.
+      type: object
+      title: Summary information for replication run.
+      properties:
+        replicationTargetResults:
+          description: Replication results for each replication target.
+          type: array
+          items:
+            $ref: '#/components/schemas/ReplicationTargetResult'
+          x-order: 0
+    UpdateArchivalSnapshotConfig:
+      description: Specifies the params to perform actions on archival snapshots taken by a Protection Group Run.
+      type: object
+      title: Archival Snapshot Config.
+      properties:
+        newSnapshotConfig:
+          description: Specifies the new configuration about adding Archival Snapshot to existing Protection Group Run.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/RunArchivalConfig'
+          x-order: 0
+        updateExistingSnapshotConfig:
+          description: Specifies the configuration about updating an existing Archival Snapshot Run.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UpdateExistingArchivalSnapshotConfig'
+          x-order: 1
+    SlaRule:
+      description: Specifies an SLA rule for a specific Protection Group run type.
+      type: object
+      properties:
+        backupRunType:
+          description: Specifies the type of run this rule should apply to.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kIncremental
+          - kFull
+          x-order: 0
+        slaMinutes:
+          description: Specifies the number of minutes allotted to a run of the specified type before SLA is considered violated.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          minimum: 1
+          x-order: 1
+    FailedRunDetails:
+      description: Specifies a list of ids of Protection Group Runs that failed to update along with error details
+      type: object
+      properties:
+        runId:
+          description: Specifies the id of the failed run.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        errorMessage:
+          description: Specifies the error mesage for failed run.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    ReplicationTargetProgressInfo:
+      description: Specifies the progress of a replication run target.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ReplicationTargetSummaryInfo'
+      - $ref: '#/components/schemas/ProgressTaskInfo'
+      - type: object
+        properties:
+          objects:
+            description: Specifies progress for objects.
+            type:
+            - array
+            - 'null'
+            items:
+              $ref: '#/components/schemas/ObjectProgressInfo'
+            x-order: 0
+    ProtectionRunSummary:
+      description: Specifies the summary of a protection run.
+      type: object
+      properties:
+        id:
+          description: Specifies the ID of the Protection Group run.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        protectionGroupId:
+          description: ProtectionGroupId to which this run belongs.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        protectionGroupName:
+          description: Name of the Protection Group to which this run belongs.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        environment:
+          description: Specifies the environment type of the Protection Group.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kVMware
+          - kHyperV
+          - kAzure
+          - kGCP
+          - kKVM
+          - kAcropolis
+          - kAWS
+          - kPhysical
+          - kGPFS
+          - kElastifile
+          - kNetapp
+          - kGenericNas
+          - kIsilon
+          - kFlashBlade
+          - kPure
+          - kSQL
+          - kExchange
+          - kAD
+          - kOracle
+          - kView
+          - kRemoteAdapter
+          - kO365
+          - kKubernetes
+          - kCassandra
+          - kMongoDB
+          - kCouchbase
+          - kHdfs
+          - kHive
+          - kHBase
+          - kUDA
+          x-order: 3
+        isSlaViolated:
+          description: Indicated if SLA has been violated for this run.
+          type:
+          - boolean
+          - 'null'
+          x-order: 4
+        startTimeUsecs:
+          description: Specifies the start time of backup run in Unix epoch Timestamp(in microseconds).
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 5
+        endTimeUsecs:
+          description: Specifies the end time of backup run in Unix epoch Timestamp(in microseconds).
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 6
+        status:
+          description: Status of the backup run. 'Running' indicates that the run is still running. 'Canceled' indicates that the run has been canceled. 'Canceling' indicates that the run is in the process of being canceled. 'Failed' indicates that the run has failed. 'Missed' indicates that the run was unable to take place at the scheduled time because the previous run was still happening. 'Succeeded' indicates that the run has finished successfully. 'SucceededWithWarning' indicates that the run finished successfully, but there were some warning messages.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Accepted
+          - Running
+          - Canceled
+          - Canceling
+          - Failed
+          - Missed
+          - Succeeded
+          - SucceededWithWarning
+          - OnHold
+          x-order: 7
+        isFullRun:
+          description: Specifies if the protection run is a full run.
+          type:
+          - boolean
+          - 'null'
+          x-order: 8
+        totalObjectsCount:
+          description: Specifies the total number of objects protected in this run.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 9
+        successObjectsCount:
+          description: Specifies the number of objects which are successfully protected in this run.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 10
+        logicalSizeBytes:
+          description: Specifies total logical size of object(s) in bytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 11
+        bytesWritten:
+          description: Specifies total size of data in bytes written after taking backup.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 12
+    ProtectionGroupRun:
+      description: Protection run.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/CommonProtectionGroupRunResponseParameters'
+    CreateProtectionGroupRunResponseBody:
+      description: Specifies the response for create a protection run. On success, the system will accept the request and return the Protection Group id for which the run is supposed to start. The actual run may start at a later time if the system is busy. Consumers must query the Protection Group to see the run.
+      type: object
+      title: Create protection run response.
+      properties:
+        protectionGroupId:
+          description: Specifies id of the Protection Group which must be polled for seeing the new run.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+    ClusterIdentifier:
+      description: Specifies the information about a cluster.
+      type: object
+      title: Cluster Identifier
+      properties:
+        clusterId:
+          description: Specifies the id of the cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        clusterIncarnationId:
+          description: Specifies the incarnation id of the cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+        clusterName:
+          description: Specifies the name of the cluster.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+          readOnly: true
+    CloudSpinTargetResult:
+      description: Cloud Spin result for a target.
+      title: Cloud Spin result for a target.
+      allOf:
+      - $ref: '#/components/schemas/CloudSpinTarget'
+      - type: object
+        properties:
+          startTimeUsecs:
+            description: Specifies the start time of Cloud Spin in Unix epoch Timestamp(in microseconds) for a target.
+            type:
+            - integer
+            - 'null'
+            format: int64
+            x-order: 0
+          endTimeUsecs:
+            description: Specifies the end time of Cloud Spin in Unix epoch Timestamp(in microseconds) for a target.
+            type:
+            - integer
+            - 'null'
+            format: int64
+            x-order: 1
+          status:
+            description: Status of the Cloud Spin for a target. 'Running' indicates that the run is still running. 'Canceled' indicates that the run has been canceled. 'Canceling' indicates that the run is in the process of being canceled. 'Failed' indicates that the run has failed. 'Missed' indicates that the run was unable to take place at the scheduled time because the previous run was still happening. 'Succeeded' indicates that the run has finished successfully. 'SucceededWithWarning' indicates that the run finished successfully, but there were some warning messages.
+            type:
+            - string
+            - 'null'
+            enum:
+            - Accepted
+            - Running
+            - Canceled
+            - Canceling
+            - Failed
+            - Missed
+            - Succeeded
+            - SucceededWithWarning
+            - OnHold
+            x-order: 2
+          message:
+            description: Message about the Cloud Spin run.
+            type:
+            - string
+            - 'null'
+            x-order: 3
+          stats:
+            description: Cloud Spin data statistics for a target.
+            x-order: 4
+            $ref: '#/components/schemas/CloudSpinDataStats'
+          isManuallyDeleted:
+            description: Specifies whether the snapshot is deleted manually.
+            type:
+            - boolean
+            - 'null'
+            x-order: 5
+          expiryTimeUsecs:
+            description: Specifies the expiry time of attempt in Unix epoch Timestamp (in microseconds) for an object.
+            type:
+            - integer
+            - 'null'
+            format: int64
+            x-order: 6
+          cloudspinTaskId:
+            description: Task ID for a CloudSpin protection run.
+            type:
+            - string
+            - 'null'
+            x-order: 7
+          progressTaskId:
+            description: Progress monitor task id for Cloud Spin run.
+            type:
+            - string
+            - 'null'
+            x-order: 8
+    UpdateProtectionGroupsState:
+      type: object
+      title: Specifies the response of updation of state of multiple Protection Groups.
+      properties:
+        failedProtectionGroups:
+          description: Specifies a list of Protection Group ids along with details for which updation of state was failed.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FailedProtectionGroupDetails'
+          x-order: 0
+        successfulProtectionGroupIds:
+          description: Specifies a list of Protection Group ids for which updation of state was successful.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 1
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659:
+      description: Specifies the parameters which are common between all Protection Group requests.
+      type: object
+      required:
+      - name
+      - policyId
+      - environment
+      properties:
+        name:
+          description: Specifies the name of the Protection Group.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        policyId:
+          description: Specifies the unique id of the Protection Policy associated with the Protection Group. The Policy provides retry settings Protection Schedules, Priority, SLA, etc.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        priority:
+          description: Specifies the priority of the Protection Group.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kLow
+          - kMedium
+          - kHigh
+          x-order: 2
+        storageDomainId:
+          description: Specifies the Storage Domain (View Box) ID where this Protection Group writes data.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 3
+        description:
+          description: Specifies a description of the Protection Group.
+          type:
+          - string
+          - 'null'
+          x-order: 4
+        startTime:
+          description: Specifies the start time for this Protection Group. If no start time is specified, the start time will default to 2am. This field is only used if the policy has a daily or monthly schedule.
+          x-order: 5
+          $ref: '#/components/schemas/TimeOfDay'
+        endTimeUsecs:
+          description: Specifies the end time in micro seconds for this Protection Group. If this is not specified, the Protection Group won't be ended.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 6
+        alertPolicy:
+          description: Specifies the alerting policy for this Protection Group.
+          x-order: 7
+          $ref: '#/components/schemas/ProtectionGroupAlertingPolicy'
+        sla:
+          description: Specifies the SLA parameters for this Protection Group.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SlaRule'
+          x-order: 8
+        qosPolicy:
+          description: Specifies whether the Protection Group will be written to HDD or SSD.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kBackupHDD
+          - kBackupSSD
+          - kTestAndDevHigh
+          - kBackupAll
+          x-order: 9
+        abortInBlackouts:
+          description: Specifies whether currently executing jobs should abort if a blackout period specified by a policy starts. Available only if the selected policy has at least one blackout period. Default value is false.
+          type:
+          - boolean
+          - 'null'
+          x-order: 10
+        environment:
+          description: Specifies the environment type of the Protection Group.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kVMware
+          - kHyperV
+          - kAzure
+          - kGCP
+          - kKVM
+          - kAcropolis
+          - kAWS
+          - kPhysical
+          - kGPFS
+          - kElastifile
+          - kNetapp
+          - kGenericNas
+          - kIsilon
+          - kFlashBlade
+          - kPure
+          - kSQL
+          - kExchange
+          - kAD
+          - kOracle
+          - kView
+          - kRemoteAdapter
+          - kO365
+          - kKubernetes
+          - kCassandra
+          - kMongoDB
+          - kCouchbase
+          - kHdfs
+          - kHive
+          - kHBase
+          - kUDA
+          x-order: 11
+        isPaused:
+          description: Specifies if the the Protection Group is paused. New runs are not scheduled for the paused Protection Groups. Active run if any is not impacted.
+          type:
+          - boolean
+          - 'null'
+          x-order: 12
+      x-cohesity-discriminator-details:
+        propertyName: environment
+      x-discriminator:
+        mapping:
+          kVMware: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659VmwareProtectionGroupParamsWrapper'
+          kAcropolis: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659AcropolisProtectionGroupParamsWrapper'
+          kKubernetes: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659KubernetesProtectionGroupParamsWrapper'
+          kSQL: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659MSSQLProtectionGroupParamsWrapper'
+          kOracle: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659OracleProtectionGroupParamsWrapper'
+          kView: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659ViewProtectionGroupParamsWrapper'
+          kPure: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659PureProtectionGroupParamsWrapper'
+          kNimble: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659NimbleProtectionGroupParamsWrapper'
+          kHyperV: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659HyperVProtectionGroupParamsWrapper'
+          kAWS: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659AwsProtectionGroupParamsWrapper'
+          kAzure: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659AzureProtectionGroupParamsWrapper'
+          kGCP: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659GcpProtectionGroupParamsWrapper'
+          kKVM: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659KvmProtectionGroupParamsWrapper'
+          kPhysical: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659PhysicalProtectionGroupParamsWrapper'
+          kAD: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659ADProtectionGroupParamsWrapper'
+          kO365: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659Office365ProtectionGroupParamsWrapper'
+          kNetapp: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659NetappProtectionGroupParamsWrapper'
+          kGenericNas: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659GenericNasProtectionGroupParamsWrapper'
+          kIsilon: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659IsilonProtectionGroupParamsWrapper'
+          kFlashBlade: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659FlashbladeProtectionGroupParamsWrapper'
+          kGPFS: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659GpfsProtectionGroupParamsWrapper'
+          kCouchbase: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659NoSqlProtectionGroupParamsWrapper'
+          kElastifile: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659ElastifileProtectionGroupParamsWrapper'
+          kCassandra: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659CassandraProtectionGroupParamsWrapper'
+          kMongoDB: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659MongoDBProtectionGroupParamsWrapper'
+          kHive: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659NoSqlProtectionGroupParamsWrapper'
+          kHdfs: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659HdfsProtectionGroupParamsWrapper'
+          kHBase: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659NoSqlProtectionGroupParamsWrapper'
+          kRemoteAdapter: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659RemoteAdapterProtectionGroupParamsWrapper'
+          kExchange: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659ExchangeProtectionGroupParamsWrapper'
+          kUDA: '#/definitions/CommonProtectionGroupRequestParamse9ef605d-4350-4f91-93ca-9e8a25d0f659UdaProtectionGroupParamsWrapper'
+        propertyName: environment
+    AzureTier:
+      description: Specifies the settings for a Azure tier.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/CommonCloudTierSettings'
+      - type: object
+        required:
+        - tierType
+        properties:
+          tierType:
+            description: Specifies the Azure tier types.
+            type:
+            - string
+            - 'null'
+            enum:
+            - kAzureTierHot
+            - kAzureTierCool
+            - kAzureTierArchive
+            x-order: 0
+    RunObject:
+      description: Specifies the object details to create a protection run.
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          description: Specifies the id of object.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        appIds:
+          description: Specifies a list of ids of applications.
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int64
+          x-order: 1
+        physicalParams:
+          description: Specifies physical parameters for this run.
+          type:
+          - object
+          - 'null'
+          x-order: 2
+          $ref: '#/components/schemas/RunObjectPhysicalParams'
+    CommonProtectionGroupRunResponseParameters:
+      description: Specifies the parameters which are common between Protection Group runs of all Protection Groups.
+      type: object
+      title: Common Protection Group run response parameters.
+      properties:
+        id:
+          description: Specifies the ID of the Protection Group run.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        protectionGroupInstanceId:
+          description: Protection Group instance Id. This field will be removed later.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+        protectionGroupId:
+          description: ProtectionGroupId to which this run belongs.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        isReplicationRun:
+          description: Specifies if this protection run is a replication run.
+          type:
+          - boolean
+          - 'null'
+          x-order: 3
+        originClusterIdentifier:
+          description: Specifies the information of the primary cluster if this run is a replication run.
+          x-order: 4
+          $ref: '#/components/schemas/ClusterIdentifier'
+        originProtectionGroupId:
+          description: ProtectionGroupId to which this run belongs on the primary cluster if this run is a replication run.
+          type:
+          - string
+          - 'null'
+          x-order: 5
+        protectionGroupName:
+          description: Name of the Protection Group to which this run belongs.
+          type:
+          - string
+          - 'null'
+          x-order: 6
+        isLocalSnapshotsDeleted:
+          description: Specifies if snapshots for this run has been deleted.
+          type:
+          - boolean
+          - 'null'
+          x-order: 7
+        objects:
+          description: Snapahot, replication, archival results for each object.
+          type: array
+          items:
+            $ref: '#/components/schemas/ObjectRunResult'
+          x-order: 8
+        localBackupInfo:
+          description: Summary information about local snapshot run across all objects.
+          x-order: 9
+          $ref: '#/components/schemas/BackupRunSummary'
+        originalBackupInfo:
+          description: Summary information about snapshot run on the original cluster. This only applies to replication run.
+          x-order: 10
+          $ref: '#/components/schemas/BackupRunSummary'
+        replicationInfo:
+          description: Summary information about replication run across all objects.
+          x-order: 11
+          $ref: '#/components/schemas/ReplicationRunSummary'
+        archivalInfo:
+          description: Summary information about archival run.
+          x-order: 12
+          $ref: '#/components/schemas/ArchivalRunSummary'
+        cloudSpinInfo:
+          description: Summary information about cloud spin run.
+          x-order: 13
+          $ref: '#/components/schemas/CloudSpinRunSummary'
+        onLegalHold:
+          description: Specifies if the Protection Run is on legal hold.
+          type:
+          - boolean
+          - 'null'
+          x-order: 14
+        permissions:
+          description: Specifies the list of tenants that have permissions for this protection group run.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Tenant'
+          x-order: 15
+        isCloudArchivalDirect:
+          description: Specifies whether the run is a CAD run if cloud archive direct feature is enabled. If this field is true, the primary backup copy will only be available at the given archived location.
+          type:
+          - boolean
+          - 'null'
+          x-order: 16
+        hasLocalSnapshot:
+          description: Specifies whether the run has a local snapshot. For cloud retrieved runs there may not be local snapshots.
+          type:
+          - boolean
+          - 'null'
+          x-order: 17
+        environment:
+          description: Specifies the environment of the Protection Group.
+          type:
+          - string
+          - 'null'
+          x-cohesity-enum: protection_group_run_type
+          x-order: 18
+    OracleTier:
+      description: Specifies the settings for a Oracle tier.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/CommonCloudTierSettings'
+      - type: object
+        required:
+        - tierType
+        properties:
+          tierType:
+            description: Specifies the Oracle tier types.
+            type:
+            - string
+            - 'null'
+            enum:
+            - kOracleTierStandard
+            - kOracleTierArchive
+            x-order: 0
+    BackupDataStats:
+      description: Specifies statistics about local snapshot.
+      type: object
+      title: Local snapshot statistics.
+      properties:
+        logicalSizeBytes:
+          description: Specifies total logical size of object(s) in bytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        bytesWritten:
+          description: Specifies total size of data in bytes written after taking backup.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+        bytesRead:
+          description: Specifies total logical bytes read for creating the snapshot.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
+    UpdateReplicationSnapshotConfig:
+      description: Specifies the params to perform actions on replication snapshots taken by a Protection Group Run.
+      type: object
+      title: Replication Snapshot Config.
+      properties:
+        newSnapshotConfig:
+          description: Specifies the new configuration about adding Replication Snapshot to existing Protection Group Run.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/RunReplicationConfig'
+          x-order: 0
+        updateExistingSnapshotConfig:
+          description: Specifies the configuration about updating an existing Replication Snapshot Run.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UpdateExistingReplicationSnapshotConfig'
+          x-order: 1
+    ArchivalTargetSummaryInfo:
+      description: Specifies archival target summary information.
+      type: object
+      title: Archival target.
+      properties:
+        targetId:
+          description: Specifies the archival target ID.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        archivalTaskId:
+          description: Specifies the archival task id. This is a protection group UID which only applies when archival type is 'Tape'.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        targetName:
+          description: Specifies the archival target name.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        targetType:
+          description: Specifies the archival target type.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Tape
+          - Cloud
+          - Nas
+          x-order: 3
+        tierSettings:
+          description: Specifies the tier level settings configured with archival target. This will be specified if the run is a CAD run.
+          type:
+          - object
+          - 'null'
+          x-order: 4
+          $ref: '#/components/schemas/ArchivalTargetTierInfo'
+    ProgressStats:
+      description: Specifies the stats within progress.
+      type: object
+      properties:
+        fileWalkDone:
+          description: Specifies whether the file system walk is done. Only applicable to file based backups.
+          type:
+          - boolean
+          - 'null'
+          x-order: 0
+        totalFileCount:
+          description: Specifies the total number of file and directory entities visited in this backup. Only applicable to file based backups.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+        backupFileCount:
+          description: Specifies the total number of file and directory entities that are backed up in this run. Only applicable to file based backups.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
+    ArchivalTargetResult:
+      description: Archival result for an archival target.
+      title: Archival result for a target.
+      allOf:
+      - $ref: '#/components/schemas/ArchivalTargetSummaryInfo'
+      - type: object
+        properties:
+          runType:
+            description: Type of Protection Group run. 'kRegular' indicates an incremental (CBT) backup. Incremental backups utilizing CBT (if supported) are captured of the target protection objects. The first run of a kRegular schedule captures all the blocks. 'kFull' indicates a full (no CBT) backup. A complete backup (all blocks) of the target protection objects are always captured and Change Block Tracking (CBT) is not utilized. 'kLog' indicates a Database Log backup. Capture the database transaction logs to allow rolling back to a specific point in time. 'kSystem' indicates system volume backup. It produces an image for bare metal recovery.
+            type:
+            - string
+            - 'null'
+            enum:
+            - kRegular
+            - kFull
+            - kLog
+            - kSystem
+            - kHydrateCDP
+            x-order: 0
+          isSlaViolated:
+            description: Indicated if SLA has been violated for this run.
+            type:
+            - boolean
+            - 'null'
+            x-order: 1
+          snapshotId:
+            description: Snapshot id for a successful snapshot. This field will not be set if the archival Run fails to take the snapshot.
+            type:
+            - string
+            - 'null'
+            x-order: 2
+          startTimeUsecs:
+            description: Specifies the start time of replication run in Unix epoch Timestamp(in microseconds) for an archival target.
+            type:
+            - integer
+            - 'null'
+            format: int64
+            x-order: 3
+          endTimeUsecs:
+            description: Specifies the end time of replication run in Unix epoch Timestamp(in microseconds) for an archival target.
+            type:
+            - integer
+            - 'null'
+            format: int64
+            x-order: 4
+          queuedTimeUsecs:
+            description: Specifies the time when the archival is queued for schedule in Unix epoch Timestamp(in microseconds) for a target.
+            type:
+            - integer
+            - 'null'
+            format: int64
+            x-order: 5
+          isIncremental:
+            description: Whether this is an incremental archive. If set to true, this is an incremental archive, otherwise this is a full archive.
+            type:
+            - boolean
+            - 'null'
+            x-order: 6
+          isForeverIncremental:
+            description: Whether this is forever incremental or not
+            type:
+            - boolean
+            - 'null'
+            x-order: 7
+          status:
+            description: Status of the replication run for an archival target. 'Running' indicates that the run is still running. 'Canceled' indicates that the run has been canceled. 'Canceling' indicates that the run is in the process of being canceled. 'Failed' indicates that the run has failed. 'Missed' indicates that the run was unable to take place at the scheduled time because the previous run was still happening. 'Succeeded' indicates that the run has finished successfully. 'SucceededWithWarning' indicates that the run finished successfully, but there were some warning messages.
+            type:
+            - string
+            - 'null'
+            enum:
+            - Accepted
+            - Running
+            - Canceled
+            - Canceling
+            - Failed
+            - Missed
+            - Succeeded
+            - SucceededWithWarning
+            - OnHold
+            x-order: 8
+          message:
+            description: Message about the archival run.
+            type:
+            - string
+            - 'null'
+            x-order: 9
+          progressTaskId:
+            description: Progress monitor task id for archival.
+            type:
+            - string
+            - 'null'
+            x-order: 10
+          indexingTaskId:
+            description: Progress monitor task for indexing.
+            type:
+            - string
+            - 'null'
+            x-order: 11
+          successfulObjectsCount:
+            description: Specifies the count of objects for which backup was successful.
+            type:
+            - integer
+            - 'null'
+            format: int64
+            x-order: 12
+          failedObjectsCount:
+            description: Specifies the count of objects for which backup failed.
+            type:
+            - integer
+            - 'null'
+            format: int64
+            x-order: 13
+          cancelledObjectsCount:
+            description: Specifies the count of objects for which backup was cancelled.
+            type:
+            - integer
+            - 'null'
+            format: int64
+            x-order: 14
+          successfulAppObjectsCount:
+            description: Specifies the count of app objects for which backup was successful.
+            type:
+            - integer
+            - 'null'
+            format: int32
+            x-order: 15
+          failedAppObjectsCount:
+            description: Specifies the count of app objects for which backup failed.
+            type:
+            - integer
+            - 'null'
+            format: int32
+            x-order: 16
+          cancelledAppObjectsCount:
+            description: Specifies the count of app objects for which backup was cancelled.
+            type:
+            - integer
+            - 'null'
+            format: int32
+            x-order: 17
+          stats:
+            description: Archival data statistics for a target.
+            x-order: 18
+            $ref: '#/components/schemas/ArchivalDataStats'
+          isManuallyDeleted:
+            description: Specifies whether the snapshot is deleted manually.
+            type:
+            - boolean
+            - 'null'
+            x-order: 19
+          expiryTimeUsecs:
+            description: Specifies the expiry time of attempt in Unix epoch Timestamp (in microseconds).
+            type:
+            - integer
+            - 'null'
+            format: int64
+            x-order: 20
+    ObjectRunResult:
+      description: Snapshot, replication, archival results for an object.
+      type: object
+      title: Snapshot, replication, archival results for an object.
+      properties:
+        object:
+          description: Summary information about the object.
+          x-order: 0
+          $ref: '#/components/schemas/ObjectSummary'
+        localSnapshotInfo:
+          description: Information about local snapshot run for this object.
+          x-order: 1
+          $ref: '#/components/schemas/BackupRun'
+        originalBackupInfo:
+          description: Information about snapshot run on the original cluster. This only applies to replication run.
+          x-order: 2
+          $ref: '#/components/schemas/BackupRun'
+        replicationInfo:
+          description: Information about replication run for this object.
+          x-order: 3
+          $ref: '#/components/schemas/ReplicationRun'
+        archivalInfo:
+          description: Information about archival run for this object.
+          x-order: 4
+          $ref: '#/components/schemas/ArchivalRun'
+        cloudSpinInfo:
+          description: Information about Cloud Spin run for this object.
+          x-order: 5
+          $ref: '#/components/schemas/CloudSpinRun'
+        onLegalHold:
+          description: Specifies if object's snapshot is on legal hold.
+          type:
+          - boolean
+          - 'null'
+          x-order: 6
+    ProgressTaskInfo:
+      description: Specifies the details about a Progress Task.
+      type: object
+      title: Progress Task
+      properties:
+        status:
+          description: Specifies the current status of the progress task.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Active
+          - Finished
+          - FinishedWithError
+          - Canceled
+          - FinishedGarbageCollected
+          x-order: 0
+        percentageCompleted:
+          description: Specifies the current completed percentage of the progress task.
+          type:
+          - number
+          - 'null'
+          format: float
+          x-order: 1
+        startTimeUsecs:
+          description: Specifies the start time of the progress task in Unix epoch Timestamp(in microseconds).
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
+        endTimeUsecs:
+          description: Specifies the end time of the progress task in Unix epoch Timestamp(in microseconds).
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 3
+        expectedRemainingTimeUsecs:
+          description: Specifies the expected remaining time of the progress task in Unix epoch Timestamp(in microseconds).
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 4
+        events:
+          description: Specifies the event log created for progress Task.
+          type: array
+          items:
+            $ref: '#/components/schemas/ProgressTaskEvent'
+          x-order: 5
+        stats:
+          description: Specifies the stats within the progress.
+          type:
+          - object
+          - 'null'
+          x-order: 6
+          $ref: '#/components/schemas/ProgressStats'
+    RunObjectPhysicalParams:
+      description: Specifies physical parameters for this run.
+      type: object
+      properties:
+        metadataFilePath:
+          description: Specifies metadata file path during run-now requests for physical file based backups for some specific source. If specified, it will override any default metadata/directive file path set at the object level for the source. Also note that if the job default does not specify a metadata/directive file path for the source, then specifying this field for that source during run-now request will be rejected.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+    ProgressTaskEvent:
+      description: Specifies the details about the various events which are created during the execution of Progress Task.
+      type: object
+      properties:
+        message:
+          description: Specifies the log message describing the current event.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        occuredAtUsecs:
+          description: Specifies the time of the event occurance in Unix epoch Timestamp(in microseconds).
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+    GoogleTier:
+      description: Specifies the settings for a Google tier.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/CommonCloudTierSettings'
+      - type: object
+        required:
+        - tierType
+        properties:
+          tierType:
+            description: Specifies the Google tier types.
+            type:
+            - string
+            - 'null'
+            enum:
+            - kGoogleStandard
+            - kGoogleRegional
+            - kGoogleMultiRegional
+            - kGoogleNearline
+            - kGoogleColdline
+            x-order: 0
+    UpdateExistingReplicationSnapshotConfig:
+      description: Specifies the configuration about updating an existing Replication Snapshot Run.
+      type: object
+      title: Update Replication Snapshot Config.
+      required:
+      - id
+      properties:
+        id:
+          description: Specifies the cluster id of the replication cluster.
+          type: integer
+          format: int64
+          x-order: 0
+        enableLegalHold:
+          description: Specifies whether to retain the snapshot for legal purpose. If set to true, the snapshots cannot be deleted until the retention period. Note that using this option may cause the Cluster to run out of space. If set to false explicitly, the hold is removed, and the snapshots will expire as specified in the policy of the Protection Group. If this field is not specified, there is no change to the hold of the run. This field can be set only by a User having Data Security Role.
+          type:
+          - boolean
+          - 'null'
+          x-order: 1
+        deleteSnapshot:
+          description: Specifies whether to delete the snapshot. When this is set to true, all other params will be ignored.
+          type:
+          - boolean
+          - 'null'
+          x-order: 2
+        resync:
+          description: Specifies whether to retry the replication operation in case if earlier attempt failed. If not specified or set to false, replication is not retried.
+          type:
+          - boolean
+          - 'null'
+          x-order: 3
+        dataLock:
+          description: "Specifies WORM retention type for the snapshots. When a WORM retention type is specified, the snapshots of the Protection Groups using this policy will be kept until the maximum of the snapshot retention time. During that time, the snapshots cannot be deleted. \n'Compliance' implies WORM retention is set for compliance reason. \n'Administrative' implies WORM retention is set for administrative purposes."
+          type:
+          - string
+          - 'null'
+          enum:
+          - Compliance
+          - Administrative
+          x-order: 4
+        daysToKeep:
+          description: Specifies number of days to retain the snapshots. If positive, then this value is added to exisiting expiry time thereby increasing  the retention period of the snapshot. Conversly, if this value is negative, then value is subtracted to existing expiry time thereby decreasing the retention period of the snaphot. Here, by this operation if expiry time goes below current time then snapshot is immediately deleted.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 5
+    AzureTiers:
+      description: Specifies Azure tiers.
+      type: object
+      required:
+      - tiers
+      properties:
+        tiers:
+          description: Specifies the tiers that are used to move the archived backup from current tier to next tier. The order of the tiers determines which tier will be used next for moving the archived backup. The first tier input should always be default tier where backup will be acrhived. Each tier specifies how much time after the backup will be moved to next tier from the current tier.
+          type:
+          - array
+          - 'null'
+          minLength: 1
+          items:
+            $ref: '#/components/schemas/AzureTier'
+          x-order: 0
+    ReplicationTargetSummaryInfo:
+      description: Specifies replication target summary information.
+      title: Replication target.
+      allOf:
+      - $ref: '#/components/schemas/ClusterIdentifier'
+      - type: object
+        properties:
+          awsTargetConfig:
+            x-order: 0
+            $ref: '#/components/schemas/AWSTargetConfig'
+          azureTargetConfig:
+            x-order: 1
+            $ref: '#/components/schemas/AzureTargetConfig'
+    CloudSpinDataStats:
+      description: Specifies statistics about Cloud Spin data.
+      type: object
+      title: Cloud Spin data statistics.
+      properties:
+        physicalBytesTransferred:
+          description: Specifies the physical bytes transferred.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+    ArchivalDataStats:
+      description: Specifies statistics about archival data.
+      type: object
+      title: Archival data statistics.
+      properties:
+        logicalSizeBytes:
+          description: Specifies the logicalSizeBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        bytesRead:
+          description: Specifies total logical bytes read for creating the snapshot.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+        logicalBytesTransferred:
+          description: Specifies the logical bytes transferred.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
+        physicalBytesTransferred:
+          description: Specifies the physical bytes transferred.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 3
+        avgLogicalTransferRateBps:
+          description: Specifies the average rate of transfer in bytes per second.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 4
+        fileWalkDone:
+          description: Specifies whether the file system walk is done. Only applicable to file based backups.
+          type:
+          - boolean
+          - 'null'
+          x-order: 5
+        totalFileCount:
+          description: Specifies the total number of file and directory entities visited in this backup. Only applicable to file based backups.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 6
+        backupFileCount:
+          description: Specifies the total number of file and directory entities that are backed up in this run. Only applicable to file based backups.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 7
+    CloudSpinRunSummary:
+      description: Specifies summary information about cloud spin run.
+      type: object
+      title: Summary information for cloud spin run.
+      properties:
+        cloudSpinTargetResults:
+          description: Cloud Spin results for each Cloud Spin target.
+          type: array
+          items:
+            $ref: '#/components/schemas/CloudSpinTargetResult'
+          x-order: 0
+    AlertTarget:
+      description: Specifies an alert target to receive an alert.
+      type: object
+      required:
+      - emailAddress
+      properties:
+        emailAddress:
+          description: Specifies an email address to receive an alert.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        language:
+          description: Specifies the language of the delivery target. Default value is 'en-us'.
+          type:
+          - string
+          - 'null'
+          enum:
+          - en-us
+          - ja-jp
+          - zh-cn
+          x-order: 1
+        recipientType:
+          description: Specifies the recipient type of email recipient. Default value is 'kTo'.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kTo
+          - kCc
+          x-order: 2
+    SnapshotInfo:
+      description: Snapshot info for an object.
+      type: object
+      title: Snapshot information for an object.
+      properties:
+        snapshotId:
+          description: Snapshot id for a successful snapshot. This field will not be set if the Protection Group Run has no successful attempt.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        status:
+          description: Status of snapshot.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kInProgress
+          - kSuccessful
+          - kFailed
+          - kWaitingForNextAttempt
+          - kWarning
+          x-order: 1
+        startTimeUsecs:
+          description: Specifies the start time of attempt in Unix epoch Timestamp(in microseconds) for an object.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
+        endTimeUsecs:
+          description: Specifies the end time of attempt in Unix epoch Timestamp(in microseconds) for an object.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 3
+        admittedTimeUsecs:
+          description: Specifies the time at which the backup task was admitted to run in Unix epoch Timestamp(in microseconds) for an object.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 4
+        permitGrantTimeUsecs:
+          description: Specifies the time when gatekeeper permit is granted to the backup task. If the backup task is rescheduled due to errors, the field is updated to the time when permit is granted again.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 5
+        queueDurationUsecs:
+          description: Specifies the duration between the startTime and when gatekeeper permit is granted to the backup task. If the backup task is rescheduled due to errors, the field is updated considering the time when permit is granted again. Queue duration = PermitGrantTimeUsecs - StartTimeUsecs
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 6
+        snapshotCreationTimeUsecs:
+          description: Specifies the time at which the source snapshot was taken in Unix epoch Timestamp(in microseconds) for an object.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 7
+        stats:
+          description: Statistics about backup data for an object.
+          x-order: 8
+          $ref: '#/components/schemas/BackupDataStats'
+        progressTaskId:
+          description: Progress monitor task for an object.
+          type:
+          - string
+          - 'null'
+          x-order: 9
+        warnings:
+          description: Specifies a list of warning messages.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 10
+        isManuallyDeleted:
+          description: Specifies whether the snapshot is deleted manually.
+          type:
+          - boolean
+          - 'null'
+          x-order: 11
+        expiryTimeUsecs:
+          description: Specifies the expiry time of attempt in Unix epoch Timestamp (in microseconds) for an object.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 12
+        totalFileCount:
+          description: The total number of file and directory entities visited in this backup. Only applicable to file based backups.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 13
+        backupFileCount:
+          description: The total number of file and directory entities that are backed up in this run. Only applicable to file based backups.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 14
+    CancelProtectionGroupRunRequest:
+      description: Specifies the request to cancel a protection run.
+      type: object
+      title: Cancel protection run request.
+      properties:
+        localTaskId:
+          description: Specifies the task id of the local run.
+          type:
+          - string
+          - 'null'
+          pattern: ^\d+:\d+:\d+$
+          x-order: 0
+        replicationTaskId:
+          description: Specifies the task id of the replication run.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            pattern: ^\d+:\d+:\d+$
+          x-order: 1
+        archivalTaskId:
+          description: Specifies the task id of the archival run.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            pattern: ^\d+:\d+:\d+$
+          x-order: 2
+        cloudSpinTaskId:
+          description: Specifies the task id of the cloudSpin run.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            pattern: ^\d+:\d+:\d+$
+          x-order: 3
+    ArchivalRun:
+      description: Specifies information about archival run for an object.
+      type: object
+      title: Archival run information for an object.
+      properties:
+        archivalTargetResults:
+          description: Archival result for an archival target.
+          type: array
+          items:
+            $ref: '#/components/schemas/ArchivalTargetResult'
+          x-order: 0
+    ReplicationTargetResult:
+      description: Replication result for a target.
+      title: Replication result for a target.
+      allOf:
+      - $ref: '#/components/schemas/ReplicationTargetSummaryInfo'
+      - type: object
+        properties:
+          startTimeUsecs:
+            description: Specifies the start time of replication in Unix epoch Timestamp(in microseconds) for a target.
+            type:
+            - integer
+            - 'null'
+            format: int64
+            x-order: 0
+          endTimeUsecs:
+            description: Specifies the end time of replication in Unix epoch Timestamp(in microseconds) for a target.
+            type:
+            - integer
+            - 'null'
+            format: int64
+            x-order: 1
+          queuedTimeUsecs:
+            description: Specifies the time when the replication is queued for schedule in Unix epoch Timestamp(in microseconds) for a target.
+            type:
+            - integer
+            - 'null'
+            format: int64
+            x-order: 2
+          status:
+            description: Status of the replication for a target. 'Running' indicates that the run is still running. 'Canceled' indicates that the run has been canceled. 'Canceling' indicates that the run is in the process of being canceled. 'Failed' indicates that the run has failed. 'Missed' indicates that the run was unable to take place at the scheduled time because the previous run was still happening. 'Succeeded' indicates that the run has finished successfully. 'SucceededWithWarning' indicates that the run finished successfully, but there were some warning messages.
+            type:
+            - string
+            - 'null'
+            enum:
+            - Accepted
+            - Running
+            - Canceled
+            - Canceling
+            - Failed
+            - Missed
+            - Succeeded
+            - SucceededWithWarning
+            - OnHold
+            x-order: 3
+          message:
+            description: Message about the replication run.
+            type:
+            - string
+            - 'null'
+            x-order: 4
+          percentageCompleted:
+            description: Specifies the progress in percentage.
+            type:
+            - integer
+            - 'null'
+            format: int32
+            x-order: 5
+          stats:
+            description: Replication data statistics for a target.
+            x-order: 6
+            $ref: '#/components/schemas/ReplicationDataStats'
+          isManuallyDeleted:
+            description: Specifies whether the snapshot is deleted manually.
+            type:
+            - boolean
+            - 'null'
+            x-order: 7
+          expiryTimeUsecs:
+            description: Specifies the expiry time of attempt in Unix epoch Timestamp (in microseconds) for an object.
+            type:
+            - integer
+            - 'null'
+            format: int64
+            x-order: 8
+          replicationTaskId:
+            description: Task UID for a replication protection run. This is for tasks that are replicated from another cluster.
+            type:
+            - string
+            - 'null'
+            x-order: 9
+          entriesChanged:
+            description: Specifies the number of metadata actions completed during the protection run.
+            type:
+            - integer
+            - 'null'
+            format: int32
+            x-order: 10
+          isInBound:
+            description: Specifies the direction of the replication. If the snapshot is replicated to this cluster, then isInBound is true. If the snapshot is replicated from this cluster to another cluster, then isInBound is false.
+            type:
+            - boolean
+            - 'null'
+            x-order: 11
+    FailedProtectionGroupDetails:
+      description: Specifies a list of ids of Protection Group that failed to update along with error details
+      type: object
+      properties:
+        protectionGroupId:
+          description: Specifies the id of the failed protection group.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        errorMessage:
+          description: Specifies the error mesage for failed protection group.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    BackupRunProgressInfo:
+      description: Specifies the progress of a local backup run.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ProgressTaskInfo'
+      - type: object
+        properties:
+          objects:
+            description: Specifies progress for objects.
+            type:
+            - array
+            - 'null'
+            items:
+              $ref: '#/components/schemas/ObjectProgressInfo'
+            x-order: 0
+    UpdateProtectionGroupsStateRequest:
+      description: Specifies the parameters to perform an action of list of Protection Groups.
+      type: object
+      title: Update state of Protection Groups.
+      required:
+      - action
+      - ids
+      properties:
+        action:
+          description: Specifies the action to be performed on all the specfied Protection Groups. 'kActivate' specifies that Protection Group should be activated. 'kDeactivate' sepcifies that Protection Group should be deactivated. 'kPause' specifies that Protection Group should be paused. 'kResume' specifies that Protection Group should be resumed.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kPause
+          - kResume
+          x-order: 0
+        ids:
+          description: Specifies a list of Protection Group ids for which the state should change.
+          type:
+          - array
+          - 'null'
+          minItems: 1
+          uniqueItems: true
+          items:
+            type: string
+          x-order: 1
+    CloudSpinRun:
+      description: Specifies information about Cloud Spin run for an object.
+      type: object
+      title: Cloud Spin run information for an object.
+      properties:
+        cloudSpinTargetResults:
+          description: Cloud Spin result for a target.
+          type: array
+          items:
+            $ref: '#/components/schemas/CloudSpinTargetResult'
+          x-order: 0
+    Retention:
+      description: Specifies the retention of a backup.
+      type: object
+      required:
+      - unit
+      - duration
+      properties:
+        unit:
+          description: 'Specificies the Retention Unit of a backup measured in days, months or years. <br> If unit is ''Months'', then number specified in duration is multiplied to 30. <br> Example: If duration is 4 and unit is ''Months'' then number of retention days will be 30 * 4 = 120 days. <br> If unit is ''Years'', then number specified in duration is multiplied to 365. <br> If duration is 2 and unit is ''Months'' then number of retention days will be 365 * 2 = 730 days.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - Days
+          - Weeks
+          - Months
+          - Years
+          x-order: 0
+        duration:
+          description: Specifies the duration for a backup retention. <br> Example. If duration is 7 and unit is Months, the retention of a backup is 7 * 30 = 210 days.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          minimum: 1
+          x-order: 1
+    TimeOfDay:
+      description: Specifies the time of day. Used for scheduling purposes.
+      type: object
+      required:
+      - hour
+      - minute
+      properties:
+        hour:
+          description: Specifies the hour of the day (0-23).
+          type:
+          - integer
+          - 'null'
+          format: int32
+          maximum: 23
+          minimum: 0
+          x-order: 0
+        minute:
+          description: Specifies the minute of the hour (0-59).
+          type:
+          - integer
+          - 'null'
+          format: int32
+          maximum: 59
+          minimum: 0
+          x-order: 1
+        timeZone:
+          description: Specifies the time zone of the user. If not specified, default value is assumed as America/Los_Angeles.
+          type:
+          - string
+          - 'null'
+          default: America/Los_Angeles
+          x-order: 2
+    UpdateProtectionGroupRunResponseBody:
+      description: Specifies the response of update Protection Group Runs request.
+      type: object
+      title: Update Protection Group Run Response Body.
+      properties:
+        successfulRunIds:
+          description: Specifies a list of ids of Protection Group Runs that are successfully updated.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 0
+        failedRuns:
+          description: Specifies a list of ids of Protection Group Runs that failed to update along with error details.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FailedRunDetails'
+          x-order: 1
+    CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801:
+      description: Specifies the parameters which are common between all Protection Group responses.
+      type: object
+      properties:
+        id:
+          description: Specifies the ID of the Protection Group.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        name:
+          description: Specifies the name of the Protection Group.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        policyId:
+          description: Specifies the unique id of the Protection Policy associated with the Protection Group. The Policy provides retry settings Protection Schedules, Priority, SLA, etc.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        priority:
+          description: Specifies the priority of the Protection Group.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kLow
+          - kMedium
+          - kHigh
+          x-order: 3
+        storageDomainId:
+          description: Specifies the Storage Domain (View Box) ID where this Protection Group writes data.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 4
+        description:
+          description: Specifies a description of the Protection Group.
+          type:
+          - string
+          - 'null'
+          x-order: 5
+        startTime:
+          description: Specifies the start time for this Protection Group. If no start time is specified, the start time will default to 2am. This field is only used if the policy has a daily or monthly schedule.
+          x-order: 6
+          $ref: '#/components/schemas/TimeOfDay'
+        endTimeUsecs:
+          description: Specifies the end time in micro seconds for this Protection Group. If this is not specified, the Protection Group won't be ended.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 7
+        alertPolicy:
+          description: Specifies the alerting policy for this Protection Group.
+          x-order: 8
+          $ref: '#/components/schemas/ProtectionGroupAlertingPolicy'
+        sla:
+          description: Specifies the SLA parameters for this Protection Group.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SlaRule'
+          x-order: 9
+        qosPolicy:
+          description: Specifies whether the Protection Group will be written to HDD or SSD.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kBackupHDD
+          - kBackupSSD
+          - kTestAndDevHigh
+          - kBackupAll
+          x-order: 10
+        abortInBlackouts:
+          description: Specifies whether currently executing jobs should abort if a blackout period specified by a policy starts. Available only if the selected policy has at least one blackout period. Default value is false.
+          type:
+          - boolean
+          - 'null'
+          x-order: 11
+        isActive:
+          description: Specifies if the Protection Group is active or not.
+          type:
+          - boolean
+          - 'null'
+          x-order: 12
+        isDeleted:
+          description: Specifies if the Protection Group has been deleted.
+          type:
+          - boolean
+          - 'null'
+          x-order: 13
+        isPaused:
+          description: Specifies if the the Protection Group is paused. New runs are not scheduled for the paused Protection Groups. Active run if any is not impacted.
+          type:
+          - boolean
+          - 'null'
+          x-order: 14
+        environment:
+          description: Specifies the environment of the Protection Group.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kVMware
+          - kHyperV
+          - kAzure
+          - kGCP
+          - kKVM
+          - kAcropolis
+          - kAWS
+          - kPhysical
+          - kGPFS
+          - kElastifile
+          - kNetapp
+          - kGenericNas
+          - kIsilon
+          - kFlashBlade
+          - kPure
+          - kSQL
+          - kExchange
+          - kAD
+          - kOracle
+          - kView
+          - kRemoteAdapter
+          - kO365
+          - kKubernetes
+          - kCassandra
+          - kMongoDB
+          - kCouchbase
+          - kHdfs
+          - kHive
+          - kHBase
+          - kUDA
+          x-order: 15
+        lastRun:
+          description: Specifies information about the last run for this Protection Group.
+          x-order: 16
+          $ref: '#/components/schemas/ProtectionGroupRun'
+        permissions:
+          description: Specifies the list of tenants that have permissions for this protection group.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Tenant'
+          x-order: 17
+        isProtectOnce:
+          description: Specifies if the the Protection Group is using a protect once type of policy. This field is helpful to identify run happen for this group.
+          type:
+          - boolean
+          - 'null'
+          x-order: 18
+      x-cohesity-discriminator-details:
+        propertyName: environment
+      x-discriminator:
+        mapping:
+          kVMware: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801VmwareProtectionGroupParamsWrapper'
+          kAcropolis: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801AcropolisProtectionGroupParamsWrapper'
+          kKubernetes: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801KubernetesProtectionGroupParamsWrapper'
+          kSQL: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801MSSQLProtectionGroupParamsWrapper'
+          kOracle: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801OracleProtectionGroupParamsWrapper'
+          kView: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801ViewProtectionGroupParamsWrapper'
+          kPure: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801PureProtectionGroupParamsWrapper'
+          kNimble: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801NimbleProtectionGroupParamsWrapper'
+          kHyperV: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801HyperVProtectionGroupParamsWrapper'
+          kAWS: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801AwsProtectionGroupParamsWrapper'
+          kAzure: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801AzureProtectionGroupParamsWrapper'
+          kGCP: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801GcpProtectionGroupParamsWrapper'
+          kKVM: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801KvmProtectionGroupParamsWrapper'
+          kPhysical: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801PhysicalProtectionGroupParamsWrapper'
+          kAD: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801ADProtectionGroupParamsWrapper'
+          kO365: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801Office365ProtectionGroupParamsWrapper'
+          kNetapp: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801NetappProtectionGroupParamsWrapper'
+          kGenericNas: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801GenericNasProtectionGroupParamsWrapper'
+          kIsilon: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801IsilonProtectionGroupParamsWrapper'
+          kFlashBlade: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801FlashbladeProtectionGroupParamsWrapper'
+          kGPFS: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801GpfsProtectionGroupParamsWrapper'
+          kElastifile: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801ElastifileProtectionGroupParamsWrapper'
+          kRemoteAdapter: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801RemoteAdapterProtectionGroupParamsWrapper'
+          kExchange: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801ExchangeProtectionGroupParamsWrapper'
+          kCassandra: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801CassandraProtectionGroupParamsWrapper'
+          kCouchbase: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801NoSqlProtectionGroupParamsWrapper'
+          kMongoDB: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801MongoDBProtectionGroupParamsWrapper'
+          kHive: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801NoSqlProtectionGroupParamsWrapper'
+          kHdfs: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801HdfsProtectionGroupParamsWrapper'
+          kHBase: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801NoSqlProtectionGroupParamsWrapper'
+          kUDA: '#/definitions/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801UdaProtectionGroupParamsWrapper'
+        propertyName: environment
+    AWSTiers:
+      description: Specifies aws tiers.
+      type: object
+      required:
+      - tiers
+      properties:
+        tiers:
+          description: Specifies the tiers that are used to move the archived backup from current tier to next tier. The order of the tiers determines which tier will be used next for moving the archived backup. The first tier input should always be default tier where backup will be acrhived. Each tier specifies how much time after the backup will be moved to next tier from the current tier.
+          type:
+          - array
+          - 'null'
+          minLength: 1
+          items:
+            $ref: '#/components/schemas/AWSTier'
+          x-order: 0
+    AWSTargetConfig:
+      description: Specifies the configuration for adding AWS as repilcation target
+      type: object
+      title: AWS Target Configuration
+      required:
+      - sourceId
+      - region
+      properties:
+        sourceId:
+          description: Specifies the source id of the AWS protection source registered on Cohesity cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        name:
+          description: Specifies the name of the AWS Replication target.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+          readOnly: true
+        region:
+          description: Specifies id of the AWS region in which to replicate the Snapshot to. Applicable if replication target is AWS target.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
+        regionName:
+          description: Specifies name of the AWS region in which to replicate the Snapshot to. Applicable if replication target is AWS target.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+          readOnly: true
+    ReplicationDataStats:
+      description: Specifies statistics about replication data.
+      type: object
+      title: Replication data statistics.
+      properties:
+        logicalSizeBytes:
+          description: Specifies the total logical size in bytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        logicalBytesTransferred:
+          description: Specifies the total logical bytes transferred.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+        physicalBytesTransferred:
+          description: Specifies the total physical bytes transferred.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
+    ReplicationRun:
+      description: Specifies information about replication run for an object.
+      type: object
+      title: Replication run information for an object.
+      properties:
+        replicationTargetResults:
+          description: Replication result for a target.
+          type: array
+          items:
+            $ref: '#/components/schemas/ReplicationTargetResult'
+          x-order: 0
+    UpdateProtectionGroupRunParams:
+      description: Specifies the params to update a Protection Group Run.
+      type: object
+      title: Update Protection Group Run Request Params.
+      required:
+      - runId
+      properties:
+        runId:
+          description: Specifies a unique Protection Group Run id.
+          type:
+          - string
+          - 'null'
+          pattern: ^\d+:\d+$
+          x-order: 0
+        localSnapshotConfig:
+          description: Specifies the params to perform actions on local snapshot taken by this Protection Group Run.
+          type:
+          - object
+          - 'null'
+          x-order: 1
+          $ref: '#/components/schemas/UpdateLocalSnapshotConfig'
+        replicationSnapshotConfig:
+          description: Specifies the params to perform actions on replication snapshots taken by this Protection Group Run. A user can configure new replication targets here.
+          type:
+          - object
+          - 'null'
+          x-order: 2
+          $ref: '#/components/schemas/UpdateReplicationSnapshotConfig'
+        archivalSnapshotConfig:
+          description: Specifies the params to perform actions on archival snapshots taken by this Protection Group Run. A user can configure new archival targets here.
+          type:
+          - object
+          - 'null'
+          x-order: 3
+          $ref: '#/components/schemas/UpdateArchivalSnapshotConfig'
+    ObjectProgressInfo:
+      description: Specifies the progress of an object.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ObjectIdentifier'
+      - $ref: '#/components/schemas/ProgressTaskInfo'
+      - type: object
+        properties:
+          failedAttempts:
+            description: Specifies progress for failed attempts of this object.
+            type:
+            - array
+            - 'null'
+            items:
+              $ref: '#/components/schemas/ProgressTaskInfo'
+            x-order: 0
+    BackupRun:
+      description: Specifies information about backup run for an object.
+      type: object
+      title: Snapshot run information for an object.
+      properties:
+        snapshotInfo:
+          description: Snapshot information for an object.
+          x-order: 0
+          $ref: '#/components/schemas/SnapshotInfo'
+        failedAttempts:
+          description: Failed backup attempts for an object.
+          type: array
+          items:
+            $ref: '#/components/schemas/BackupAttempt'
+          x-order: 1
+    ProtectionGroupRuns:
+      description: Protection runs.
+      type: object
+      properties:
+        runs:
+          description: Specifies the list of Protection Group runs.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ProtectionGroupRun'
+          x-order: 0
+    GetProtectionRunProgressBody:
+      description: Specifies the progress of a protection run.
+      type: object
+      properties:
+        localRun:
+          description: Progress for the local backup run.
+          type:
+          - object
+          - 'null'
+          x-order: 0
+          $ref: '#/components/schemas/BackupRunProgressInfo'
+        archivalRun:
+          description: Progress for the archival run.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ArchivalTargetProgressInfo'
+          x-order: 1
+        replicationRun:
+          description: Progress for the replication run.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ReplicationTargetProgressInfo'
+          x-order: 2
+    ObjectSummary:
+      description: Specifies the Object Summary.
+      title: Object Summary
+      allOf:
+      - $ref: '#/components/schemas/ObjectIdentifier'
+      - type: object
+        properties:
+          objectHash:
+            description: Specifies the hash identifier of the object.
+            type:
+            - string
+            - 'null'
+            x-order: 0
+          objectType:
+            description: Specifies the type of the object.
+            type:
+            - string
+            - 'null'
+            enum:
+            - kCluster
+            - kVserver
+            - kVolume
+            - kVCenter
+            - kStandaloneHost
+            - kvCloudDirector
+            - kFolder
+            - kDatacenter
+            - kComputeResource
+            - kClusterComputeResource
+            - kResourcePool
+            - kDatastore
+            - kHostSystem
+            - kVirtualMachine
+            - kVirtualApp
+            - kStoragePod
+            - kNetwork
+            - kDistributedVirtualPortgroup
+            - kTagCategory
+            - kTag
+            - kOpaqueNetwork
+            - kOrganization
+            - kVirtualDatacenter
+            - kCatalog
+            - kOrgMetadata
+            - kStoragePolicy
+            - kVirtualAppTemplate
+            - kDomain
+            - kOutlook
+            - kMailbox
+            - kUsers
+            - kGroups
+            - kSites
+            - kUser
+            - kGroup
+            - kSite
+            - kApplication
+            - kGraphUser
+            - kPublicFolders
+            - kPublicFolder
+            - kTeams
+            - kTeam
+            - kKeyspace
+            - kTable
+            - kDatabase
+            - kCollection
+            - kBucket
+            - kNamespace
+            - kSCVMMServer
+            - kStandaloneCluster
+            - kHostGroup
+            - kHypervHost
+            - kHostCluster
+            - kCustomProperty
+            - kSubscription
+            - kResourceGroup
+            - kStorageAccount
+            - kStorageKey
+            - kStorageContainer
+            - kStorageBlob
+            - kNetworkSecurityGroup
+            - kVirtualNetwork
+            - kSubnet
+            - kComputeOptions
+            - kSnapshotManagerPermit
+            - kAvailabilitySet
+            - kOVirtManager
+            - kHost
+            - kStorageDomain
+            - kVNicProfile
+            - kIAMUser
+            - kRegion
+            - kAvailabilityZone
+            - kEC2Instance
+            - kVPC
+            - kInstanceType
+            - kKeyPair
+            - kRDSOptionGroup
+            - kRDSParameterGroup
+            - kRDSInstance
+            - kRDSSubnet
+            - kRDSTag
+            - kAuroraCluster
+            - kAccount
+            - kSubTaskPermit
+            - kProject
+            - kLabel
+            - kMetadata
+            - kVPCConnector
+            - kPrismCentral
+            - kOtherHypervisorCluster
+            - kDfsGroup
+            - kDfsTopDir
+            - kZone
+            - kMountPoint
+            - kStorageArray
+            - kFileSystem
+            - kContainer
+            - kFilesystem
+            - kFileset
+            - kViewBox
+            - kView
+            - kWindowsCluster
+            - kOracleRACCluster
+            - kOracleAPCluster
+            - kService
+            - kPVC
+            - kRootContainer
+            - kDAGRootContainer
+            - kExchangeNode
+            - kExchangeDAGDatabaseCopy
+            - kExchangeStandaloneDatabase
+            - kExchangeDAG
+            - kExchangeDAGDatabase
+            - kDomainController
+            - kInstance
+            - kAAG
+            - kAAGRootContainer
+            - kRACRootContainer
+            - kTableSpace
+            - kPDB
+            - kObject
+            x-order: 1
+          logicalSizeBytes:
+            description: Specifies the logical size of object in bytes.
+            type:
+            - integer
+            - 'null'
+            format: int64
+            x-order: 2
+          uuid:
+            description: Specifies the uuid which is a unique identifier of the object.
+            type:
+            - string
+            - 'null'
+            x-order: 3
+          protectionType:
+            description: Specifies the protection type of the object if any.
+            type:
+            - string
+            - 'null'
+            enum:
+            - kAgent
+            - kNative
+            - kSnapshotManager
+            - kRDSSnapshotManager
+            - kAuroraSnapshotManager
+            - kFile
+            - kVolume
+            x-order: 4
+          osType:
+            description: Specifies the operating system type of the object.
+            type:
+            - string
+            - 'null'
+            enum:
+            - kLinux
+            - kWindows
+            - kAix
+            - kSolaris
+            - kSapHana
+            - kOther
+            x-order: 5
+          vCenterSummary:
+            description: Specifies the vCenter object details.
+            type:
+            - object
+            - 'null'
+            x-order: 6
+            $ref: '#/components/schemas/ObjectTypeVCenterParams'
+    RunArchivalConfig:
+      description: Specifies settings for copying Snapshots External Targets (such as AWS or Tape). This also specifies the retention policy that should be applied to Snapshots after they have been copied to the specified target.
+      type: object
+      title: Archival Target Configuration
+      required:
+      - id
+      - archivalTargetType
+      properties:
+        id:
+          description: Specifies the Archival target to copy the Snapshots to.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        archivalTargetType:
+          description: Specifies the snapshot's archival target type from which recovery has been performed.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Tape
+          - Cloud
+          - Nas
+          x-order: 1
+        retention:
+          description: Specifies the Retention period of snapshot in days, months or years to retain copied Snapshots on the target.
+          type:
+          - object
+          - 'null'
+          x-order: 2
+          $ref: '#/components/schemas/Retention'
+    RunTargetsConfiguration:
+      description: Specifies the replication and archival targets.
+      type: object
+      title: Target Configuration
+      properties:
+        replications:
+          description: Specifies a list of replication targets configurations.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/RunReplicationConfig'
+          x-order: 0
+        archivals:
+          description: Specifies a list of archival targets configurations.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/RunArchivalConfig'
+          x-order: 1
+    UpdateLocalSnapshotConfig:
+      description: Specifies the params to perform actions on local snapshot taken by a Protection Group Run.
+      type: object
+      title: Local Snapshot Config.
+      properties:
+        enableLegalHold:
+          description: Specifies whether to retain the snapshot for legal purpose. If set to true, the snapshots cannot be deleted until the retention period. Note that using this option may cause the Cluster to run out of space. If set to false explicitly, the hold is removed, and the snapshots will expire as specified in the policy of the Protection Group. If this field is not specified, there is no change to the hold of the run. This field can be set only by a User having Data Security Role.
+          type:
+          - boolean
+          - 'null'
+          x-order: 0
+        deleteSnapshot:
+          description: Specifies whether to delete the snapshot. When this is set to true, all other params will be ignored.
+          type:
+          - boolean
+          - 'null'
+          x-order: 1
+        dataLock:
+          description: "Specifies WORM retention type for the snapshots. When a WORM retention type is specified, the snapshots of the Protection Groups using this policy will be kept until the maximum of the snapshot retention time. During that time, the snapshots cannot be deleted. \n'Compliance' implies WORM retention is set for compliance reason. \n'Administrative' implies WORM retention is set for administrative purposes."
+          type:
+          - string
+          - 'null'
+          enum:
+          - Compliance
+          - Administrative
+          x-order: 2
+        daysToKeep:
+          description: Specifies number of days to retain the snapshots. If positive, then this value is added to exisiting expiry time thereby increasing  the retention period of the snapshot. Conversly, if this value is negative, then value is subtracted to existing expiry time thereby decreasing the retention period of the snaphot. Here, by this operation if expiry time goes below current time then snapshot is immediately deleted.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 3
+    CloudSpinTarget:
+      description: Specifies the details about Cloud Spin target where backup snapshots may be converted and stored.
+      type: object
+      properties:
+        id:
+          description: Specifies the unique id of the cloud spin entity.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        awsParams:
+          description: Specifies various resources when converting and deploying a VM to AWS.
+          type:
+          - object
+          - 'null'
+          title: Contains information needed to identify various resources when deploying VMs to Cloud.
+          x-order: 1
+          $ref: '#/components/schemas/AwsCloudSpinParams'
+        azureParams:
+          description: Specifies various resources when converting and deploying a VM to Azure.
+          type:
+          - object
+          - 'null'
+          x-order: 2
+          $ref: '#/components/schemas/AzureCloudSpinParams'
+        name:
+          description: Specifies the name of the already added cloud spin target.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+          readOnly: true
+    CommonCloudTierSettings:
+      description: Specifies the common settings required for configuring cloud tiering.
+      type: object
+      properties:
+        moveAfterUnit:
+          description: Specifies the unit for moving the data from current tier to next tier. This unit will be a base unit for the 'moveAfter' field specified below.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Days
+          - Weeks
+          - Months
+          - Years
+          x-order: 0
+        moveAfter:
+          description: Specifies the time period after which the backup will be moved from current tier to next tier.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+  responses:
+    NoContentResponse:
+      description: No Content
+    GetProtectionRunProgress:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetProtectionRunProgressBody'
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    GetProtectionGroupRunResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProtectionGroupRun'
+    GetProtectionGroupRunsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProtectionGroupRuns'
+    UpdateProtectionGroupsStateResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateProtectionGroupsState'
+    GetProtectionRunsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProtectionRunsSummary'
+    GetProtectionGroupsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProtectionGroups'
+    GetProtectionGroupResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            x-cohesity-discriminator-ref: CommonProtectionGroupResponseParams
+            $ref: '#/components/schemas/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801'
+    CreateProtectionGroupRunResponse:
+      description: Accepted
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateProtectionGroupRunResponseBody'
+    CreateOrUpdateProtectionGroupResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            x-cohesity-discriminator-ref: CommonProtectionGroupResponseParams
+            $ref: '#/components/schemas/CommonProtectionGroupResponseParamsfd9f614e-2c28-46ff-a431-2430d1548801'
+    UpdateProtectionGroupRunResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateProtectionGroupRunResponseBody'
+  securitySchemes:
+    APIKeyHeader:
+      in: header
+      name: apiKey
+      type: apiKey

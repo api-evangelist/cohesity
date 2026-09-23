@@ -1,0 +1,416 @@
+openapi: 3.2.0
+info:
+  description: Cohesity API provides a RESTful interface to access the various data management operations on Cohesity cluster and Helios.
+  title: Cohesity REST Network Information Service (NIS) API
+  version: '2.0'
+servers:
+- url: /v2
+tags:
+- name: Network Information Service (NIS)
+paths:
+  /nis-netgroups:
+    get:
+      description: Get a list of NIS netgroups.
+      tags:
+      - Network Information Service (NIS)
+      summary: Get a list of NIS netgroups
+      operationId: GetNisNetgroups
+      parameters:
+      - description: Filter by a list of NIS netgroup names.
+        name: netgroupNames
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/GetNisNetgroupsResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    post:
+      description: Create an NIS netgroup.
+      tags:
+      - Network Information Service (NIS)
+      summary: Create an NIS netgroup
+      operationId: CreateNisNetgroup
+      responses:
+        '201':
+          $ref: '#/components/responses/NisNetgroupResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NisNetgroup'
+        description: Specifies the parameters to create an NIS netgroup.
+        required: true
+  /nis-netgroups/{name}:
+    get:
+      description: Get an NIS netgroup by name.
+      tags:
+      - Network Information Service (NIS)
+      summary: Get an NIS netgroup by name
+      operationId: GetNisNetgroupByName
+      parameters:
+      - description: Specifies name of the NIS netgroup.
+        name: name
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/GetNisNetgroupByNameResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    put:
+      description: Update an NIS netgroup by name.
+      tags:
+      - Network Information Service (NIS)
+      summary: Update an NIS netgroup by name
+      operationId: UpdateNisNetgroupByName
+      parameters:
+      - description: Specifies name of the NIS netgroup.
+        name: name
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/NisNetgroupResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NisNetgroup'
+        description: Request to update the NIS netgroup.
+        required: true
+    delete:
+      description: Delete an NIS netgroup by name.
+      tags:
+      - Network Information Service (NIS)
+      summary: Delete an NIS netgroup by name
+      operationId: DeleteNisNetgroupByName
+      parameters:
+      - description: Specifies name of the NIS netgroup.
+        name: name
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NisNetgroup'
+        description: Request to delete the NIS netgroup.
+        required: true
+  /nis-providers:
+    get:
+      description: Get a list of NIS Providers.
+      tags:
+      - Network Information Service (NIS)
+      summary: Get a list of NIS Providers
+      operationId: GetNisProviders
+      parameters:
+      - description: Filter by a list of NIS domain names.
+        name: domainNames
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/GetNisProvidersResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    post:
+      description: Create an NIS Provider.
+      tags:
+      - Network Information Service (NIS)
+      summary: Create an NIS Provider
+      operationId: CreateNisProvider
+      responses:
+        '201':
+          $ref: '#/components/responses/NisProviderResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NisProvider'
+        description: Specifies the parameters to create an NIS provider entry.
+        required: true
+  /nis-providers/{domain}:
+    get:
+      description: Get an NIS Provider by domain name.
+      tags:
+      - Network Information Service (NIS)
+      summary: Get an NIS Provider by domain name
+      operationId: GetNisProviderByDomainName
+      parameters:
+      - description: Specifies domain of an NIS Provider.
+        name: domain
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/GetNisProviderByDomainNameResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    put:
+      description: Update an NIS Provider by domain name.
+      tags:
+      - Network Information Service (NIS)
+      summary: Update an NIS Provider by domain name
+      operationId: UpdateNisProviderByDomainName
+      parameters:
+      - description: Specifies domain name of an NIS Provider.
+        name: domain
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/NisProviderResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NisProvider'
+        description: Request to update an NIS Provider.
+        required: true
+    delete:
+      description: Delete an NIS Provider by domain name.
+      tags:
+      - Network Information Service (NIS)
+      summary: Delete an NIS Provider by domain name
+      operationId: DeleteNisProviderByDomainName
+      parameters:
+      - description: Specifies domain name of an NIS Provider.
+        name: domain
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+components:
+  schemas:
+    NisProvider:
+      description: Specifies an NIS Provider.
+      type: object
+      required:
+      - domain
+      - masterServerHostname
+      properties:
+        domain:
+          description: Specifies the Domain Name of NIS Provider.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        masterServerHostname:
+          description: Specifies the hostname of Master Server.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        slaveServers:
+          description: Specifies a list of slave servers in the NIS Domain.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 2
+        tenantIds:
+          description: Specifies the list of tenant Ids for NIS Provider.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 3
+    NisNetgroup:
+      description: Specifies an NIS netgroup.
+      type: object
+      required:
+      - name
+      - domain
+      properties:
+        name:
+          description: Specifies the netgroup name.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        domain:
+          description: Specifies the domain name for the netgroup.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        nfsAccess:
+          description: Specifies NFS protocol acess level for clients from the netgroup.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kDisabled
+          - kReadOnly
+          - kReadWrite
+          x-order: 2
+        nfsSquash:
+          description: 'Specifies which nfsSquash Mounted.
+
+            ''kNone'' mounts none.
+
+            ''kRootSquash'' mounts nfsRootSquash. Whether clients from this subnet can
+
+            mount as root on NFS.
+
+            ''kAllSquash'' mounts nfsAllSquash. Whether all clients from this subnet can
+
+            map view with view_all_squash_uid/view_all_squash_gid configured in
+
+            the view.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kNone
+          - kRootSquash
+          - kAllSquash
+          x-order: 3
+    NisNetgroups:
+      description: Response of NIS Netgroups.
+      type: object
+      properties:
+        nisNetgroups:
+          description: A list of NIS Netgroups.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/NisNetgroup'
+          x-order: 0
+    NisProviders:
+      description: Response of NIS Providers.
+      type: object
+      properties:
+        nisProviders:
+          description: A list of NIS Providers.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/NisProvider'
+          x-order: 0
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+  responses:
+    GetNisProviderByDomainNameResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NisProvider'
+    GetNisNetgroupsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NisNetgroups'
+    NisNetgroupResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NisNetgroup'
+    NoContentResponse:
+      description: No Content
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    GetNisProvidersResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NisProviders'
+    GetNisNetgroupByNameResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NisNetgroup'
+    NisProviderResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NisProvider'
+  securitySchemes:
+    APIKeyHeader:
+      in: header
+      name: apiKey
+      type: apiKey

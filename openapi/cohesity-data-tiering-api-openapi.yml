@@ -1,0 +1,1437 @@
+openapi: 3.2.0
+info:
+  description: Cohesity API provides a RESTful interface to access the various data management operations on Cohesity cluster and Helios.
+  title: Cohesity REST Data Tiering API
+  version: '2.0'
+servers:
+- url: /v2
+tags:
+- name: Data Tiering
+paths:
+  /data-tiering/analysis-groups:
+    get:
+      description: Get list of all data tiering analysis groups.
+      tags:
+      - Data Tiering
+      summary: Get the list of data tiering analysis groups
+      operationId: GetDataTieringAnalysisGroups
+      parameters:
+      - description: Filter by a list of Analysis Group IDs.
+        name: ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/GetDataTieringAnalysisGroupsResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    post:
+      description: Create a data tiering analysis group.
+      tags:
+      - Data Tiering
+      summary: Create a data tiering analysis group
+      operationId: CreateDataTieringAnalysisGroup
+      responses:
+        '201':
+          $ref: '#/components/responses/CreateOrUpdateDataTieringAnalysisGroupResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommonDataTieringAnalysisGroupParams'
+        description: Specifies the data tiering analysis group.
+        required: true
+  /data-tiering/analysis-groups/states:
+    post:
+      description: 'Perform actions like pause or resume on the data tiering analysis
+
+        groups for the specified sources.'
+      tags:
+      - Data Tiering
+      summary: Update data tiering analysis groups state
+      operationId: UpdateDataTieringAnalysisGroupsState
+      responses:
+        '200':
+          $ref: '#/components/responses/UpdateDataTieringStateResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDataTieringStateRequest'
+        description: 'Specifies the parameters to perform an action of list of data tiering
+
+          analysis groups.'
+        required: true
+  /data-tiering/analysis-groups/{id}:
+    get:
+      description: Get data tiering analysis group by id.
+      tags:
+      - Data Tiering
+      summary: Get data tiering analysis group by id
+      operationId: GetDataTieringAnalysisGroupById
+      parameters:
+      - description: Specifies a unique id of the data tiering analysis group.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/GetDataTieringAnalysisGroupResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    delete:
+      description: 'Returns NoContentResponse if the data tiering analysis group is
+
+        deleted.'
+      tags:
+      - Data Tiering
+      summary: Delete data tiering analysis group
+      operationId: DeleteDataTieringAnalysisGroup
+      parameters:
+      - description: Specifies a unique id of the data tiering analysis group.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /data-tiering/analysis-groups/{id}/config:
+    put:
+      description: Update data tiering analysis group config.
+      tags:
+      - Data Tiering
+      summary: Update data tiering analysis group config
+      operationId: UpdateDataTieringAnalysisGroupTagsConfig
+      parameters:
+      - description: Specifies a unique id of the data tiering analysis group.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/UpdateDataTieringTagConfigResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataTieringTagConfig'
+        description: Specifies the data tiering analysis Tags Config.
+        required: true
+  /data-tiering/analysis-groups/{id}/runs:
+    post:
+      description: Create a data tiering analysis group run.
+      tags:
+      - Data Tiering
+      summary: Create a data tiering analysis group run
+      operationId: CreateDataTieringAnalysisGroupRun
+      parameters:
+      - description: Specifies the id of the data tiering analysis group.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^\d+:\d+:\d+$
+      responses:
+        '202':
+          $ref: '#/components/responses/AcceptedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /data-tiering/analysis-groups/{id}/runs/{runId}/cancel:
+    post:
+      description: 'Cancel data tiering analysis run for given analysis group ID
+
+        and run ID'
+      tags:
+      - Data Tiering
+      summary: Cancel data tiering analysis run
+      operationId: CancelDataTieringAnalysisGroupRun
+      parameters:
+      - description: Specifies a unique id of data tiering group.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^\d+:\d+:\d+$
+      - description: Specifies a unique run id of data tiering group run.
+        name: runId
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^\d+:\d+$
+      responses:
+        '202':
+          $ref: '#/components/responses/AcceptedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /data-tiering/tasks:
+    get:
+      description: Get the list of data tiering tasks.
+      tags:
+      - Data Tiering
+      summary: Get the list of data tiering tasks
+      operationId: GetDataTieringTasks
+      parameters:
+      - description: Filter by a list of data tiering task ids.
+        name: ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/DataTieringTasksResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    post:
+      description: Create a data tiering task.
+      tags:
+      - Data Tiering
+      summary: Create a data tiering task
+      operationId: CreateDataTieringTask
+      responses:
+        '201':
+          $ref: '#/components/responses/DataTieringTaskResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              x-cohesity-discriminator-ref: CommonDataTieringTaskParams
+              $ref: '#/components/schemas/CommonDataTieringTaskParams5edf51bd-907d-4ee5-a931-bf9b9e2e396e'
+        description: Specifies the parameters to create a data tiering task.
+        required: true
+  /data-tiering/tasks/states:
+    post:
+      description: Perform actions like pause or resume on the data tiering tasks.
+      tags:
+      - Data Tiering
+      summary: Update data tiering source analysis tasks state
+      operationId: UpdateDataTieringTasksState
+      responses:
+        '200':
+          $ref: '#/components/responses/UpdateDataTieringStateResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDataTieringStateRequest'
+        description: 'Specifies the parameters to perform an action of list of data tiering
+
+          tasks.'
+        required: true
+  /data-tiering/tasks/{id}:
+    get:
+      description: Get data tiering task by id.
+      tags:
+      - Data Tiering
+      summary: Get data tiering task by id
+      operationId: GetDataTieringTaskById
+      parameters:
+      - description: Specifies the id of the data tiering task.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/DataTieringTaskResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    put:
+      description: Update a data tiering task.
+      tags:
+      - Data Tiering
+      summary: Update a data tiering task
+      operationId: UpdateDataTieringTask
+      parameters:
+      - description: Specifies the id of the data tiering task.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/DataTieringTaskResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              x-cohesity-discriminator-ref: CommonDataTieringTaskParams
+              $ref: '#/components/schemas/CommonDataTieringTaskParams5edf51bd-907d-4ee5-a931-bf9b9e2e396e'
+        description: Specifies the parameters to update a data tiering task.
+        required: true
+    delete:
+      description: Returns Success if the data tiering task is deleted.
+      tags:
+      - Data Tiering
+      summary: delete the data tiering task
+      operationId: DeleteDataTieringTask
+      parameters:
+      - description: Specifies the id of the data tiering task.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /data-tiering/tasks/{id}/runs:
+    post:
+      description: Create a data tiering tasks run.
+      tags:
+      - Data Tiering
+      summary: Create a data tiering tasks run
+      operationId: CreateDataTieringTaskRun
+      parameters:
+      - description: Specifies the id of the data tiering tasks.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^\d+:\d+:\d+$
+      responses:
+        '202':
+          $ref: '#/components/responses/AcceptedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataTieringTaskRunRequest'
+        description: Specifies the request to run tiering task once.
+  /data-tiering/tasks/{id}/runs/{runId}/cancel:
+    post:
+      description: Cancel data tiering task run for given data tiering task id and run id.
+      tags:
+      - Data Tiering
+      summary: Cancel data tiering task
+      operationId: CancelDataTieringTaskRun
+      parameters:
+      - description: Specifies a unique id of data tiering task.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^\d+:\d+:\d+$
+      - description: Specifies a unique run id of data tiering task.
+        name: runId
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^\d+:\d+$
+      responses:
+        '202':
+          $ref: '#/components/responses/AcceptedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+components:
+  schemas:
+    DataTieringTaskRun:
+      description: Specifies the data tiering task run.
+      type: object
+      properties:
+        id:
+          description: Specifies the id of the data tiering task run.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        startTimeUsecs:
+          description: Specifies the start time of task run in Unix epoch Timestamp(in microseconds).
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+        endTimeUsecs:
+          description: Specifies the end time of task run in Unix epoch Timestamp(in microseconds).
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
+        tieringInfo:
+          description: Specifies the data tiering tiering task details.
+          x-order: 3
+          $ref: '#/components/schemas/TieringInfo'
+    NetappDataTieringParams:
+      description: Specifies the parameters which are specific to Netapp related Protection Groups.
+      type: object
+      required:
+      - objects
+      properties:
+        objects:
+          description: Specifies the objects to be included in the Protection Group.
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/ProtectionObjectInput'
+          x-order: 0
+    ProgressSummary:
+      description: Specifies the progress summary.
+      type: object
+      properties:
+        success:
+          description: Specifies the successful count.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        failed:
+          description: Specifies the failed count.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+        total:
+          description: Specifies the total count.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
+    DataTieringTagConfig:
+      description: Array of data tiering tag objects.
+      type: object
+      required:
+      - tagsInfo
+      properties:
+        id:
+          description: Specifies the ID of the data tiering analysis group.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+          readOnly: true
+        tagsInfo:
+          description: Array of Tag objects.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DataTieringTagObject'
+          x-order: 1
+    DataTieringTaskStats:
+      description: Specifies the stats of data tiering task.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/BackupDataStats'
+      - type: object
+        properties:
+          entityCount:
+            description: Specifies total entity count.
+            type:
+            - integer
+            - 'null'
+            format: int64
+            x-order: 0
+          changedEntityCount:
+            description: Specifies changed entity count.
+            type:
+            - integer
+            - 'null'
+            format: int64
+            x-order: 1
+          isTieringGoalMet:
+            description: Specifies whether tiering goal has been met.
+            type:
+            - boolean
+            - 'null'
+            default: false
+            x-order: 2
+          totalTieredBytes:
+            description: Specifies total amount of data successfully tiered from the NAS source.
+            type:
+            - integer
+            - 'null'
+            format: int64
+            x-order: 3
+    DataTieringTag:
+      type: object
+      title: Specifies label and value of tags.
+      properties:
+        label:
+          description: Specifies label of tag.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        value:
+          description: Specifies value of tag.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    TieringInfo:
+      description: Specifies the data tiering task details.
+      type: object
+      properties:
+        progress:
+          description: Specifies the progress of data tiering task.
+          type:
+          - object
+          - 'null'
+          x-order: 0
+          $ref: '#/components/schemas/ProgressSummary'
+        status:
+          description: "Status of the analysis run.\n'Running' indicates that the run is still running.\n'Canceled' indicates that the run has been canceled.\n'Canceling' indicates that the run is in the process of being\n canceled.\n'Failed' indicates that the run has failed.\n'Missed' indicates that the run was unable to take place at the\n scheduled time because the previous run was still happening.\n'Succeeded' indicates that the run has finished successfully.\n'SucceededWithWarning' indicates that the run finished\n successfully, but there were some warning messages.\n'OnHold' indicates that the run has On hold."
+          type:
+          - string
+          - 'null'
+          enum:
+          - Accepted
+          - Running
+          - Canceled
+          - Canceling
+          - Failed
+          - Missed
+          - Succeeded
+          - SucceededWithWarning
+          - OnHold
+          x-order: 1
+        stats:
+          description: Specifies the stats of data tiering task.
+          type:
+          - object
+          - 'null'
+          x-order: 2
+          $ref: '#/components/schemas/DataTieringTaskStats'
+    GenericNasDataTieringParams:
+      description: Specifies the parameters which are specific to NAS related Protection Groups.
+      type: object
+      required:
+      - objects
+      properties:
+        objects:
+          description: Specifies the objects to be included in the Protection Group.
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/ProtectionObjectInput'
+          x-order: 0
+    CommonDataTieringAnalysisGroupParams:
+      description: Specifies the data tiering analysis group.
+      type: object
+      required:
+      - name
+      - source
+      properties:
+        name:
+          description: Specifies the name of the data tiering analysis group.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        source:
+          x-order: 1
+          $ref: '#/components/schemas/DataTieringSource'
+    DataTieringShareStats:
+      description: Specifies the source shares analysis stats.
+      type: object
+      properties:
+        fileTypeTag:
+          description: Specifies the file type bucket.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        fileSizeTag:
+          description: Specifies the file size bucket.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        accessTimeTag:
+          description: Specifies the access time bucket.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        modTimeTag:
+          description: Specifies the modification time bucket.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+        fileCount:
+          description: Specifies the file count.
+          type:
+          - integer
+          - 'null'
+          format: uint64
+          x-order: 4
+        totalSize:
+          description: Specifies the total count.
+          type:
+          - integer
+          - 'null'
+          format: uint64
+          x-order: 5
+        id:
+          description: Specifies the unique identifer for stat.
+          type:
+          - integer
+          - 'null'
+          format: uint64
+          x-order: 6
+    DataTieringSchedule:
+      description: Specifies the data tiering schedule.
+      type: object
+      properties:
+        unit:
+          description: Specifies how often to migrate data from source to target
+          type:
+          - string
+          - 'null'
+          enum:
+          - Days
+          - Weeks
+          - Months
+          x-order: 0
+        daySchedule:
+          description: 'Specifies settings that define a schedule for a data tiering runs to
+
+            start every n days.'
+          type: object
+          x-order: 1
+          $ref: '#/components/schemas/DaySchedule'
+        weekSchedule:
+          description: 'Specifies settings that define a schedule for a data tiering runs to
+
+            start on certain days of week.'
+          type: object
+          x-order: 2
+          $ref: '#/components/schemas/WeekSchedule'
+        monthSchedule:
+          description: 'Specifies settings that define a schedule for a data tiering runs to
+
+            on specific week and specific days of that week.'
+          type: object
+          x-order: 3
+          $ref: '#/components/schemas/MonthSchedule'
+        startTime:
+          description: Specifies the start time for the data tiering task.
+          x-order: 4
+          $ref: '#/components/schemas/TimeOfDay'
+    DataTieringAnalysisGroups:
+      description: Specifies the data tiering analysis groups.
+      type:
+      - array
+      - 'null'
+      items:
+        $ref: '#/components/schemas/DataTieringAnalysisGroup'
+    DataTieringSource:
+      description: Specifies the source data tiering details.
+      type: object
+      properties:
+        environment:
+          description: Specifies the environment type of the data tiering source.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kGenericNas
+          - kIsilon
+          - kNetapp
+          x-order: 0
+        genericNasParams:
+          description: 'Specifies the parameters which are specific to data tiering generic
+
+            NAS source.'
+          type:
+          - object
+          - 'null'
+          x-order: 1
+          $ref: '#/components/schemas/GenericNasDataTieringParams'
+        isilonParams:
+          description: 'Specifies the parameters which are specific to data tiering Isilon
+
+            NAS source.'
+          type:
+          - object
+          - 'null'
+          x-order: 2
+          $ref: '#/components/schemas/IsilonDataTieringParams'
+        netappParams:
+          description: 'Specifies the parameters which are specific to data tiering Netapp
+
+            NAS source.'
+          type:
+          - object
+          - 'null'
+          x-order: 3
+          $ref: '#/components/schemas/NetappDataTieringParams'
+    DataTieringAnalysisGroupRun:
+      description: Specifies the data tiering analysis group run.
+      type: object
+      properties:
+        id:
+          description: Specifies the ID of the data tiering analysis group run.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        objects:
+          description: 'Specifies the objects details analyzed during data tiering analysis
+
+            group run.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DataTieringObjectInfo'
+          x-order: 1
+        startTimeUsecs:
+          description: Specifies the start time of analysis run in Unix epoch Timestamp(in microseconds).
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
+        endTimeUsecs:
+          description: Specifies the end time of analysis run in Unix epoch Timestamp(in microseconds).
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 3
+        analysisInfo:
+          description: Specifies the data tiering analysis details.
+          x-order: 4
+          $ref: '#/components/schemas/DataTieringAnalysisInfo'
+    UpdateDataTieringState:
+      type: object
+      title: 'Specifies the summary of the state updation for the multiple data
+
+        tiering groups.'
+      properties:
+        failedIds:
+          description: 'Specifies a list of data tiering groups ids for which
+
+            updation of state failed.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 0
+        successfulIds:
+          description: 'Specifies a list of data tiering groups ids for which updation of
+
+            state was successful.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 1
+    DaySchedule:
+      description: Specifies settings that define a schedule for a Protection Group runs to start after certain number of days.
+      title: Days Schedule
+      allOf:
+      - $ref: '#/components/schemas/FrequencySchedule'
+    ProtectionGroupAlertingPolicy:
+      description: Specifies a policy for alerting users of the status of a Protection Group.
+      type: object
+      required:
+      - backupRunStatus
+      properties:
+        backupRunStatus:
+          description: Specifies the run status for which the user would like to receive alerts.
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+            - kSuccess
+            - kFailure
+            - kSlaViolation
+          x-order: 0
+        alertTargets:
+          description: Specifies a list of targets to receive the alerts.
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertTarget'
+          x-order: 1
+    BackupDataStats:
+      description: Specifies statistics about local snapshot.
+      type: object
+      title: Local snapshot statistics.
+      properties:
+        logicalSizeBytes:
+          description: Specifies total logical size of object(s) in bytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        bytesWritten:
+          description: Specifies total size of data in bytes written after taking backup.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+        bytesRead:
+          description: Specifies total logical bytes read for creating the snapshot.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
+    FrequencySchedule:
+      description: Specifies settings that define a daily schedule for a Protection Policy.
+      type: object
+      title: Daily Schedule
+      required:
+      - frequency
+      properties:
+        frequency:
+          description: 'Specifies a factor to multiply the unit by, to determine the backup schedule. <br> Example: If ''frequency'' set to 2 and the unit is ''Hours'', then Snapshots are backed up every 2 hours. <br> This field is only applicable if unit is ''Minutes'', ''Hours'' or ''Days''.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          minimum: 1
+          x-order: 0
+    TimeOfDay:
+      description: Specifies the time of day. Used for scheduling purposes.
+      type: object
+      required:
+      - hour
+      - minute
+      properties:
+        hour:
+          description: Specifies the hour of the day (0-23).
+          type:
+          - integer
+          - 'null'
+          format: int32
+          maximum: 23
+          minimum: 0
+          x-order: 0
+        minute:
+          description: Specifies the minute of the hour (0-59).
+          type:
+          - integer
+          - 'null'
+          format: int32
+          maximum: 59
+          minimum: 0
+          x-order: 1
+        timeZone:
+          description: Specifies the time zone of the user. If not specified, default value is assumed as America/Los_Angeles.
+          type:
+          - string
+          - 'null'
+          default: America/Los_Angeles
+          x-order: 2
+    UpdateDataTieringStateRequest:
+      description: 'Specifies the parameters to perform an action on the data tiering
+
+        groups for the specified Sources.'
+      type: object
+      title: Update state of the data tiering groups.
+      required:
+      - action
+      - ids
+      properties:
+        action:
+          description: 'Specifies the action to be performed on all the specified data
+
+            tiering groups.
+
+            ''Pause''  specifies to pause.
+
+            ''Resume'' specifies to resume.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - Pause
+          - Resume
+          x-order: 0
+        ids:
+          description: 'Specifies a list of data tiering groups ids for
+
+            which the state should change.'
+          type:
+          - array
+          - 'null'
+          minItems: 1
+          uniqueItems: true
+          items:
+            type: string
+          x-order: 1
+    IsilonDataTieringParams:
+      description: Specifies the parameters which are specific to Isilon related Protection Groups.
+      type: object
+      required:
+      - objects
+      properties:
+        objects:
+          description: Specifies the objects to be included in the Protection Group.
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/ProtectionObjectInput'
+          x-order: 0
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    WeekSchedule:
+      description: Specifies settings that define a schedule for a Protection Group runs to start on certain days of week.
+      title: Week Schedule
+      required:
+      - dayOfWeek
+      properties:
+        dayOfWeek:
+          description: 'Specifies a list of days of the week when to start Protection Group Runs. <br> Example: To run a Protection Group on every Monday and Tuesday, set the schedule with following values: <br>  unit: ''Weeks'' <br>  dayOfWeek: [''Monday'',''Tuesday'']'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            enum:
+            - Sunday
+            - Monday
+            - Tuesday
+            - Wednesday
+            - Thursday
+            - Friday
+            - Saturday
+          x-order: 0
+    CommonDataTieringTaskParams5edf51bd-907d-4ee5-a931-bf9b9e2e396e:
+      description: Specifies the data tiering task details.
+      type: object
+      required:
+      - name
+      - type
+      properties:
+        name:
+          description: Specifies the name of the data tiering task.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        description:
+          description: Specifies a description of the data tiering task.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        alertPolicy:
+          description: Specifies the alerting policy for the data tiering task.
+          x-order: 2
+          $ref: '#/components/schemas/ProtectionGroupAlertingPolicy'
+        source:
+          description: Specifies source for data tiering.
+          x-order: 3
+          $ref: '#/components/schemas/DataTieringSource'
+        target:
+          description: Specifies target for data tiering
+          x-order: 4
+          $ref: '#/components/schemas/DataTieringTarget'
+        schedule:
+          description: Specifies schedule for data tiering
+          x-order: 5
+          $ref: '#/components/schemas/DataTieringSchedule'
+        type:
+          description: 'Type of data tiering task.
+
+            ''Downtier'' indicates downtiering task.
+
+            ''Uptier'' indicates uptiering task.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - Downtier
+          - Uptier
+          x-order: 6
+      x-cohesity-discriminator-details:
+        propertyName: type
+      x-discriminator:
+        mapping:
+          Downtier: '#/definitions/CommonDataTieringTaskParams5edf51bd-907d-4ee5-a931-bf9b9e2e396eDowntieringPolicyWrapper'
+          Uptier: '#/definitions/CommonDataTieringTaskParams5edf51bd-907d-4ee5-a931-bf9b9e2e396eUptieringPolicyWrapper'
+        propertyName: type
+    CommonDataTieringTaskResponse568f444b-bc54-43a1-acf2-ec3f8b0d9f2f:
+      description: Specifies the data tiering task details.
+      type: object
+      required:
+      - name
+      - type
+      properties:
+        id:
+          description: Specifies the id of the data tiering task.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        name:
+          description: Specifies the name of the data tiering task.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        description:
+          description: Specifies a description of the data tiering task.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        alertPolicy:
+          description: Specifies the alerting policy for the data tiering task.
+          x-order: 3
+          $ref: '#/components/schemas/ProtectionGroupAlertingPolicy'
+        source:
+          description: Specifies source for data tiering.
+          x-order: 4
+          $ref: '#/components/schemas/DataTieringSource'
+        target:
+          description: Specifies target for data tiering
+          x-order: 5
+          $ref: '#/components/schemas/DataTieringTarget'
+        schedule:
+          description: Specifies schedule for data tiering
+          x-order: 6
+          $ref: '#/components/schemas/DataTieringSchedule'
+        type:
+          description: 'Type of data tiering task.
+
+            ''Downtier'' indicates downtiering task.
+
+            ''Uptier'' indicates uptiering task.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - Downtier
+          - Uptier
+          x-order: 7
+        lastRun:
+          description: Specifies last run details for data tiering task.
+          type:
+          - object
+          - 'null'
+          x-order: 8
+          $ref: '#/components/schemas/DataTieringTaskRun'
+          readOnly: true
+        isActive:
+          description: Whether the data tiering task is active or not.
+          type:
+          - boolean
+          - 'null'
+          default: true
+          x-order: 9
+        isPaused:
+          description: 'Whether the data tiering task is paused. New runs are not scheduled
+
+            for the paused tasks. Active run of the task (if any) is not
+
+            impacted.'
+          type:
+          - boolean
+          - 'null'
+          default: true
+          x-order: 10
+        isDeleted:
+          description: Tracks whether the backup job has actually been deleted.
+          type:
+          - boolean
+          - 'null'
+          default: true
+          x-order: 11
+      x-cohesity-discriminator-details:
+        propertyName: type
+      x-discriminator:
+        mapping:
+          Downtier: '#/definitions/CommonDataTieringTaskResponse568f444b-bc54-43a1-acf2-ec3f8b0d9f2fDowntieringPolicyWrapper'
+          Uptier: '#/definitions/CommonDataTieringTaskResponse568f444b-bc54-43a1-acf2-ec3f8b0d9f2fUptieringPolicyWrapper'
+        propertyName: type
+    DataTieringTasks:
+      description: The list of data tiering tasks.
+      type:
+      - array
+      - 'null'
+      items:
+        x-cohesity-discriminator-ref: CommonDataTieringTaskResponse
+        $ref: '#/components/schemas/CommonDataTieringTaskResponse568f444b-bc54-43a1-acf2-ec3f8b0d9f2f'
+    ProtectionObjectInput:
+      description: Specifies an object protected by a Protection Group.
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          description: Specifies the ID of the object.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        name:
+          description: Specifies the name of the object.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+          readOnly: true
+    DataTieringAnalysisGroup:
+      description: Specifies the data tiering analysis group.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/CommonDataTieringAnalysisGroupParams'
+      - type: object
+        properties:
+          id:
+            description: Specifies the ID of the data tiering analysis group.
+            type:
+            - string
+            - 'null'
+            x-order: 0
+          lastRun:
+            x-order: 1
+            $ref: '#/components/schemas/DataTieringAnalysisGroupRun'
+            readOnly: true
+    DataTieringTaskRunRequest:
+      description: Specifies the request to run tiering task once.
+      title: Run once data tiering task request.
+      properties:
+        uptierPath:
+          description: 'Ignore the uptiering policy and uptier the directory pointed by the
+
+            ''uptierPath''. If path is ''/'', then uptier everything.'
+          type:
+          - string
+          - 'null'
+          x-order: 0
+    MonthSchedule:
+      description: Specifies settings that define a schedule for a Protection Group runs to on specific week and specific days of that week.
+      title: Month Schedule
+      allOf:
+      - $ref: '#/components/schemas/WeekSchedule'
+      - type: object
+        required:
+        - weekOfMonth
+        properties:
+          weekOfMonth:
+            description: 'Specifies the week of the month (such as ''Third'') in a Monthly Schedule specified by unit field as ''Months''. <br>This field is used in combination with ''dayOfWeek'' to define the day in the month to start the Protection Group Run. <br> Example: if ''weekOfMonth'' is set to ''Third'' and day is set to ''Monday'', a backup is performed on the third Monday of every month.'
+            type:
+            - string
+            - 'null'
+            enum:
+            - First
+            - Second
+            - Third
+            - Fourth
+            - Last
+            x-order: 0
+    DataTieringTagObject:
+      type: object
+      title: Specifies the tag information of type and array of (label, value).
+      properties:
+        type:
+          description: Specifies type of tag.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        tags:
+          description: Array of tag label and value.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DataTieringTag'
+          x-order: 1
+    DataTieringTarget:
+      description: Specifies the target data tiering details.
+      type:
+      - object
+      - 'null'
+      required:
+      - viewName
+      - storageDomainId
+      properties:
+        viewName:
+          description: Specifies the view name.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        mountPath:
+          description: Specifies the mount path inside the view.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        storageDomainId:
+          description: Specifies the Storage Domain ID where the view will be kept.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
+    DataTieringObjectAnalysisInfo:
+      description: Specifies the data tiering object analysis details.
+      type: object
+      properties:
+        status:
+          description: "Status of the analysis run.\n'Running' indicates that the run is still running.\n'Canceled' indicates that the run has been canceled.\n'Canceling' indicates that the run is in the process of being\n canceled.\n'Failed' indicates that the run has failed.\n'Missed' indicates that the run was unable to take place at the\n scheduled time because the previous run was still happening.\n'Succeeded' indicates that the run has finished successfully.\n'SucceededWithWarning' indicates that the run finished\n successfully, but there were some warning messages.\n'OnHold' indicates that the run has On hold."
+          type:
+          - string
+          - 'null'
+          enum:
+          - Accepted
+          - Running
+          - Canceled
+          - Canceling
+          - Failed
+          - Missed
+          - Succeeded
+          - SucceededWithWarning
+          - OnHold
+          x-order: 0
+        message:
+          description: 'A message about the error if encountered while performing data
+
+            tiering analysis.'
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        stats:
+          description: Specifies the source share analysis stats.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DataTieringShareStats'
+          x-order: 2
+    DataTieringObjectInfo:
+      description: Specifies the data tiering analysis group run object details.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ProtectionObjectInput'
+      - type: object
+        properties:
+          analysisInfo:
+            description: Specifies the data tiering object analysis details.
+            x-order: 0
+            $ref: '#/components/schemas/DataTieringObjectAnalysisInfo'
+    AlertTarget:
+      description: Specifies an alert target to receive an alert.
+      type: object
+      required:
+      - emailAddress
+      properties:
+        emailAddress:
+          description: Specifies an email address to receive an alert.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        language:
+          description: Specifies the language of the delivery target. Default value is 'en-us'.
+          type:
+          - string
+          - 'null'
+          enum:
+          - en-us
+          - ja-jp
+          - zh-cn
+          x-order: 1
+        recipientType:
+          description: Specifies the recipient type of email recipient. Default value is 'kTo'.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kTo
+          - kCc
+          x-order: 2
+    DataTieringAnalysisInfo:
+      description: Specifies the data tiering analysis details.
+      type: object
+      properties:
+        tagsInfo:
+          description: Array of Tag objects.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DataTieringTagObject'
+          x-order: 0
+        progress:
+          x-order: 1
+          $ref: '#/components/schemas/ProgressSummary'
+        status:
+          description: "Status of the analysis run.\n'Running' indicates that the run is still running.\n'Canceled' indicates that the run has been canceled.\n'Canceling' indicates that the run is in the process of being\n canceled.\n'Failed' indicates that the run has failed.\n'Missed' indicates that the run was unable to take place at the\n scheduled time because the previous run was still happening.\n'Succeeded' indicates that the run has finished successfully.\n'SucceededWithWarning' indicates that the run finished\n successfully, but there were some warning messages.\n'OnHold' indicates that the run has On hold."
+          type:
+          - string
+          - 'null'
+          enum:
+          - Accepted
+          - Running
+          - Canceled
+          - Canceling
+          - Failed
+          - Missed
+          - Succeeded
+          - SucceededWithWarning
+          - OnHold
+          x-order: 2
+        message:
+          description: message from the last analysis run stating the error message in case of error in analysis run or warning message if the run finished successfully, but there were some warning messages.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+  responses:
+    UpdateDataTieringStateResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateDataTieringState'
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    DataTieringTasksResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DataTieringTasks'
+    AcceptedResponse:
+      description: Request Accepted
+    CreateOrUpdateDataTieringAnalysisGroupResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DataTieringAnalysisGroup'
+    DataTieringTaskResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            x-cohesity-discriminator-ref: CommonDataTieringTaskResponse
+            $ref: '#/components/schemas/CommonDataTieringTaskResponse568f444b-bc54-43a1-acf2-ec3f8b0d9f2f'
+    UpdateDataTieringTagConfigResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DataTieringTagConfig'
+    GetDataTieringAnalysisGroupResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DataTieringAnalysisGroup'
+    NoContentResponse:
+      description: No Content
+    GetDataTieringAnalysisGroupsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DataTieringAnalysisGroups'
+  securitySchemes:
+    APIKeyHeader:
+      in: header
+      name: apiKey
+      type: apiKey

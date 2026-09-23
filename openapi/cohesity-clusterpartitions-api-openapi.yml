@@ -1,0 +1,496 @@
+openapi: 3.2.0
+info:
+  description: 'This API list provides operations for interfacing with the Cohesity
+
+    Cluster.'
+  title: Cohesity REST Cluster Partitions API
+  version: '1.0'
+servers:
+- url: https://<CLUSTER_VIP>/irisservices/api/v1
+tags:
+- name: ClusterPartitions
+paths:
+  /public/clusterPartitions:
+    get:
+      description: 'If no parameters are specified, all Cluster Partitions currently on
+
+        the Cohesity Cluster are returned.
+
+        Specifying parameters filters the results that are returned.'
+      tags:
+      - ClusterPartitions
+      summary: List Cluster Partitions filtered by the specified parameters
+      operationId: GetClusterPartitions
+      parameters:
+      - x-go-name: IdList
+        description: 'Array of Cluster Partition Ids.
+
+
+          Filter by a list of Cluster Partition ids. If empty, the Cluster Partitions
+
+          are not filtered by id.'
+        name: ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - x-go-name: NameList
+        description: 'Array of Cluster Partition Names.
+
+
+          Filter by a list of Cluster Partition Names. If empty, the Cluster
+
+          Partitions are not filtered by names.'
+        name: names
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/GetClusterPartitionsResponse'
+        default:
+          $ref: '#/components/responses/Error'
+  /public/clusterPartitions/{id}:
+    get:
+      description: Returns the Cluster Partition corresponding to the specified Cluster Partition Id.
+      tags:
+      - ClusterPartitions
+      summary: List details about a single Cluster Partition
+      operationId: GetClusterPartitionById
+      parameters:
+      - x-go-name: Id
+        description: Specifies a unique id of the Cluster Partition to return.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/ClusterPartitionResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        default:
+          $ref: '#/components/responses/Error'
+components:
+  schemas:
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    IpRange:
+      description: IP Range for range of vip address addition
+      type: object
+      properties:
+        endIp:
+          description: 'Optional End IP of the range
+
+            If not specified, EndIp is same as StartIp'
+          type:
+          - string
+          - 'null'
+          x-go-name: EndIp
+        startIp:
+          description: Start IP of the range
+          type:
+          - string
+          - 'null'
+          x-go-name: StartIp
+      x-go-package: cohesity/iris/server/data/public
+    Vlan:
+      description: 'Specifies the settings of a VLAN.
+
+        Its used by both Request and Response structures.'
+      type: object
+      title: VLAN.
+      properties:
+        addToClusterPartition:
+          description: 'Specifies whether to add the VLAN IPs to the cluster partition
+
+            that already has one or more IPs from this VLAN.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: AddToClusterPartition
+        allTenantAccess:
+          description: 'Specifies if this VLAN can be used by all tenants without explicit
+
+            assignment to them. This option can only be set true for VLANs that are
+
+            not assigned to any tenant.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: AllTenantAccess
+        appIpVecInUse:
+          description: 'Set to true when ips are in use by Athena Apps.
+
+            Note: If it is true then vlan interface can''t be deleted.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: AppIpVecInUse
+        appsips:
+          description: 'Array of Athena Apps IPs.
+
+
+            Specifies a list of Athena IPs in the VLAN.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: AppsIps
+        description:
+          description: Specifies a description of the VLAN.
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+        gateway:
+          description: 'Specifies the Gateway of the VLAN. It can carry V4 or V6 in case of
+
+            requests, and carrises V4 in case of response.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Gateway
+        gatewayV6:
+          description: Specifies the Gateway of the VLAN.
+          type:
+          - string
+          - 'null'
+          x-go-name: GatewayV6
+        hostname:
+          description: Specifies the hostname of the VLAN.
+          type:
+          - string
+          - 'null'
+          x-go-name: Hostname
+        id:
+          description: Specifies the id of the VLAN.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Id
+        ifaceGroupName:
+          description: 'Specifies the interface group name of the VLAN. It is in the format of
+
+            <base_interface_group_name>.<vlan_id>.'
+          type:
+          - string
+          - 'null'
+          x-go-name: IfaceGroupName
+        interfaceName:
+          description: Specifies the interface name of the VLAN.
+          type:
+          - string
+          - 'null'
+          x-go-name: InterfaceName
+        ipFamily:
+          description: 'Specifies IP family. Based on this, subnet/gateway field contains
+
+            V4 or V6 values. Used in Request.'
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: IpFamily
+        ipPoolMap:
+          description: 'IpPoolMap.
+
+
+            Pool IPs to program VIP followers.'
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          x-go-name: IpPoolMap
+        ipRange:
+          description: IP Range for vip addition
+          $ref: '#/components/schemas/IpRange'
+        ips:
+          description: 'Array of IPs.
+
+
+            Specifies a list of IPs in the VLAN.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Ips
+        mtu:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Mtu
+        subnet:
+          description: 'Specifies the subnet of the VLAN.
+
+            The netmask can be specified by setting netmaskBits or netmaskIp4.
+
+            The netmask can only be set using netmaskIp4 if the IP address is
+
+            an IPv4 address. It can carry V4 or V6 in case of requests, and carries
+
+            V4 in case of response.'
+          title: Subnet.
+          allOf:
+          - $ref: '#/components/schemas/Subnet'
+        subnetV6:
+          description: 'Specifies the subnet of the VLAN.
+
+            The netmask can be specified by setting netmaskBits or netmaskIp4.
+
+            The netmask can only be set using netmaskIp4 if the IP address is
+
+            an IPv4 address.'
+          title: Subnet.
+          allOf:
+          - $ref: '#/components/schemas/Subnet'
+        tenantId:
+          description: Optional tenant id that this vlan belongs to.
+          type:
+          - string
+          - 'null'
+          x-go-name: TenantId
+        vlanName:
+          description: Specifies the VLAN name of the vlanId.
+          type:
+          - string
+          - 'null'
+          x-go-name: VlanName
+      x-go-package: cohesity/iris/server/data/public
+    ClusterPartition:
+      description: Provides details about a Cluster Partition.
+      type: object
+      title: Cluster Partition.
+      properties:
+        hostName:
+          description: 'Specifies that hostname that resolves to one or more Virtual IP
+
+            Addresses (VIPs).'
+          type:
+          - string
+          - 'null'
+          x-go-name: HostName
+        id:
+          description: Specifies a unique identifier for the Cluster Partition.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Id
+        name:
+          description: Specifies the name of the Cluster Partition.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        nodeIds:
+          description: 'Array of Node Ids.
+
+
+            Specifies a list of Node Ids that assigned to the Cluster Partition.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int64
+          x-go-name: NodeIdList
+        vips:
+          description: 'Array of VIPs.
+
+
+            Specifies a list of Virtual IP Addresses (VIPs) that route
+
+            network traffic to the Cluster Partition.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Vips
+        vlanIps:
+          description: 'Array of VLAN IPs.
+
+
+            Specifies a list of VLAN IP Addresses that route network traffic
+
+            within certain VLANs to the Cluster Partition.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: VlanIps
+        vlans:
+          description: 'Array of VLANs.
+
+
+            Specifies a list of VLANs for the Cluster Partition.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Vlan'
+          x-go-name: Vlans
+      x-go-package: cohesity/iris/server/data/public
+    Subnet:
+      description: 'Defines a Subnet (Subnetwork).
+
+        The netmask can be specified by setting netmaskBits or netmaskIp4.
+
+        The netmask can only be set using netmaskIp4 if the IP address
+
+        is an IPv4 address.'
+      type: object
+      title: Subnet
+      properties:
+        component:
+          description: Component that has reserved the subnet.
+          type:
+          - string
+          - 'null'
+          x-go-name: Component
+        description:
+          description: Description of the subnet.
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+        id:
+          description: ID of the subnet.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Id
+        ip:
+          description: Specifies either an IPv6 address or an IPv4 address.
+          type:
+          - string
+          - 'null'
+          x-go-name: Ip
+        netmaskBits:
+          description: Specifies the netmask using bits.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: NetmaskBits
+        netmaskIp4:
+          description: 'Specifies the netmask using an IP4 address.
+
+            The netmask can only be set using netmaskIp4 if the IP address
+
+            is an IPv4 address.'
+          type:
+          - string
+          - 'null'
+          x-go-name: NetmaskIp4
+        nfsAccess:
+          description: 'Specifies whether clients from this subnet can mount using NFS protocol.
+
+            Protocol access level.
+
+            ''kDisabled'' indicates Protocol access level ''Disabled''
+
+            ''kReadOnly'' indicates Protocol access level ''ReadOnly''
+
+            ''kReadWrite'' indicates Protocol access level ''ReadWrite'''
+          type:
+          - string
+          - 'null'
+          enum:
+          - kDisabled
+          - kReadOnly
+          - kReadWrite
+          x-go-name: NfsAccess
+        nfsAllSquash:
+          description: 'Specifies whether all clients from this subnet can map view with
+
+            view_all_squash_uid/view_all_squash_gid configured in the view.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: NfsAllSquash
+        nfsRootSquash:
+          description: Specifies whether clients from this subnet can mount as root on NFS.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: NfsRootSquash
+        smbAccess:
+          description: 'Specifies whether clients from this subnet can mount using SMB protocol.
+
+            Protocol access level.
+
+            ''kDisabled'' indicates Protocol access level ''Disabled''
+
+            ''kReadOnly'' indicates Protocol access level ''ReadOnly''
+
+            ''kReadWrite'' indicates Protocol access level ''ReadWrite'''
+          type:
+          - string
+          - 'null'
+          enum:
+          - kDisabled
+          - kReadOnly
+          - kReadWrite
+          x-go-name: SmbAccess
+      x-go-package: cohesity/iris/server/data/public
+  responses:
+    NotFoundResponse:
+      description: Not Found
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    ClusterPartitionResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ClusterPartition'
+    GetClusterPartitionsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            description: 'Specifies a list of Cluster Partitions that match the specified
+
+              filter criteria.'
+            type: array
+            title: Array of Cluster Partitions.
+            items:
+              $ref: '#/components/schemas/ClusterPartition'

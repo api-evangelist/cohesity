@@ -1,0 +1,343 @@
+openapi: 3.2.0
+info:
+  description: Cohesity API provides a RESTful interface to access the various data management operations on Cohesity cluster and Helios.
+  title: Cohesity REST Keystone API
+  version: '2.0'
+servers:
+- url: /v2
+tags:
+- name: Keystone
+paths:
+  /keystones:
+    get:
+      description: Get Keystones.
+      tags:
+      - Keystone
+      summary: Get Keystones
+      operationId: GetKeystones
+      parameters:
+      - description: Specifies a list of Keystone names.
+        name: names
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+      - description: TenantIds contains ids of the tenants for which objects are to be returned.
+        name: tenantIds
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+      - description: If true, the response will include Keystones which were created by all tenants which the current user has permission to see. If false, then only Keystones created by the current user will be returned.
+        name: includeTenants
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/GetKeystonesResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    post:
+      description: Create a Keystone configuration.
+      tags:
+      - Keystone
+      summary: Create a Keystone configuration
+      operationId: CreateKeystone
+      responses:
+        '201':
+          $ref: '#/components/responses/GetKeystonesByIdResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateKeystoneRequest'
+        description: Specifies the paremters to create a Keystone configuration.
+        required: true
+  /keystones/{id}:
+    get:
+      description: Get a Keystone by its id.
+      tags:
+      - Keystone
+      summary: Get a Keystone by its id
+      operationId: GetKeystonesById
+      parameters:
+      - description: Specifies the Keystone id.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/GetKeystonesByIdResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    put:
+      description: Update a Keystone configuration.
+      tags:
+      - Keystone
+      summary: Update a Keystone configuration
+      operationId: UpdateKeystone
+      parameters:
+      - description: Specifies the Keystone id.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/GetKeystonesByIdResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateKeystoneRequest'
+        description: Specifies the paremters to update a Keystone configuration.
+        required: true
+    delete:
+      description: Delete a Keystone configuration.
+      tags:
+      - Keystone
+      summary: Delete a Keystone configuration
+      operationId: DeleteKeystone
+      parameters:
+      - description: Specifies the Keystone id.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - description: Specifies the password of Keystone administrator.
+        name: adminPassword
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+components:
+  schemas:
+    Keystone:
+      description: Specifies a Keystone.
+      allOf:
+      - $ref: '#/components/schemas/KeystoneCredentials'
+      - type: object
+        required:
+        - name
+        - authUrl
+        properties:
+          name:
+            description: Specifies the Keystone configuration name.
+            type:
+            - string
+            - 'null'
+            x-order: 0
+          id:
+            description: Specifies the Keystone configuration id.
+            type:
+            - integer
+            - 'null'
+            format: int64
+            x-order: 1
+            readOnly: true
+          authUrl:
+            description: Specifies the url points to the Keystone service.
+            type:
+            - string
+            - 'null'
+            x-order: 2
+    KeystoneScopeParams:
+      description: Specifies scope paramteres of a Keystone.
+      type: object
+      required:
+      - type
+      properties:
+        type:
+          description: Specifies the scope type.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Project
+          - Domain
+          x-order: 0
+        projectScopeParams:
+          description: Specifies the parameter for project type scope.
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/ProjectScopeParams'
+          - {}
+          x-order: 1
+        domainScopeParams:
+          description: Specifies the parameters for domain type scope.
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/DomainScopeParams'
+          - {}
+          x-order: 2
+    ProjectScopeParams:
+      description: Specifies the parameters for project type scope.
+      type: object
+      required:
+      - projectName
+      - domainName
+      properties:
+        projectName:
+          description: Specifies the project name.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        domainName:
+          description: Specifies the domain name of the project.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    KeystoneAdminParams:
+      description: Specifies administrator credentials of a Keystone.
+      type: object
+      required:
+      - domain
+      - username
+      properties:
+        domain:
+          description: Specifies the administrator domain name.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        username:
+          description: Specifies the username of Keystone administrator.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        password:
+          description: Specifies the password of Keystone administrator.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+    Keystones:
+      description: Specifies a list of Keystones.
+      type: object
+      properties:
+        keystones:
+          description: Specifies a list of Keystones.
+          type: array
+          items:
+            $ref: '#/components/schemas/Keystone'
+          x-order: 0
+    CreateKeystoneRequest:
+      description: Specifies the parameters to create a Keystone configuration.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/Keystone'
+    KeystoneCredentials:
+      description: Specifies user credentials of a Keystone server.
+      type: object
+      required:
+      - adminCreds
+      - scope
+      properties:
+        adminCreds:
+          description: Specifies parameters related to Keystone administrator.
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/KeystoneAdminParams'
+          - {}
+          x-order: 0
+        scope:
+          description: Specifies parameters related to Keystone scope.
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/KeystoneScopeParams'
+          - {}
+          x-order: 1
+    UpdateKeystoneRequest:
+      description: Specifies the parameters to update a Keystone configuration.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/Keystone'
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    DomainScopeParams:
+      description: Specifies the parameters for domain type scope
+      type: object
+      required:
+      - domainName
+      properties:
+        domainName:
+          description: Specifies the domain name.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+  responses:
+    NoContentResponse:
+      description: No Content
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    GetKeystonesByIdResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Keystone'
+    GetKeystonesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Keystones'
+  securitySchemes:
+    APIKeyHeader:
+      in: header
+      name: apiKey
+      type: apiKey

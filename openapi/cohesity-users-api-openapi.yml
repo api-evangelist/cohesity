@@ -1,0 +1,212 @@
+openapi: 3.2.0
+info:
+  description: Cohesity API provides a RESTful interface to access the various data management operations on Cohesity cluster and Helios.
+  title: Cohesity REST Users API
+  version: '2.0'
+servers:
+- url: /v2
+tags:
+- name: Users
+paths:
+  /security-principals:
+    get:
+      tags:
+      - Users
+      summary: Get Security Principals
+      operationId: GetSecurityPrincipals
+      parameters:
+      - description: Specifies a list of SIDs.
+        name: sids
+        in: query
+        required: true
+        schema:
+          type: array
+          items:
+            pattern: ^(S\-\d\-(\d+\-){1,14}\d+)$
+            type: string
+          minItems: 1
+          uniqueItems: true
+      responses:
+        '200':
+          $ref: '#/components/responses/GetSecurityPrincipalsResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /users/sessions:
+    post:
+      tags:
+      - Users
+      summary: Create a user session
+      operationId: CreateSession
+      responses:
+        '201':
+          $ref: '#/components/responses/UserSessionResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserSessionRequestParams'
+        description: Specifies the parameters to create a user session
+        required: true
+    delete:
+      description: Deletes all sessions for given user sid or system wide sessions
+      tags:
+      - Users
+      summary: Delete user sessions
+      operationId: DeleteSession
+      parameters:
+      - description: Specifies a user sid. If sid is not given system wide sessions are deleted.
+        name: sid
+        in: query
+        schema:
+          type: string
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+components:
+  schemas:
+    SecurityPrincipals:
+      description: Specifies a list of security principals.
+      type: object
+      properties:
+        securityPrincipals:
+          description: Specifies a list of security principals.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SecurityPrincipal'
+          x-order: 0
+    UserSession:
+      description: User session response
+      type: object
+      properties:
+        sessionId:
+          description: Specifies the session id
+          type: string
+          x-order: 0
+    SecurityPrincipal:
+      description: Specifies a security principal.
+      type: object
+      properties:
+        domainName:
+          description: Specifies the domain name where the security principal account is maintained.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        fullName:
+          description: Specifies the full name (first and last name) of the security principal.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        principalName:
+          description: Specifies the name of the security principal.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        objectClass:
+          description: Specifies the object class of the security principal.
+          type:
+          - string
+          - 'null'
+          enum:
+          - User
+          - Group
+          - Computer
+          - WellKnownPrincipal
+          x-order: 3
+        sid:
+          description: Specifies the SID of the security principal.
+          type:
+          - string
+          - 'null'
+          x-order: 4
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    CreateUserSessionRequestParams:
+      description: Specifies user session request parameters
+      type: object
+      properties:
+        username:
+          description: Specifies the login name of the Cohesity user
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        password:
+          description: Specifies the password of the Cohesity user
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        domain:
+          description: Specifies the domain the user is logging in to. For a local user the domain is LOCAL. For LDAP/AD user, the domain will map to a LDAP connection string. A user is uniquely identified by a combination of username and domain. LOCAL is the default domain.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        certificate:
+          description: Specifies the certificate for cert based authentication.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+        privateKey:
+          description: Specifies the private key for cert based authentication.
+          type:
+          - string
+          - 'null'
+          x-order: 4
+  responses:
+    NoContentResponse:
+      description: No Content
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UserSessionResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserSession'
+    GetSecurityPrincipalsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SecurityPrincipals'
+  securitySchemes:
+    APIKeyHeader:
+      in: header
+      name: apiKey
+      type: apiKey

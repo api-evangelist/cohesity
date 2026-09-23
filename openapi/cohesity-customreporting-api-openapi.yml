@@ -1,0 +1,100 @@
+openapi: 3.2.0
+info:
+  description: 'This API list provides operations for interfacing with the Cohesity
+
+    Cluster.'
+  title: Cohesity REST Custom Reporting API
+  version: '1.0'
+servers:
+- url: https://<CLUSTER_VIP>/irisservices/api/v1
+tags:
+- name: CustomReporting
+paths:
+  /public/postgres:
+    get:
+      description: Returns the list of node information running postgres database.
+      tags:
+      - CustomReporting
+      summary: List the postgres database running nodes on the cohesity cluster
+      operationId: GetPostgres
+      responses:
+        '200':
+          $ref: '#/components/responses/GetPostgresResponse'
+        default:
+          $ref: '#/components/responses/Error'
+components:
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    GetPostgresResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/PostgresNodeInfo'
+  schemas:
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    PostgresNodeInfo:
+      description: 'Specifies the Node Id, IP and port information to access the postgres
+
+        database.'
+      type: object
+      title: Postgres Node Information.
+      properties:
+        defaultPassword:
+          description: Specifies the default password to access the postgres database.
+          type:
+          - string
+          - 'null'
+          x-go-name: DefaultPassword
+        defaultUsername:
+          description: Specifies the default username to access the postgres database.
+          type:
+          - string
+          - 'null'
+          x-go-name: DefaultUsername
+        nodeId:
+          description: Specifies the id of the node where postgres database is running.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NodeId
+        nodeIp:
+          description: Specifies the ip of the node where postgres database is running.
+          type:
+          - string
+          - 'null'
+          x-go-name: NodeIp
+        port:
+          description: Specifies the information where postgres database is running.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Port
+      x-go-package: cohesity/iris/server/data/public

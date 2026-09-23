@@ -1,0 +1,334 @@
+openapi: 3.2.0
+info:
+  version: 1.0.0
+  description: Public APIs for Site Continuity v2 service.
+  title: Site Continuity v2 Service Sites API
+  termsOfService: https://cohesity.com
+  contact:
+    email: support@cohesity.com
+servers:
+- url: https://helios.cohesity.com/v2/mcm/site-continuity/v2
+security:
+- ApiKeyAuth: []
+tags:
+- name: Sites
+paths:
+  /sites:
+    get:
+      description: 'Privileges: DRAAS_VIEW
+
+
+        Returns a list of available sites based on the defined
+
+        filter criteria.'
+      tags:
+      - Sites
+      summary: Returns a list of sites
+      operationId: SCGetSites
+      parameters:
+      - name: siteIds
+        description: Specifies Ids to filter sites response.
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: siteNames
+        description: Specifies site names to filter the sites response. This is case insensitive and supports substring search.
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        200:
+          $ref: '#/components/responses/SCGetSitesResponse'
+        default:
+          $ref: '#/components/responses/SCErrorResponse'
+    post:
+      description: 'Privileges: DRAAS_MODIFY
+
+
+        Creates a new site with for a given cluster.'
+      tags:
+      - Sites
+      summary: Creates a new site
+      operationId: SCCreateSite
+      responses:
+        201:
+          $ref: '#/components/responses/SCCreateSiteResponse'
+        default:
+          $ref: '#/components/responses/SCErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SCCommonSite'
+        description: Specifies the parameters to create a site.
+        required: true
+  /sites/{id}:
+    get:
+      description: 'Privileges: DRAAS_VIEW
+
+
+        Gets a site''s information using its ID.'
+      tags:
+      - Sites
+      summary: Returns a site by ID
+      operationId: SCGetSiteById
+      parameters:
+      - name: id
+        description: Specifies the ID of the site.
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          $ref: '#/components/responses/SCGetSiteByIdResponse'
+        default:
+          $ref: '#/components/responses/SCErrorResponse'
+    delete:
+      description: 'Privileges: DRAAS_MODIFY
+
+
+        Deletes a site using its ID.'
+      tags:
+      - Sites
+      summary: Deletes a site by ID
+      operationId: SCDeleteSiteById
+      parameters:
+      - name: id
+        description: Specifies the ID of the site.
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        204:
+          description: No content
+        default:
+          $ref: '#/components/responses/SCErrorResponse'
+    put:
+      description: 'Privileges: DRAAS_MODIFY
+
+
+        Updates a site''s information using its ID. The user can only
+
+        update the name and location of the sites. The updated name should be
+
+        unique among already existing sites. We do not support updating
+
+        onPremParams and the type of site.'
+      tags:
+      - Sites
+      summary: Updates a site by ID
+      operationId: SCUpdateSiteById
+      parameters:
+      - name: id
+        description: Specifies the ID of the site.
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          $ref: '#/components/responses/SCUpdateSiteResponse'
+        default:
+          $ref: '#/components/responses/SCErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SCCommonSite'
+        description: Specifies the parameters to update a site.
+        required: true
+components:
+  schemas:
+    SCSiteLocationDetails:
+      description: Specifies details related to the location of a site.
+      properties:
+        city:
+          description: Specifies the city where this site is located.
+          type:
+          - string
+          - 'null'
+        country:
+          description: Specifies the country name for this site.
+          type:
+          - string
+          - 'null'
+        iso:
+          description: Specifies 2 Character ISO Name for country.
+          type:
+          - string
+          - 'null'
+        latitude:
+          description: Specifies the latitude for this site.
+          type:
+          - number
+          - 'null'
+          format: float64
+        longitude:
+          description: Specifies the longitude for this site.
+          type:
+          - number
+          - 'null'
+          format: float64
+        state:
+          description: Specifies name of the region or state to which the site belongs to.
+          type:
+          - string
+          - 'null'
+    SCErrorCode:
+      description: Specifies all the error codes that are returned by API server
+      type: string
+      enum:
+      - kNoError
+      - kValidationError
+      - kInternalError
+    SCSitesResponse:
+      description: Specifies the list of sites.
+      type: object
+      properties:
+        sites:
+          description: Specifies the list of sites.
+          type: array
+          items:
+            $ref: '#/components/schemas/SCSite'
+        paginationInfo:
+          description: Specifies the information needed in order to support pagination. This will not be included for the last page of results.
+          $ref: '#/components/schemas/SCPaginationInfo'
+    SCOnPremSite:
+      description: Specifies the details of an on prem site.
+      type: object
+      required:
+      - clusterId
+      - incarnationId
+      properties:
+        clusterId:
+          description: Specifies the ID of the on prem cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        incarnationId:
+          description: Specifies the incarnation ID of the on prem cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+    SCSite:
+      description: Specifies the site details.
+      type: object
+      allOf:
+      - type: object
+        properties:
+          id:
+            description: Specifies the unique identifier of the site.
+            type:
+            - integer
+            - 'null'
+            format: int64
+          healthStatus:
+            description: Specifies the health status of the site.
+            type:
+            - string
+            - 'null'
+            enum:
+            - NotReachable
+            - Healthy
+            - Unhealthy
+      - $ref: '#/components/schemas/SCCommonSite'
+    SCError:
+      description: Specifies the error object with error code and a message.
+      type: object
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          $ref: '#/components/schemas/SCErrorCode'
+        errorMessage:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+    SCCommonSite:
+      description: Specifies the common site parameters.
+      type: object
+      required:
+      - name
+      - type
+      properties:
+        name:
+          description: Specifies the name of the site.
+          type:
+          - string
+          - 'null'
+        type:
+          description: Specifies type of the site.
+          type:
+          - string
+          - 'null'
+          enum:
+          - OnPrem
+        location:
+          description: Specifies location details of the site.
+          type:
+          - object
+          - 'null'
+          $ref: '#/components/schemas/SCSiteLocationDetails'
+        onPremParams:
+          description: Specifies the parameters required to create an on premises site.
+          type:
+          - object
+          - 'null'
+          $ref: '#/components/schemas/SCOnPremSite'
+    SCPaginationInfo:
+      description: Specifies information needed to support pagination.
+      type: object
+      properties:
+        cookie:
+          description: Specifies a cookie which can be passed in by the user in order to retrieve the next page of results.
+          type:
+          - string
+          - 'null'
+  responses:
+    SCCreateSiteResponse:
+      description: Specifies the response of a successful site creation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SCSite'
+    SCUpdateSiteResponse:
+      description: Specifies the response of a successful site update.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SCSite'
+    SCGetSiteByIdResponse:
+      description: Specifies the response of a successful get site operation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SCSite'
+    SCErrorResponse:
+      description: Specifies the common error definition.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SCError'
+    SCGetSitesResponse:
+      description: Specifies the response of a successful get sites operation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SCSitesResponse'
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: apiKey

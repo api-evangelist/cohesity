@@ -1,0 +1,130 @@
+openapi: 3.2.0
+info:
+  description: Cohesity API provides a RESTful interface to access the various data management operations on Cohesity cluster and Helios.
+  title: Cohesity REST Network Reset API
+  version: '2.0'
+servers:
+- url: /v2
+tags:
+- name: network-reset
+paths:
+  /networkReset:
+    post:
+      description: This is destructive operation. Reset nodes' networking in cluster to factory state or cancel the reset operation.
+      tags:
+      - network-reset
+      summary: Set or cancel cluster reset state. This is destructive operation
+      operationId: ResetNodesNetwork
+      responses:
+        '202':
+          $ref: '#/components/responses/AcceptedResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetOrRestoreNetworking'
+        description: Request to reset or restore cluster networking.
+        required: true
+  /networkReset/status:
+    get:
+      description: Get networking reset state status.
+      tags:
+      - network-reset
+      summary: List of nodes reset states
+      operationId: GetNetworkResetStates
+      responses:
+        '202':
+          $ref: '#/components/responses/GetNodesResetStateResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+components:
+  schemas:
+    NodeResetState:
+      description: Node reset state information
+      type: object
+      title: NodeResetState
+      properties:
+        nodeId:
+          description: Node Id
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NodeId
+          x-order: 0
+        nodeIp:
+          description: Node Ip.
+          type:
+          - string
+          - 'null'
+          x-go-name: NodeIp
+          x-order: 1
+        state:
+          description: Reset state.
+          type:
+          - string
+          - 'null'
+          x-go-name: State
+          x-order: 2
+    ResetStates:
+      type: array
+      items:
+        $ref: '#/components/schemas/NodeResetState'
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    ResetOrRestoreNetworking:
+      description: Update cluster or node reset state information
+      type: object
+      title: ResetOrRestoreNetworking
+      properties:
+        operation:
+          description: Cancel reset cluster or node state operation.
+          type:
+          - string
+          - 'null'
+          enum:
+          - network-reset
+          - restore
+          x-go-name: Operation
+          x-order: 0
+  responses:
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    AcceptedResponse:
+      description: Request Accepted
+    GetNodesResetStateResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResetStates'
+  securitySchemes:
+    APIKeyHeader:
+      in: header
+      name: apiKey
+      type: apiKey

@@ -1,0 +1,1161 @@
+openapi: 3.2.0
+info:
+  description: Cohesity API provides a RESTful interface to access the various data management operations on Cohesity cluster and Helios.
+  title: Cohesity REST Security API
+  version: '2.0'
+servers:
+- url: /v2
+tags:
+- name: Security
+paths:
+  /clientcsr:
+    post:
+      description: Create two Certificate Signing Request on the cluster with the given details one each for client and server. Each service can have at most one outstanding pair of CSR.
+      tags:
+      - Security
+      summary: Create Certificate Signing Requests on the cluster
+      operationId: CreateClientcsr
+      responses:
+        '201':
+          $ref: '#/components/responses/CreateClientcsrResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCsrRequest'
+        description: Specifies the parameters to create the Certificate Signing Requests.
+        required: true
+  /clientcsr/certificate:
+    post:
+      description: Import the signed certificates on the cluster after the Certificate Signing Requests are created.
+      tags:
+      - Security
+      summary: Import the signed certificates on the cluster after the Certificate Signing…
+      operationId: ImportCertificateByClientcsr
+      responses:
+        '200':
+          $ref: '#/components/responses/ImportCertificateByClientcsrResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImportCertificateByClientcsrRequest'
+        description: Specifies the parameters to import the certificate.
+        required: true
+  /csr:
+    get:
+      description: List Certificate Signing Requests on the cluster with service name filtering.
+      tags:
+      - Security
+      summary: List Certificate Signing Requests on the cluster
+      operationId: GetCsrList
+      parameters:
+      - description: Specifies the Cohesity service name for which the CSR is generated. If this is not specified, all the csrs on the cluster will be returned.
+        name: serviceName
+        in: query
+        schema:
+          type: string
+          enum:
+          - iris
+      - description: Specifies the ids of the csrs. If this is not specified, all the csrs on the cluster will be returned.
+        name: ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/GetCsrListResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    post:
+      description: Create a Certificate Signing Request on the cluster with the given details. Each service has at most one outstanding CSR.
+      tags:
+      - Security
+      summary: Create a Certificate Signing Request on the cluster
+      operationId: CreateCsr
+      responses:
+        '201':
+          $ref: '#/components/responses/CreateCsrResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCsrRequest'
+        description: Specifies the parameters to create a Certificate Signing Request.
+        required: true
+  /csr/certificate:
+    post:
+      description: Update the signed certificate on the cluster after a Certificate Signing Request is created.
+      tags:
+      - Security
+      summary: Update the signed certificate on the cluster after a Certificate Signing…
+      operationId: UpdateCertificateByCsr
+      responses:
+        '200':
+          $ref: '#/components/responses/UpdateCertificateByCsrResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCertificateByCsrRequest'
+        description: Specifies the parameters to update the certificate.
+        required: true
+  /csr/{id}:
+    get:
+      description: List the specified Certificate Signing Request.
+      tags:
+      - Security
+      summary: List the specified Certificate Signing Request
+      operationId: GetCsrById
+      parameters:
+      - description: Specifies the id of the csr.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/GetCsrResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    delete:
+      description: Delete a Certificate Signing Request on the cluster.
+      tags:
+      - Security
+      summary: Delete a Certificate Signing Request on the cluster
+      operationId: DeleteCsr
+      parameters:
+      - description: Specifies the id of the csr to be deleted.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /security-config:
+    get:
+      description: Get cluster security settings.
+      tags:
+      - Security
+      summary: Get cluster security settings
+      operationId: GetSecurityConfig
+      responses:
+        '200':
+          $ref: '#/components/responses/SecurityConfigResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    put:
+      description: Update cluster security settings.
+      tags:
+      - Security
+      summary: Update cluster security settings
+      operationId: UpdateSecurityConfig
+      responses:
+        '200':
+          $ref: '#/components/responses/SecurityConfigResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSecurityConfigRequest'
+        description: Specifies the parameters to update security config.
+        required: true
+  /security/ciphers:
+    get:
+      description: Gets the list of ciphers enabled on the cluster.
+      tags:
+      - Security
+      summary: Gets the list of ciphers enabled on the cluster
+      operationId: GetCiphers
+      responses:
+        '200':
+          $ref: '#/components/responses/CiphersResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    post:
+      tags:
+      - Security
+      summary: Enable/Disable a list of ciphers on the cluster.
+      operationId: ModifyCiphers
+      responses:
+        '200':
+          $ref: '#/components/responses/CiphersResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModifyCiphersRequestBody'
+        description: Enable/Disable ciphers.
+        required: true
+  /trusted-cas:
+    get:
+      description: List all trusted certificates in cluster trust store.
+      tags:
+      - Security
+      summary: List all Certificates with cluster trust store
+      operationId: ListTrustedCas
+      parameters:
+      - description: Specifies the ids of the certificates to be returned.
+        name: ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - description: Specifies the names of the certificates to be returned.
+        name: names
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/ListTrustedCasResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    post:
+      description: Register CA Certificate to the cluster trust store.
+      tags:
+      - Security
+      summary: Register CA Certificate to the cluster trust store
+      operationId: RegisterTrustedCas
+      responses:
+        '201':
+          $ref: '#/components/responses/ListTrustedCasResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterTrustedCas'
+        description: Specifies the parameters to register a Certificate.
+        required: true
+  /trusted-cas/{id}:
+    get:
+      description: List the specified Certificate.
+      tags:
+      - Security
+      summary: List the specified Certificate
+      operationId: ListTrustedCaById
+      parameters:
+      - description: Specifies the id of the certificate.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/ListTrustedCaByIdResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    delete:
+      description: Unregister CA Certificate from the cluster trust store.
+      tags:
+      - Security
+      summary: Unregister CA Certificate from the cluster trust store
+      operationId: UnregisterTrustedCa
+      parameters:
+      - description: Specifies the id of the certificate to be unregistered.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /trusted-cas/{id}/validate:
+    post:
+      description: Certificate will be checked for Expiration and Revocation.
+      tags:
+      - Security
+      summary: Validate CA Certificate
+      operationId: ValidateTrustedCaById
+      parameters:
+      - description: Specifies the id of the certificate to be validated.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/ListTrustedCaByIdResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+components:
+  schemas:
+    CiphersResp:
+      description: Specifies a list of enabled/disabled ciphers on the cluster.
+      type: object
+      title: 'Response with two lists: a list of enabled ciphers and a list of disabled ciphers.'
+      properties:
+        enabledCiphers:
+          description: Enabled ciphers.
+          type: array
+          items:
+            type: string
+            enum:
+            - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+            - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+            - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+            - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+            - TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA
+            - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA
+            - TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+            - TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA
+            - TLS_RSA_WITH_AES_256_GCM_SHA384
+            - TLS_RSA_WITH_AES_128_GCM_SHA256
+            - TLS_RSA_WITH_AES_256_CBC_SHA
+            - TLS_RSA_WITH_AES_128_CBC_SHA
+          x-order: 0
+        disabledCiphers:
+          description: Disabled ciphers.
+          type: array
+          items:
+            type: string
+            enum:
+            - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+            - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+            - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+            - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+            - TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA
+            - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA
+            - TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+            - TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA
+            - TLS_RSA_WITH_AES_256_GCM_SHA384
+            - TLS_RSA_WITH_AES_128_GCM_SHA256
+            - TLS_RSA_WITH_AES_256_CBC_SHA
+            - TLS_RSA_WITH_AES_128_CBC_SHA
+          x-order: 1
+    ListTrustedCasResult:
+      description: Specifies the basic info about CA Root Certificate.
+      type: object
+      properties:
+        certificates:
+          description: 'Array of trusted certificates.
+
+            Specifies the list of certificates returned in this response.
+
+            List is not sorted.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TrustedCa'
+          x-order: 0
+    CommonCsrRequestParams:
+      description: Specifies the parameters of a CSR.
+      type: object
+      required:
+      - organization
+      - organizationUnit
+      - countryCode
+      - state
+      - city
+      properties:
+        organization:
+          description: Specifies the organization attribute, which is part of the distinguished name definition. It is used to specify the name of the company.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        organizationUnit:
+          description: Specifies the organization unit attribute, which is part of the distinguished name definition. It is used to identify the specific department or business unit in the company that is owning the Cluster.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        countryCode:
+          description: Specifies the country attribute, which is part of the distinguished name definition. It is used to identify the country where the state is located. It is specified as two letter code defined by the ISO standard.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        state:
+          description: Specifies the state attribute, which is part of the distinguished name definition. It is used to identify the state where the city is located.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+        city:
+          description: Specifies the locality attribute, which is part of the distinguished name definition. It is used to identify the city where the company is located or the Cluster is installed.
+          type:
+          - string
+          - 'null'
+          x-order: 4
+        keyType:
+          description: Specifies the algorithm to be used to generate the key pair. RSA is the default value.
+          type:
+          - string
+          - 'null'
+          default: rsa
+          enum:
+          - rsa
+          - ecdsa
+          x-order: 5
+        keySizeBits:
+          description: Specifies the size of the keys in bits. The default is 2048 bits for the RSA keys and 256 bits for ECDSA.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 6
+        commonName:
+          description: Specifies the common name attribute, which is part of the distinguished name definition. Common name is used to specify a context for the certificate, for example, the name of the Cluster to which the certificate is to be assigned. Default value is the name of the Cluster.
+          type:
+          - string
+          - 'null'
+          x-order: 7
+        dnsNames:
+          description: Specifies an alternative subject name component to be included in the certificate. It is used to identify the ways the Cluster will be accessed. It is given as a comma separated list of FQDNs. The default value is the Cluster's VIP hostname.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 8
+        hostIps:
+          description: Specifies an alternative subject name component to be included in the certificate. It is used to identify the ways the Cluster will be accessed. It is given as a comma separated list of IP addresses. The default value is the Cluster's VIP addresses.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 9
+        emailAddress:
+          description: Specifies an alternative subject name component to be included in the certificate. Format is a standard e-mail address, for example joe@company.com.
+          type:
+          - string
+          - 'null'
+          x-order: 10
+        serviceName:
+          description: Specifies the Cohesity service name for which the CSR is generated. Default service name is iris.
+          type:
+          - string
+          - 'null'
+          default: iris
+          enum:
+          - iris
+          x-order: 11
+    UpdateCertificateByCsrResponseBody:
+      description: Specifies the response to update a certificate.
+      type: object
+      title: Update Certificate Response
+      properties:
+        certificate:
+          description: Specifies the certificate.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+    SecurityConfigPasswordLifetime:
+      description: Specifies security config for password lifetime.
+      type: object
+      properties:
+        minLifetimeDays:
+          description: Specifies the minimum password lifetime in days.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          minimum: 0
+          x-order: 0
+        maxLifetimeDays:
+          description: Specifies the maximum password lifetime in days.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          minimum: 1
+          x-order: 1
+    CommonCsrResponseParams:
+      description: Specifies the common response params for a CSR.
+      allOf:
+      - $ref: '#/components/schemas/CommonCsrRequestParams'
+      - type: object
+        properties:
+          id:
+            description: Specifies the id of the CSR.
+            type:
+            - string
+            - 'null'
+            x-order: 0
+          publicKey:
+            description: Specifies the public key generated for this CSR.
+            type:
+            - string
+            - 'null'
+            x-order: 1
+          csr:
+            description: Specifies the CSR generated for the service.
+            type:
+            - string
+            - 'null'
+            x-order: 2
+    SecurityConfigCertificateBasedAuth:
+      description: Specifies security config for certificate based authentication.
+      type: object
+      properties:
+        enableMappingBasedAuthentication:
+          description: 'If true, certfication based authentication is done via configured
+
+            mapping. Else it will proceed based on legacy serial number match.'
+          type:
+          - boolean
+          - 'null'
+          x-order: 0
+        certificateMapping:
+          description: Specifies the field to be used in certificate for authentication.
+          type:
+          - string
+          - 'null'
+          enum:
+          - CommonName
+          - EmailAddress
+          - UserPrincipalName
+          x-order: 1
+        adMapping:
+          description: Specifies the field to be used in AD user for authentication.
+          type:
+          - string
+          - 'null'
+          enum:
+          - SamAccountName
+          - UserPrincipalName
+          x-order: 2
+    SecurityConfig:
+      description: Specifies the fields of security settings.
+      type: object
+      properties:
+        passwordStrength:
+          description: Specifies security settings related to password strength.
+          type: object
+          x-order: 0
+          $ref: '#/components/schemas/SecurityConfigPasswordStrength'
+        passwordReuse:
+          description: Specifies security settings related to password reuse.
+          type: object
+          x-order: 1
+          $ref: '#/components/schemas/SecurityConfigPasswordReuse'
+        passwordLifetime:
+          description: Specifies security settings related to password lifetime.
+          type: object
+          x-order: 2
+          $ref: '#/components/schemas/SecurityConfigPasswordLifetime'
+        accountLockout:
+          description: Specifies security settings related to account lockout.
+          type: object
+          x-order: 3
+          $ref: '#/components/schemas/SecurityConfigAccountLockout'
+        dataClassification:
+          description: Specifies security settings related to data classification.
+          type: object
+          x-order: 4
+          $ref: '#/components/schemas/SecurityConfigDataClassification'
+        sessionConfiguration:
+          description: Specifies security settings related to user sessions. Applies only when session management is enabled.
+          type: object
+          x-order: 5
+          $ref: '#/components/schemas/SecurityConfigSessionConfiguration'
+        certificateBasedAuth:
+          description: '"Specifies security settings related to certificate based
+
+            authentication."'
+          type: object
+          x-order: 6
+          $ref: '#/components/schemas/SecurityConfigCertificateBasedAuth'
+    SecurityConfigAccountLockout:
+      description: Specifies security config for account lockout.
+      type: object
+      properties:
+        maxFailedLoginAttempts:
+          description: Specifies the maximum number of consecutive fail login attempts.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          minimum: 1
+          x-order: 0
+        failedLoginLockTimeDurationMins:
+          description: Specifies the time duration within which the consecutive failed login attempts causes a local user account to be locked and the lockout duration time due to that.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          minimum: 1
+          x-order: 1
+        inactivityTimeDays:
+          description: Specifies the lockout inactivity time range in days.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          minimum: 1
+          x-order: 2
+    GetCsrListResponseBody:
+      description: Specifies the list of CSRs.
+      type:
+      - array
+      - 'null'
+      title: Get CSR List response
+      items:
+        $ref: '#/components/schemas/CommonCsrResponseParams'
+    SecurityConfigPasswordReuse:
+      description: Specifies security config for password reuse.
+      type: object
+      properties:
+        numDisallowedOldPasswords:
+          description: Specifies the minimum number of old passwords that are not allowed for changing the password.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          minimum: 0
+          x-order: 0
+        numDifferentChars:
+          description: Specifies the number of characters in the new password that needs to be different from the old password (only applicable when changing the user's own password).
+          type:
+          - integer
+          - 'null'
+          format: int32
+          minimum: 0
+          x-order: 1
+    CreateCsrResponseBody:
+      description: Specifies the response to create a CSR.
+      title: Create CSR response
+      allOf:
+      - $ref: '#/components/schemas/CommonCsrResponseParams'
+    UpdateCertificateByCsrRequest:
+      description: Specifies the request to update a certificate.
+      type: object
+      required:
+      - certificate
+      - csrId
+      properties:
+        certificate:
+          description: Specifies the certificate to be imported.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        csrId:
+          description: Specifies the id of the csr corresponding to the certificate.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    CreateClientcsrResponseBody:
+      description: Specifies the response to creating the CSRs.
+      title: Create CSR response
+      properties:
+        publicKeyServer:
+          description: Specifies the public key generated for this CSR for the server.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        csrServer:
+          description: Specifies the CSR generated for the server.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        publicKeyClient:
+          description: Specifies the public key generated for this CSR for the client.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        csrClient:
+          description: Specifies the CSR generated for the client.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+        fileCsrServer:
+          description: Specifies the path to CSR generated for the server
+          type:
+          - string
+          - 'null'
+          x-order: 4
+        fileCsrClient:
+          description: Specifies the path to CSR generated for the client
+          type:
+          - string
+          - 'null'
+          x-order: 5
+    SecurityConfigPasswordStrength:
+      description: Specifies security config for password strength.
+      type: object
+      properties:
+        minLength:
+          description: Specifies the password minimum length.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          minimum: 0
+          x-order: 0
+        includeUpperLetter:
+          description: Specifies if the password needs to have at least one uppercase letter.
+          type:
+          - boolean
+          - 'null'
+          x-order: 1
+        includeLowerLetter:
+          description: Specifies if the password needs to have at least one lowercase letter.
+          type:
+          - boolean
+          - 'null'
+          x-order: 2
+        includeNumber:
+          description: Specifies if the password needs to have at least one number.
+          type:
+          - boolean
+          - 'null'
+          x-order: 3
+        includeSpecialChar:
+          description: Specifies if the password needs to have at least one special character.
+          type:
+          - boolean
+          - 'null'
+          x-order: 4
+    ImportCertificateByClientcsrRequest:
+      description: Specifies the request to import a certificate.
+      type: object
+      required:
+      - certificateServer
+      - certificateClient
+      properties:
+        certificateServer:
+          description: Specifies the server certificate to be imported.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        certificateClient:
+          description: Specifies the client certificate to be imported.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    TrustedCaRequest:
+      description: Specifies the basic info about CA Root Certificate.
+      type: object
+      required:
+      - name
+      - certificate
+      properties:
+        certificate:
+          description: 'Specifies the certificate to be imported. Certificate should be in
+
+            PEM format.'
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        name:
+          description: Descriptive name of the certificate.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        description:
+          description: Description of the certificate.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+    SecurityConfigResponse:
+      description: Specifies the detail response the security config.
+      title: Security Config Response
+      allOf:
+      - $ref: '#/components/schemas/SecurityConfig'
+    UpdateSecurityConfigRequest:
+      description: Specifies the request params for updating the security config.
+      title: Update Security Config Request
+      allOf:
+      - $ref: '#/components/schemas/SecurityConfig'
+    ImportCertificateByClientcsrResponseBody:
+      description: Specifies the response to import a certificate.
+      type: object
+      title: Import Certificate Response
+      properties:
+        certificateServer:
+          description: Specifies the server certificate.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        privateKey:
+          description: Specifies the private key of agent.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        fileServerCert:
+          description: Specifies the path to the file to be uploaded to server. This file has the server cert, id and encrypted private key
+          type:
+          - string
+          - 'null'
+          x-order: 2
+    RegisterTrustedCas:
+      description: Specifies the parameters to register a Certificate.
+      type: object
+      required:
+      - certificates
+      properties:
+        certificates:
+          description: Specifies the certificates to be imported.
+          type:
+          - array
+          - 'null'
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/TrustedCaRequest'
+          x-order: 0
+        onlyValidate:
+          description: Specifies if the certificates are only to be validated.
+          type:
+          - boolean
+          - 'null'
+          x-order: 1
+    SecurityConfigSessionConfiguration:
+      description: Specifies configuration for user sessions.
+      type: object
+      properties:
+        absoluteTimeout:
+          description: Specifies absolute session expiration time in seconds.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          minimum: 1
+          x-order: 0
+        inactivityTimeout:
+          description: Specifies inactivity session expiration time in seconds.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          minimum: 1
+          x-order: 1
+        limitSessions:
+          description: Specifies if limitations on number of active sessions is enabled or not.
+          type:
+          - boolean
+          - 'null'
+          x-order: 2
+        sessionLimitPerUser:
+          description: Specifies maximum number of active sessions allowed per user. This applies only when limitSessions is enabled.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          minimum: 1
+          x-order: 3
+        sessionLimitSystemWide:
+          description: Specifies maximum number of active sessions allowed system wide. This applies only when limitSessions is enabled.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          minimum: 1
+          x-order: 4
+    TrustedCa:
+      description: Specifies the basic info about CA Root Certificate.
+      type: object
+      properties:
+        id:
+          description: Unique id for the certificate.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+          readOnly: true
+        name:
+          description: Unique name for the certificate.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+          readOnly: true
+        issuedBy:
+          description: Specifies the issuer.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+          readOnly: true
+        issuedTo:
+          description: Specifies whom it was issued to.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+          readOnly: true
+        issuedTimeUsecs:
+          description: 'Specifies the timestamp epoch in microseconds when this certificate
+
+            will start being valid.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 4
+          readOnly: true
+        expirationTimeUsecs:
+          description: 'Specifies the timestamp epoch in microseconds when this certificate
+
+            will no longer be valid.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 5
+          readOnly: true
+        description:
+          description: description of the certificate.
+          type:
+          - string
+          - 'null'
+          x-order: 6
+          readOnly: true
+        registrationTimeUsecs:
+          description: 'Specifies the timestamp epoch in microseconds when this certificate
+
+            was registered on the cluster.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 7
+          readOnly: true
+        lastValidatedTimeUsecs:
+          description: 'Specifies the timestamp epoch in microseconds when this certificate
+
+            was last validated.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 8
+          readOnly: true
+        status:
+          description: Validation Status of the certificate.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Valid
+          - Expired
+          - Revoked
+          - Unknown
+          x-order: 9
+          readOnly: true
+    ModifyCiphersRequestBody:
+      description: Specifies ciphers to enable/disable on the cluster.
+      type: object
+      title: Request to enable/disable a list of ciphers.
+      required:
+      - enable
+      - ciphers
+      properties:
+        enable:
+          description: If true, the ciphers passed in will be enabled on the cluster and all other ciphers will be disabled. If false, the ciphers specified will be disabled and all other ciphers on the cluster will be enabled.
+          type: boolean
+          x-order: 0
+        ciphers:
+          description: Specifies a list of ciphers to enable/disable on the cluster.
+          type: array
+          items:
+            type: string
+            enum:
+            - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+            - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+            - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+            - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+            - TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA
+            - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA
+            - TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+            - TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA
+            - TLS_RSA_WITH_AES_256_GCM_SHA384
+            - TLS_RSA_WITH_AES_128_GCM_SHA256
+            - TLS_RSA_WITH_AES_256_CBC_SHA
+            - TLS_RSA_WITH_AES_128_CBC_SHA
+          x-order: 1
+    SecurityConfigDataClassification:
+      description: Specifies security config for data classification.
+      type: object
+      properties:
+        isDataClassified:
+          description: Specifies whether to mark the web page data classified/unclassified.
+          type:
+          - boolean
+          - 'null'
+          x-order: 0
+        classifiedDataMessage:
+          description: Specifies the classified data message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        unclassifiedDataMessage:
+          description: Specifies the unclassified data message.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+    CreateCsrRequest:
+      description: Specifies the request to create a CSR.
+      title: Create CSR Request.
+      allOf:
+      - $ref: '#/components/schemas/CommonCsrRequestParams'
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+  responses:
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ImportCertificateByClientcsrResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ImportCertificateByClientcsrResponseBody'
+    UpdateCertificateByCsrResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateCertificateByCsrResponseBody'
+    CreateCsrResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateCsrResponseBody'
+    ListTrustedCaByIdResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TrustedCa'
+    NoContentResponse:
+      description: No Content
+    SecurityConfigResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SecurityConfigResponse'
+    CreateClientcsrResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateClientcsrResponseBody'
+    GetCsrListResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetCsrListResponseBody'
+    GetCsrResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonCsrResponseParams'
+    ListTrustedCasResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ListTrustedCasResult'
+    CiphersResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CiphersResp'
+  securitySchemes:
+    APIKeyHeader:
+      in: header
+      name: apiKey
+      type: apiKey

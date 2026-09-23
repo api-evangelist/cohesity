@@ -1,0 +1,737 @@
+openapi: 3.2.0
+info:
+  description: 'This API list provides operations for interfacing with the Cohesity
+
+    Cluster.'
+  title: Cohesity REST Idps API
+  version: '1.0'
+servers:
+- url: https://<CLUSTER_VIP>/irisservices/api/v1
+tags:
+- name: Idps
+paths:
+  /public/idp/principals:
+    post:
+      description: 'After a group or user has been added to a Cohesity Cluster,
+
+        the referenced Idp principal can be used by the Cohesity Cluster.
+
+        In addition, this operation maps Cohesity roles with a group or user and
+
+        this mapping defines the privileges allowed on the Cohesity Cluster for the
+
+        group or user.
+
+        For example if an ''management'' group is created on the Cohesity Cluster
+
+        for the Idp ''management'' principal group and is associated with the
+
+        Cohesity ''View'' role, all users in the referenced Idp
+
+        ''management'' principal group can log in to the Cohesity Dashboard but
+
+        will only have view-only privileges. These users cannot create new
+
+        Protection Jobs, Policies, Views, etc.
+
+
+        NOTE: Local Cohesity users and groups cannot be created by this operation.
+
+        Local Cohesity users or groups do not have an associated Idp
+
+        principals and are created directly in the default LOCAL domain.'
+      tags:
+      - Idps
+      summary: Add multiple groups or users on the Cohesity Cluster for the specified Idp…
+      operationId: AddActiveIdpPrincipals
+      responses:
+        '201':
+          $ref: '#/components/responses/AddIdpPrincipalsResponse'
+        default:
+          $ref: '#/components/responses/Error'
+  /public/idps:
+    get:
+      description: 'Returns the Idps configured on the Cohesity Cluster corresponding to the filter
+
+        parameters. If no filter is given, all Idp configurations are returned.'
+      tags:
+      - Idps
+      summary: List the IdPs configured on the Cluster
+      operationId: GetIdps
+      parameters:
+      - x-go-name: TenantIds
+        description: 'TenantIds contains ids of the tenants for which objects are to be
+
+          returned.'
+        name: tenantIds
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - x-go-name: AllUnderHierarchy
+        description: 'AllUnderHierarchy specifies if objects of all the tenants under the
+
+          hierarchy of the logged in user''s organization should be returned.'
+        name: allUnderHierarchy
+        in: query
+        schema:
+          type: boolean
+      - x-go-name: Names
+        description: 'Specifies the names of the IdP vendors like Okta. If specified, returns
+
+          IdP configurations of the vendors matching the names in the parameters.'
+        name: names
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - x-go-name: Ids
+        description: 'Specifies the Ids of the IdP configuration. If specified, returns IdP
+
+          configurations of the matching Ids in the IdP configuration.'
+        name: ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - x-go-name: Domains
+        description: 'Specifies the domains of the IdP configurations. If specified, returns
+
+          IdP configurations matching the domains in the parameters.'
+        name: domains
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/GetIdpsResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    post:
+      description: Returns the newly created IdP configuration.
+      tags:
+      - Idps
+      summary: Create an IdP configuration
+      operationId: CreateIdp
+      responses:
+        '201':
+          $ref: '#/components/responses/CreateIdpResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateIdpConfigurationRequest'
+        description: Request to create a new IdP Configuration.
+  /public/idps/login:
+    get:
+      description: Redirects the client to the IdP site with the URI to login.
+      tags:
+      - Idps
+      summary: Login to Cohesity Cluster using an IdP
+      operationId: IdpLogin
+      parameters:
+      - x-go-name: TenantId
+        description: 'Specifies an optional tenantId for which the SSO login should be done.
+
+          If this is not specified, Cluster SSO login is done.'
+        name: tenantId
+        in: query
+        schema:
+          type: string
+      responses:
+        '302':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/Error'
+  /public/idps/{id}:
+    put:
+      description: Returns the updated IdP configuration.
+      tags:
+      - Idps
+      summary: Update an IdP configuration
+      operationId: UpdateIdp
+      parameters:
+      - x-go-name: Id
+        description: Specifies the Id assigned for the IdP Service by the Cluster.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/UpdateIdpResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateIdpConfigurationRequest'
+        description: Request to update an Idp Configuration.
+    delete:
+      description: Returns Success if the IdP configuration is deleted.
+      tags:
+      - Idps
+      summary: Delete one IdP configuration
+      operationId: DeleteIdp
+      parameters:
+      - x-go-name: Id
+        description: Specifies the Id assigned for the IdP Service by the Cluster.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/Error'
+components:
+  schemas:
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    CreateIdpConfigurationRequest:
+      description: Specifies the configuration for an IdP service to be created.
+      type: object
+      title: Create IdP Configuration Request.
+      properties:
+        allowLocalAuthentication:
+          description: 'Specifies whether to allow local authentication. When IdP is configured,
+
+            only IdP users are allowed to login to the Cluster. Local login is
+
+            disabled except for users with admin role. If this flag is set to true,
+
+            local (non-IdP) logins are allowed for all local and AD users. Local or
+
+            AD users with admin role can login always independent of this flag''s
+
+            setting.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: AllowLocalAuthentication
+        certificate:
+          description: 'Specifies the certificate generated for the app by the IdP service when
+
+            the Cluster is registered as an app. This is required to verify the
+
+            SAML response.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Certificate
+        certificateFilename:
+          description: Specifies the filename used to upload the certificate.
+          type:
+          - string
+          - 'null'
+          x-go-name: CertificateFilename
+        domain:
+          description: Specifies a unique name for this IdP configuration.
+          type:
+          - string
+          - 'null'
+          x-go-name: Domain
+        enable:
+          description: 'Specifies a flag to enable or disable this IdP service. When it is set
+
+            to true, IdP service is enabled. When it is set to false, IdP service
+
+            is disabled. When an IdP service is created, it is set to true.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: Enable
+        issuerId:
+          description: 'Specifies the IdP provided Issuer ID for the app.
+
+            For example, exkh1aov1nhHrgFhN0h7.'
+          type:
+          - string
+          - 'null'
+          x-go-name: IssuerId
+        name:
+          description: Specifies the name of the vendor providing IdP service.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        roles:
+          description: 'Specifies a list of roles assigned to an IdP user if samlAttributeName is
+
+            not given.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Roles
+        samlAttributeName:
+          description: 'Specifies the SAML attribute name that contains a comma separated list
+
+            of Cluster roles. Either this field or roles must be set. This field
+
+            takes higher precedence than the roles field.'
+          type:
+          - string
+          - 'null'
+          x-go-name: SamlAttributeName
+        signRequest:
+          description: 'Specifies whether to sign the SAML request or not. When it is set
+
+            to true, SAML request will be signed. When it is set to false, SAML
+
+            request is not signed. Default is false. Set this flag to true if
+
+            the IdP site is configured to expect the SAML request from the Cluster
+
+            signed. If this is set to true, users must get the Cluster''s certificate
+
+            and upload it on the IdP site.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: SignRequest
+        ssoUrl:
+          description: 'Specifies the SSO URL of the IdP service for the customer. This is the
+
+            URL given by IdP when the customer created an account. Customers may use
+
+            this for several clusters that are registered with on IdP site.
+
+            For example, dev-332534.oktapreview.com'
+          type:
+          - string
+          - 'null'
+          x-go-name: SsoUrl
+        tenantId:
+          description: 'Specifies the Tenant Id if the IdP is configured for a Tenant. If this is
+
+            not set, this IdP configuration is used for the Cluster level users and
+
+            for all users of Tenants not having an IdP configuration.'
+          type:
+          - string
+          - 'null'
+          x-go-name: TenantId
+      x-go-package: cohesity/iris/server/data/public
+    IdpServiceConfiguration:
+      description: Specifies the configuration of an IdP service.
+      type: object
+      title: IdP Service Configuration.
+      properties:
+        allowLocalAuthentication:
+          description: 'Specifies whether to allow local authentication. When IdP is configured,
+
+            only IdP users are allowed to login to the Cluster. Local login is
+
+            disabled except for users with admin role. If this flag is set to true,
+
+            local (non-IdP) logins are allowed for all local and AD users. Local or
+
+            AD users with admin role can login always independent of this flag''s
+
+            setting.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: AllowLocalAuthentication
+        certificate:
+          description: 'Specifies the certificate generated for the app by the IdP service when
+
+            the Cluster is registered as an app. This is required to verify the
+
+            SAML response.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Certificate
+        certificateFilename:
+          description: Specifies the filename used to upload the certificate.
+          type:
+          - string
+          - 'null'
+          x-go-name: CertificateFilename
+        domain:
+          description: Specifies a unique name for this IdP configuration.
+          type:
+          - string
+          - 'null'
+          x-go-name: Domain
+        enable:
+          description: 'Specifies a flag to enable or disable this IdP service. When it is set
+
+            to true, IdP service is enabled. When it is set to false, IdP service
+
+            is disabled. When an IdP service is created, it is set to true.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: Enable
+        id:
+          description: Specifies the Id assigned by the Cluster for the IdP service.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Id
+        issuerId:
+          description: 'Specifies the IdP provided Issuer ID for the app.
+
+            For example, exkh1aov1nhHrgFhN0h7.'
+          type:
+          - string
+          - 'null'
+          x-go-name: IssuerId
+        name:
+          description: Specifies the name of the vendor providing IdP service.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        roles:
+          description: 'Specifies a list of roles assigned to an IdP user if samlAttributeName is
+
+            not given.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Roles
+        samlAttributeName:
+          description: 'Specifies the SAML attribute name that contains a comma separated list
+
+            of Cluster roles. Either this field or roles must be set. This field
+
+            takes higher precedence than the roles field.'
+          type:
+          - string
+          - 'null'
+          x-go-name: SamlAttributeName
+        signRequest:
+          description: 'Specifies whether to sign the SAML request or not. When it is set
+
+            to true, SAML request will be signed. When it is set to false, SAML
+
+            request is not signed. Default is false. Set this flag to true if
+
+            the IdP site is configured to expect the SAML request from the Cluster
+
+            signed. If this is set to true, users must get the Cluster''s certificate
+
+            and upload it on the IdP site.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: SignRequest
+        ssoUrl:
+          description: 'Specifies the SSO URL of the IdP service for the customer. This is the
+
+            URL given by IdP when the customer created an account. Customers may use
+
+            this for several clusters that are registered with on IdP site.
+
+            For example, dev-332534.oktapreview.com'
+          type:
+          - string
+          - 'null'
+          x-go-name: SsoUrl
+        tenantId:
+          description: 'Specifies the Tenant Id if the IdP is configured for a Tenant. If this is
+
+            not set, this IdP configuration is used for the Cluster level users and
+
+            for all users of Tenants not having an IdP configuration.'
+          type:
+          - string
+          - 'null'
+          x-go-name: TenantId
+      x-go-package: cohesity/iris/server/data/public
+    UpdateIdpConfigurationRequest:
+      description: Specifies the parameters of an IdP configuration to be updated.
+      type: object
+      title: Update IdP Configuration Request.
+      properties:
+        allowLocalAuthentication:
+          description: 'Specifies whether to allow local authentication. When IdP is configured,
+
+            only IdP users are allowed to login to the Cluster. Local login is
+
+            disabled except for users with admin role. If this flag is set to true,
+
+            local (non-IdP) logins are allowed for all local and AD users. Local or
+
+            AD users with admin role can login always independent of this flag''s
+
+            setting.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: AllowLocalAuthentication
+        certificate:
+          description: 'Specifies the certificate generated for the app by the IdP service when
+
+            the Cluster is registered as an app. This is required to verify the
+
+            SAML response.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Certificate
+        certificateFilename:
+          description: Specifies the filename used to upload the certificate.
+          type:
+          - string
+          - 'null'
+          x-go-name: CertificateFilename
+        enable:
+          description: 'Specifies a flag to enable or disable this IdP service. When it is set
+
+            to true, IdP service is enabled. When it is set to false, IdP service
+
+            is disabled. When an IdP service is created, it is set to true.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: Enable
+        issuerId:
+          description: 'Specifies the IdP provided Issuer ID for the app.
+
+            For example, exkh1aov1nhHrgFhN0h7.'
+          type:
+          - string
+          - 'null'
+          x-go-name: IssuerId
+        roles:
+          description: 'Specifies a list of roles assigned to an IdP user if samlAttributeName is
+
+            not given.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Roles
+        samlAttributeName:
+          description: 'Specifies the SAML attribute name that contains a comma separated list
+
+            of Cluster roles. Either this field or roles must be set. This field
+
+            takes higher precedence than the roles field.'
+          type:
+          - string
+          - 'null'
+          x-go-name: SamlAttributeName
+        signRequest:
+          description: 'Specifies whether to sign the SAML request or not. When it is set
+
+            to true, SAML request will be signed. When it is set to false, SAML
+
+            request is not signed. Default is false. Set this flag to true if
+
+            the IdP site is configured to expect the SAML request from the Cluster
+
+            signed. If this is set to true, users must get the Cluster''s certificate
+
+            and upload it on the IdP site.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: SignRequest
+        ssoUrl:
+          description: 'Specifies the SSO URL of the IdP service for the customer. This is the
+
+            URL given by IdP when the customer created an account. Customers may use
+
+            this for several clusters that are registered with on IdP site.
+
+            For example, dev-332534.oktapreview.com'
+          type:
+          - string
+          - 'null'
+          x-go-name: SsoUrl
+      x-go-package: cohesity/iris/server/data/public
+    AddedIdpPrincipal:
+      description: 'Specifies a group or user added to the Cohesity Cluster for an Idp
+
+        principal.'
+      type: object
+      title: Non-LOCAL Group or User.
+      properties:
+        createdTimeMsecs:
+          description: 'Specifies the epoch time in milliseconds when the group or user
+
+            was added to the Cohesity Cluster.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: CreatedTimeMsecs
+        domain:
+          description: 'Specifies the name of the Idp where the
+
+            referenced principal is stored.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Domain
+        lastUpdatedTimeMsecs:
+          description: 'Specifies the epoch time in milliseconds when the group or user
+
+            was last modified on the Cohesity Cluster.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: LastUpdatedTimeMsecs
+        objectClass:
+          description: 'Specifies the type of the referenced Idp principal.
+
+            If ''kGroup'', the referenced Idp principal is a group.
+
+            If ''kUser'', the referenced Idp principal is a user.
+
+            ''kUser'' specifies a user object class.
+
+            ''kGroup'' specifies a group object class.
+
+            ''kComputer'' specifies a computer object class.
+
+            ''kWellKnownPrincipal'' specifies a well known principal.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kUser
+          - kGroup
+          - kComputer
+          - kWellKnownPrincipal
+          x-go-name: ObjectClass
+        principalName:
+          description: 'Specifies the name of the Idp principal,
+
+            that will be referenced by the group or user.
+
+            The name of the Idp principal is used for naming
+
+            the new group or user on the Cohesity Cluster.'
+          type:
+          - string
+          - 'null'
+          x-go-name: PrincipalName
+        restricted:
+          description: 'Whether the principal is a restricted principal. A restricted principal
+
+            can only view the objects he has permissions to.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: Restricted
+        roles:
+          description: 'Array of Roles.
+
+
+            Specifies the Cohesity roles to associate with this user or group
+
+            such as ''Admin'', ''Ops'' or ''View''.
+
+            The Cohesity roles determine privileges on the Cohesity Cluster
+
+            for this group or user.
+
+            For example if the ''joe'' user is added for the Active Directory
+
+            ''joe'' user principal and is associated with the Cohesity
+
+            ''View'' role, ''joe'' can log in to the Cohesity Dashboard
+
+            and has a read-only view of the data on the Cohesity Cluster.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Roles
+        sid:
+          description: 'Specifies the unique Security ID (SID) of the Idp principal
+
+            associated with this group or user.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Sid
+      x-go-package: cohesity/iris/server/data/public
+  responses:
+    UpdateIdpResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/IdpServiceConfiguration'
+    NoContentResponse:
+      description: No Content
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    CreateIdpResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/IdpServiceConfiguration'
+    GetIdpsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            description: Specifies a list of IdP configurations.
+            type: array
+            title: Array of IdP configurations.
+            items:
+              $ref: '#/components/schemas/IdpServiceConfiguration'
+    AddIdpPrincipalsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            description: 'List of users or groups that were added to the Cohesity Cluster
+
+              for Idp principals.'
+            type: array
+            title: Array of Added Users and Groups.
+            items:
+              $ref: '#/components/schemas/AddedIdpPrincipal'

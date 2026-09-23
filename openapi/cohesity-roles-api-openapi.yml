@@ -1,0 +1,345 @@
+openapi: 3.2.0
+info:
+  description: 'This API list provides operations for interfacing with the Cohesity
+
+    Cluster.'
+  title: Cohesity REST Roles API
+  version: '1.0'
+servers:
+- url: https://<CLUSTER_VIP>/irisservices/api/v1
+tags:
+- name: Roles
+paths:
+  /public/roles:
+    get:
+      description: 'If the ''name'' parameter is not specified, all roles defined on the
+
+        Cohesity Cluster are returned. In addition, information about each role
+
+        is returned such as the name, description, assigned privileges, etc.
+
+        If an exact role name (such as COHESITY_VIEWER) is specified in the
+
+        ''name'' parameter, only information about that single role is returned.'
+      tags:
+      - Roles
+      summary: List the roles defined on the Cohesity Cluster
+      operationId: GetRoles
+      parameters:
+      - x-go-name: Name
+        description: Specifies the name of the role.
+        name: name
+        in: query
+        schema:
+          type: string
+      - x-go-name: TenantIds
+        description: 'TenantIds contains ids of the tenants for which objects are to be
+
+          returned.'
+        name: tenantIds
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - x-go-name: AllUnderHierarchy
+        description: 'AllUnderHierarchy specifies if objects of all the tenants under the
+
+          hierarchy of the logged in user''s organization should be returned.'
+        name: allUnderHierarchy
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/GetRolesResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    post:
+      description: 'Returns the new custom role that was created.
+
+        A custom role is a user-defined role that is created using the REST API,
+
+        the Cohesity Cluster or the CLI.'
+      tags:
+      - Roles
+      summary: Create a new custom role
+      operationId: CreateRole
+      responses:
+        '201':
+          $ref: '#/components/responses/CreateRoleResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleCreateParameters'
+        description: Request to create a new custom Role.
+    delete:
+      description: Returns Success if all the specified Roles are deleted.
+      tags:
+      - Roles
+      summary: Delete one or more custom Roles
+      operationId: DeleteRoles
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleDeleteParameters'
+        description: Request to delete one or more Roles.
+  /public/roles/{name}:
+    put:
+      description: 'For example, you could update the privileges assigned to a Role.
+
+        Returns the updated role.'
+      tags:
+      - Roles
+      summary: Update a user-defined custom role
+      operationId: UpdateRole
+      parameters:
+      - x-go-name: Name
+        description: Specifies the name of the role to update.
+        name: name
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/UpdateRoleResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleUpdateParameters'
+        description: Request to update a custom role.
+components:
+  schemas:
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    Role:
+      description: 'Specifies information about role such as the category, privileges,
+
+        description, etc. A role can be a default system role
+
+        or a custom role. Custom roles are user-defined roles that are created
+
+        using the Cohesity Dashboard, the REST API or the CLI.
+
+        System roles are provided by default on the Cohesity Cluster.'
+      type: object
+      title: Role Information.
+      properties:
+        createdTimeMsecs:
+          description: Specifies the epoch time in milliseconds when the role was created.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: CreatedTimeMsecs
+        description:
+          description: Specifies a description about the role.
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+        isCustomRole:
+          description: 'Specifies if the role is a user-defined custom role.
+
+            If true, the role is a user-defined custom role that was created using
+
+            the REST API, the Cohesity Dashboard or the CLI.
+
+            If false, the role is a default system role that was created
+
+            during Cluster creation.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IsCustomRole
+        label:
+          description: 'Specifies the label for the role as displayed on the Cohesity
+
+            Dashboard such as ''Viewer''.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Label
+        lastUpdatedTimeMsecs:
+          description: Specifies the epoch time in milliseconds when the role was last modified.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: LastUpdatedTimeMsecs
+        name:
+          description: 'Specifies the internal Cluster name for the role such as COHESITY_VIEWER.
+
+            For custom roles, the name and the label are the same.
+
+            For default system roles, the name and label are different.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        privileges:
+          description: 'Array of Privileges.
+
+
+            Specifies the privileges assigned to the role. When a user or
+
+            group is assigned this role, these privileges
+
+            define the operations the user or group can perform on the
+
+            Cohesity Cluster.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Privileges
+        tenantId:
+          description: Specifies unique id of the tenant owning the role.
+          type:
+          - string
+          - 'null'
+          x-go-name: TenantId
+        tenantIds:
+          description: Specifies id of tenants using this role.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: TenantIds
+      x-go-package: cohesity/iris/server/data/public
+    RoleUpdateParameters:
+      description: Specifies parameters required to update a role.
+      type: object
+      title: Role Update.
+      properties:
+        description:
+          description: Specifies a description about the role.
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+        privileges:
+          description: 'Array of Privileges.
+
+
+            Specifies the list of privileges to assign to the role.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Privileges
+      x-go-package: cohesity/iris/server/data/public
+    RoleCreateParameters:
+      description: 'Specifies the parameters required to create a new custom role such
+
+        as the name, description and the privileges to assign to the role.'
+      type: object
+      title: Role Create.
+      properties:
+        description:
+          description: Specifies a description about the role.
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+        name:
+          description: Specifies the name of the custom role.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        privileges:
+          description: 'Array of Privileges.
+
+
+            Specifies the list of privileges to assign to the role.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Privileges
+      x-go-package: cohesity/iris/server/data/public
+    RoleDeleteParameters:
+      description: Specifies the parameters required for deleting one or more roles.
+      type: object
+      title: Delete Role.
+      required:
+      - names
+      properties:
+        names:
+          description: 'Array of Role Names.
+
+
+            Specifies the list of roles to delete which are specified by role names.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Names
+      x-go-package: cohesity/iris/server/data/public
+  responses:
+    NoContentResponse:
+      description: No Content
+    CreateRoleResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Role'
+    UpdateRoleResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Role'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    GetRolesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            description: Specifies a list of roles.
+            type: array
+            title: Array of Roles.
+            items:
+              $ref: '#/components/schemas/Role'

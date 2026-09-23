@@ -1,0 +1,76 @@
+openapi: 3.2.0
+info:
+  description: Public APIs exposed by Helios Reporting service.
+  version: v1
+  title: Helios Reporting service Artifacts API
+  termsOfService: https://cohesity.com
+  contact:
+    email: support@cohesity.com
+servers:
+- url: https://helios.cohesity.com/heliosreporting/api/v1
+security:
+- ApiKeyAuth: []
+tags:
+- name: Artifacts
+paths:
+  /public/artifacts/{taskId}/{format}:
+    get:
+      description: Get the report artifact associated with task.
+      tags:
+      - Artifacts
+      summary: Fetch report artifact for task
+      operationId: GetArtifactForTask
+      parameters:
+      - name: taskId
+        in: path
+        description: Specifies the task for which report must be fetched.
+        required: true
+        schema:
+          type: string
+      - name: format
+        in: path
+        description: Specifies the format in which the report is requested.
+        required: true
+        schema:
+          type: string
+          enum:
+          - PDF
+          - XLS
+          - CSV
+          - RawData
+      responses:
+        200:
+          $ref: '#/components/responses/GetArtifactForTaskResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+components:
+  responses:
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    GetArtifactForTaskResponse:
+      description: The file pased on the artifact type.
+      content:
+        application/json:
+          schema:
+            type: string
+            format: binary
+  schemas:
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type: integer
+        errorMessage:
+          description: Specifies the error message.
+          type: string
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: apiKey

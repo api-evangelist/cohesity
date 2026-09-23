@@ -1,0 +1,109 @@
+openapi: 3.2.0
+info:
+  description: 'This API list provides operations for interfacing with the Cohesity
+
+    Cluster.'
+  title: Cohesity REST Preferences API
+  version: '1.0'
+servers:
+- url: https://<CLUSTER_VIP>/irisservices/api/v1
+tags:
+- name: Preferences
+paths:
+  /public/sessionUser/preferences:
+    get:
+      tags:
+      - Preferences
+      summary: List the preferences of the session user
+      operationId: GetUserPreferences
+      responses:
+        '200':
+          $ref: '#/components/responses/UserPreferencesResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    put:
+      description: Returns the updated user preferences.
+      tags:
+      - Preferences
+      summary: Update the preferences of the session user
+      operationId: UpdateUserPreferences
+      responses:
+        '200':
+          $ref: '#/components/responses/UserPreferencesResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties:
+                type: string
+        description: Request to create or update User Preferences.
+    patch:
+      description: Returns the updated user preferences.
+      tags:
+      - Preferences
+      summary: Update specific preferences of the session user
+      operationId: PatchUserPreferences
+      responses:
+        '200':
+          $ref: '#/components/responses/UserPreferencesResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties:
+                type: string
+        description: Request to create or update User Preferences.
+components:
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    UserPreferencesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserPreferencesResult'
+  schemas:
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    UserPreferencesResult:
+      description: Specifies the result of user preference.
+      type: object
+      title: User Preferences Result
+      properties:
+        preferences:
+          description: Preferences is a key-value map of preferences.
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          x-go-name: Preferences
+      x-go-package: cohesity/iris/server/data/public

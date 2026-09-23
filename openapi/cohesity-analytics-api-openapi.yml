@@ -1,0 +1,1965 @@
+openapi: 3.2.0
+info:
+  description: 'This API list provides operations for interfacing with the Cohesity
+
+    Cluster.'
+  title: Cohesity REST Analytics API
+  version: '1.0'
+servers:
+- url: https://<CLUSTER_VIP>/irisservices/api/v1
+tags:
+- name: Analytics
+paths:
+  /public/analytics/analyzeJar:
+    post:
+      description: Returns the result of the jar analysis.
+      tags:
+      - Analytics
+      summary: Analyze the uploaded jar
+      operationId: AnalyzeJar
+      responses:
+        '200':
+          $ref: '#/components/responses/AnalyzeJarResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnalyseJarArg'
+  /public/analytics/apps:
+    get:
+      description: 'If no parameters are specified, all Applications currently on
+
+        the Cohesity Cluster are returned.
+
+        Specifying parameters filters the results that are returned.'
+      tags:
+      - Analytics
+      summary: List Applications filtered by the specified parameters
+      operationId: GetApplications
+      responses:
+        '200':
+          $ref: '#/components/responses/GetApplicationsResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    post:
+      description: Returns the created application.
+      tags:
+      - Analytics
+      summary: Create an Application
+      operationId: CreateApplication
+      responses:
+        '201':
+          $ref: '#/components/responses/ApplicationResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MapReduceInfo'
+  /public/analytics/apps/{id}:
+    get:
+      description: Returns the Application corresponding to the specified Application Id.
+      tags:
+      - Analytics
+      summary: List details about a single Application
+      operationId: GetApplicationById
+      parameters:
+      - x-go-name: Id
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/GetApplicationByIdResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    put:
+      description: Returns the updated Application.
+      tags:
+      - Analytics
+      summary: Update an Application
+      operationId: UpdateApplication
+      parameters:
+      - x-go-name: Id
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/ApplicationResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MapReduceInfo'
+    delete:
+      description: Returns delete status upon completion.
+      tags:
+      - Analytics
+      summary: Delete an Application
+      operationId: DeleteApplication
+      parameters:
+      - x-go-name: Id
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/Error'
+  /public/analytics/cancelAppInstanceRun/{id}:
+    put:
+      description: Returns the result.
+      tags:
+      - Analytics
+      summary: Cancel a specific map reduce instance run
+      operationId: CancelMapReduceInstanceRun
+      parameters:
+      - x-go-name: Id
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/CancelMapReduceInstanceRunResponse'
+        default:
+          $ref: '#/components/responses/Error'
+  /public/analytics/mappers:
+    get:
+      description: 'If no parameters are specified, all Mappers currently on
+
+        the Cohesity Cluster are returned.
+
+        Specifying parameters filters the results that are returned.'
+      tags:
+      - Analytics
+      summary: List Mappers filtered by the specified parameters
+      operationId: GetMappers
+      responses:
+        '200':
+          $ref: '#/components/responses/GetMappersResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    post:
+      description: Returns the created mapper.
+      tags:
+      - Analytics
+      summary: Create a Mapper
+      operationId: CreateMapper
+      responses:
+        '201':
+          $ref: '#/components/responses/MapperResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MapperInfo'
+  /public/analytics/mappers/{id}:
+    get:
+      description: Returns the Mapper corresponding to the specified Mapper Id.
+      tags:
+      - Analytics
+      summary: List details about a single Mapper
+      operationId: GetMapperById
+      parameters:
+      - x-go-name: Id
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/GetMapperByIdResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    put:
+      description: Returns the updated Mapper.
+      tags:
+      - Analytics
+      summary: Update a Mapper
+      operationId: UpdateMapper
+      parameters:
+      - x-go-name: Id
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/MapperResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MapperInfo'
+    delete:
+      description: Returns delete status upon completion.
+      tags:
+      - Analytics
+      summary: Delete a Mapper
+      operationId: DeleteMapper
+      parameters:
+      - x-go-name: Id
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/Error'
+  /public/analytics/mrAppRun/{id}:
+    delete:
+      description: Returns delete status upon completion.
+      tags:
+      - Analytics
+      summary: Delete a Map-Reduce Application Instance Run
+      operationId: DeleteMapReduceInstanceRun
+      parameters:
+      - x-go-name: Id
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/Error'
+  /public/analytics/mrAppRuns:
+    get:
+      description: 'If no parameters are specified, all map reduce application instance runs
+
+        currently on the Cohesity Cluster are returned.
+
+        Specifying parameters filters the results that are returned.'
+      tags:
+      - Analytics
+      summary: List map reduce application runs filtered by the specified parameters
+      operationId: GetMapReduceAppRuns
+      responses:
+        '200':
+          $ref: '#/components/responses/GetMapReduceAppRunsResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetMapReduceAppRunsParams'
+  /public/analytics/mrBaseJar:
+    get:
+      description: Returns a struct containing the map reduce base jar from the cluster.
+      tags:
+      - Analytics
+      summary: Downloads the map reduce base jar
+      operationId: DownloadMRBaseJar
+      responses:
+        '200':
+          $ref: '#/components/responses/DownloadResponse'
+        default:
+          $ref: '#/components/responses/Error'
+  /public/analytics/mrFileFormats:
+    get:
+      description: 'The Analytics workbench generates output files from map reduce instances run for
+
+        a particular application. This API returns the output file formats available to
+
+        the user for download.'
+      tags:
+      - Analytics
+      summary: Used to retrieve supported output file formats from a map reduce instance
+      operationId: GetMapReduceFileFormats
+      parameters:
+      - x-go-name: ResultFilePath
+        description: 'Specifies the path where the map reduce instance has the result.
+
+          file generated.'
+        name: resultFilePath
+        in: query
+        required: true
+        schema:
+          type: string
+      - x-go-name: StorageDomainId
+        description: Specifies the ID of the storage domain.
+        name: storageDomainId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - x-go-name: ViewName
+        description: 'Specifies the name of the view inside view box where map reduce instance.
+
+          is run.'
+        name: viewName
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/GetMapReduceFileFormatsResponse'
+        default:
+          $ref: '#/components/responses/Error'
+  /public/analytics/mrOutputfiles:
+    get:
+      description: Returns a struct containing the map reduce instance run output files from Yoda.
+      tags:
+      - Analytics
+      summary: Download map reduce base instance run output files from Yoda
+      operationId: DownloadMROutputFiles
+      parameters:
+      - x-go-name: IsNfsFile
+        description: If true, then extracts file from NFS, else from local file system.
+        name: isNfsFile
+        in: query
+        schema:
+          type: boolean
+      - x-go-name: PartitionId
+        description: Cluster partition id for the file to be read.
+        name: partitionId
+        in: query
+        schema:
+          type: integer
+          format: int64
+      - x-go-name: ViewBoxId
+        description: View box id for the file to be read. Required for nfs files only.
+        name: viewBoxId
+        in: query
+        schema:
+          type: integer
+          format: int64
+      - x-go-name: ViewName
+        description: View name for the file to be read. Required for nfs files only.
+        name: viewName
+        in: query
+        schema:
+          type: string
+      - x-go-name: FilePath
+        description: filepath of the file on NFS.
+        name: filePath
+        in: query
+        schema:
+          type: string
+      - x-go-name: StartOffset
+        description: start offset from where bytes will be read.
+        name: startOffset
+        in: query
+        schema:
+          type: integer
+          format: int64
+      - x-go-name: LengthBytes
+        description: Number of bytes to be read from start_offset.
+        name: lengthBytes
+        in: query
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/DownloadResponse'
+        default:
+          $ref: '#/components/responses/Error'
+  /public/analytics/reducers:
+    get:
+      description: 'If no parameters are specified, all Reducers currently on
+
+        the Cohesity Cluster are returned.
+
+        Specifying parameters filters the results that are returned.'
+      tags:
+      - Analytics
+      summary: List Reducers filtered by the specified parameters
+      operationId: GetReducers
+      responses:
+        '200':
+          $ref: '#/components/responses/GetReducersResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    post:
+      description: Returns the created reducer.
+      tags:
+      - Analytics
+      summary: Create a Reducer
+      operationId: CreateReducer
+      responses:
+        '201':
+          $ref: '#/components/responses/ReducerResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReducerInfo'
+  /public/analytics/reducers/{id}:
+    get:
+      description: Returns the Reducer corresponding to the specified Reducer Id.
+      tags:
+      - Analytics
+      summary: List details about a single Reducer
+      operationId: GetReducerById
+      parameters:
+      - x-go-name: Id
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/GetReducerByIdResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    put:
+      description: Returns the updated reducer.
+      tags:
+      - Analytics
+      summary: Update a Reducer
+      operationId: UpdateReducer
+      parameters:
+      - x-go-name: Id
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/ReducerResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReducerInfo'
+    delete:
+      description: Returns delete status upon completion.
+      tags:
+      - Analytics
+      summary: Delete a Reducer
+      operationId: DeleteReducer
+      parameters:
+      - x-go-name: Id
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/Error'
+  /public/analytics/runAppInstance:
+    put:
+      description: Returns the updated Application.
+      tags:
+      - Analytics
+      summary: Run a map-reduce application instance
+      operationId: RunMapReduceAppInstance
+      responses:
+        '200':
+          $ref: '#/components/responses/RunMapReduceAppInstanceResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RunMapReduceParams'
+  /public/analytics/supportedPatterns:
+    get:
+      description: 'The Analytics workbench has ability to search for patterns which can be system
+
+        defined or can be user defined. This API returns the patterns available for
+
+        search.'
+      tags:
+      - Analytics
+      summary: Used to retrieve supported patterns available for search in an application
+      operationId: GetSupportedPatterns
+      parameters:
+      - x-go-name: ApplicationId
+        description: Specifies the application Id.
+        name: applicationId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - x-go-name: ApplicationDataType
+        description: Specifies the data type for which supported patterns can be fetched.
+        name: applicationDataType
+        in: query
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          $ref: '#/components/responses/GetSupportedPatternsResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    put:
+      description: 'The Analytics workbench has ability to search for patterns which can be system
+
+        defined or can be user defined. This API enables the user to save patterns for
+
+        searching.'
+      tags:
+      - Analytics
+      summary: Used to save user patterns for search in an application
+      operationId: SavePattern
+      responses:
+        '201':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatternRequestBody'
+  /public/analytics/uploadJar:
+    post:
+      description: 'Returns a struct containing the jar name and local mount path where the jar
+
+        will be uploaded.'
+      tags:
+      - Analytics
+      summary: Upload a jar to pre-specified Yoda internal view
+      operationId: UploadJar
+      responses:
+        '200':
+          $ref: '#/components/responses/UploadJarResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    delete:
+      description: Returns delete status upon completion.
+      tags:
+      - Analytics
+      summary: Delete the uploaded jar from temporary location
+      operationId: DeleteUploadedJar
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadMRJarViewPathWrapper'
+  /public/analytics/uploadJarPath:
+    get:
+      description: Returns the mounted path to upload Jars.
+      tags:
+      - Analytics
+      summary: Get details about the mounted path to upload Jars
+      operationId: GetMRUploadJarPath
+      responses:
+        '200':
+          $ref: '#/components/responses/GetMRUploadJarPathResponse'
+        default:
+          $ref: '#/components/responses/Error'
+components:
+  schemas:
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    MapReduceInfo_RequiredProperty:
+      description: 'A required property represents a property that user must set before
+
+        invoking a mapreduction instance. e.g., SimpleGrepMapper will require a
+
+        property named searchPattern to be set.'
+      type: object
+      properties:
+        defaultValue:
+          description: Default Value of the property.
+          type:
+          - string
+          - 'null'
+          x-go-name: DefaultValue
+        description:
+          description: Description of this property
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+        isRequired:
+          description: Whether the property is required or optional.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IsRequired
+        name:
+          description: Name of the property.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+      x-go-package: yoda/base/analytics.pb
+    InputSpec_InputFilesSelector:
+      description: 'If mapper is going to run over files on SnapFS, this selects the input
+
+        files.'
+      type: object
+      properties:
+        fileTimeFilter:
+          description: File time filter for file's last change time.
+          $ref: '#/components/schemas/InputSpec_FileTimeFilter'
+        filenameGlob:
+          description: Glob patterns to match on file. e.g. {*.txt, *.cc}
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: FilenameGlob
+        jobIds:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int64
+          x-go-name: JobIds
+        maxSnapshotTimestamp:
+          description: 'Exclusive end of snapshot_timestamp range. If missing, inf will be used
+
+            as the timestamp range.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: MaxSnapshotTimestamp
+        minSnapshotTimestamp:
+          description: Inclusive. If missing, 0 will the default lower end of timestamp range
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: MinSnapshotTimestamp
+        partitionIds:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int64
+          x-go-name: PartitionIds
+        processLatestOnly:
+          description: 'Boolean flag to indicate if only latest snapshot of each object should
+
+            be processed.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: ProcessLatestOnly
+        rootDir:
+          description: 'Within each volume, traversal will be rooted at this directory. A
+
+            typical value here might be /home'
+          type:
+          - string
+          - 'null'
+          x-go-name: RootDir
+        viewBoxIds:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int64
+          x-go-name: ViewBoxIds
+        viewName:
+          description: 'This is the view name user enters manually. If this is set we will
+
+            process this view only. partition_id and view_box_id will be populated
+
+            only if view_name is present.'
+          type:
+          - string
+          - 'null'
+          x-go-name: ViewName
+      x-go-package: yoda/base/analytics.pb
+    RunMapReduceParams:
+      description: RunMapReduceParams specifies the input params to run a map reduce instance.
+      type: object
+      title: Get Run Map Reduce App Parameters.
+      properties:
+        appId:
+          description: ApplicationId is the Id of the map reduce application to run.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ApplicationId
+        inputParams:
+          description: 'InputParams specifies optional list of key=value input params specified
+
+            for running the map reduce instance.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/MapReduceInstance_InputParam'
+          x-go-name: InputParams
+        mrInput:
+          description: 'InputSpecification specifies the input information to run the specific map
+
+            reduce instance.'
+          $ref: '#/components/schemas/InputSpec'
+        mrOutput:
+          description: 'OutputSpecification specifies the output information to run the specific
+
+            map reduce instance.'
+          $ref: '#/components/schemas/OutputSpec'
+      x-go-package: cohesity/iris/server/data/public
+    MapReduceFileFormats:
+      description: Specifies information about file formats produced by a mapo reduce instance.
+      type: object
+      title: Map Reduce File Formats.
+      properties:
+        supportedFormats:
+          description: 'Specifies the list of formats supported with integer enum mapping to file
+
+            format.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: SupportedFormats
+      x-go-package: cohesity/iris/server/data/public
+    UploadMRJarViewPathWrapper:
+      description: 'UploadMRJarViewPathWrapper contains jar name and local mount path where the
+
+        Jars will be uploaded.'
+      type: object
+      title: Upload JAR Request.
+      properties:
+        jarName:
+          description: JarName is the name of the uploaded jar.
+          type:
+          - string
+          - 'null'
+          x-go-name: JarName
+        jarPath:
+          description: JarPath is the path for the directory where uploaded jar is stored.
+          type:
+          - string
+          - 'null'
+          x-go-name: JarPath
+      x-go-package: cohesity/iris/server/data/public
+    MapperInfo:
+      type: object
+      title: Information about a mapper.
+      properties:
+        code:
+          description: The code of the mapper in the specified language. Should be UTF-8.
+          type:
+          - string
+          - 'null'
+          x-go-name: Code
+        id:
+          description: 'Mapper ID generated by system. Absent when user is creating a new mapper.
+
+            Mandatory in all other use cases.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Id
+        isSystemDefined:
+          description: Whether the mapper is system defined.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IsSystemDefined
+        jarName:
+          description: 'User can write their own mapper/reducer or upload jar files containing
+
+            mappers and reducers. If this mapper was part of a jar file, then this
+
+            field will have the JAR name.'
+          type:
+          - string
+          - 'null'
+          x-go-name: JarName
+        jarPath:
+          description: 'path of JAR in which this mapper was found. This is applicable only when
+
+            this mapper was uploaded via JAR.'
+          type:
+          - string
+          - 'null'
+          x-go-name: JarPath
+        language:
+          description: Language of the mapper.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Language
+        name:
+          description: Name of the mapper.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+      x-go-package: yoda/base/analytics.pb
+    AnalyseJarResult:
+      type: object
+      properties:
+        error:
+          description: Status code of http rpc.
+          $ref: '#/components/schemas/ErrorProto'
+        mappers:
+          description: Name of all mapper classes found in jar file.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Mappers
+        reducers:
+          description: Name of all reducers classes found in jar file.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Reducers
+      x-go-package: yoda/base/analytics.pb
+    MapReduceInfo:
+      description: 'This will be used to encapsulate information about mapper and reducer only.
+
+        On UI this will be used to show the list of available apps to the user.'
+      type: object
+      title: Map Reduce Information.
+      properties:
+        appProperty:
+          $ref: '#/components/schemas/MapReduceInfo_AppProperty'
+        auxData:
+          description: Auxiliary data for map reduce.
+          $ref: '#/components/schemas/MapReduceAuxData'
+        description:
+          description: Map reduce job description.
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+        excludedDataSourceVec:
+          description: List of all excluded data sources for this app.
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int32
+          x-go-name: ExcludedDataSourceVec
+        id:
+          description: ID of map reduce job.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Id
+        isSystemDefined:
+          description: 'Flag to denote if this is system pre-defined app or user has written this
+
+            app.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IsSystemDefined
+        mapperId:
+          description: ID of the mapper to process the input.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: MapperId
+        name:
+          description: Map reduce job name.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        reducerId:
+          description: ID of the reducer.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ReducerId
+        requiredPropertyVec:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/MapReduceInfo_RequiredProperty'
+          x-go-name: RequiredPropertyVec
+      x-go-package: yoda/base/analytics.pb
+    InputSpec_FileTimeFilter:
+      description: 'File time filter to filter files based on their last change time. All
+
+        files whose change time is in the range [change_time_range_start_secs,
+
+        change_time_range_end_secs) will be processed. Both values are time
+
+        duration in seconds w.r.t. to current time and not absolute points in
+
+        time.'
+      type: object
+      properties:
+        changeTimeRangeEndSecs:
+          description: End of file's change time range.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ChangeTimeRangeEndSecs
+        changeTimeRangeStartSecs:
+          description: Start of file's change time range.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ChangeTimeRangeStartSecs
+      x-go-package: yoda/base/analytics.pb
+    KillMapReduceInstanceResult:
+      type: object
+      properties:
+        error:
+          description: Status code of http rpc.
+          $ref: '#/components/schemas/ErrorProto'
+      x-go-package: yoda/base/analytics.pb
+    GetMapReduceAppRunsParams:
+      description: 'GetMapReduceAppRunsParams specifies the input params to fetch the map reduce
+
+        application runs.'
+      type: object
+      title: Get Map Reduce App Run Parameters.
+      properties:
+        appId:
+          description: ApplicationId is the Id of the map reduce application.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ApplicationId
+        appInstanceId:
+          description: ApplicationInstanceId is the Id of the map reduce application instance.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ApplicationInstanceId
+        includeDetails:
+          description: 'If this flag is true, then send details of instance, else send only
+
+            RunInfo.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IncludeDetails
+        lastNumInstances:
+          description: Give last N instance of an app based on end time.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: LastNumInstances
+        maxRunEndTimeInSecs:
+          description: 'MaxRunEndTimestampInSecs specifies the maximum job run end timestamp
+
+            in seconds. App run instances with end time less than equal to
+
+            MaxRunEndTimestampInSecs will be selected. Default is LONG_MAX (inf).'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: MaxRunEndTimestampInSecs
+        maxRunStartTimeInSecs:
+          description: 'MaxRunStartTimestampInSecs specifies the maximum job run start timestamp
+
+            in seconds. App run instances with start time less than equal to
+
+            MaxRunStartTimestampInSecs will be selected. Default is LONG_MAX (inf).'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: MaxRunStartTimestampInSecs
+        minRunEndTimeInSecs:
+          description: 'MinRunEndTimestampInSecs specifies the minimum job run end timestamp
+
+            in seconds. App run instances with end time greater than equal to
+
+            MinRunEndTimestampInSecs will be selected. Default is 0, i.e. beginning
+
+            of time.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: MinRunEndTimestampInSecs
+        minRunStartTimeInSecs:
+          description: 'MinRunStartTimestampInSecs specifies the minimum job run start timestamp
+
+            in seconds. App run instances with start time greater than equal to
+
+            MinRunStartTimestampInSecs will be selected. Default is 0, i.e. beginning
+
+            of time.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: MinRunStartTimestampInSecs
+        pageSize:
+          description: Number of results to be displayed on a page.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: PageSize
+        runStatus:
+          description: Filter instances based on the map reduce application run status.
+          type:
+          - string
+          - 'null'
+          x-go-name: RunStatus
+        startOffset:
+          description: Start offset for pagination from where result needs to be fetched.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: StartOffset
+      x-go-package: cohesity/iris/server/data/public
+    ErrorProto:
+      type: object
+      properties:
+        errorMsg:
+          description: An optional detail.
+          type:
+          - string
+          - 'null'
+          x-go-name: ErrorMsg
+        type:
+          description: Error.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Type
+      x-go-package: yoda/base/error.pb
+    SupportedPattern:
+      description: 'Specifies details of the pattern available for search available in an
+
+        application such as Pattern Finder within Analytics Work Bench.'
+      type: object
+      properties:
+        isSystemDefined:
+          description: Specifies whether the pattern has been defined by the system or the user.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IsSystemDefined
+        name:
+          description: Specifies the name of the Pattern.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        pattern:
+          description: Specifies the value of the pattern(Regex).
+          type:
+          - string
+          - 'null'
+          x-go-name: Pattern
+        patternType:
+          description: 'Specifies the Pattern type.
+
+            ''REGULAR'' indicates that the pattern contains a regular expression.
+
+            ''TEMPLATE'' indicates that the pattern has a pre defined input pattern such as
+
+            date of the form ''DD-MM-YYYY''.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - REGULAR
+          - TEMPLATE
+          x-go-name: PatternType
+      x-go-package: cohesity/iris/server/data/public
+    InputSpec:
+      type: object
+      title: Input selector. Selects the files to map over.
+      properties:
+        filesSelector:
+          $ref: '#/components/schemas/InputSpec_InputFilesSelector'
+        onNfsFiles:
+          description: 'Selects whether input is files inside vmdks or files on NFS. One of
+
+            vm_selector or files_selector will be chosen based on this flag.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: OnNfsFiles
+        vmSelector:
+          $ref: '#/components/schemas/InputSpec_InputVMsSelector'
+      x-go-package: yoda/base/analytics.pb
+    GetMRJarUploadPathResult:
+      description: 'User can upload jar files containing mappers and reducers. Iris will upload
+
+        these jar files in Yoda''s internal view. Yoda will mount its internal view
+
+        and send Iris the mount point.'
+      type: object
+      properties:
+        error:
+          description: Status code for this http rpc.
+          $ref: '#/components/schemas/ErrorProto'
+        jarUploadPath:
+          description: Path where Jars can be uploaded by Iris.
+          type:
+          - string
+          - 'null'
+          x-go-name: JarUploadPath
+      x-go-package: yoda/base/analytics.pb
+    MapReduceInstanceWrapper:
+      description: 'MapReduceInstanceWrapper is the struct containing the map reduce instance
+
+        information along with the output file path information required to download
+
+        the results set.'
+      type: object
+      title: Map Reduce Instance Wrapper.
+      properties:
+        logPath:
+          description: LogPath is the path of the log files for the MR instance run.
+          type:
+          - string
+          - 'null'
+          x-go-name: LogPath
+        mrInstance:
+          description: InstanceInfo is the information about the map reduce application instance.
+          $ref: '#/components/schemas/MapReduceInstance'
+        outputFilePathList:
+          description: 'OutputFilePathList is the list containing the output files path suffix
+
+            that Yoda uses to build the full path of the MR instance run output files.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: OutputFilePathList
+      x-go-package: cohesity/iris/server/data/public
+    Pattern:
+      type: object
+      title: Proto to represent pattern auxiliary data type.
+      properties:
+        isSystemDefined:
+          description: Whether this pattern is system defined.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IsSystemDefined
+        name:
+          description: Name of the pattern. This is marked optional but is required.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        type:
+          description: Pattern type.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Type
+        value:
+          description: Value of the pattern. This is marked optional but is required.
+          type:
+          - string
+          - 'null'
+          x-go-name: Value
+      x-go-package: yoda/base/analytics.pb
+    PatternRequestBody:
+      description: Specifies details about the pattern which has to be saved.
+      type: object
+      title: Pattern Request Body.
+      required:
+      - applicationId
+      - applicationDataType
+      - userPattern
+      properties:
+        applicationDataType:
+          description: Specifies the data type for which supported patterns can be fetched.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: ApplicationDataType
+        applicationId:
+          description: Specifies AWB Application ID.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ApplicationId
+        userPattern:
+          description: Specifies the pattern details to be saved.
+          $ref: '#/components/schemas/SupportedPattern'
+      x-go-package: cohesity/iris/server/data/public
+    OutputSpec:
+      type: object
+      title: Output specification for the mapreduce.
+      properties:
+        numReduceShards:
+          description: Number of reduce shards.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: NumReduceShards
+        outputDir:
+          description: Name of output directory.
+          type:
+          - string
+          - 'null'
+          x-go-name: OutputDir
+        partitionId:
+          description: Partition id where output will go.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: PartitionId
+        reduceOutputPrefix:
+          description: 'Prefix of the reduce output files. File names will be:
+
+            ${reduce_output_prefix}-00000-of-00100 if num_reduce_shards=100
+
+            This name can contain some path components. e.g. "awb_results/run1" is a
+
+            valid value. output_dir is deprecated.'
+          type:
+          - string
+          - 'null'
+          x-go-name: ReduceOutputPrefix
+        viewBoxId:
+          description: Viewbox id where the output will go.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ViewBoxId
+        viewName:
+          description: Name of the view where output will go. This will be filled up by yoda.
+          type:
+          - string
+          - 'null'
+          x-go-name: ViewName
+      x-go-package: yoda/base/analytics.pb
+    MapReduceInstance_InputParam:
+      description: 'User can also pass Input params to run a map reduce. E.g. a grep MR
+
+        will need input about what to grep.'
+      type: object
+      properties:
+        key:
+          type:
+          - string
+          - 'null'
+          x-go-name: Key
+        value:
+          type:
+          - string
+          - 'null'
+          x-go-name: Value
+      x-go-package: yoda/base/analytics.pb
+    ReducersWrapper:
+      description: ReducersWrapper is the struct to define the list of reducers.
+      type: object
+      title: Reducers Wrapper.
+      properties:
+        reducers:
+          description: Reducers specifies the list of available reducers in analytics workbench.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ReducerInfo'
+          x-go-name: Reducers
+      x-go-package: cohesity/iris/server/data/public
+    ExtractFileRangeResult:
+      description: This will capture output of ExtractFileRange and ExtractNFSFileRange.
+      type: object
+      title: Extract File Range Result.
+      properties:
+        data:
+          description: The actual data bytes.
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: uint8
+          x-go-name: Data
+        eof:
+          description: 'Will be true if start_offset > file length or EOF is reached. This is an
+
+            alternative to using file_length to determine when entire file is read.
+
+            Used when fetching from a view.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: Eof
+        error:
+          description: Success/error status of the operation.
+          $ref: '#/components/schemas/ErrorProto'
+        fileLength:
+          description: 'The total length of the file. This field would be set provided no error
+
+            had occurred (indicated by error field above).'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: FileLength
+        startOffset:
+          description: The offset from which data was read.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: StartOffset
+      x-go-package: yoda/base/yoda.pb
+    MapReduceInfo_AppProperty:
+      description: 'AppProperty message encapsulates properties that are same across all run
+
+        instances of an app.'
+      type: object
+      properties:
+        csvHeader:
+          description: csv_header should be tab separated column names.
+          type:
+          - string
+          - 'null'
+          x-go-name: CsvHeader
+      x-go-package: yoda/base/analytics.pb
+    AppRunHistory:
+      description: 'AppRunHistory is the struct containing the run information of the
+
+        application instances. An application instance can be run only once. Each
+
+        run of the application creates a new application instance.'
+      type: object
+      title: Application Run History.
+      properties:
+        appInfo:
+          description: AppInfo is the information about the map reduce application.
+          $ref: '#/components/schemas/MapReduceInfo'
+        mrInstances:
+          description: 'InstancesWrapper is the slice containing the information about the map
+
+            reduce application instances.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/MapReduceInstanceWrapper'
+          x-go-name: InstancesWrapper
+      x-go-package: cohesity/iris/server/data/public
+    ReducerInfo:
+      type: object
+      title: Information about a reducer.
+      properties:
+        code:
+          description: The code of the reducer in the specified language.
+          type:
+          - string
+          - 'null'
+          x-go-name: Code
+        id:
+          description: 'Reduced ID generated by system. Absent when user is creating a new
+
+            reducer. Mandatory for all other use cases.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Id
+        isSystemDefined:
+          description: Whether the mapper is system defined.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IsSystemDefined
+        jarName:
+          description: 'User can write their own mapper/reducer or upload jar files containing
+
+            mappers and reducers. If this reducer was part of a jar file, then this
+
+            field will have the JAR name.'
+          type:
+          - string
+          - 'null'
+          x-go-name: JarName
+        jarPath:
+          description: 'path of JAR in which this reducer was found. This is applicable only when
+
+            this reducer was uploaded via JAR.'
+          type:
+          - string
+          - 'null'
+          x-go-name: JarPath
+        language:
+          description: Programming language used by the reducer.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Language
+        name:
+          description: Name of the reducer.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+      x-go-package: yoda/base/analytics.pb
+    RunMapReduceInstanceResult:
+      type: object
+      title: Result of RunMapReduceInstance call.
+      properties:
+        error:
+          description: Status code of http rpc.
+          $ref: '#/components/schemas/ErrorProto'
+        mapReduceInstanceId:
+          description: Return the ID of instance.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: MapReduceInstanceId
+      x-go-package: yoda/base/analytics.pb
+    MapReduceAuxData:
+      description: 'This message encapsulates auxillary data for a MapReduce. One example of
+
+        such data is saved patterns for Pattern finder app.'
+      type: object
+      properties:
+        patternVec:
+          description: Pattern auxiliary data for a MapReduce.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Pattern'
+          x-go-name: PatternVec
+      x-go-package: yoda/base/analytics.pb
+    MapReduceInstance:
+      description: Information about a Map reduce instance. An instance can be run only once.
+      type: object
+      title: Map Reduce Instance.
+      properties:
+        id:
+          description: System generated ID of map reduce instance.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Id
+        inputParams:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/MapReduceInstance_InputParam'
+          x-go-name: InputParams
+        inputSpec:
+          description: Input spec for the MR.
+          $ref: '#/components/schemas/InputSpec'
+        mapReduceInfoId:
+          description: ID of Map reduce info.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: MapReduceInfoId
+        outputSpec:
+          description: Output spec for the MR.
+          $ref: '#/components/schemas/OutputSpec'
+        runInfo:
+          description: 'Information about run of this instance. All fields of RunInfo will be
+
+            populated by yoda/analytics components.'
+          $ref: '#/components/schemas/MapReduceInstance_RunInfo'
+      x-go-package: yoda/base/analytics.pb
+    MapReduceInstance_RunInfo:
+      type: object
+      title: Stores the progress of run of this instance.
+      properties:
+        endTime:
+          description: Time when map redcue job completed.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: EndTime
+        errorMessage:
+          description: If this run failed, then error message for failure.
+          type:
+          - string
+          - 'null'
+          x-go-name: ErrorMessage
+        executionStartTimeUsecs:
+          description: Time (in usecs) when job was picked up for execution.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ExecutionStartTimeUsecs
+        filesProcessed:
+          description: Number of files processed in this run.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: FilesProcessed
+        mapDoneTimeUsecs:
+          description: Time (in usecs) when map tasks were done.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: MapDoneTimeUsecs
+        mapInputBytes:
+          description: Total size of data processed by this run in bytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: MapInputBytes
+        mappersSpawned:
+          description: Number of mappers spawned till now.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: MappersSpawned
+        numMapOutputs:
+          description: Number of outputs from mappers.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumMapOutputs
+        numReduceOutputs:
+          description: Number of outputs from reducers.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumReduceOutputs
+        percentageCompletion:
+          description: Percentage completion of this run so far.
+          type:
+          - number
+          - 'null'
+          format: float
+          x-go-name: PercentageCompletion
+        percentageMapperCompletion:
+          description: Percentage of mapper phase completed.
+          type:
+          - number
+          - 'null'
+          format: float
+          x-go-name: PercentageMapperCompletion
+        percentageReducerCompletion:
+          description: Percentage of reducer phase completed.
+          type:
+          - number
+          - 'null'
+          format: float
+          x-go-name: PercentageReducerCompletion
+        reducersSpawned:
+          description: Number of reducers spawned till now.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: ReducersSpawned
+        remainingTimeMins:
+          description: Expected remaining time in minutes for completion of this run.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: RemainingTimeMins
+        startTime:
+          description: Time when map reduce job was started by user.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: StartTime
+        status:
+          description: Status of this run.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Status
+        totalNumMappers:
+          description: Total number of mappers to be spawned.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: TotalNumMappers
+        totalNumReducers:
+          description: Total number of reducers to be spawned.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: TotalNumReducers
+      x-go-package: yoda/base/analytics.pb
+    ApplicationsWrapper:
+      description: 'ApplicationsWrapper is the struct to define the list of map-reduce
+
+        applications.'
+      type: object
+      title: Applications Wrapper.
+      properties:
+        applications:
+          description: 'Applications specifies the list of available map-reduce applications
+
+            in analytics workbench.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/MapReduceInfo'
+          x-go-name: Applications
+      x-go-package: cohesity/iris/server/data/public
+    InputSpec_InputVMsSelector:
+      type: object
+      properties:
+        fileTimeFilter:
+          description: Time filter for file's last change time.
+          $ref: '#/components/schemas/InputSpec_FileTimeFilter'
+        filenameGlob:
+          description: 'After VMDKs are selected as above, the files within them can be selected
+
+            by using these predicates.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: FilenameGlob
+        jobIds:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int64
+          x-go-name: JobIds
+        maxSnapshotTimestamp:
+          description: 'Exclusive end of snapshot_timestamp range. If missing, inf will be used
+
+            as the timestamp range.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: MaxSnapshotTimestamp
+        minSnapshotTimestamp:
+          description: Inclusive. If missing, 0 will the default lower end of timestamp range
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: MinSnapshotTimestamp
+        partitionIds:
+          description: Filters are AND of ORs.
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int64
+          x-go-name: PartitionIds
+        processLatestOnly:
+          description: 'Boolean flag to indicate if only latest snapshot of each object should
+
+            be processed.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: ProcessLatestOnly
+        rootDir:
+          description: 'Within each volume, traversal will be rooted at this directory. A
+
+            typical value here might be /home'
+          type:
+          - string
+          - 'null'
+          x-go-name: RootDir
+        sourceEntityIds:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int64
+          x-go-name: SourceEntityIds
+        viewBoxIds:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int64
+          x-go-name: ViewBoxIds
+        viewNames:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: ViewNames
+      x-go-package: yoda/base/analytics.pb
+    MappersWrapper:
+      description: MappersWrapper is the struct to define the list of mappers.
+      type: object
+      title: Mappers Wrapper.
+      properties:
+        mappers:
+          description: Mappers specifies the list of available mappers in analytics workbench.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/MapperInfo'
+          x-go-name: Mappers
+      x-go-package: cohesity/iris/server/data/public
+    AnalyseJarArg:
+      description: 'API to analyse a JAR file. This JAR may contain multiple mappers/reducers.
+
+        Jar will be analysed and list of all mappers/reducers found in the jar will
+
+        be returned.'
+      type: object
+      title: Analyse Jar File.
+      properties:
+        jarName:
+          description: Name of the JAR to be analysed.
+          type:
+          - string
+          - 'null'
+          x-go-name: JarName
+        jarPath:
+          description: Path of the jar file.
+          type:
+          - string
+          - 'null'
+          x-go-name: JarPath
+        jarRelativePath:
+          type:
+          - string
+          - 'null'
+          x-go-name: JarRelativePath
+        saveEntities:
+          description: If this flag is true, then also save mapper and reducers in scribe.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: SaveEntities
+      x-go-package: yoda/base/analytics.pb
+  responses:
+    GetMapReduceAppRunsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/AppRunHistory'
+    GetMRUploadJarPathResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetMRJarUploadPathResult'
+    GetApplicationsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApplicationsWrapper'
+    AnalyzeJarResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AnalyseJarResult'
+    UploadJarResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UploadMRJarViewPathWrapper'
+    GetMapperByIdResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MapperInfo'
+    GetSupportedPatternsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/SupportedPattern'
+    GetApplicationByIdResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MapReduceInfo'
+    ApplicationResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MapReduceInfo'
+    CancelMapReduceInstanceRunResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/KillMapReduceInstanceResult'
+    GetMapReduceFileFormatsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MapReduceFileFormats'
+    NoContentResponse:
+      description: No Content
+    GetMappersResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MappersWrapper'
+    RunMapReduceAppInstanceResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RunMapReduceInstanceResult'
+    DownloadResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ExtractFileRangeResult'
+    ReducerResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReducerInfo'
+    MapperResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MapperInfo'
+    GetReducerByIdResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReducerInfo'
+    GetReducersResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReducersWrapper'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'

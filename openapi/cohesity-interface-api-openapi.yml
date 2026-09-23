@@ -1,0 +1,347 @@
+openapi: 3.2.0
+info:
+  description: 'This API list provides operations for interfacing with the Cohesity
+
+    Cluster.'
+  title: Cohesity REST Interface API
+  version: '1.0'
+servers:
+- url: https://<CLUSTER_VIP>/irisservices/api/v1
+tags:
+- name: Interface
+paths:
+  /public/interface:
+    get:
+      tags:
+      - Interface
+      summary: Show network interfaces
+      operationId: ListInterface
+      parameters:
+      - x-go-name: NodeId
+        description: Specifies the id of the ndde.
+        name: nodeId
+        in: query
+        schema:
+          type: integer
+          format: int64
+      - x-go-name: Cache
+        description: Specifies if interface is cached info.
+        name: cache
+        in: query
+        schema:
+          type: boolean
+      - x-go-name: BondInterfaceOnly
+        description: Specifies if only show bond interface info.
+        name: bondInterfaceOnly
+        in: query
+        schema:
+          type: boolean
+      - x-go-name: IfaceGroupAssignedOnly
+        description: Specifies if only show interface group assigned interface info.
+        name: ifaceGroupAssignedOnly
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/ListInterfaceResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    put:
+      description: Returns the update status upon completion.
+      tags:
+      - Interface
+      summary: Update an interface
+      operationId: UpdateInterface
+      responses:
+        '200':
+          $ref: '#/components/responses/UpdateInterfaceResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Interface'
+components:
+  schemas:
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    Interface:
+      type: object
+      properties:
+        message:
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+        name:
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        networkParams:
+          $ref: '#/components/schemas/NetworkParams'
+      x-go-package: cohesity/iris/server/data/public
+    NetworkInterface:
+      description: Specifies the properties of a network interface.
+      type: object
+      title: Network Interface.
+      properties:
+        bondSlaveSlotTypes:
+          description: 'Specifies the types of the slots of any slaves if this interface is a
+
+            bond.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: BondSlaveSlot
+        bondSlaves:
+          description: Specifies the names of any slaves if this interface is a bond.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: BondSlaves
+        bondingMode:
+          description: Specifies the bonding mode if this interface is a bond.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: BondingMode
+        gateway:
+          description: Specifies the gateway of the interface.
+          type:
+          - string
+          - 'null'
+          x-go-name: Gateway
+        gateway6:
+          description: Specifies the gateway6 of the interface.
+          type:
+          - string
+          - 'null'
+          x-go-name: Gateway6
+        group:
+          description: Specifies the group that this interface belongs to.
+          type:
+          - string
+          - 'null'
+          x-go-name: IfaceGroup
+        id:
+          description: Specifies the ID of this network interface.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Id
+        isConnected:
+          description: Specifies whether or not the Interface is connected.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IsConnected
+        isDefaultRoute:
+          description: Specifies whether or not to use this interface as the default route.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IsDefaultRoute
+        isUp:
+          description: Specifies whether or not the interface is currently  up.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IsUp
+        macAddress:
+          description: Specifies the Mac address of the Interface.
+          type:
+          - string
+          - 'null'
+          x-go-name: MacAddress
+        mtu:
+          description: Specifies the MTU of the interface.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Mtu
+        name:
+          description: Specifies the name of the interface port.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        role:
+          description: Specifies the role of this interface.
+          type:
+          - string
+          - 'null'
+          x-go-name: Role
+        services:
+          description: Specifies the types of services this interface is used for.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Services
+        speed:
+          description: Specifies the speed of the Interface.
+          type:
+          - string
+          - 'null'
+          x-go-name: Speed
+        staticIp:
+          description: Specifies the static IP of the interface.
+          type:
+          - string
+          - 'null'
+          x-go-name: StaticIp
+        staticIp6:
+          description: Specifies the static IPv6 of the interface.
+          type:
+          - string
+          - 'null'
+          x-go-name: StaticIp6
+        subnet:
+          description: Specifies the subnet mask of the interface.
+          type:
+          - string
+          - 'null'
+          x-go-name: Subnet
+        subnet6:
+          description: Specifies the subnet6 mask of the interface.
+          type:
+          - string
+          - 'null'
+          x-go-name: Subnet6
+        type:
+          description: Specifies the type of interface.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Type
+        virtualIp:
+          description: Specifies the virtual IP of the interface.
+          type:
+          - string
+          - 'null'
+          x-go-name: VirtualIp
+      x-go-package: cohesity/iris/server/data/public
+    BondingOpts:
+      description: Bonding Opts
+      type: object
+      properties:
+        lacpRate:
+          type:
+          - string
+          - 'null'
+          x-go-name: LacpRate
+        mode:
+          type:
+          - string
+          - 'null'
+          x-go-name: Mode
+        xmitHashPolicy:
+          type:
+          - string
+          - 'null'
+          x-go-name: XmitHashPolicy
+      x-go-package: cohesity/iris/server/data/public
+    NodeNetworkInterfaces:
+      description: Specifies the network interfaces present on a specific Node in a Cluster.
+      type: object
+      title: Node Network Interfaces.
+      properties:
+        chassisSerial:
+          description: Specifies the serial number of Chassis.
+          type:
+          - string
+          - 'null'
+          x-go-name: ChassisSerial
+        interfaces:
+          description: Specifies the list of network interfaces present on this Node.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/NetworkInterface'
+          x-go-name: Interfaces
+        message:
+          description: 'Specifies an optional message describing the result of the request
+
+            pertaining to this Node.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+        nodeId:
+          description: Specifies the ID of the Node.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NodeId
+        slot:
+          description: Specifies the slot number the Node is located in.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Slot
+      x-go-package: cohesity/iris/server/data/public
+    NetworkParams:
+      type: object
+      properties:
+        bondingOpts:
+          $ref: '#/components/schemas/BondingOpts'
+        mtu:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Mtu
+      x-go-package: cohesity/iris/server/data/public
+  responses:
+    UpdateInterfaceResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Interface'
+    ListInterfaceResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/NodeNetworkInterfaces'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'

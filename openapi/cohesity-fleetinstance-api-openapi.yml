@@ -1,0 +1,109 @@
+openapi: 3.2.0
+info:
+  description: Cohesity API provides a RESTful interface to access the various data management operations on Cohesity cluster and Helios.
+  title: Cohesity REST Fleet Instance API
+  version: '2.0'
+servers:
+- url: /v2
+tags:
+- name: FleetInstance
+paths:
+  /fleet-env-info:
+    post:
+      description: Add fleet environment info to cluster.
+      tags:
+      - FleetInstance
+      summary: Update Fleet Env Info
+      operationId: UpdateFleetEnvInfo
+      responses:
+        '200':
+          $ref: '#/components/responses/UpdateFleetEnvInfoResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFleetEnvInfoRequest'
+        description: Specifies the parameters to add fleet env info.
+        required: true
+components:
+  responses:
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UpdateFleetEnvInfoResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateFleetEnvInfoRequest'
+  schemas:
+    UpdateFleetEnvInfoRequest:
+      description: Specifies the params to add fleet env info.
+      type: object
+      title: Update Fleet Env Info Request.
+      required:
+      - iamRole
+      - region
+      - vpcId
+      - subnetId
+      - securityGroupId
+      properties:
+        iamRole:
+          description: Specifies the IAM role used to create instances.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        region:
+          description: Specifies the Region of the CE cluster.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        vpcId:
+          description: Specifies the VPC of the CE cluster.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        subnetId:
+          description: Specifies the Subnet of the CE cluster.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+        securityGroupId:
+          description: Specifies the security group Id.
+          type:
+          - string
+          - 'null'
+          x-order: 4
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+  securitySchemes:
+    APIKeyHeader:
+      in: header
+      name: apiKey
+      type: apiKey

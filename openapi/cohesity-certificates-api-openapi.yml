@@ -1,0 +1,315 @@
+openapi: 3.2.0
+info:
+  description: 'This API list provides operations for interfacing with the Cohesity
+
+    Cluster.'
+  title: Cohesity REST Certificates API
+  version: '1.0'
+servers:
+- url: https://<CLUSTER_VIP>/irisservices/api/v1
+tags:
+- name: Certificates
+paths:
+  /public/certificates/global:
+    get:
+      description: Returns the all certificate and their details generated from this cluster.
+      tags:
+      - Certificates
+      summary: List the certificates generated and deployed on hosts
+      operationId: GetCertificateList
+      responses:
+        '200':
+          $ref: '#/components/responses/GetCertificateResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    post:
+      description: Returns the global certificate for a single or multiple hosts.
+      tags:
+      - Certificates
+      summary: Generate and deploy certificate for a single or multiple hosts
+      operationId: DeployHostCertificate
+      responses:
+        '201':
+          $ref: '#/components/responses/DeployHostCertResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeployCertParameters'
+        description: Request to generate and deploy a new certificate.
+  /public/certificates/webServer:
+    get:
+      description: Returns the Server Certificate configured on the cluster.
+      tags:
+      - Certificates
+      summary: Get the Server Certificate configured on the Cluster
+      operationId: GetWebServerCertificate
+      responses:
+        '200':
+          $ref: '#/components/responses/GetWebServerCertificateResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    put:
+      description: Returns the updated Web Server Certificate on the cluster.
+      tags:
+      - Certificates
+      summary: Update the Web Server Certificate on the Cluster
+      operationId: UpdateWebServerCertificate
+      responses:
+        '200':
+          $ref: '#/components/responses/UpdateWebServerCertificateResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SslCertificateConfig'
+    delete:
+      description: Returns delete status upon completion.
+      tags:
+      - Certificates
+      summary: Delete the SSL Certificate in the Cluster
+      operationId: DeleteWebServerCertificate
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/Error'
+components:
+  schemas:
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    CertificateDetails:
+      description: Specifies details about a certificate.
+      type: object
+      title: Certificate Details.
+      properties:
+        certFileName:
+          description: 'Specifies the filename of the certificate. This is unique to each
+
+            certificate generated.'
+          type:
+          - string
+          - 'null'
+          x-go-name: CertFileName
+        expiryDate:
+          description: Specifies the date in epoch till when the certificate is valid.
+          type:
+          - string
+          - 'null'
+          x-go-name: ExpiryDate
+        hostIps:
+          description: 'Each certificate can be deployed to multiple hosts. List of all hosts
+
+            is returned after deployment.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: HostIps
+        type:
+          description: 'Specifies the type of the host such as ''kSapHana'', ''kSapOracle'', etc.
+
+            Specifies the host type of host for generating and deploying a
+
+            Certificate.
+
+            ''kOther'' indicates it is any of the other hosts.
+
+            ''kSapOracle'' indicates it is a SAP Oracle host.
+
+            ''kSapHana'' indicates it is a SAP HANA host.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kOther
+          - kSapOracle
+          - kSapHana
+          x-go-name: Type
+      x-go-package: cohesity/iris/server/data/public
+    HostInfo:
+      description: Specifies the list of all hosts on which the certificate is deployed.
+      type: object
+      title: Hosts Information list.
+      properties:
+        password:
+          description: 'Specifies the password of the host to establish SSH connection.
+
+            The certificate is copied to the host after generating the certificate
+
+            on the cluster.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Password
+        serverName:
+          description: Specifies the servername of the host where certificate is to be deployed.
+          type:
+          - string
+          - 'null'
+          x-go-name: ServerName
+        target:
+          description: 'Specifies the target location on the host where the certificate is
+
+            deployed.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Target
+        userName:
+          description: Specifies the username of the host.
+          type:
+          - string
+          - 'null'
+          x-go-name: UserName
+      x-go-package: cohesity/iris/server/data/public
+    DeployCertParameters:
+      description: Specifies the parameters used to generate and deploy a certificate.
+      type: object
+      title: Deploy host global certificate Request.
+      properties:
+        certFileName:
+          description: Specifies the filename of the certificate.
+          type:
+          - string
+          - 'null'
+          x-go-name: CertFileName
+        hostsInfoList:
+          description: 'Specifies the list of all hosts on which the certificate is to
+
+            be deployed.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/HostInfo'
+          x-go-name: HostsInfoList
+        type:
+          description: 'Specifies the type of the host such as ''kSapHana'', ''kSapOracle'', etc.
+
+            Specifies the host type of host for generating and deploying a
+
+            Certificate.
+
+            ''kOther'' indicates it is any of the other hosts.
+
+            ''kSapOracle'' indicates it is a SAP Oracle host.
+
+            ''kSapHana'' indicates it is a SAP HANA host.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kOther
+          - kSapOracle
+          - kSapHana
+          x-go-name: Type
+        validDays:
+          description: 'Specifies the number of days after which the certificate will expire. The
+
+            user has to input the number of days (from the current date) till when the
+
+            certificate is valid.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ValidDays
+      x-go-package: cohesity/iris/server/data/public
+    SslCertificateConfig:
+      description: 'SslCertificateConfig represents the SSL certificate object exposed to the
+
+        user.'
+      type: object
+      title: SSL Certificate Configuration.
+      properties:
+        certificate:
+          description: Certificate is a SSL certificate used by Iris HTTPS webserver.
+          type:
+          - string
+          - 'null'
+          x-go-name: Certificate
+        lastUpdateTimeMsecs:
+          description: 'LastUpdateTimeMsecs is a time in milliseconds at which certificate was
+
+            last updated.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: LastUpdateTimeMsecs
+        privateKey:
+          description: PrivateKey is a matching private key of the above certificate.
+          type:
+          - string
+          - 'null'
+          x-go-name: PrivateKey
+      x-go-package: cohesity/iris/server/data/public
+    ListCertResponse:
+      description: Specifies list of all certificates deployed from the cluster.
+      type: object
+      title: List Certificates Response
+      properties:
+        certificateList:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CertificateDetails'
+          x-go-name: CertificateList
+      x-go-package: cohesity/iris/server/data/public
+  responses:
+    NoContentResponse:
+      description: No Content
+    GetWebServerCertificateResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SslCertificateConfig'
+    UpdateWebServerCertificateResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SslCertificateConfig'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    GetCertificateResponse:
+      description: List Host Certificate Response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ListCertResponse'
+    DeployHostCertResponse:
+      description: Host Certificate Download Response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CertificateDetails'

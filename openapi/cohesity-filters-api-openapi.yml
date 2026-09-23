@@ -1,0 +1,254 @@
+openapi: 3.2.0
+info:
+  description: Public APIs exposed by Helios Reporting service.
+  version: v1
+  title: Helios Reporting service Filters API
+  termsOfService: https://cohesity.com
+  contact:
+    email: support@cohesity.com
+servers:
+- url: https://helios.cohesity.com/heliosreporting/api/v1
+security:
+- ApiKeyAuth: []
+tags:
+- name: Filters
+paths:
+  /public/resources:
+    post:
+      description: Get different kinds of resources available which are discovered on Helios. These values can be used for filtering options
+      tags:
+      - Filters
+      summary: Get resources
+      operationId: GetResources
+      responses:
+        200:
+          $ref: '#/components/responses/GetResourcesResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetResourcesRequest'
+        description: Request body params to get available resources.
+        required: true
+components:
+  schemas:
+    Resources:
+      description: Specifies the resources response.
+      type: object
+      properties:
+        resourceType:
+          description: Specifies the type of the resource.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Policies
+          - ProtectionGroups
+          - RegisteredSources
+          - MessageCodeMappings
+          - Tenants
+          - ExternalTargets
+        protectionGroups:
+          description: Specifies the list of Protection Groups.
+          type: array
+          items:
+            $ref: '#/components/schemas/ProtectionGroup'
+        policies:
+          description: Specifies the list of Protection Groups.
+          type: array
+          items:
+            $ref: '#/components/schemas/Policy'
+        sources:
+          description: Specifies the list of Registered sources.
+          type: array
+          items:
+            $ref: '#/components/schemas/RegisteredSource'
+        messageCodeMappings:
+          description: Specifies the list of Message codes.
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageCodeMapping'
+        tenants:
+          description: Specifies the list of Tenants.
+          type: array
+          items:
+            $ref: '#/components/schemas/Tenant'
+        externalTargets:
+          description: Specifies the list of External Targets.
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalTarget'
+    ProtectionGroup:
+      description: Specifies the Protection Group resource.
+      type: object
+      properties:
+        id:
+          description: Specifies the id of the Protection Group.
+          type:
+          - string
+          - 'null'
+        name:
+          description: Specifies the name of the Protection Group.
+          type:
+          - string
+          - 'null'
+        systemId:
+          description: Specifies the id of the System.
+          type:
+          - string
+          - 'null'
+        systemName:
+          description: Specifies the name of the System.
+          type:
+          - string
+          - 'null'
+    ExternalTarget:
+      description: Specifies an External target.
+      type: object
+      properties:
+        id:
+          description: Specifies the id of the External target.
+          type:
+          - string
+          - 'null'
+        name:
+          description: Specifies the name of the External target.
+          type:
+          - string
+          - 'null'
+        targetType:
+          description: Specifies the type of the External target.
+          type:
+          - string
+          - 'null'
+        systemId:
+          description: Specifies the id of the System.
+          type:
+          - string
+          - 'null'
+        systemName:
+          description: Specifies the name of the System.
+          type:
+          - string
+          - 'null'
+    MessageCodeMapping:
+      description: Specifies an error code and GUID.
+      type: object
+      properties:
+        messageCode:
+          description: Specifies the message code.
+          type: string
+        messageGuid:
+          description: Specifies the message GUID.
+          type: string
+    RegisteredSource:
+      description: Specifies the Registered Source resource.
+      type: object
+      properties:
+        uuid:
+          description: Specifies the unique identifier of registered source.
+          type:
+          - string
+          - 'null'
+        name:
+          description: Specifies the name of the registered source.
+          type:
+          - string
+          - 'null'
+        environments:
+          description: Specifies list of all environments discovered as part of this source.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-custom-tag: pg:",array"
+    Tenant:
+      description: Specifies the Tenant resource.
+      type: object
+      properties:
+        id:
+          description: Specifies the id of the Tenant.
+          type:
+          - string
+          - 'null'
+        name:
+          description: Specifies the name of the Tenant.
+          type:
+          - string
+          - 'null'
+    GetResourcesRequest:
+      description: Specifies the request parameters to fetch resources.
+      type: object
+      required:
+      - resourceType
+      properties:
+        resourceType:
+          description: Specifies the type of the resource.
+          type: string
+          enum:
+          - Policies
+          - ProtectionGroups
+          - RegisteredSources
+          - MessageCodeMappings
+          - Tenants
+          - ExternalTargets
+    Policy:
+      description: Specifies the Protection Policy resource.
+      type: object
+      properties:
+        id:
+          description: Specifies the id of the Protection Policy.
+          type:
+          - string
+          - 'null'
+        name:
+          description: Specifies the name of the Protection Policy.
+          type:
+          - string
+          - 'null'
+        isGlobalPolicy:
+          description: Specifies whether this is a Global Policy.
+          type:
+          - boolean
+          - 'null'
+        systemId:
+          description: Specifies the id of the System.
+          type:
+          - string
+          - 'null'
+        systemName:
+          description: Specifies the name of the System.
+          type:
+          - string
+          - 'null'
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type: integer
+        errorMessage:
+          description: Specifies the error message.
+          type: string
+  responses:
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    GetResourcesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Resources'
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: apiKey

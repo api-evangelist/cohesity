@@ -1,0 +1,158 @@
+openapi: 3.2.0
+info:
+  description: 'This API list provides operations for interfacing with the Cohesity
+
+    Cluster.'
+  title: Cohesity REST Banner API
+  version: '1.0'
+servers:
+- url: https://<CLUSTER_VIP>/irisservices/api/v1
+tags:
+- name: Banner
+paths:
+  /public/banners:
+    get:
+      description: 'Currently it returns a cluster specific banner for all requests. Later,
+
+        depending on who is requesting it (which can be inferred from the URL),
+
+        we would like to return most appropriate banner if set by the cluster
+
+        admin (or Service Provider).'
+      tags:
+      - Banner
+      summary: List the banner for a persona
+      operationId: GetBanner
+      responses:
+        '200':
+          $ref: '#/components/responses/GetBannerResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    put:
+      description: Returns the banner that was updated on the Cohesity Cluster.
+      tags:
+      - Banner
+      summary: Update an existing banner on the Cohesity Cluster
+      operationId: UpdateBanner
+      responses:
+        '200':
+          $ref: '#/components/responses/UpdateBannerResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BannerUpdateParameters'
+        description: Request to update existing banner.
+components:
+  schemas:
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    BannerUpdateParameters:
+      description: Specifies the settings used to update a new banner.
+      type: object
+      title: Banner Update Request.
+      properties:
+        content:
+          description: Specifies the content of the banner.
+          type:
+          - string
+          - 'null'
+          x-go-name: Content
+        description:
+          description: 'description field is deprecated.
+
+            Specifies the description of this banner.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+      x-go-package: cohesity/iris/server/data/public
+    Banner:
+      description: 'Banner is used for storing the banner content in scribe and also for
+
+        transferring it over the wire.'
+      type: object
+      properties:
+        bannerId:
+          description: 'Specifies a banner_id which can uniquely identify a banner. This may be
+
+            the cluster_id, or the tenant_id, or the group_id, or the user SID etc.
+
+            If this field is nil, the it is assumed to be the cluster_id.
+
+            The content is stored against this ''row'' in Scribe.'
+          type:
+          - string
+          - 'null'
+          x-go-name: BannerId
+        content:
+          description: Specifies the content of the banner.
+          type:
+          - string
+          - 'null'
+          x-go-name: Content
+        createdTimeMsecs:
+          description: 'createdTimeMsecs field is deprecated.
+
+            Timestamp at which banner was created.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: CreatedTimeMsecs
+        description:
+          description: 'description field is deprecated.
+
+            Specifies the description of this banner.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+        lastUpdatedTimeMsecs:
+          description: 'lastUpdatedTimeMsecs field is deprecated.
+
+            Timestamp at which banner was last updated.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: LastUpdatedTimeMsecs
+      x-go-package: cohesity/iris/server/data/public
+  responses:
+    UpdateBannerResponse:
+      description: UpdateBannerResponse response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Banner'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    GetBannerResponse:
+      description: GetBannerResponse response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Banner'

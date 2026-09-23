@@ -1,0 +1,221 @@
+openapi: 3.2.0
+info:
+  description: 'This API list provides operations for interfacing with the Cohesity
+
+    Cluster.'
+  title: Cohesity REST Privileges API
+  version: '1.0'
+servers:
+- url: https://<CLUSTER_VIP>/irisservices/api/v1
+tags:
+- name: Privileges
+paths:
+  /public/privileges:
+    get:
+      description: 'If the ''name'' parameter is not specified, all privileges defined
+
+        on the Cohesity Cluster are returned.
+
+        In addition, information about each privilege is returned such as the
+
+        associated category, description, name, etc.
+
+        If an exact privilege name (such as PRINCIPAL_VIEW) is specified in the
+
+        ''name'' parameter, only information about that single privilege is returned.'
+      tags:
+      - Privileges
+      summary: List the privileges defined on the Cohesity Cluster
+      operationId: GetPrivileges
+      parameters:
+      - x-go-name: Name
+        description: Specifies the name of the privilege.
+        name: name
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/GetPrivilegesResponse'
+        default:
+          $ref: '#/components/responses/Error'
+components:
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    GetPrivilegesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            description: Specifies a list of privileges.
+            type: array
+            title: Array of Privileges.
+            items:
+              $ref: '#/components/schemas/PrivilegeInfo'
+  schemas:
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    PrivilegeInfo:
+      description: 'Specifies details about a privilege such as the category,
+
+        description, name, etc.'
+      type: object
+      title: Privilege Information.
+      properties:
+        PrivilegeId:
+          description: 'Specifies unique id for a privilege. This number must be unique when
+
+            creating a new privilege.
+
+            Type for unique privilege Id values.
+
+            All below enum values specify a value for all uniquely defined
+
+            privileges in Cohesity.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kPrincipalView
+          - kPrincipalModify
+          - kAppLaunch
+          - kAppsManagement
+          - kOrganizationView
+          - kOrganizationModify
+          - kOrganizationImpersonate
+          - kCloneView
+          - kCloneModify
+          - kClusterView
+          - kClusterModify
+          - kClusterCreate
+          - kClusterSupport
+          - kClusterUpgrade
+          - kClusterRemoteView
+          - kClusterRemoteModify
+          - kClusterExternalTargetView
+          - kClusterExternalTargetModify
+          - kClusterAudit
+          - kAlertView
+          - kAlertModify
+          - kVlanView
+          - kVlanModify
+          - kHybridExtenderView
+          - kHybridExtenderDownload
+          - kAdLdapView
+          - kAdLdapModify
+          - kSchedulerView
+          - kSchedulerModify
+          - kProtectionView
+          - kProtectionModify
+          - kProtectionJobOperate
+          - kProtectionSourceModify
+          - kProtectionPolicyView
+          - kProtectionPolicyModify
+          - kRestoreView
+          - kRestoreModify
+          - kRestoreDownload
+          - kRemoteRestore
+          - kStorageView
+          - kStorageModify
+          - kStorageDomainView
+          - kStorageDomainModify
+          - kAnalyticsView
+          - kAnalyticsModify
+          - kReportsView
+          - kMcmModify
+          - kDataSecurity
+          - kSmbBackup
+          - kSmbRestore
+          - kSmbTakeOwnership
+          - kSmbAuditing
+          - kMcmUnregister
+          - kMcmUpgrade
+          - kMcmModifySuperAdmin
+          - kMcmViewSuperAdmin
+          - kMcmModifyCohesityAdmin
+          - kMcmViewCohesityAdmin
+          - kObjectSearch
+          - kFileDatalockExpiryTimeDecrease
+        category:
+          description: Specifies a category for the privilege such as 'Access Management'.
+          type:
+          - string
+          - 'null'
+          x-go-name: Category
+        description:
+          description: Specifies a description defining what the privilege provides.
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+        isAvailableOnHelios:
+          description: Specifies that this privilege is available for Helios operations.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IsAvailableOnHelios
+        isCustomRoleDefault:
+          description: Specifies if this privilege is automatically assigned to custom roles.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IsCustomRoleDefault
+        isSpecial:
+          description: 'Specifies if this privilege is automatically assigned to the default
+
+            System Admin user called ''admin''.
+
+            If true, the privilege is NOT assigned to the default System Admin user
+
+            called ''admin''.
+
+            By default, privileges are automatically assigned to the default System
+
+            Admin user called ''admin''.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IsSpecial
+        isViewOnly:
+          description: Specifies if privilege is view-only privilege that cannot make changes.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IsViewOnly
+        label:
+          description: 'Specifies the label for the privilege as displayed on the Cohesity
+
+            Dashboard such as ''Access Management View''.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Label
+        name:
+          description: Specifies the Cluster name for the privilege such as PRINCIPAL_VIEW.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+      x-go-package: cohesity/iris/server/data/public

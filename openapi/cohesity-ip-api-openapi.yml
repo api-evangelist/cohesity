@@ -1,0 +1,166 @@
+openapi: 3.2.0
+info:
+  description: 'This API list provides operations for interfacing with the Cohesity
+
+    Cluster.'
+  title: Cohesity REST Ip API
+  version: '1.0'
+servers:
+- url: https://<CLUSTER_VIP>/irisservices/api/v1
+tags:
+- name: Ip
+paths:
+  /public/ip:
+    put:
+      description: Returns the create status upon completion.
+      tags:
+      - Ip
+      summary: Configure the specfied IP settings on the Cohesity Cluster
+      operationId: ConfigureIp
+      responses:
+        '200':
+          $ref: '#/components/responses/IpConfigResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IpConfig'
+    delete:
+      description: Returns the delete status upon completion.
+      tags:
+      - Ip
+      summary: Delete the specified IP settings on the Cohesity Cluster
+      operationId: UnconfigureIp
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IpUnconfig'
+components:
+  schemas:
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    IpUnconfig:
+      description: Specifies the unconfiguration of an IP.
+      type: object
+      title: Unconfig Ip Parameters.
+      properties:
+        IpFamily:
+          description: IpFamily of this config.
+          type:
+          - integer
+          - 'null'
+          format: int32
+        interfaceName:
+          description: The interface name.
+          type:
+          - string
+          - 'null'
+          x-go-name: InterfaceName
+        nodeIds:
+          description: Node ids.
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int64
+          x-go-name: NodeIds
+      x-go-package: cohesity/iris/server/data/public
+    IpConfig:
+      description: Specifies the configuration of an IP.
+      type: object
+      title: Config Ip Parameters.
+      properties:
+        interfaceName:
+          description: 'The interface name.
+
+
+            Specifies which interface to assign IP to.'
+          type:
+          - string
+          - 'null'
+          x-go-name: InterfaceName
+        ipFamily:
+          description: IpFamily of this config.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: IpFamily
+        ips:
+          description: The interface ips.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Ips
+        nodeIds:
+          description: Node ids.
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int64
+          x-go-name: NodeIds
+        role:
+          description: The interface role.
+          type:
+          - string
+          - 'null'
+          x-go-name: Role
+        subnetGateway:
+          description: The interface gateway.
+          type:
+          - string
+          - 'null'
+          x-go-name: SubnetGateway
+        subnetMaskBits:
+          description: The interface subnet mask bits.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: SubnetMaskBits
+      x-go-package: cohesity/iris/server/data/public
+  responses:
+    IpConfigResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/IpConfig'
+    NoContentResponse:
+      description: No Content
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'

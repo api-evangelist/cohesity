@@ -1,0 +1,2612 @@
+openapi: 3.2.0
+info:
+  description: 'This API list provides operations for interfacing with the Cohesity
+
+    Cluster.'
+  title: Cohesity REST Cluster API
+  version: '1.0'
+servers:
+- url: https://<CLUSTER_VIP>/irisservices/api/v1
+tags:
+- name: Cluster
+paths:
+  /public/basicClusterInfo:
+    get:
+      description: 'All Active Directory domains that are currently joined to the Cohesity
+
+        Cluster are returned. In addition, the default LOCAL domain on the
+
+        Cohesity Cluster is returned as the first element of the domains array in
+
+        the response.'
+      tags:
+      - Cluster
+      summary: List details about the Cohesity Cluster such as the name, type, version…
+      operationId: GetBasicClusterInfo
+      responses:
+        '200':
+          $ref: '#/components/responses/GetBasicClusterInfoResponse'
+        default:
+          $ref: '#/components/responses/Error'
+  /public/cluster:
+    get:
+      description: Returns information about this Cohesity Cluster.
+      tags:
+      - Cluster
+      summary: List details about this Cohesity Cluster
+      operationId: GetCluster
+      parameters:
+      - x-go-name: FetchStats
+        description: If 'true', also get statistics about the Cohesity Cluster.
+        name: fetchStats
+        in: query
+        schema:
+          type: boolean
+      - x-go-name: FetchTimeSeriesSchema
+        description: Specifies whether to get time series schema info of the cluster.
+        name: fetchTimeSeriesSchema
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/ClusterResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    put:
+      description: Returns the updated Cluster configuration.
+      tags:
+      - Cluster
+      summary: Update the configuration of this Cohesity Cluster
+      operationId: UpdateCluster
+      responses:
+        '200':
+          $ref: '#/components/responses/UpdateClusterResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateClusterParams'
+        description: Update Cluster Parameter.
+  /public/cluster/appSettings:
+    get:
+      description: Returns the app settings for the cluster.
+      tags:
+      - Cluster
+      summary: Gets the app settings for the cluster
+      operationId: GetAppSettings
+      responses:
+        '200':
+          $ref: '#/components/responses/GetAppSettingsResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    put:
+      description: Returns the updated app settings.
+      tags:
+      - Cluster
+      summary: Update the app settings of the cluster
+      operationId: UpdateAppSettings
+      responses:
+        '200':
+          $ref: '#/components/responses/UpdateAppSettingsResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppsConfig'
+        description: Update App Settings Parameter.
+  /public/cluster/status:
+    get:
+      description: 'Sends a request to get the status of every node that is part of the current
+
+        Cluster.'
+      tags:
+      - Cluster
+      summary: Get the status of a Cohesity Cluster
+      operationId: GetClusterStatus
+      responses:
+        '200':
+          $ref: '#/components/responses/GetClusterStatusResponse'
+        default:
+          $ref: '#/components/responses/Error'
+components:
+  schemas:
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    NodeStatusResult:
+      description: Specifies the current status of a Node in the cluster.
+      type: object
+      title: Node Status Result.
+      properties:
+        activeOperation:
+          description: 'Specifies the active operation on the Node if there is one.
+
+            ''kNone'' specifies that there is no active operation on the Node.
+
+            ''kDestroyCluster'' specifies that the Cluster which the Node is a part of
+
+            is currently being destroyed.
+
+            ''kUpgradeCluster'' specifies that the Cluster which the Node is a part of
+
+            is currently being upgraded to a new software package.
+
+            ''kRestartCluster'' specifies that the Cluster which the Node is a part of
+
+            is currently being restarted.
+
+            ''kCreateCluster'' specifies that the Node is currently being used to create
+
+            a new Cluster.
+
+            ''kExpandCluster'' specifies that the Node is currently being added to a
+
+            Cluster or being used to assist in adding another Node to a Cluster.
+
+            ''kUpgradeNode'' specifies that the Node is currently being upgraded to a new
+
+            software package.
+
+            ''kRemoveNode'' specifies that the Node is currently being removed from a
+
+            Cluster or that it is assisting in removing another Node from a Cluster.
+
+            ''kAddDisks'' specifies that the Node is being used to assist in adding disks
+
+            to the Cluster.
+
+            ''kMarkDiskOffline'' specifies that the Node is being use to assist in
+
+            marking a disk in the Cluster as offline.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kNone
+          - kDestroyCluster
+          - kUpgradeCluster
+          - kRestartCluster
+          - kCreateCluster
+          - kExpandCluster
+          - kUpgradeNode
+          - kRemoveNode
+          - kAddDisks
+          - kMarkDiskOffline
+          x-go-name: ActiveOperation
+        clusterId:
+          description: Specifies the Cluster ID if the Node is part of a Cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ClusterId
+        id:
+          description: Specifies the ID of the Node.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Id
+        inCluster:
+          description: Specifies whether or not the Node is part of a Cluster.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: InCluster
+        incarnationId:
+          description: Specifies the Incarnation ID if the Node is part of a Cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: IncarnationId
+        ip:
+          description: Specifies the IP address of the Node.
+          type:
+          - string
+          - 'null'
+          x-go-name: Ip
+        lastUpgradeTimeSecs:
+          description: Specifies the time of the last upgrade in seconds since the epoch.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: LastUpgradeTimeSecs
+        markedForRemoval:
+          description: Specifies whether or not this node is marked for removal.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: MarkedForRemoval
+        message:
+          description: Specifies an optional message describing the current state of the Node.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+        removalReason:
+          description: 'Specifies the reason for the removal operation if there is a removal
+
+            operation going on.
+
+            ''kUnknown'' specifies that the removal reason is not known.
+
+            ''kAutoHealthCheck'' specifies that an internal health check found problems
+
+            with the Node.
+
+            ''kUserGracefulRemoval'' specifies that the user requested a graceful
+
+            removal.
+
+            ''kUserAvoidAccess'' specifies that the user requested to avoid access to
+
+            this Node.
+
+            ''kUserGracefulNodeRemoval'' specifies that the user requested a graceful
+
+            removal for all of the disks in this Node.
+
+            ''kUserRemoveDownNode'' specifies that the user requested a graceful removal
+
+            of the Node while it is down.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kUnknown
+          - kAutoHealthCheck
+          - kUserGracefulRemoval
+          - kUserAvoidAccess
+          - kUserGracefulNodeRemoval
+          - kUserRemoveDownNode
+          x-go-name: RemovalReason
+        services:
+          description: 'Specifies the list of services running on the cluster and their process
+
+            Ids.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ServiceProcessEntry'
+          x-go-name: Services
+        softwareVersion:
+          description: Specifies the version of the software running on the Node.
+          type:
+          - string
+          - 'null'
+          x-go-name: SoftwareVersion
+        uptime:
+          description: Uptime of node.
+          type:
+          - string
+          - 'null'
+          x-go-name: Uptime
+      x-go-package: cohesity/iris/server/data/public
+    NtpSettingsConfig:
+      type: object
+      properties:
+        ntpServersInternal:
+          description: Flag to specify if the NTP servers are on internal network or not.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: NtpServersInternal
+      x-go-package: cohesity/iris/server/data/public
+    DataUsageStats:
+      description: 'Specifies the data usage metric of the data stored on the Cohesity
+
+        Cluster or Storage Domains (View Boxes).'
+      type: object
+      title: Data Usage Statistics.
+      properties:
+        cloudDataWrittenBytes:
+          description: 'Specifies the total data written on cloud tiers, as computed by the
+
+            Cohesity Cluster.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: CloudDataWrittenBytes
+        cloudDataWrittenBytesTimestampUsec:
+          description: Specifies Timestamp of CloudDataWrittenBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: CloudDataWrittenBytesTimestampUsec
+        cloudTotalPhysicalUsageBytes:
+          description: 'Specifies the total cloud capacity, as computed by the Cohesity Cluster,
+
+            after the size of the data has been reduced by change-block tracking,
+
+            compression and deduplication.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: CloudTotalPhysicalUsageBytes
+        cloudTotalPhysicalUsageBytesTimestampUsec:
+          description: Specifies Timestamp of CloudTotalPhysicalUsageBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: CloudTotalPhysicalUsageBytesTimestampUsec
+        dataInBytes:
+          description: 'Specifies the data read from the protected objects by the Cohesity Cluster
+
+            before any data reduction using deduplication and compression.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: DataInBytes
+        dataInBytesAfterDedup:
+          description: 'Specifies the size of the data has been reduced by change-block
+
+            tracking and deduplication but before compression or data is replicated to
+
+            other nodes as per RF or Erasure Coding policy.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: DataInBytesAfterDedup
+        dataInBytesAfterDedupTimestampUsec:
+          description: Specifies Timestamp of DataInBytesAfterDedup.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: DataInBytesAfterDedupTimestampUsec
+        dataInBytesTimestampUsec:
+          description: Specifies Timestamp of DataInBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: DataInBytesTimestampUsec
+        dataProtectLogicalUsageBytes:
+          description: Specifies the logical data used by Data Protect on Cohesity cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: DataProtectLogicalUsageBytes
+        dataProtectLogicalUsageBytesTimestampUsec:
+          description: Specifies Timestamp of DataProtectLogicalUsageBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: DataProtectLogicalUsageBytesTimestampUsec
+        dataProtectPhysicalUsageBytes:
+          description: Specifies the physical data used by Data Protect on Cohesity cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: DataProtectPhysicalUsageBytes
+        dataProtectPhysicalUsageBytesTimestampUsec:
+          description: Specifies Timestamp of DataProtectPhysicalUsageBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: DataProtectPhysicalUsageBytesTimestampUsec
+        dataWrittenBytes:
+          description: 'Specifies the data written after it has been reduced by deduplication and
+
+            compression. This does not include resiliency impact.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: DataWrittenBytes
+        dataWrittenBytesTimestampUsec:
+          description: Specifies Timestamp of DataWrittenBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: DataWrittenBytesTimestampUsec
+        fileServicesLogicalUsageBytes:
+          description: Specifies the logical data used by File services on Cohesity cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: FileServicesLogicalUsageBytes
+        fileServicesLogicalUsageBytesTimestampUsec:
+          description: Specifies Timestamp of FileServicesLogicalUsageBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: FileServicesLogicalUsageBytesTimestampUsec
+        fileServicesPhysicalUsageBytes:
+          description: Specifies the physical data used by File services on Cohesity cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: FileServicesPhysicalUsageBytes
+        fileServicesPhysicalUsageBytesTimestampUsec:
+          description: Specifies Timestamp of FileServicesPhysicalUsageBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: FileServicesPhysicalUsageBytesTimestampUsec
+        localDataWrittenBytes:
+          description: 'Specifies the total data written on local tiers, as computed by the
+
+            Cohesity Cluster, after the size of the data has been reduced by
+
+            change-block tracking, deduplication and compression. This does not
+
+            include resiliency impact.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: LocalDataWrittenBytes
+        localDataWrittenBytesTimestampUsec:
+          description: Specifies Timestamp of LocalDataWrittenBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: LocalDataWrittenBytesTimestampUsec
+        localTierResiliencyImpactBytes:
+          description: 'Specifies the size of the data has been replicated to other nodes as per
+
+            RF or Erasure Coding policy.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: LocalTierResiliencyImpactBytes
+        localTierResiliencyImpactBytesTimestampUsec:
+          description: Specifies Timestamp of LocalTierResiliencyImpactBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: LocalTierResiliencyImpactBytesTimestampUsec
+        localTotalPhysicalUsageBytes:
+          description: 'Specifies the total local capacity, as computed by the Cohesity Cluster,
+
+            after the size of the data has been reduced by change-block tracking,
+
+            compression and deduplication.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: LocalTotalPhysicalUsageBytes
+        localTotalPhysicalUsageBytesTimestampUsec:
+          description: Specifies Timestamp of LocalTotalPhysicalUsageBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: LocalTotalPhysicalUsageBytesTimestampUsec
+        outdatedLogicalUsageBytesTimestampUsec:
+          description: Specifies Timestamp of OutdatedLogicalUsageBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: OutdatedLogicalUsageBytesTimestampUsec
+        storageConsumedBytes:
+          description: 'Specifies the total capacity, as computed by the Cohesity Cluster,
+
+            after the size of the data has been reduced by change-block tracking,
+
+            compression and deduplication. This includes resiliency impact.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: StorageConsumedBytes
+        storageConsumedBytesTimestampUsec:
+          description: Specifies Timestamp of StorageConsumedBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: StorageConsumedBytesTimestampUsec
+        totalLogicalUsageBytes:
+          description: 'Provides the combined data residing on protected objects.
+
+            The size of data before reduction by deduplication and compression.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: TotalLogicalUsageBytes
+        totalLogicalUsageBytesTimestampUsec:
+          description: Specifies Timestamp of TotalLogicalUsageBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: TotalLogicalUsageBytesTimestampUsec
+        uniquePhysicalDataBytes:
+          description: Specifies the unique physical data usage in bytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: UniquePhysicalDataBytes
+      x-go-package: cohesity/iris/server/data/public
+    UpdateClusterParams:
+      description: 'Specifies the configuration settings that can be updated on the
+
+        Cohesity Cluster.'
+      type: object
+      title: Update Cluster.
+      properties:
+        appsSubnet:
+          description: The subnet for Athena apps.
+          $ref: '#/components/schemas/Subnet'
+        bannerEnabled:
+          description: 'Specifies whether UI banner is enabled on the cluster or not. When banner
+
+            is enabled, UI will make an additional API call to fetch the banner and
+
+            show at the login page.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: BannerEnabled
+        clusterAuditLogConfig:
+          description: Cluster Audit Log Configuration.
+          $ref: '#/components/schemas/ClusterAuditLogConfiguration'
+        dnsServerIps:
+          description: 'Array of IP Addresses of DNS Servers.
+
+
+            Specifies the IP addresses of the DNS Servers used by the Cohesity
+
+            Cluster.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: DnsServerIps
+        domainNames:
+          description: 'Array of Domain Names.
+
+
+            The first domain name specified in the array is the fully qualified
+
+            domain name assigned to the Cohesity Cluster. Any additional
+
+            domain names specified are used for the domain search list for
+
+            hostname look-up.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: DomainNames
+        enableActiveMonitoring:
+          description: 'Specifies if Cohesity can receive monitoring information from the
+
+            Cohesity Cluster.
+
+            If ''true'', remote monitoring of the Cohesity Cluster is allowed.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: EagleConfigEnableAgent
+        enableUpgradePkgPolling:
+          description: If 'true', Cohesity's upgrade server is polled for new releases.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: HaloServerEnabled
+        encryptionKeyRotationPeriodSecs:
+          description: 'Specifies the period of time (in seconds) when encryption keys are rotated.
+
+            By default, the encryption keys are rotated every 77760000 seconds
+
+            (30 days).'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: EncryptionKeyRotationPeriodSecs
+        faultToleranceLevel:
+          description: 'Specifies the level which ''MetadataFaultToleranceFactor'' applies to.
+
+            ''kNode'' indicates ''MetadataFaultToleranceFactor'' applies to Node level.
+
+            ''kChassis'' indicates ''MetadataFaultToleranceFactor'' applies to Chassis
+
+            level.
+
+            ''kRack'' indicates ''MetadataFaultToleranceFactor'' applies to Rack level.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kNode
+          - kChassis
+          - kRack
+          x-go-name: FaultToleranceLevel
+        filerAuditLogConfig:
+          description: Filer Audit Log Configuration.
+          $ref: '#/components/schemas/FilerAuditLogConfiguration'
+        gateway:
+          description: Specifies the gateway IP address.
+          type:
+          - string
+          - 'null'
+          x-go-name: Gateway
+        googleAnalyticsEnabled:
+          description: Specifies whether Google Analytics is enabled.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: GoogleAnalyticsEnabled
+        isDocumentationLocal:
+          description: 'Specifies what version of the documentation is used.
+
+            If ''true'', the version of documentation stored locally on the Cohesity
+
+            Cluster is used.
+
+            If ''false'', the documentation stored on a Cohesity Web Server
+
+            is used. The default is ''false''.
+
+            Cohesity recommends accessing the Help from the Cohesity Web site which
+
+            provides the newest and most complete version of Help.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IsDocumentationLocal
+        languageLocale:
+          description: Specifies the language and locale for this Cohesity Cluster.
+          type:
+          - string
+          - 'null'
+          x-go-name: LanguageLocale
+        localAuthDomainName:
+          description: Domain name for SMB local authentication.
+          type:
+          - string
+          - 'null'
+          x-go-name: LocalAuthDomainName
+        localGroupsEnabled:
+          description: 'Specifies whether to enable local groups on cluster. Once it is enabled,
+
+            it cannot be disabled.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: LocalGroupsEnabled
+        metadataFaultToleranceFactor:
+          description: 'Specifies metadata fault tolerance setting for the cluster. This denotes
+
+            the number of simultaneous failures[node] supported by metadata services
+
+            like gandalf and scribe.'
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: MetadataFaultToleranceFactor
+        multiTenancyEnabled:
+          description: 'Specifies if multi tenancy is enabled in the cluster. Authentication &
+
+            Authorization will always use tenant_id, however, some UI elements may be
+
+            disabled when multi tenancy is disabled.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: MultiTenancyEnabled
+        name:
+          description: Specifies the name of the Cohesity Cluster.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        ntpSettings:
+          description: 'Specifies if the ntp/master slave scheme should be disabled for this
+
+            cluster.'
+          $ref: '#/components/schemas/NtpSettingsConfig'
+        pcieSsdTierRebalanceDelaySecs:
+          description: Specifies the rebalance delay in seconds for cluster PcieSSD storage tier.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: PcieSsdTierRebalanceDelaySecs
+        reverseTunnelEnabled:
+          description: 'If ''true'', Cohesity''s Remote Tunnel is enabled.
+
+            Cohesity can access the Cluster and provide remote assistance
+
+            via a Remote Tunnel.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: ReverseTunnelEnabled
+        reverseTunnelEndTimeMsecs:
+          description: 'ReverseTunnelEndTimeMsecs specifies the end time in milliseconds since
+
+            epoch until when the reverse tunnel will stay enabled.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ReverseTunnelEndTimeMsecs
+        smbAdDisabled:
+          description: 'Specifies if Active Directory should be disabled for authentication of SMB
+
+            shares. If ''true'', Active Directory is disabled.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: SmbAdDisabled
+        smbMultichannelEnabled:
+          description: 'Specifies whether SMB multichannel is enabled on the cluster. When this is
+
+            set to true, then any SMB3 multichannel enabled client can establish
+
+            multiple TCP connection per session to the Server.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: SmbMultichannelEnabled
+        stigMode:
+          description: Specifies if STIG mode is enabled or not.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: StigMode
+        syslogServers:
+          description: Syslog servers.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/OldSyslogServer'
+          x-go-name: SyslogServers
+        tenantViewboxSharingEnabled:
+          description: 'In case multi tenancy is enabled, this flag controls whether multiple
+
+            tenants can be placed on the same viewbox. Once set to true, this flag
+
+            should never become false.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: TenantViewboxSharingEnabled
+        timezone:
+          description: 'Specifies the timezone to use for showing time in emails, reports,
+
+            filer audit logs, etc.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Timezone
+        turboMode:
+          description: Specifies if the cluster is in Turbo mode.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: TurboMode
+      x-go-package: cohesity/iris/server/data/public
+    ClusterAuditLogConfiguration:
+      description: Specifies the settings of the Cluster audit log configuration.
+      type: object
+      title: Cluster Audit Log Configuration.
+      required:
+      - enabled
+      - retentionPeriodDays
+      properties:
+        enabled:
+          description: 'Specifies if the Cluster audit logging is enabled on the
+
+            Cohesity Cluster.
+
+            If ''true'', Cluster audit logging is enabled. Otherwise, it is disabled.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: Enabled
+        retentionPeriodDays:
+          description: 'Specifies the number of days to keep (retain) the Cluster audit logs.
+
+            Audit logs generated before the period of time specified by
+
+            retentionPeriodDays are removed from the Cohesity Cluster.'
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: RetentionPeriodDays
+      x-go-package: cohesity/iris/server/data/public
+    SupportedConfig:
+      description: 'Lists the supported Erasure Coding options for the number of
+
+        Nodes in the Cohesity Cluster. In addition, the minimum number
+
+        of Nodes supported for this Cluster type is defined.'
+      type: object
+      title: Supported Erasure Coding and Node Configurations.
+      properties:
+        minNodesAllowed:
+          description: 'Specifies the minimum number of Nodes supported for this Cluster type.
+
+            For example, a Cohesity Cluster hosted directly on hardware must have at
+
+            least 3 Nodes.'
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: MinNodesAllowed
+        supportedErasureCoding:
+          description: 'Array of Supported Erasure Coding Options.
+
+
+            List the supported Erasure Coding options for the current number of
+
+            Nodes (nodeCount) in this Cluster.
+
+            Each string in the array is in the following format:
+
+            "NumDataStripes:NumCodedStripes"
+
+            For example if there are 3 nodes in the Cluster, the following
+
+            Erasure Coding mode is returned: 2:1.
+
+            See the Cohesity Dashboard help documentation for details.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: SupportedErasureCoding
+      x-go-package: cohesity/iris/server/data/public
+    OldSyslogServer:
+      description: 'Specifies the syslog servers configuration to upload Cluster
+
+        audit logs and filer audit logs.'
+      type: object
+      title: 'Data definition related to Syslog Server configuration.
+
+        Refer cluster_config.proto: ClusterConfigProto.TopicToRemoteLogServersMap
+
+        Syslog Server Configuration.'
+      required:
+      - address
+      - port
+      - protocol
+      properties:
+        address:
+          description: Specifies the IP address or hostname of the syslog server.
+          type:
+          - string
+          - 'null'
+          x-go-name: Address
+        isAlertAuditingEnabled:
+          description: 'Specifies if cohesity alert should be sent to syslog server
+
+            If ''true'', alert audting message are sent to the server.
+
+            If ''false'', alert auditng message are not sent to the server.(default)'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IsAlertAuditingEnabled
+        isClusterAuditingEnabled:
+          description: 'Specifies if Cluster audit logs should be sent to this syslog server.
+
+            If ''true'', Cluster audit logs are sent to the syslog server. (default)
+
+            If ''false'', Cluster audit logs are not sent to the syslog server.
+
+            Either cluster audit logs or filer audit logs should be enabled.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IsClusterAuditingEnabled
+        isDataProtectionEnabled:
+          description: 'Specifies if dataprotection  logs should be sent to syslog server
+
+            If ''true'', dataprotection  logs are sent to the server.
+
+            If ''false'', dataprotection  logs are not sent to the server.(default)'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IsDataProtectionEnabled
+        isFilerAuditingEnabled:
+          description: 'Specifies if filer audit logs should be sent to this syslog server.
+
+            If ''true'', filer audit logs are sent to the syslog server. (default)
+
+            If ''false'', filer audit logs are not sent to the syslog server.
+
+            Either cluster audit logs or filer audit logs should be enabled.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IsFilerAuditingEnabled
+        isSshLogEnabled:
+          description: 'Specifies if ssh login logs should be sent to syslog server
+
+            If ''true'', ssh login logs are sent to the server.
+
+            If ''false'', ssh login logs are not sent to the server.(default)'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IsSshLogEnabled
+        name:
+          description: Specifies a unique name for the syslog server on the Cluster.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        port:
+          description: Specifies the port where the syslog server listens.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Port
+        protocol:
+          description: Specifies the protocol used to send the logs.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Protocol
+      x-go-package: cohesity/iris/server/data/public
+    Cluster:
+      description: Specifies information about the Cohesity Cluster.
+      type: object
+      title: Cohesity Cluster.
+      properties:
+        appsSubnet:
+          description: The subnet for Athena apps.
+          $ref: '#/components/schemas/Subnet'
+        assignedRacksCount:
+          description: Specifies the number of racks in cluster with at least one rack assigned.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: AssignedRacksCount
+        availableMetadataSpace:
+          description: Information about storage available for metadata
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: AvailableMetadataSpace
+        bannerEnabled:
+          description: 'Specifies whether UI banner is enabled on the cluster or not. When banner
+
+            is enabled, UI will make an additional API call to fetch the banner and
+
+            show at the login page.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: BannerEnabled
+        chassisCount:
+          description: Specifies the number of chassis in cluster.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: ChassisCount
+        clusterAuditLogConfig:
+          description: Cluster Audit Log Configuration.
+          $ref: '#/components/schemas/ClusterAuditLogConfiguration'
+        clusterSoftwareVersion:
+          description: 'Specifies the current release of the Cohesity software running on
+
+            this Cohesity Cluster.'
+          type:
+          - string
+          - 'null'
+          x-go-name: ClusterSoftwareVersion
+        clusterType:
+          description: 'Specifies the type of Cluster such as kPhysical.
+
+            ''kPhysical'' indicates the Cohesity Cluster is hosted directly on hardware.
+
+            ''kVirtualRobo'' indicates the Cohesity Cluster is hosted in a VM on
+
+            a ESXi Host of a VMware vCenter Server using Cohesity''s Virtual Edition.
+
+            ''kMicrosoftCloud'' indicates the Cohesity Cluster is hosted in a VM
+
+            on Microsoft Azure using Cohesity''s Cloud Edition.
+
+            ''kAmazonCloud'' indicates the Cohesity Cluster is hosted in a VM
+
+            on Amazon S3 using Cohesity''s Cloud Edition.
+
+            ''kGoogleCloud'' indicates the Cohesity Cluster is hosted in a VM
+
+            on Google Cloud Platform using Cohesity''s Cloud Edition.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kPhysical
+          - kVirtualRobo
+          - kMicrosoftCloud
+          - kAmazonCloud
+          - kGoogleCloud
+          x-go-name: ClusterType
+        createdTimeMsecs:
+          description: 'Specifies the time when the Cohesity Cluster was created.
+
+            This value is specified as a Unix epoch Timestamp (in microseconds).'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: CreatedTimeMsecs
+        currentOpScheduledTimeSecs:
+          description: 'Specifies the time scheduled by the Cohesity Cluster to
+
+            start the current running operation.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: CurrentOpScheduledTimeSecs
+        currentOperation:
+          description: 'Specifies the current Cluster-level operation in progress.
+
+            ''kUpgrade'' indicates the Cohesity Cluster is upgrading to a new release.
+
+            ''kRemoveNode'' indicates the Cohesity Cluster is removing a Node
+
+            from the Cluster.
+
+            ''kNone'' indicates no action is occurring on the Cohesity Cluster.
+
+            ''kDestroy'' indicates the Cohesity Cluster is getting destoryed.
+
+            ''kClean'' indicates the Cohesity Cluster is getting cleaned.
+
+            ''kRestartServices'' indicates the Cohesity Cluster is restarting the services.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kRemoveNode
+          - kUpgrade
+          - kNone
+          - kDestroy
+          - kClean
+          - kRestartServices
+          x-go-name: CurrentOperation
+        currentTimeMsecs:
+          description: 'Specifies the current system time on the Cohesity Cluster.
+
+            This value is specified as a Unix epoch Timestamp (in microseconds).'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: CurrentTimeMsecs
+        dnsServerIps:
+          description: 'Array of IP Addresses of DNS Servers.
+
+
+            Specifies the IP addresses of the DNS Servers used by the Cohesity
+
+            Cluster.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: DnsServerIps
+        domainNames:
+          description: 'Array of Domain Names.
+
+
+            The first domain name specified in the array is the fully qualified
+
+            domain name assigned to the Cohesity Cluster. Any additional
+
+            domain names specified are used for the domain search list for
+
+            hostname look-up.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: DomainNames
+        enableActiveMonitoring:
+          description: 'Specifies if Cohesity can receive monitoring information from the
+
+            Cohesity Cluster.
+
+            If ''true'', remote monitoring of the Cohesity Cluster is allowed.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: EagleConfigEnableAgent
+        enableUpgradePkgPolling:
+          description: If 'true', Cohesity's upgrade server is polled for new releases.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: HaloServerEnabled
+        encryptionEnabled:
+          description: 'If ''true'', the entire Cohesity Cluster is encrypted including all View
+
+            Boxes.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: EncryptionEnabled
+        encryptionKeyRotationPeriodSecs:
+          description: 'Specifies the period of time (in seconds) when encryption keys are rotated.
+
+            By default, the encryption keys are rotated every 77760000 seconds
+
+            (30 days).'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: EncryptionKeyRotationPeriodSecs
+        eulaConfig:
+          description: Specifies the End User License Agreement (EULA) acceptance information.
+          title: EULA Acceptance Information.
+          allOf:
+          - $ref: '#/components/schemas/EulaConfig'
+        faultToleranceLevel:
+          description: 'Specifies the level which ''MetadataFaultToleranceFactor'' applies to.
+
+            ''kNode'' indicates ''MetadataFaultToleranceFactor'' applies to Node level.
+
+            ''kChassis'' indicates ''MetadataFaultToleranceFactor'' applies to Chassis
+
+            level.
+
+            ''kRack'' indicates ''MetadataFaultToleranceFactor'' applies to Rack level.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kNode
+          - kChassis
+          - kRack
+          x-go-name: FaultToleranceLevel
+        filerAuditLogConfig:
+          description: Filer Audit Log Configuration.
+          $ref: '#/components/schemas/FilerAuditLogConfiguration'
+        fipsModeEnabled:
+          description: 'Specifies if the Cohesity Cluster should operate in the FIPS mode,
+
+            which is compliant with the Federal Information Processing Standard
+
+            140-2 certification.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: FipsModeEnabled
+        gateway:
+          description: Specifies the gateway IP address.
+          type:
+          - string
+          - 'null'
+          x-go-name: Gateway
+        googleAnalyticsEnabled:
+          description: Specifies whether Google Analytics is enabled.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: GoogleAnalyticsEnabled
+        hardwareInfo:
+          description: 'Specifies a hardware type for motherboard of the nodes
+
+            that make up this Cohesity Cluster such as S2600WB for Ivy Bridge
+
+            or S2600TP for Haswell.'
+          $ref: '#/components/schemas/ClusterHardwareInfo'
+        id:
+          description: Specifies the unique id of Cohesity Cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ClusterId
+        incarnationId:
+          description: Specifies the unique incarnation id of the Cohesity Cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: IncarnationId
+        ipPreference:
+          description: IP preference
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: IpPreference
+        isDocumentationLocal:
+          description: 'Specifies what version of the documentation is used.
+
+            If ''true'', the version of documentation stored locally on the Cohesity
+
+            Cluster is used.
+
+            If ''false'', the documentation stored on a Cohesity Web Server
+
+            is used. The default is ''false''.
+
+            Cohesity recommends accessing the Help from the Cohesity Web site which
+
+            provides the newest and most complete version of Help.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IsDocumentationLocal
+        languageLocale:
+          description: Specifies the language and locale for this Cohesity Cluster.
+          type:
+          - string
+          - 'null'
+          x-go-name: LanguageLocale
+        licenseState:
+          description: Specifies the Licensing State information.
+          title: License State Information.
+          allOf:
+          - $ref: '#/components/schemas/LicenseState'
+        localAuthDomainName:
+          description: Domain name for SMB local authentication.
+          type:
+          - string
+          - 'null'
+          x-go-name: LocalAuthDomainName
+        localGroupsEnabled:
+          description: 'Specifies whether to enable local groups on cluster. Once it is enabled,
+
+            it cannot be disabled.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: LocalGroupsEnabled
+        metadataFaultToleranceFactor:
+          description: 'Specifies metadata fault tolerance setting for the cluster. This denotes
+
+            the number of simultaneous failures[node] supported by metadata services
+
+            like gandalf and scribe.'
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: MetadataFaultToleranceFactor
+        multiTenancyEnabled:
+          description: 'Specifies if multi tenancy is enabled in the cluster. Authentication &
+
+            Authorization will always use tenant_id, however, some UI elements may be
+
+            disabled when multi tenancy is disabled.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: MultiTenancyEnabled
+        name:
+          description: Specifies the name of the Cohesity Cluster.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        nodeCount:
+          description: Specifies the number of Nodes in the Cohesity Cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NodeCount
+        nodeIps:
+          description: IP addresses of nodes in the cluster
+          type:
+          - string
+          - 'null'
+          x-go-name: NodeIps
+        ntpSettings:
+          description: 'Specifies if the ntp/master slave scheme should be disabled for this
+
+            cluster.'
+          $ref: '#/components/schemas/NtpSettingsConfig'
+        pcieSsdTierRebalanceDelaySecs:
+          description: Specifies the rebalance delay in seconds for cluster PcieSSD storage tier.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: PcieSsdTierRebalanceDelaySecs
+        proxyVMSubnet:
+          description: The subnet reserved for ProxyVM
+          type:
+          - string
+          - 'null'
+          x-go-name: ProxyVMSubnet
+        reverseTunnelEnabled:
+          description: 'If ''true'', Cohesity''s Remote Tunnel is enabled.
+
+            Cohesity can access the Cluster and provide remote assistance
+
+            via a Remote Tunnel.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: ReverseTunnelEnabled
+        reverseTunnelEndTimeMsecs:
+          description: 'ReverseTunnelEndTimeMsecs specifies the end time in milliseconds since
+
+            epoch until when the reverse tunnel will stay enabled.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ReverseTunnelEndTimeMsecs
+        schemaInfoList:
+          description: Specifies the time series schema info of the cluster.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SchemaInfo'
+          x-go-name: SchemaInfoList
+        smbAdDisabled:
+          description: 'Specifies if Active Directory should be disabled for authentication of SMB
+
+            shares. If ''true'', Active Directory is disabled.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: SmbAdDisabled
+        smbMultichannelEnabled:
+          description: 'Specifies whether SMB multichannel is enabled on the cluster. When this is
+
+            set to true, then any SMB3 multichannel enabled client can establish
+
+            multiple TCP connection per session to the Server.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: SmbMultichannelEnabled
+        stats:
+          description: Specifies statistics about this Cohesity Cluster.
+          $ref: '#/components/schemas/ClusterStats'
+        stigMode:
+          description: Specifies if STIG mode is enabled or not.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: StigMode
+        supportedConfig:
+          description: 'Information about supported configuration. For example, it contains
+
+            minimum number of nodes supported for the cluster.'
+          $ref: '#/components/schemas/SupportedConfig'
+        syslogServers:
+          description: Syslog servers.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/OldSyslogServer'
+          x-go-name: SyslogServers
+        targetSoftwareVersion:
+          description: 'Specifies the Cohesity release that this Cluster is being upgraded to
+
+            if an upgrade operation is in progress.'
+          type:
+          - string
+          - 'null'
+          x-go-name: TargetSoftwareVersion
+        tenantViewboxSharingEnabled:
+          description: 'In case multi tenancy is enabled, this flag controls whether multiple
+
+            tenants can be placed on the same viewbox. Once set to true, this flag
+
+            should never become false.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: TenantViewboxSharingEnabled
+        timezone:
+          description: 'Specifies the timezone to use for showing time in emails, reports,
+
+            filer audit logs, etc.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Timezone
+        turboMode:
+          description: Specifies if the cluster is in Turbo mode.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: TurboMode
+        usedMetadataSpacePct:
+          description: 'UsedMetadataSpacePct measures the percentage about storage used for
+
+            metadata over the total storage available for metadata'
+          type:
+          - number
+          - 'null'
+          format: double
+          x-go-name: UsedMetadataSpacePct
+      x-go-package: cohesity/iris/server/data/public
+    SchemaInfo:
+      description: 'Specifies the metric data point where public data metric name as key and the
+
+        schema defined metric name as a value.'
+      type: object
+      title: Schema Info.
+      properties:
+        entityId:
+          description: Specifies the id of the entity represented as a string.
+          type:
+          - string
+          - 'null'
+          x-go-name: EntityId
+        key:
+          description: Specifies the key which is public facing name for metric name.
+          type:
+          - string
+          - 'null'
+          x-go-name: Key
+        metricName:
+          description: Specifies the Apollo schema metric name.
+          type:
+          - string
+          - 'null'
+          x-go-name: MetricName
+        schemaName:
+          description: Specifies the name of entity schema such as 'ApolloViewBoxStats'.
+          type:
+          - string
+          - 'null'
+          x-go-name: SchemaName
+      x-go-package: cohesity/iris/server/data/public
+    FilerAuditLogConfiguration:
+      description: Specifies the settings of the filer audit log configuration.
+      type: object
+      title: Filer Audit Log Configuration.
+      required:
+      - enabled
+      - retentionPeriodDays
+      properties:
+        enabled:
+          description: 'Specifies if filer audit logging is enabled on the Cohesity Cluster.
+
+            If ''true'', filer audit logging is enabled. Otherwise, it is disabled.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: Enabled
+        retentionPeriodDays:
+          description: 'Specifies the number of days to keep (retain) the filer audit logs.
+
+            Audit logs generated before the period of time specified by
+
+            retentionPeriodDays are removed from the Cohesity Cluster.'
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: RetentionPeriodDays
+      x-go-package: cohesity/iris/server/data/public
+    ServiceProcessEntry:
+      description: 'Specifies the name of a Service running on the Cluster as well as a list
+
+        of process IDs associated with that service.'
+      type: object
+      title: Service Process Entry.
+      properties:
+        processIds:
+          description: Specifies the list of process IDs associated with the Service.
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int64
+          x-go-name: ProcessIds
+        serviceName:
+          description: 'Specifies the name of the Service.
+
+            ''kApollo'' is a service for reclaiming freed disk sectors on Nodes in the
+
+            SnapFS distributed file system.
+
+            ''kBridge'' is a service for managing the SnapFS distributed file system.
+
+            ''kGenie'' is a service that is responsible for monitoring hardware health
+
+            on the Cluster.
+
+            ''kGenieGofer'' is a service that links the Genie service to other services
+
+            on the Cluster.
+
+            ''kMagneto'' is the data protection service of the Cohesity Data Platform.
+
+            ''kIris'' is the service which serves REST API calls to the UI, CLI, and any
+
+            scripts written by customers.
+
+            ''kIrisProxy'' is a service that links the Iris service to other services
+
+            on the Cluster.
+
+            ''kScribe'' is the service responsible for storing filesystem metadata.
+
+            ''kStats'' is the service that is responsible for retrieving and aggregating
+
+            disk metrics across the Cluster.
+
+            ''kYoda'' is an elastic search indexing service.
+
+            ''kAlerts'' is a publisher and subscribing service for alerts.
+
+            ''kKeychain'' is a service for managing disk encryption keys.
+
+            ''kLogWatcher'' is a service that scans the log directory and reduces
+
+            the number of logs if required.
+
+            ''kStatsCollector'' is a service that periodically logs system stats.
+
+            ''kGandalf'' is a distributed lock service and coordination manager.
+
+            ''kNexus'' indicates the Nexus service. This is the service that is
+
+            responsible for creation of Clusters and configuration of Nodes and
+
+            networking.
+
+            ''kNexusProxy'' is a service that links the Nexus service to other services
+
+            on the Cluster.
+
+            ''kStorageProxy'' is a service for accessing data on external entities.
+
+            ''kTricorder'' is a diagnostic health testing service for Clusters.
+
+            ''kRtClient'' is a reverse tunneling client service.
+
+            ''kVaultProxy'' is a service for managing external targets that Clusters
+
+            can be backed up to.
+
+            ''kSmbProxy'' is an SMB protocol service.
+
+            ''kBridgeProxy'' is the service that links the Bridge service to other
+
+            services on the Cluster.
+
+            ''kLibrarian'' is an elastic search indexing service.
+
+            ''kGroot'' is a service for managing replication of SQL databases across
+
+            multiple nodes in a Cluster.
+
+            ''kEagleAgent'' is a service that is responsible for retrieving information
+
+            on Cluster health.
+
+            ''kAthena'' is a service for running distributed containerized applications
+
+            on the Cohesity Data Platform.
+
+            ''kBifrostBroker'' is a service for communicating with the Cohesity proxies
+
+            for multitenancy.
+
+            ''kSmb2Proxy'' is a new SMB protocol service.
+
+            ''kOs'' can be specified in order to do a full reboot.
+
+            ''kAtom'' is a service for receiving data for the Continuous Data Protection.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kApollo
+          - kBridge
+          - kGenie
+          - kGenieGofer
+          - kMagneto
+          - kIris
+          - kIrisProxy
+          - kScribe
+          - kStats
+          - kYoda
+          - kAlerts
+          - kKeychain
+          - kLogWatcher
+          - kStatsCollecter
+          - kGandalf
+          - kNexus
+          - kNexusProxy
+          - kStorageProxy
+          - kTricorder
+          - kRtClient
+          - kVaultProxy
+          - kSmbProxy
+          - kBridgeProxy
+          - kLibrarian
+          - kGroot
+          - kEagleAgent
+          - kAthena
+          - kBifrostBroker
+          - kSmb2Proxy
+          - kOs
+          - kAtom
+          x-go-name: ServiceName
+      x-go-package: cohesity/iris/server/data/public
+    ClusterHardwareInfo:
+      description: 'Specifies a hardware type for motherboard of the Nodes
+
+        that make up this Cohesity Cluster such as S2600WB for Ivy Bridge
+
+        or S2600TP for Haswell.'
+      type: object
+      title: Cohesity Cluster Hardware.
+      properties:
+        hardwareModels:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: HardwareModels
+        hardwareVendors:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: HardwareVendors
+      x-go-package: cohesity/iris/server/data/public
+    LogicalStats:
+      description: 'Provides logical statistics for logical entities such as Clusters
+
+        and Domains (View Boxes).
+
+        The logical size is the size of the data when it is fully hydrated or
+
+        expanded.
+
+        The actual physical data stored on the Cohesity Cluster is
+
+        reduced by change-block tracking, compression and deduplication.'
+      type: object
+      title: Logical Statistics
+      properties:
+        totalLogicalUsageBytes:
+          description: 'Provides the combined data residing on protected objects.
+
+            The size of data before reduction by deduplication and compression.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: TotalLogicalUsageBytes
+      x-go-package: cohesity/iris/server/data/public
+    UsageAndPerformanceStats:
+      description: 'Provides usage and performance statistics
+
+        for entities such as a disks, Nodes or Clusters.'
+      type: object
+      title: Usage and Performance Statistics
+      properties:
+        dataInBytes:
+          description: 'Specifies the data read from the protected objects by the Cohesity Cluster
+
+            before any data reduction using deduplication and compression.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: DataInBytes
+        dataInBytesAfterReduction:
+          description: 'Morphed Usage before data is replicated to other nodes as per RF or
+
+            Erasure Coding policy.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: DataInBytesAfterReduction
+        minUsablePhysicalCapacityBytes:
+          description: 'Specifies the minimum usable capacity available
+
+            after erasure coding or RF. This will only be populated for cluster.
+
+            If a cluster has multiple Domains (View Boxes) with different RF or
+
+            erasure coding, this metric will be computed using the scheme that will
+
+            provide least saving.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: MinUsablePhysicalCapacityBytes
+        numBytesRead:
+          description: Provides the total number of bytes read in the last 30 seconds.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumBytesRead
+        numBytesWritten:
+          description: Provides the total number of bytes written in the last 30 second.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumBytesWritten
+        physicalCapacityBytes:
+          description: 'Provides the total physical capacity in bytes of all the storage devices,
+
+            after subtracting space reserved for cluster services'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: PhysicalCapacityBytes
+        readIos:
+          description: Provides the number of Read IOs that occurred in the last 30 seconds.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ReadIos
+        readLatencyMsecs:
+          description: 'Provides the Read latency in milliseconds for the Read IOs that occurred
+
+            during the last 30 seconds.'
+          type:
+          - number
+          - 'null'
+          format: double
+          x-go-name: ReadLatencyMsecs
+        systemCapacityBytes:
+          description: 'Provides the total available capacity as computed by
+
+            the Linux ''statfs'' command.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: SystemCapacityBytes
+        systemUsageBytes:
+          description: 'Provides the usage of bytes, as computed by the Linux ''statfs'' command,
+
+            after the size of the data is reduced by
+
+            change-block tracking, compression and deduplication.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: SystemUsageBytes
+        totalPhysicalRawUsageBytes:
+          description: 'Provides the usage of bytes, as computed by the Cohesity Cluster,
+
+            before the size of the data is reduced by
+
+            change-block tracking, compression and deduplication.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: TotalPhysicalRawUsageBytes
+        totalPhysicalUsageBytes:
+          description: 'Provides the data stored locally, after the data has been reduced by
+
+            deduplication and compression, including the space required for honoring
+
+            the resiliency settings (EC/RF).'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: TotalPhysicalUsageBytes
+        writeIos:
+          description: Provides the number of Write IOs that occurred in the last 30 seconds.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: WriteIos
+        writeLatencyMsecs:
+          description: 'Provides the Write latency in milliseconds for the Write IOs that occurred
+
+            during the last 30 seconds.'
+          type:
+          - number
+          - 'null'
+          format: double
+          x-go-name: WriteLatencyMsecs
+      x-go-package: cohesity/iris/server/data/public
+    EulaConfig:
+      description: Specifies the End User License Agreement acceptance information.
+      type: object
+      title: EULA Configuration.
+      required:
+      - signedVersion
+      - licenseKey
+      properties:
+        licenseKey:
+          description: Specifies the license key.
+          type:
+          - string
+          - 'null'
+          x-go-name: LicenseKey
+        signedByUser:
+          description: 'Specifies the login account name for the Cohesity user who accepted
+
+            the End User License Agreement.'
+          type:
+          - string
+          - 'null'
+          x-go-name: SignedByUser
+          readOnly: true
+        signedTime:
+          description: Specifies the time that the End User License Agreement was accepted.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: SignedTime
+          readOnly: true
+        signedVersion:
+          description: Specifies the version of the End User License Agreement that was accepted.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: SignedVersion
+      x-go-package: cohesity/iris/server/data/public
+    LicenseState:
+      description: Specifies the state of licensing workflow.
+      type: object
+      title: 'Data definition related to Licensing states.
+
+        Refer: clusterConfigProto.LicenseState'
+      properties:
+        failedAttempts:
+          description: Specifies no of failed attempts at claiming the license server
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: FailedAttempts
+        state:
+          description: 'Specifies the current state of licensing workflow.
+
+            LicenseStateType specifies the licenseState type.
+
+            ''kInProgressNewCluster'' indicates licensing server claim is in progress
+
+            for ''New'' Cluster.
+
+            ''kInProgressOldCluster'' indicates licensing server claim is in progress
+
+            for ''Old'' Cluster.
+
+            ''kClaimed'' indicates licensing server is claimed.
+
+            ''kSkipped'' indicates licensing workflow has been skipped.
+
+            ''kStarted'' indicates licensing UI workflow has started.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kInProgressNewCluster
+          - kInProgressOldCluster
+          - kClaimed
+          - kSkipped
+          - kStarted
+          x-go-name: State
+      x-go-package: cohesity/iris/server/data/public
+    Subnet:
+      description: 'Defines a Subnet (Subnetwork).
+
+        The netmask can be specified by setting netmaskBits or netmaskIp4.
+
+        The netmask can only be set using netmaskIp4 if the IP address
+
+        is an IPv4 address.'
+      type: object
+      title: Subnet
+      properties:
+        component:
+          description: Component that has reserved the subnet.
+          type:
+          - string
+          - 'null'
+          x-go-name: Component
+        description:
+          description: Description of the subnet.
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+        id:
+          description: ID of the subnet.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Id
+        ip:
+          description: Specifies either an IPv6 address or an IPv4 address.
+          type:
+          - string
+          - 'null'
+          x-go-name: Ip
+        netmaskBits:
+          description: Specifies the netmask using bits.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: NetmaskBits
+        netmaskIp4:
+          description: 'Specifies the netmask using an IP4 address.
+
+            The netmask can only be set using netmaskIp4 if the IP address
+
+            is an IPv4 address.'
+          type:
+          - string
+          - 'null'
+          x-go-name: NetmaskIp4
+        nfsAccess:
+          description: 'Specifies whether clients from this subnet can mount using NFS protocol.
+
+            Protocol access level.
+
+            ''kDisabled'' indicates Protocol access level ''Disabled''
+
+            ''kReadOnly'' indicates Protocol access level ''ReadOnly''
+
+            ''kReadWrite'' indicates Protocol access level ''ReadWrite'''
+          type:
+          - string
+          - 'null'
+          enum:
+          - kDisabled
+          - kReadOnly
+          - kReadWrite
+          x-go-name: NfsAccess
+        nfsAllSquash:
+          description: 'Specifies whether all clients from this subnet can map view with
+
+            view_all_squash_uid/view_all_squash_gid configured in the view.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: NfsAllSquash
+        nfsRootSquash:
+          description: Specifies whether clients from this subnet can mount as root on NFS.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: NfsRootSquash
+        smbAccess:
+          description: 'Specifies whether clients from this subnet can mount using SMB protocol.
+
+            Protocol access level.
+
+            ''kDisabled'' indicates Protocol access level ''Disabled''
+
+            ''kReadOnly'' indicates Protocol access level ''ReadOnly''
+
+            ''kReadWrite'' indicates Protocol access level ''ReadWrite'''
+          type:
+          - string
+          - 'null'
+          enum:
+          - kDisabled
+          - kReadOnly
+          - kReadWrite
+          x-go-name: SmbAccess
+      x-go-package: cohesity/iris/server/data/public
+    BasicClusterInfo:
+      description: Specifies basic information about the Cohesity Cluster.
+      type: object
+      title: Basic Cohesity Cluster Information.
+      properties:
+        authenticationType:
+          description: 'Specifies the authentication scheme for the cluster.
+
+            ''kPasswordOnly'' indicates the normal cohesity authentication type.
+
+            ''kCertificateOnly'' indicates that certificate based authentication has
+
+            been enabled and the password based authentication has been turned off.
+
+            ''kPasswordAndCertificate'' indicates that both the authenticatio schemes
+
+            are required.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kPasswordOnly
+          - kCertificateOnly
+          - kPasswordAndCertificate
+          x-go-name: AuthenticationType
+        bannerEnabled:
+          description: Specifies if banner is enabled on the cluster.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: BannerEnabled
+        clusterSoftwareVersion:
+          description: 'This field is deprecated. Specifies the current release of the Cohesity
+
+            software running on this Cohesity Cluster.
+
+            deprecated: true'
+          type:
+          - string
+          - 'null'
+          x-go-name: ClusterSoftwareVersion
+        clusterType:
+          description: 'Specifies the type of Cohesity Cluster.
+
+            ''kPhysical'' indicates the Cohesity Cluster is hosted directly on hardware.
+
+            ''kVirtualRobo'' indicates the Cohesity Cluster is hosted in a VM on
+
+            a ESXi Host of a VMware vCenter Server using Cohesity''s Virtual Edition.
+
+            ''kMicrosoftCloud'' indicates the Cohesity Cluster is hosted in a VM
+
+            on Microsoft Azure using Cohesity''s Cloud Edition.
+
+            ''kAmazonCloud'' indicates the Cohesity Cluster is hosted in a VM
+
+            on Amazon S3 using Cohesity''s Cloud Edition.
+
+            ''kGoogleCloud'' indicates the Cohesity Cluster is hosted in a VM
+
+            on Google Cloud Platform using Cohesity''s Cloud Edition.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kPhysical
+          - kVirtualRobo
+          - kMicrosoftCloud
+          - kAmazonCloud
+          - kGoogleCloud
+          x-go-name: ClusterType
+        domains:
+          description: 'Array of Domains.
+
+
+            Specifies a list of domains joined to the Cohesity Cluster,
+
+            including the default LOCAL Cohesity domain used to store the
+
+            local Cohesity users.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Domains
+        idpConfigured:
+          description: Specifies Idp is configured for the Cluster.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IdpConfigured
+        idpTenantExists:
+          description: Specifies Idp is configured for a Tenant.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IdpTenantExists
+        languageLocale:
+          description: Specifies the language and locale for the Cohesity Cluster.
+          type:
+          - string
+          - 'null'
+          x-go-name: LanguageLocale
+        mcmMode:
+          description: 'Specifies whether server is running in mcm-mode. If set to true,
+
+            it is in mcm-mode.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: McmMode
+        mcmOnPremMode:
+          description: 'Specifies whether server is running in mcm-on-prem-mode. If set to true,
+
+            it is in mcm on prem mode. This need mcm-mode to be true.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: McmOnPremMode
+        multiTenancyEnabled:
+          description: Specifies if multi-tenancy is enabled on the cluster.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: MultiTenancyEnabled
+        name:
+          description: Specifies the name of the Cohesity Cluster.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+      x-go-package: cohesity/iris/server/data/public
+    AppsConfig:
+      type: object
+      title: Athena Apps Configuration.
+      properties:
+        allowExternalTraffic:
+          description: Whether to allow pod external traffic.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: AllowExternalTraffic
+        allowUnrestictedViewAccess:
+          description: Whether to allow apps unrestricted view access.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: AllowUnrestrictedViewAccess
+        appsMode:
+          description: 'Specifies the various modes for running apps.
+
+            ''kDisabled'' specifies that apps are disabled.
+
+            ''kBareMetal'' specifies that apps could only run in containers
+
+            on the node (no VM).
+
+            ''kVmOnly'' specifies that apps could only run in containers on a VM
+
+            hosted by the node.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kDisabled
+          - kBareMetal
+          - kVmOnly
+          x-go-name: AppsMode
+        appsSubnet:
+          description: The subnet for Athena apps.
+          $ref: '#/components/schemas/Subnet'
+        overcommitMemoryPct:
+          description: The system memory to overcommit for apps.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: OvercommitMemoryPct
+        reservedCpuMillicores:
+          description: The CPU millicores to reserve for apps.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: ReservedCpuMillicores
+        reservedMemoryPct:
+          description: The system memory to reserve for apps.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: ReservedMemoryPct
+      x-go-package: cohesity/iris/server/data/public
+    ClusterStats:
+      description: Specifies statistics about this Cohesity Cluster.
+      type: object
+      title: Cohesity Cluster Statistics.
+      properties:
+        cloudUsagePerfStats:
+          description: 'Provides usage and performance statistics for the remote data stored on
+
+            a Cloud Tier by the Cohesity Cluster.'
+          title: Cloud Tier Statistics.
+          allOf:
+          - $ref: '#/components/schemas/UsageAndPerformanceStats'
+        dataReductionRatio:
+          description: 'Provides the ratio of Cluster Logical Data (totalLogicalUsageBytes)
+
+            Managed to Cluster Storage Used (totalPhysicalUsageBytes)'
+          type:
+          - number
+          - 'null'
+          format: double
+          x-go-name: DataReductionRatio
+        dataUsageStats:
+          description: 'Specifies the data usage metric of the data stored by the Cohesity
+
+            Cluster.'
+          title: Data Usage Statistics.
+          $ref: '#/components/schemas/DataUsageStats'
+        id:
+          description: Specifies the id of the Cohesity Cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Id
+        localUsagePerfStats:
+          description: 'Provides usage and performance statistics for local data stored directly
+
+            on the Cohesity Cluster.'
+          title: Local Statistics.
+          allOf:
+          - $ref: '#/components/schemas/UsageAndPerformanceStats'
+        logicalStats:
+          description: 'Specifies the total logical data size of all the local and
+
+            Cloud Tier data stored by the Cohesity Cluster before the data is
+
+            reduced by change-block tracking, compression and deduplication.
+
+            The size of the data if the data is fully hydrated or expanded.'
+          title: Logical Statistics.
+          allOf:
+          - $ref: '#/components/schemas/LogicalStats'
+        usagePerfStats:
+          description: 'Provides usage and performance statistics about the local data
+
+            stored directly on the Cohesity Cluster and the remote data
+
+            stored on a Cloud Tier for the Cohesity Cluster.'
+          title: Local and Cloud Tier Statistics.
+          allOf:
+          - $ref: '#/components/schemas/UsageAndPerformanceStats'
+      x-go-package: cohesity/iris/server/data/public
+    ClusterStatusResult:
+      description: Specifies the result of getting the status of a Cluster.
+      type: object
+      title: Cluster Status Result.
+      properties:
+        clusterId:
+          description: Specifies the ID of the Cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ClusterId
+        clusterIncarnationId:
+          description: Specifies the incarnation ID of the Cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ClusterIncarnationId
+        currentOperation:
+          description: 'Specifies the current operation being run on the Cluster.
+
+            ''kNone'' indicates that there is no current operation taking place.
+
+            ''kDestroy'' indicates that the Cluster is currently being destroyed.
+
+            ''kUpgrade'' indicates that the Cluster is currently being upgraded.
+
+            ''kClean'' indicates that the Cluster is being cleaned.
+
+            ''kRemoveNode'' indicates that a Node is being removed from the Cluster.
+
+            ''kRestartServices'' indicates that the services on the Cluster are currently
+
+            being restarted.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kNone
+          - kDestroy
+          - kUpgrade
+          - kClean
+          - kRemoveNode
+          - kRestartServices
+          x-go-name: CurrentOperation
+        message:
+          description: Specifies an optional message describing details of the Cluster status.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+        name:
+          description: Specifies the name of the Cluster.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        nodeStatuses:
+          description: Specifies the status of each Node on the Cluster.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/NodeStatusResult'
+          x-go-name: NodeStatuses
+        removalState:
+          description: 'Specifies the current healing state of the Cluster.
+
+            ''kNoRemoval'' indicates that there are no removal operations currently
+
+            happening on the Cluster.
+
+            ''kNodeRemoval'' indicates that there is a Node being removed from the
+
+            Cluster.
+
+            ''kDiskRemoval'' indicates that there is a Disk being removed from the
+
+            Cluster.
+
+            ''kNodeAndDiskRemoval'' indicates that there is a Node and a Disk being
+
+            removed from the Cluster.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kNoRemoval
+          - kNodeRemoval
+          - kDiskRemoval
+          - kNodeAndDiskRemoval
+          x-go-name: RemovalState
+        servicesSynced:
+          description: 'Specifies whether or not the services are synced with the list of
+
+            stopped services.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: ServicesSynced
+        softwareVersion:
+          description: Specifies the software version of the Cluster.
+          type:
+          - string
+          - 'null'
+          x-go-name: SoftwareVersion
+        stoppedServices:
+          description: 'Specifies the list of stopped services on the Cluster.
+
+            ''kApollo'' is a service for reclaiming freed disk sectors on Nodes in the
+
+            SnapFS distributed file system.
+
+            ''kBridge'' is a service for managing the SnapFS distributed file system.
+
+            ''kGenie'' is a service that is responsible for monitoring hardware health
+
+            on the Cluster.
+
+            ''kGenieGofer'' is a service that links the Genie service to other services
+
+            on the Cluster.
+
+            ''kMagneto'' is the data protection service of the Cohesity Data Platform.
+
+            ''kIris'' is the service which serves REST API calls to the UI, CLI, and any
+
+            scripts written by customers.
+
+            ''kIrisProxy'' is a service that links the Iris service to other services
+
+            on the Cluster.
+
+            ''kScribe'' is the service responsible for storing filesystem metadata.
+
+            ''kStats'' is the service that is responsible for retrieving and aggregating
+
+            disk metrics across the Cluster.
+
+            ''kYoda'' is an elastic search indexing service.
+
+            ''kAlerts'' is a publisher and subscribing service for alerts.
+
+            ''kKeychain'' is a service for managing disk encryption keys.
+
+            ''kLogWatcher'' is a service that scans the log directory and reduces
+
+            the number of logs if required.
+
+            ''kStatsCollector'' is a service that periodically logs system stats.
+
+            ''kGandalf'' is a distributed lock service and coordination manager.
+
+            ''kNexus'' indicates the Nexus service. This is the service that is
+
+            responsible for creation of Clusters and configuration of Nodes and
+
+            networking.
+
+            ''kNexusProxy'' is a service that links the Nexus service to other services
+
+            on the Cluster.
+
+            ''kStorageProxy'' is a service for accessing data on external entities.
+
+            ''kTricorder'' is a diagnostic health testing service for Clusters.
+
+            ''kRtClient'' is a reverse tunneling client service.
+
+            ''kVaultProxy'' is a service for managing external targets that Clusters
+
+            can be backed up to.
+
+            ''kSmbProxy'' is an SMB protocol service.
+
+            ''kBridgeProxy'' is the service that links the Bridge service to other
+
+            services on the Cluster.
+
+            ''kLibrarian'' is an elastic search indexing service.
+
+            ''kGroot'' is a service for managing replication of SQL databases across
+
+            multiple nodes in a Cluster.
+
+            ''kEagleAgent'' is a service that is responsible for retrieving information
+
+            on Cluster health.
+
+            ''kAthena'' is a service for running distributed containerized applications
+
+            on the Cohesity Data Platform.
+
+            ''kBifrostBroker'' is a service for communicating with the Cohesity proxies
+
+            for multitenancy.
+
+            ''kSmb2Proxy'' is a new SMB protocol service.
+
+            ''kOs'' can be specified in order to do a full reboot.
+
+            ''kAtom'' is a service for receiving data for the Continuous Data Protection.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            enum:
+            - kApollo
+            - kBridge
+            - kGenie
+            - kGenieGofer
+            - kMagneto
+            - kIris
+            - kIrisProxy
+            - kScribe
+            - kStats
+            - kYoda
+            - kAlerts
+            - kKeychain
+            - kLogWatcher
+            - kStatsCollecter
+            - kGandalf
+            - kNexus
+            - kNexusProxy
+            - kStorageProxy
+            - kTricorder
+            - kRtClient
+            - kVaultProxy
+            - kSmbProxy
+            - kBridgeProxy
+            - kLibrarian
+            - kGroot
+            - kEagleAgent
+            - kAthena
+            - kBifrostBroker
+            - kSmb2Proxy
+            - kOs
+            - kAtom
+          x-go-name: StoppedServices
+      x-go-package: cohesity/iris/server/data/public
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    GetAppSettingsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AppsConfig'
+    UpdateAppSettingsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AppsConfig'
+    ClusterResponse:
+      description: Successful Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Cluster'
+    GetClusterStatusResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ClusterStatusResult'
+    GetBasicClusterInfoResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicClusterInfo'
+    UpdateClusterResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Cluster'

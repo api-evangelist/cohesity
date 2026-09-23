@@ -1,0 +1,758 @@
+openapi: 3.2.0
+info:
+  description: Cohesity API provides a RESTful interface to access the various data management operations on Cohesity cluster and Helios.
+  title: Cohesity REST Audit Log API
+  version: '2.0'
+servers:
+- url: /v2
+tags:
+- name: Audit Log
+paths:
+  /audit-logs:
+    get:
+      description: Get a cluster audit logs.
+      tags:
+      - Audit Log
+      summary: Get cluster audit logs
+      operationId: GetAuditLogs
+      parameters:
+      - description: Search audit logs by 'entityName' or 'details'.
+        name: searchString
+        in: query
+        schema:
+          type: string
+      - description: Specifies a list of usernames, only audit logs made by these users will be returned.
+        name: usernames
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - description: Specifies a list of domains, only audit logs made by user in these domains will be returned.
+        name: domains
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - description: Specifies a list of entity types, only audit logs containing these entity types will be returned.
+        name: entityTypes
+        in: query
+        schema:
+          type: array
+          items:
+            enum:
+            - ClusterPartition
+            - StorageDomain
+            - View
+            - Share
+            - Node
+            - Disk
+            - Cluster
+            - Vlan
+            - User
+            - ApiKey
+            - Chassis
+            - SslCertificate
+            - ProtectionGroup
+            - Source
+            - RecoveryTask
+            - SmtpServer
+            - EncryptionKey
+            - ProtectionPolicy
+            - Alert
+            - Resolution
+            - AlertNotificationRule
+            - Vault
+            - RemoteCluster
+            - ActiveDirectory
+            - KerberosProvider
+            - Ldap
+            - AntivirusServiceGroup
+            - InfectedFile
+            - PreferredDomainController
+            - Group
+            - Role
+            - ProtectionRun
+            - SearchJob
+            - PhysicalAgent
+            - CloneTask
+            - CloneRefreshTask
+            - Network
+            - Interface
+            - NetworkInerfaceGroup
+            - Scheduler
+            - ProxyServer
+            - StaticRoute
+            - Ip
+            - Qos
+            - KmsConfiguration
+            - CloudSpin
+            - Tenant
+            - IdpConfiguration
+            - App
+            - HeliosEvent
+            - Object
+            - ClusterServices
+            - AccessToken
+            - SnmpConfig
+            - IoTier
+            - ServiceFlag
+            - SupportServer
+            - Csr
+            - Keystone
+            - SwiftRoles
+            - Tags
+            - Nis
+            - Snapshot
+            - HybridExtender
+            - DataTieringAnalysisGroup
+            - DataTieringDowntierTask
+            - DataTieringUptierTask
+            - TrustedCA
+            - AMQPTargetConfiguration
+            - Patch
+            - Hotfix
+            type: string
+      - description: Specifies a list of actions, only audit logs containing these actions will be returned.
+        name: actions
+        in: query
+        schema:
+          type: array
+          items:
+            enum:
+            - Login
+            - Logout
+            - Create
+            - Modify
+            - Delete
+            - Activate
+            - Deactivate
+            - Pause
+            - Resume
+            - RunNow
+            - Clone
+            - Recover
+            - Cancel
+            - Register
+            - Unregister
+            - Update
+            - Refresh
+            - Upgrade
+            - Upload
+            - Download
+            - Rename
+            - Accept
+            - Mark
+            - Close
+            - Join
+            - DisJoin
+            - Overwrite
+            - MarkRemoval
+            - CloudSpin
+            - Assign
+            - Unassign
+            - NotificationRule
+            - ScheduleReport
+            - Install
+            - Uninstall
+            - Stop
+            - Start
+            - Restart
+            - RunDiagnostics
+            - Apply
+            - Revert
+            - Import
+            - Validate
+            type: string
+      - description: Specifies a unix timestamp in microseconds, only audit logs made after this time will be returned.
+        name: startTimeUsecs
+        in: query
+        schema:
+          type: integer
+          format: int64
+      - description: Specifies a unix timestamp in microseconds, only audit logs made before this time will be returned.
+        name: endTimeUsecs
+        in: query
+        schema:
+          type: integer
+          format: int64
+      - description: Specifies a list of tenant ids, only audit logs made by these tenants will be returned.
+        name: tenantIds
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - description: If true, the response will include Protection Groups which were created by all tenants which the current user has permission to see. If false, then only Protection Groups created by the current user will be returned.
+        name: includeTenants
+        in: query
+        schema:
+          type: boolean
+      - description: Specifies a start index. The oldest logs before this index will skipped, only audit logs from this index will be fetched.
+        name: startIndex
+        in: query
+        schema:
+          type: integer
+          format: int64
+      - description: Specifies the number of indexed obejcts to be fetched from the specified start index.
+        name: count
+        in: query
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/GetAuditLogsResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /audit-logs/actions:
+    get:
+      description: Get all actions of cluster audit logs.
+      tags:
+      - Audit Log
+      summary: Get cluster audit logs actions
+      operationId: GetAuditLogsActions
+      responses:
+        '200':
+          $ref: '#/components/responses/GetAuditLogsActionsResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /audit-logs/entity-types:
+    get:
+      description: Get all entity types of cluster audit logs.
+      tags:
+      - Audit Log
+      summary: Get cluster audit logs entity types
+      operationId: GetAuditLogsEntityTypes
+      responses:
+        '200':
+          $ref: '#/components/responses/GetAuditLogsEntityTypesResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /audit-logs/filer-configs:
+    get:
+      description: Get filer audit log configs.
+      tags:
+      - Audit Log
+      summary: Get filer audit log configs
+      operationId: GetFilerAuditLogConfigs
+      responses:
+        '200':
+          $ref: '#/components/responses/GetFilerAuditLogConfigsResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    put:
+      description: Update filer audit log configs.
+      tags:
+      - Audit Log
+      summary: Update filer audit log configs
+      operationId: UpdateFilerAuditLogConfigs
+      responses:
+        '200':
+          $ref: '#/components/responses/GetFilerAuditLogConfigsResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FilerAuditLogConfigs'
+        description: Specifies the filer audit log config to update.
+        required: true
+components:
+  responses:
+    GetFilerAuditLogConfigsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FilerAuditLogConfigs'
+    GetAuditLogsActionsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuditLogsActions'
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    GetAuditLogsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuditLogs'
+    GetAuditLogsEntityTypesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuditLogsEntityTypes'
+  schemas:
+    FilerAuditLogConfigs:
+      description: Specifies the filer audit log configs.
+      type: object
+      properties:
+        sharePermissions:
+          description: Specifies a list of share level permissions.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SmbPermission'
+          x-order: 0
+        subnetWhitelist:
+          description: Specifies a list of Subnets with IP addresses that have permissions to access a Cohesity View containing filer audit logs.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Subnet'
+          x-order: 1
+        overrideGlobalSubnetWhitelist:
+          description: Specifies whether view level client subnet whitelist overrides cluster and global setting.
+          type:
+          - boolean
+          - 'null'
+          x-order: 2
+        smbMountPaths:
+          description: Specifies a list of SMB mount paths of a Cohesity View containing filer audit logs.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 3
+          readOnly: true
+        nfsMountPath:
+          description: This field is currently deprecated. Please use NFS MountPaths which would be an array of strings.
+          type:
+          - string
+          - 'null'
+          x-order: 4
+          readOnly: true
+        nfsMountPaths:
+          description: Specifies a list of NFS mount paths of a Cohesity View containing filer audit logs.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 5
+          readOnly: true
+    AuditLogsEntityTypes:
+      description: Specifies entity types of audit logs.
+      type: object
+      properties:
+        entityTypes:
+          description: Specifies a list of audit logs entity types.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 0
+    Subnet:
+      description: 'Defines a Subnet (Subnetwork).
+
+        The netmask can be specified by setting netmaskBits or netmaskIp4.
+
+        The netmask can only be set using netmaskIp4 if the IP address
+
+        is an IPv4 address.'
+      type: object
+      title: Subnet
+      properties:
+        component:
+          description: Component that has reserved the subnet.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        description:
+          description: Description of the subnet.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        gateway:
+          description: Gateway for the subnet.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        id:
+          description: ID of the subnet.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-order: 3
+        ip:
+          description: Specifies either an IPv6 address or an IPv4 address.
+          type:
+          - string
+          - 'null'
+          x-order: 4
+        netmaskBits:
+          description: Specifies the netmask using bits.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-order: 5
+        netmaskIp4:
+          description: 'Specifies the netmask using an IP4 address.
+
+            The netmask can only be set using netmaskIp4 if the IP address
+
+            is an IPv4 address.'
+          type:
+          - string
+          - 'null'
+          x-order: 6
+        nfsAccess:
+          description: 'Specifies whether clients from this subnet can mount using NFS protocol.
+
+            Protocol access level.
+
+            ''kDisabled'' indicates Protocol access level ''Disabled''
+
+            ''kReadOnly'' indicates Protocol access level ''ReadOnly''
+
+            ''kReadWrite'' indicates Protocol access level ''ReadWrite'''
+          type:
+          - string
+          - 'null'
+          enum:
+          - kDisabled
+          - kReadOnly
+          - kReadWrite
+          x-order: 7
+        nfsSquash:
+          description: 'Specifies which nfsSquash Mounted.
+
+            ''kNone'' mounts none.
+
+            ''kRootSquash'' mounts nfsRootSquash. Whether clients from this subnet can
+
+            mount as root on NFS.
+
+            ''kAllSquash'' mounts nfsAllSquash. Whether all clients from this subnet can
+
+            map view with view_all_squash_uid/view_all_squash_gid configured in
+
+            the view.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kNone
+          - kRootSquash
+          - kAllSquash
+          x-order: 8
+        smbAccess:
+          description: 'Specifies whether clients from this subnet can mount using SMB protocol.
+
+            Protocol access level.
+
+            ''kDisabled'' indicates Protocol access level ''Disabled''
+
+            ''kReadOnly'' indicates Protocol access level ''ReadOnly''
+
+            ''kReadWrite'' indicates Protocol access level ''ReadWrite'''
+          type:
+          - string
+          - 'null'
+          enum:
+          - kDisabled
+          - kReadOnly
+          - kReadWrite
+          x-order: 9
+        s3Access:
+          description: 'Specifies whether clients from this subnet can access using S3 protocol.
+
+            Protocol access level.
+
+            ''kDisabled'' indicates Protocol access level ''Disabled''
+
+            ''kReadOnly'' indicates Protocol access level ''ReadOnly''
+
+            ''kReadWrite'' indicates Protocol access level ''ReadWrite'''
+          type:
+          - string
+          - 'null'
+          enum:
+          - kDisabled
+          - kReadOnly
+          - kReadWrite
+          x-order: 10
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    AuditLogs:
+      description: Sepcifies the audit logs.
+      type: object
+      properties:
+        auditLogs:
+          description: Specifies a list of audit logs.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AuditLog'
+          x-order: 0
+        count:
+          description: Specifies the total number of audit logs that match the filter and search criteria. Use this value to determine how many additional requests are required to get the full result.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+    SmbPermission:
+      description: Specifies information about a single SMB permission.
+      type: object
+      title: SMB Permission.
+      properties:
+        type:
+          description: 'Specifies the type of permission.
+
+            ''Allow'' indicates access is allowed.
+
+            ''Deny'' indicates access is denied.
+
+            ''SpecialType'' indicates a type defined in the Access Control Entry (ACE)
+
+            does not map to ''Allow'' or ''Deny''.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - Allow
+          - Deny
+          - SpecialType
+          x-order: 0
+        mode:
+          description: 'Specifies how the permission should be applied to folders and/or files.
+
+            ''FolderSubFoldersAndFiles'' indicates that permissions are applied to a Folder
+
+            and it''s sub folders and files.
+
+            ''FolderAndSubFolders'' indicates that permissions are applied to a Folder and it''s sub folders.
+
+            ''FolderAndSubFiles'' indicates that permissions are applied to a Folder and it''s sub files.
+
+            ''FolderOnly'' indicates that permsission are applied to folder only.
+
+            ''SubFoldersAndFilesOnly'' indicates that permissions are applied to sub folders and files only.
+
+            ''SubFoldersOnly'' indicates that permissiona are applied to sub folders only.
+
+            ''FilesOnly'' indicates that permissions are applied to files only.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - FolderSubFoldersAndFiles
+          - FolderAndSubFolders
+          - FolderAndFiles
+          - FolderOnly
+          - SubFoldersAndFilesOnly
+          - SubFoldersOnly
+          - FilesOnly
+          x-order: 1
+        access:
+          description: "Specifies the read/write access to the SMB share.\n'ReadyOnly' indicates read only access to the SMB share.\n'ReadWrite' indicates read and write access to the SMB share.\n'FullControl' indicates full administrative control of the SMB share.\n'SpecialAccess' indicates custom permissions to the SMB share using\n access masks structures.\n'SuperUser' indicates root permissions ignoring all SMB ACLs."
+          type:
+          - string
+          - 'null'
+          enum:
+          - ReadOnly
+          - ReadWrite
+          - Modify
+          - FullControl
+          - SpecialAccess
+          x-order: 2
+        sid:
+          description: Specifies the security identifier (SID) of the principal.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+        specialType:
+          description: 'Specifies a custom type.
+
+            When the type from the Access Control Entry (ACE) cannot be mapped
+
+            to one of the enums in ''type'', this field is populated with the custom
+
+            type derived from the ACE and ''type'' is set to kSpecialType.
+
+            This is a placeholder for storing an unmapped type and should
+
+            not be set when creating and editing a View.'
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-order: 4
+        specialAccessMask:
+          description: 'Specifies custom access permissions.
+
+            When the access mask from the Access Control Entry (ACE) cannot be mapped
+
+            to one of the enums in ''access'', this field is populated
+
+            with the custom mask derived from the ACE and ''access'' is set
+
+            to kSpecialAccess.
+
+            This is a placeholder for storing an unmapped access permission and should
+
+            not be set when creating and editing a View.'
+          type:
+          - integer
+          - 'null'
+          format: uint32
+          x-order: 5
+    AuditLog:
+      description: Specifies an audit log message.
+      type: object
+      properties:
+        details:
+          description: Specifies the change details of this audit log.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        username:
+          description: Specifies the username who made this audit log.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        domain:
+          description: Specifies the domain of user who made this audit log.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        entityName:
+          description: Specifies the entity name.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+        entityType:
+          description: Specifies the entity type.
+          type:
+          - string
+          - 'null'
+          x-order: 4
+        action:
+          description: Specifies the action type of this audit log.
+          type:
+          - string
+          - 'null'
+          x-order: 5
+        timestampUsecs:
+          description: Specifies a unix timestamp in micro seconds when the audit log was taken.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 6
+        ip:
+          description: Specifies the ip of user who made this audit log.
+          type:
+          - string
+          - 'null'
+          x-order: 7
+        isImpersonation:
+          description: Specifies if the action is made through impersonation.
+          type:
+          - boolean
+          - 'null'
+          x-order: 8
+        tenantId:
+          description: Specifies the tenant id who made this audit log.
+          type:
+          - string
+          - 'null'
+          x-order: 9
+        tenantName:
+          description: Specifies the tenant name who made this audit log.
+          type:
+          - string
+          - 'null'
+          x-order: 10
+        originalTenantId:
+          description: Specifies the original tenant id who made this audit log.
+          type:
+          - string
+          - 'null'
+          x-order: 11
+        originalTenantName:
+          description: Specifies the original tenant name who made this audit log.
+          type:
+          - string
+          - 'null'
+          x-order: 12
+        previousRecord:
+          description: 'Specifies the record before the action is invoked. This will be returned only if verbose audit is enabled. '
+          type:
+          - string
+          - 'null'
+          x-order: 13
+        newRecord:
+          description: 'Specifies the record after the action is invoked. This will be returned only if verbose audit is enabled. '
+          type:
+          - string
+          - 'null'
+          x-order: 14
+    AuditLogsActions:
+      description: Specifies actions of audit logs.
+      type: object
+      properties:
+        actions:
+          description: Specifies a list of audit logs actions.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 0
+  securitySchemes:
+    APIKeyHeader:
+      in: header
+      name: apiKey
+      type: apiKey

@@ -1,0 +1,1667 @@
+openapi: 3.2.0
+info:
+  description: 'This API list provides operations for interfacing with the Cohesity
+
+    Cluster.'
+  title: Cohesity REST Vaults API
+  version: '1.0'
+servers:
+- url: https://<CLUSTER_VIP>/irisservices/api/v1
+tags:
+- name: Vaults
+paths:
+  /public/vaults:
+    get:
+      description: 'If no parameters are specified, all Vaults (External Targets) currently
+
+        registered on the Cohesity Cluster are returned.
+
+        Specifying parameters filters the results that are returned.
+
+        A Vault is equivalent to an External Target in the Cohesity Dashboard.'
+      tags:
+      - Vaults
+      summary: List the Vaults (External Targets) registered on the Cohesity Cluster filtered…
+      operationId: GetVaults
+      parameters:
+      - x-go-name: Id
+        description: Specifies the id of Vault to return. If empty, all Vaults are returned.
+        name: id
+        in: query
+        schema:
+          type: integer
+          format: int64
+      - x-go-name: Name
+        description: 'Specifies the name of the Vault to return. If empty, all Vaults are
+
+          returned.'
+        name: name
+        in: query
+        schema:
+          type: string
+      - x-go-name: IncludeMarkedForRemoval
+        description: Specifies if Vaults that are marked for removal should be returned.
+        name: includeMarkedForRemoval
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/GetVaultsResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    post:
+      description: 'Returns the created Vault.
+
+        A Vault is equivalent to an External Target in the Cohesity Dashboard.'
+      tags:
+      - Vaults
+      summary: Create a new Vault (External Target)
+      operationId: CreateVault
+      responses:
+        '201':
+          $ref: '#/components/responses/CreateVaultResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Vault'
+        description: Request to create a new Vault.
+        required: true
+  /public/vaults/archiveMediaInfo:
+    get:
+      description: 'Returns the media information about the specified archive service uid
+
+        (such as a QStar tape archive service).
+
+
+        An archive service uid is uniquely identified using a combination of the
+
+        following fields: clusterIncarnationId, entityIds and clusterId.
+
+        These are all required fields.'
+      tags:
+      - Vaults
+      summary: List the media information for the specified archive service
+      operationId: GetArchiveMediaInfo
+      parameters:
+      - x-go-name: ClusterId
+        description: 'Specifies the id of the Cohesity Cluster that archived to a
+
+          QStar media Vault.'
+        name: clusterId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - x-go-name: ClusterIncarnationId
+        description: 'Specifies the incarnation id of the Cohesity Cluster that archived
+
+          to a QStar media Vault.'
+        name: clusterIncarnationId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - x-go-name: QStarArchiveJobId
+        description: Specifies the id of the Job that archived to a QStar media Vault.
+        name: qstarArchiveJobId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - x-go-name: QStarRestoreTaskId
+        description: 'Specifies the id of the restore task to optionally filter by.
+
+          The restore task that is restoring data from the specified media Vault.'
+        name: qstarRestoreTaskId
+        in: query
+        schema:
+          type: integer
+          format: int64
+      - x-go-name: EntityIds
+        description: 'Specifies an array of entityIds to optionally filter by.
+
+          An entityId is a unique id for a VM assigned by the Cohesity Cluster.'
+        name: entityIds
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/GetArchiveMediaInfoResponse'
+        default:
+          $ref: '#/components/responses/Error'
+  /public/vaults/bandwidthSettings:
+    get:
+      description: Returns the upload and download bandwidth limits.
+      tags:
+      - Vaults
+      summary: List the upload and download bandwidth limit and bandwidth overrides settings
+      operationId: GetBandwidthSettings
+      responses:
+        '200':
+          $ref: '#/components/responses/GetBandwidthSettingsResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    put:
+      description: Returns the updated bandwidth limits.
+      tags:
+      - Vaults
+      summary: Updates bandwidth limits
+      operationId: UpdateBandwidthSettings
+      responses:
+        '200':
+          $ref: '#/components/responses/GetBandwidthSettingsResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VaultBandwidthLimits'
+        description: Request to update global bandwidth limits settings.
+        required: true
+  /public/vaults/encryptionKey/{id}:
+    get:
+      description: 'Get encryption information (such as the encryption key)
+
+        for the specified Vault (External Target).
+
+        To restore data to a remote Cluster (for example to support a disaster
+
+        recovery scenario), you must get the encryption key of the Vault
+
+        and store it outside the local source Cluster, before disaster strikes.
+
+        If you have the encryption key and the local source Cluster goes down,
+
+        you can restore the data to a remote Cluster from the Vault.
+
+        The local source Cluster is the Cluster that archived the data on the Vault.'
+      tags:
+      - Vaults
+      summary: Get encryption information for a Vault (External Target).
+      operationId: GetVaultEncryptionKey
+      parameters:
+      - x-go-name: Id
+        description: Specifies a unique id of the Vault.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/GetVaultEncryptionKeyResponse'
+        default:
+          $ref: '#/components/responses/Error'
+  /public/vaults/{id}:
+    get:
+      description: 'Returns the Vault corresponding to the specified Vault Id.
+
+        A Vault is equivalent to an External Target in the Cohesity Dashboard.'
+      tags:
+      - Vaults
+      summary: List details about a single Vault (External Target)
+      operationId: GetVaultById
+      parameters:
+      - x-go-name: Id
+        description: Specifies a unique id of the Vault.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/GetVaultByIdResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    put:
+      description: 'Update the settings of a Vault.
+
+        A Vault is equivalent to an External Target in the Cohesity Dashboard.
+
+        Returns the updated Vault.'
+      tags:
+      - Vaults
+      summary: Update a Vault (External Target)
+      operationId: UpdateVault
+      parameters:
+      - x-go-name: Id
+        description: Specifies a unique id of the Vault.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/UpdateVaultResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Vault'
+        description: Request to update a Vault's settings.
+        required: true
+    delete:
+      description: 'Returns delete status upon completion.
+
+        A Vault is equivalent to an External Target in the Cohesity Dashboard.'
+      tags:
+      - Vaults
+      summary: Delete a Vault (External Target)
+      operationId: DeleteVault
+      parameters:
+      - x-go-name: ForceDelete
+        description: 'Specifies whether to force delete the vault.
+
+          If the flag is set to true, the RemovalState of the vault is changed to
+
+          ''kMarkedForRemoval'' and Eventually vault is removed from cluster config
+
+          and archived metadata from scribe is removed without necessarily deleting
+
+          the associated archived data.'
+        name: forceDelete
+        in: query
+        schema:
+          type: boolean
+      - x-go-name: Retry
+        description: Specifies whether to retry a request after failure.
+        name: retry
+        in: query
+        schema:
+          type: boolean
+      - x-go-name: IncludeMarkedForRemoval
+        description: Specifies if Vaults that are marked for removal should be returned.
+        name: includeMarkedForRemoval
+        in: query
+        schema:
+          type: boolean
+      - x-go-name: Id
+        description: Specifies a unique id of the Vault.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VaultDeleteParams'
+        description: Request to delete vault.
+components:
+  schemas:
+    Vault:
+      description: 'Specifies an external storage location and is equivalent to
+
+        an External Target in the Cohesity Dashboard.
+
+        A Vault can provide an additional Cloud Tier where cold data of the
+
+        Cohesity Cluster can be stored in the Cloud.
+
+        A Vault can also provide archive storage for backup data. This archive data
+
+        is stored on Tapes and in Cloud Vaults.'
+      type: object
+      title: Vault.
+      properties:
+        caTrustedCertificate:
+          description: Specifies the CA (certificate authority) trusted certificate.
+          type:
+          - string
+          - 'null'
+          x-go-name: CaTrustedCertificate
+        clientCertificate:
+          description: Specifies the client CA  certificate. This certificate is in pem format.
+          type:
+          - string
+          - 'null'
+          x-go-name: ClientCertificate
+        clientPrivateKey:
+          description: Specifies the client private key. This certificate is in pem format.
+          type:
+          - string
+          - 'null'
+          x-go-name: ClientPrivateKey
+        compressionPolicy:
+          description: 'Specifies whether to send data to the Vault in a
+
+            compressed format.
+
+            ''kCompressionNone'' indicates that data is not compressed.
+
+            ''kCompressionLow'' indicates that data is compressed using LZ4 or Snappy.
+
+            ''kCompressionHigh'' indicates that data is compressed in Gzip.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kCompressionNone
+          - kCompressionLow
+          - kCompressionHigh
+          x-go-name: Compression
+        config:
+          description: Specifies the settings required to connect to the Vault (External Target).
+          $ref: '#/components/schemas/VaultConfig'
+        customerManagingEncryptionKeys:
+          description: 'Specifies whether to manage the encryption key manually or let the
+
+            Cohesity Cluster manage it. If true, you must get the encryption key
+
+            store it outside the Cluster, before disaster strikes such as the
+
+            source local Cohesity Cluster being down.
+
+            You can get the encryption key by downloading it
+
+            using the Cohesity Dashboard or by calling the
+
+            GET /public/vaults/encryptionKey/{id} operation.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: CustomerManagingEncryptionKeys
+        dedupEnabled:
+          description: Specifies whether to deduplicate data before sending it to the Vault.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: DedupEnabled
+        deleteVaultError:
+          description: Specifies the error message when deleting a vault.
+          type:
+          - string
+          - 'null'
+          x-go-name: DeleteVaultError
+        description:
+          description: Specifies a description about the Vault.
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+        desiredWalLocation:
+          description: 'Desired location for write ahead logs(wal).
+
+            ''kHomePartition'' indicates desired wal location to be the home partition.
+
+            ''kDisk'' indicates desired wal location to be the same disk as chunk repo.
+
+            ''kScribe'' indicates desired wal location to be scribe.
+
+            ''kScribeTable'' indicates chunk repository state is kept as key-value
+
+            pairs in scribe.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kHomePartition
+          - kDisk
+          - kScribe
+          - kScribeTable
+          x-go-name: DesiredWalLocation
+        encryptionKeyFileDownloaded:
+          description: 'Specifies if the encryption key file has been downloaded using the
+
+            Cohesity Dashboard (Cohesity UI).
+
+            If true, the encryption key has been downloaded using the Cohesity
+
+            Dashboard. An encryption key can only be downloaded once using the
+
+            Cohesity Dashboard.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: EncryptionKeyFileDownloaded
+        encryptionPolicy:
+          description: 'Specifies whether to send and store data in an encrypted format.
+
+            ''kEncryptionNone'' indicates the data is not encrypted.
+
+            ''kEncryptionStrong'' indicates the data is encrypted.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kEncryptionNone
+          - kEncryptionStrong
+          - kEncryptionWeak
+          x-go-name: EncryptionLevel
+        externalTargetType:
+          description: 'Specifies the type of Vault.
+
+            ''kNearline'' indicates a Google Nearline Vault.
+
+            ''kGlacier'' indicates an AWS Glacier Vault.
+
+            ''kS3'' indicates an AWS S3 Vault.
+
+            ''kAzureStandard'' indicates a Microsoft Azure Standard Vault.
+
+            ''kS3Compatible'' indicates an S3 Compatible Vault.
+
+            (See the online help for supported types.)
+
+            ''kQStarTape'' indicates a QStar Tape Vault.
+
+            ''kGoogleStandard'' indicates a Google Standard Vault.
+
+            ''kGoogleDRA'' indicates a Google DRA Vault.
+
+            ''kAmazonS3StandardIA'' indicates an Amazon S3 Standard-IA Vault.
+
+            ''kAWSGovCloud'' indicates an AWS Gov Cloud Vault.
+
+            ''kNAS'' indicates a NAS Vault.
+
+            ''kColdline'' indicates a Google Coldline Vault.
+
+            ''kAzureGovCloud'' indicates a Microsoft Azure Gov Cloud Vault.
+
+            ''kAzureArchive'' indicates an Azure Archive Vault.
+
+            ''kAzure'' indicates an Azure Vault.
+
+            ''kGoogle'' indicates a Google Vault.
+
+            ''kAmazon'' indicates an Amazon Vault.
+
+            ''kOracle'' indicates an Oracle Vault.
+
+            ''kOracleTierStandard'' indicates an Oracle Tier Standard Vault.
+
+            ''kOracleTierArchive'' indicates an Oracle Tier Archive Vault.
+
+            ''kAmazonC2S'' indicates an Amazon Commercial Cloud Services Vault.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kNearline
+          - kGlacier
+          - kS3
+          - kAzureStandard
+          - kS3Compatible
+          - kQStarTape
+          - kGoogleStandard
+          - kGoogleDRA
+          - kAmazonS3StandardIA
+          - kAWSGovCloud
+          - kNAS
+          - kColdline
+          - kAzureGovCloud
+          - kAzureArchive
+          - kAzure
+          - kGoogle
+          - kAmazon
+          - kOracle
+          - kOracleTierStandard
+          - kOracleTierArchive
+          - kAmazonC2S
+          x-go-name: ExternalTargetType
+        fullArchiveIntervalDays:
+          description: 'Specifies the number days between full archives to the Vault.
+
+            The current default is 90 days.
+
+            This is only meaningful when incrementalArchivesEnabled is true and
+
+            the Vault usage type is kArchival.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: FullArchiveIntervalDays
+        id:
+          description: Specifies an id that identifies the Vault.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Id
+        incrementalArchivesEnabled:
+          description: 'Specifies whether to perform incremental archival when sending data
+
+            to the Vault.
+
+            If false, only full backups are performed.
+
+            If true, incremental backups are performed between the full backups.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IncrementalArchivesEnabled
+        isPasswordEncrypted:
+          description: Specifies if given password is not encrypted or not in the cluster config.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IsPasswordEncrypted
+        keyFileDownloadTimeUsecs:
+          description: 'Specifies the time (in microseconds) when the encryption key file was
+
+            downloaded from the Cohesity Dashboard (Cohesity UI).
+
+            An encryption key can only be downloaded once
+
+            using the Cohesity Dashboard.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: KeyFileDownloadTimeUsecs
+        keyFileDownloadUser:
+          description: 'Specifies the user who downloaded the encryption key from the
+
+            Cohesity Dashboard (Cohesity UI). This field
+
+            is only populated if encryption is enabled for the Vault and
+
+            customerManagingEncryptionKeys is true.'
+          type:
+          - string
+          - 'null'
+          x-go-name: KeyFileDownloadUser
+        name:
+          description: Specifies the name of the Vault.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        removalState:
+          description: 'Specifies the state of the vault to be removed.
+
+            ''kDontRemove'' means the state of object is functional and
+
+            it is not being removed.
+
+            ''kMarkedForRemoval'' means the object is being removed.
+
+            ''kOkToRemove'' means the object has been removed on the Cohesity Cluster and
+
+            if the object is physical, it can be removed from the Cohesity Cluster.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kDontRemove
+          - kMarkedForRemoval
+          - kOkToRemove
+          x-go-name: RemovalState
+        type:
+          description: 'Specifies the type of Vault.
+
+            This field is deprecated. This field is split into ExternalTargetType in
+
+            and TierType in respective credentials. Initialize those
+
+            fields instead.
+
+            deprecated: true
+
+            ''kNearline'' indicates a Google Nearline Vault.
+
+            ''kGlacier'' indicates an AWS Glacier Vault.
+
+            ''kS3'' indicates an AWS S3 Vault.
+
+            ''kAzureStandard'' indicates a Microsoft Azure Standard Vault.
+
+            ''kS3Compatible'' indicates an S3 Compatible Vault.
+
+            (See the online help for supported types.)
+
+            ''kQStarTape'' indicates a QStar Tape Vault.
+
+            ''kGoogleStandard'' indicates a Google Standard Vault.
+
+            ''kGoogleDRA'' indicates a Google DRA Vault.
+
+            ''kAmazonS3StandardIA'' indicates an Amazon S3 Standard-IA Vault.
+
+            ''kAWSGovCloud'' indicates an AWS Gov Cloud Vault.
+
+            ''kNAS'' indicates a NAS Vault.
+
+            ''kColdline'' indicates a Google Coldline Vault.
+
+            ''kAzureGovCloud'' indicates a Microsoft Azure Gov Cloud Vault.
+
+            ''kAzureArchive'' indicates an Azure Archive Vault.
+
+            ''kAzure'' indicates an Azure Vault.
+
+            ''kGoogle'' indicates a Google Vault.
+
+            ''kAmazon'' indicates an Amazon Vault.
+
+            ''kOracle'' indicates an Oracle Vault.
+
+            ''kOracleTierStandard'' indicates an Oracle Tier Standard Vault.
+
+            ''kOracleTierArchive'' indicates an Oracle Tier Archive Vault.
+
+            ''kAmazonC2S'' indicates an Amazon Commercial Cloud Services Vault.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kNearline
+          - kGlacier
+          - kS3
+          - kAzureStandard
+          - kS3Compatible
+          - kQStarTape
+          - kGoogleStandard
+          - kGoogleDRA
+          - kAmazonS3StandardIA
+          - kAWSGovCloud
+          - kNAS
+          - kColdline
+          - kAzureGovCloud
+          - kAzureArchive
+          - kAzure
+          - kGoogle
+          - kAmazon
+          - kOracle
+          - kOracleTierStandard
+          - kOracleTierArchive
+          - kAmazonC2S
+          x-go-name: Type
+        usageType:
+          description: 'Specifies the usage type of the Vault.
+
+            ''kArchival'' indicates the Vault provides archive storage for backup data.
+
+            ''kCloudSpill'' indicates the Vault provides additional storage for cold data.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kArchival
+          - kCloudSpill
+          x-go-name: UsageType
+        vaultBandwidthLimits:
+          description: Specifies bandwidth limit.
+          $ref: '#/components/schemas/VaultBandwidthLimits'
+      x-go-package: cohesity/iris/server/data/public
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    AmazonCloudCredentials:
+      description: 'Specifies the cloud credentials to connect to a Amazon
+
+        service account. Glacier, S3, and S3-compatible clouds all use these
+
+        credentials.'
+      type: object
+      title: Amazon Cloud Credentials.
+      properties:
+        accessKeyId:
+          description: 'Specifies the access key for Amazon service account.
+
+            See the Cohesity online help for the value to specify for this field
+
+            based on the current S3 Compatible Vault (External Target) type.
+
+            For example for Iron Mountain, specify the user name from Iron Mountain
+
+            for this field.'
+          type:
+          - string
+          - 'null'
+          x-go-name: AccessKeyId
+        authMethod:
+          description: 'Specifies the iauth method used for the request
+
+            See the Cohesity online help for the value to specify for this field
+
+            based on the current S3-compatible Vault (External Target) type.
+
+            Specifies the authentication method to be used for API calls.
+
+            ''kUseIAMUser'' indicates a user based authentication.
+
+            ''kUseIAMRole'' indicates a role based authentication, used only for AWS CE.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kUseIAMUser
+          - kUseIAMRole
+          x-go-name: AuthMethod
+        c2sAccessPortal:
+          description: 'Specifies the C2S Access Portal (CAP) which is used to get the aws
+
+            credentials in Amazon Commercial Cloud Service(C2S).'
+          $ref: '#/components/schemas/C2SAccessPortal'
+        iamRoleArn:
+          description: 'Specifies the iam role arn Amazon service account.
+
+            See the Cohesity online help for the value to specify for this field
+
+            based on the current S3-compatible Vault (External Target) type.'
+          type:
+          - string
+          - 'null'
+          x-go-name: IamRoleArn
+        region:
+          description: Specifies the region to use for the Amazon service account.
+          type:
+          - string
+          - 'null'
+          x-go-name: Region
+        secretAccessKey:
+          description: 'Specifies the secret access key for Amazon service account.
+
+            See the Cohesity online help for the value to specify for this field
+
+            based on the current S3-compatible Vault (External Target) type.'
+          type:
+          - string
+          - 'null'
+          x-go-name: SecretAccessKey
+        serviceUrl:
+          description: 'Specifies the URL (Endpoint) for the service such as s3like.notamazon.com.
+
+            This field is only significant for S3-compatible cloud services.'
+          type:
+          - string
+          - 'null'
+          x-go-name: ServiceUrl
+        signatureVersion:
+          description: 'Specifies the version of the S3 Compliance.
+
+            This field must be set to 2 or 4 and the default version is 2.
+
+            This field is only significant for S3-compatible cloud services.
+
+            See the Cohesity online help for the supported S3-compatible Vault
+
+            (External Target) types and the value to specify for this field
+
+            based on the current S3-compatible Vault (External Target) type.'
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: SignatureVersion
+        tierType:
+          description: 'Specifies the storage class of AWS.
+
+            AmazonTierType specifies the storage class for AWS.
+
+            ''kAmazonS3Standard'' indicates a tier type of Amazon properties that is
+
+            accessed frequently.
+
+            ''kAmazonS3StandardIA'' indicates a tier type of Amazon properties that is
+
+            accessed less frequently, but requires rapid access when needed.
+
+            ''kAmazonGlacier'' indicates a tier type of Amazon properties that is accessed
+
+            rarely.
+
+            ''kAmazonS3OneZoneIA'' indicates a tier type of Amazon properties for
+
+            long-lived, but less frequently accessed data.
+
+            ''kAmazonS3IntelligentTiering'' indicates a tier type of Amazon properties for
+
+            data with unknown or changing access patterns.
+
+            ''kAmazonS3Glacier'' indicates a tier type of Amazon properties for
+
+            data that provides secure, durable object storage for long-term data
+
+            retention and digital preservation. It provides three options for access to
+
+            archives, from a few minutes to several hours.
+
+            ''kAmazonS3GlacierDeepArchive'' indicates a tier type of Amazon properties for
+
+            data that provides secure, durable object storage for long-term data
+
+            retention and digital preservation. It provides two access options ranging
+
+            from 12 to 48 hours.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kAmazonS3Standard
+          - kAmazonS3StandardIA
+          - kAmazonGlacier
+          - kAmazonS3OneZoneIA
+          - kAmazonS3IntelligentTiering
+          - kAmazonS3Glacier
+          - kAmazonS3GlacierDeepArchive
+          x-go-name: TierType
+        useHttps:
+          description: 'Specifies whether to use http or https to connect to the service.
+
+            If true, a secure connection (https) is used.
+
+            This field is only significant for S3-compatible cloud services.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: UseHttps
+      x-go-package: cohesity/iris/server/data/public
+    BandwidthLimit:
+      description: 'Specifies settings for limiting the data transfer rate between
+
+        the local and remote Clusters or bandwidth limiting schedule for apollo.
+
+        Only one of RateLimitBytesPerSec or IoRate should be set in this struct and
+
+        corresponding BandwidthLimitOverrides should also be in the same unit.'
+      type: object
+      title: Bandwidth Limit.
+      properties:
+        bandwidthLimitOverrides:
+          description: 'Array of Override Bandwidth Limits.
+
+
+            Specifies a list of override bandwidth limits and time periods
+
+            when those limits override the rateLimitBytesPerSec limit.
+
+            If overlapping time periods are specified, the last one in the
+
+            array takes precedence.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BandwidthLimitOverride'
+          x-go-name: BandwidthLimitOverrides
+        ioRate:
+          description: 'Specifies the default IO Rate of the throttling schedule. This value is
+
+            internally mapped to some notion of how many resources a process should be
+
+            consuming.'
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: IoRate
+        rateLimitBytesPerSec:
+          description: 'Specifies the maximum allowed data transfer rate between the local Cluster
+
+            and remote Clusters. The value is specified in bytes per second.
+
+            If not set, the data transfer rate is not limited.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: RateLimitBytesPerSec
+        timezone:
+          description: 'Specifies a time zone for the specified time period.
+
+            The time zone is defined in the following format: "Area/Location",
+
+            for example: "America/New_York".'
+          type:
+          - string
+          - 'null'
+          x-go-name: Timezone
+      x-go-package: cohesity/iris/server/data/public
+    TimeOfAWeek:
+      description: 'Specifies a time period by specifying a single daily time period
+
+        and one or more days of the week, for example 9 AM - 5 PM
+
+        on Monday, Wednesday or Friday. If different time periods are required
+
+        on different days, then multiple instances of this Weekly Time Period
+
+        must be specified.'
+      type: object
+      title: Time Period.
+      properties:
+        days:
+          description: 'Array of Week Days.
+
+
+            Specifies a list of days of a week (such as ''kSunday'') when the
+
+            time period should be applied.
+
+            If not set, the time range applies to all days of the week.
+
+            Specifies a day in a week such as ''kSunday'', ''kMonday'', etc.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            enum:
+            - kSunday
+            - kMonday
+            - kTuesday
+            - kWednesday
+            - kThursday
+            - kFriday
+            - kSaturday
+          x-go-name: Days
+        endTime:
+          description: Specifies the end time for the daily time period.
+          title: End Time.
+          allOf:
+          - $ref: '#/components/schemas/TimeOfDay'
+        isAllDay:
+          description: 'All Day.
+
+
+            Specifies that time range is applied for entire day.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IsAllDay
+        startTime:
+          description: Specifies the start time for the daily time period.
+          title: Start Time.
+          allOf:
+          - $ref: '#/components/schemas/TimeOfDay'
+      x-go-package: cohesity/iris/server/data/public
+    VaultEncryptionKey:
+      description: Specifies the encryption information needed to restore data.
+      type: object
+      title: Vault Encryption Key.
+      properties:
+        clusterName:
+          description: 'Specifies the name of the source Cohesity Cluster
+
+            that archived the data on the Vault.'
+          type:
+          - string
+          - 'null'
+          x-go-name: ClusterName
+        encryptionKeyData:
+          description: 'Specifies the encryption key data corresponding to the specified keyUid.
+
+            It contains a Key Encryption Key (KEK) or a
+
+            Encrypted Data Encryption Key (eDEK).'
+          type:
+          - string
+          - 'null'
+          x-go-name: EncryptionKeyData
+        keyUid:
+          description: Specifies the universal id of the Data Encryption Key.
+          title: Universal Id.
+          allOf:
+          - $ref: '#/components/schemas/UniversalId'
+        vaultId:
+          description: 'Specifies the id of the Vault whose data is encrypted by
+
+            this key.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: VaultId
+        vaultName:
+          description: Specifies the name of the Vault whose data is encrypted by this key.
+          type:
+          - string
+          - 'null'
+          x-go-name: VaultName
+      x-go-package: cohesity/iris/server/data/public
+    GoogleCloudCredentials:
+      description: Specifies the cloud credentials to connect to a Google service account.
+      type: object
+      title: Google Cloud Credentials.
+      properties:
+        clientEmailAddress:
+          description: 'Specifies the client email address used to access Google
+
+            Cloud Storage.'
+          type:
+          - string
+          - 'null'
+          x-go-name: ClientEmailAddress
+        clientPrivateKey:
+          description: 'Specifies the private key used to access Google Cloud Storage that is
+
+            generated when the service account is created.'
+          type:
+          - string
+          - 'null'
+          x-go-name: ClientPrivateKey
+        projectId:
+          description: 'Specifies the project id of an existing Google Cloud project to store
+
+            objects.'
+          type:
+          - string
+          - 'null'
+          x-go-name: ProjectId
+        tierType:
+          description: 'Specifies the storage class of GCP.
+
+            GoogleTierType specifies the storage class for Google.
+
+            ''kGoogleStandard'' indicates a tier type of Google properties.
+
+            ''kGoogleNearline'' indicates a tier type of Google properties that is not
+
+            accessed frequently.
+
+            ''kGoogleColdline'' indicates a tier type of Google properties that is rarely
+
+            accessed.
+
+            ''kGoogleRegional'' indicates a tier type of Google properties that stores
+
+            frequently accessed data in the same region.
+
+            ''kGoogleMultiRegional'' indicates a tier type of Google properties that is
+
+            frequently accessed ("hot" objects) around the world.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kGoogleStandard
+          - kGoogleNearline
+          - kGoogleColdline
+          - kGoogleRegional
+          - kGoogleMultiRegional
+          x-go-name: TierType
+      x-go-package: cohesity/iris/server/data/public
+    VaultDeleteParams:
+      type: object
+      title: Delete Vault Request.
+      properties:
+        forceDelete:
+          description: 'Specifies whether to force delete the vault.
+
+            If the flag is set to true, the RemovalState of the vault is changed to
+
+            ''kMarkedForRemoval'' and Eventually vault is removed from cluster config
+
+            and archived metadata from scribe is removed without necessarily deleting
+
+            the associated archived data.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: ForceDelete
+        id:
+          description: Specifies an id that identifies the Vault.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Id
+        includeMarkedForRemoval:
+          description: Specifies if Vaults that are marked for removal should be returned.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IncludeMarkedForRemoval
+        retry:
+          description: Specifies whether to retry a request after failure.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: Retry
+      x-go-package: cohesity/iris/server/data/public
+    VaultConfig:
+      description: 'Specifies the settings required to connect to a specific Vault type.
+
+        For some Vaults, you must also specify a storage location (bucketName).'
+      type: object
+      title: Vault Configuration.
+      properties:
+        amazon:
+          description: 'Specifies the cloud credentials to connect to a Amazon
+
+            service account. Glacier, S3, and S3-compatible clouds use this
+
+            credential.'
+          title: Amazon Cloud Credentials.
+          $ref: '#/components/schemas/AmazonCloudCredentials'
+        azure:
+          description: 'Specifies the cloud credentials to connect to a Microsoft
+
+            Azure service account.'
+          title: Azure Cloud Credentials.
+          $ref: '#/components/schemas/AzureCloudCredentials'
+        bucketName:
+          description: 'Specifies the name of a storage location of the Vault,
+
+            where objects are stored. For Google and AMS, this
+
+            storage location is called a bucket. For Microsoft Azure, this
+
+            storage location is called a container. For QStar and NAS, you
+
+            do not specify a storage location.'
+          type:
+          - string
+          - 'null'
+          x-go-name: BucketName
+        google:
+          description: 'Specifies the cloud credentials to connect to a Google
+
+            service account.'
+          title: Google Cloud Credentials.
+          $ref: '#/components/schemas/GoogleCloudCredentials'
+        nas:
+          description: Specifies the server credentials to connect to a NetApp server.
+          title: NAS Server Credentials.
+          $ref: '#/components/schemas/NasCredentials'
+        oracle:
+          description: 'Specifies the Oracle cloud credentials to connect to a Amazon
+
+            service account.'
+          title: Oracle Cloud Credentials.
+          $ref: '#/components/schemas/OracleCloudCredentials'
+        qstar:
+          description: 'Specifies the server credentials to connect to a QStar service
+
+            to manage the media Vault.'
+          title: QStar Media Credentials.
+          $ref: '#/components/schemas/QStarServerCredentials'
+      x-go-package: cohesity/iris/server/data/public
+    NasCredentials:
+      description: Specifies the server credentials to connect to a NetApp server.
+      type: object
+      title: NAS Server Credentials.
+      properties:
+        host:
+          description: Specifies the hostname or IP address of the NAS server.
+          type:
+          - string
+          - 'null'
+          x-go-name: Host
+        mountPath:
+          description: Specifies the mount path to the NAS server.
+          type:
+          - string
+          - 'null'
+          x-go-name: MountPath
+        password:
+          description: 'If using the CIFS protocol and a Username was specified, specify
+
+            the password for the username.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Password
+        shareType:
+          description: 'Specifies the sharing protocol type used to mount the file system.
+
+            Currently, only NFS is supported.
+
+            ''kNFS'' indicates use the NFS protocol to mount the file system.
+
+            ''kCIFS'' indicates use the CIFS protocol to mount the file system.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kNFS
+          - kCIFS
+          x-go-name: ShareType
+        username:
+          description: 'If using the CIFS protocol, you can optional specify a username
+
+            to use when mounting.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Username
+      x-go-package: cohesity/iris/server/data/public
+    UniversalId:
+      description: 'Specifies an id for an object that is unique across Cohesity Clusters.
+
+        The id is composite of all the ids listed below.'
+      type: object
+      title: Unique Global Id.
+      properties:
+        clusterId:
+          description: Specifies the Cohesity Cluster id where the object was created.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ClusterId
+        clusterIncarnationId:
+          description: 'Specifies an id for the Cohesity Cluster that is generated when
+
+            a Cohesity Cluster is initially created.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ClusterIncarnationId
+        id:
+          description: 'Specifies a unique id assigned to an object (such as a Job)
+
+            by the Cohesity Cluster.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Id
+      x-go-package: cohesity/iris/server/data/public
+    TimeOfDay:
+      description: Specifies a time in day with hours and minutes.
+      type: object
+      title: Time of Day.
+      properties:
+        hour:
+          description: Specifies an (0-23) hour in a day.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Hour
+        minute:
+          description: Specifies a (0-59) minute in an hour.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Minute
+      x-go-package: cohesity/iris/server/data/public
+    QStarServerCredentials:
+      description: 'Specifies the server credentials to connect to a QStar service
+
+        to manage the media Vault.'
+      type: object
+      title: QStar Server Credentials.
+      properties:
+        host:
+          description: 'Specifies the IP address or DNS name of the server where QStar
+
+            service is running.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Host
+        integralVolumeNames:
+          description: 'Array of Integral Volume Names.
+
+
+            Specifies a list of existing Integral Volume names available on the
+
+            QStar server for storing objects.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: IntegralVolumeNames
+        password:
+          description: Specifies the password used to access the QStar host.
+          type:
+          - string
+          - 'null'
+          x-go-name: Password
+        port:
+          description: Specifies the listening port where QStar WEB API service is running.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Port
+        shareType:
+          description: 'Specifies the sharing protocol type used by QStar to mount
+
+            the integral volume.
+
+            See the Cohesity online help for the recommended protocol
+
+            for your environment.'
+          type:
+          - string
+          - 'null'
+          x-go-name: ShareType
+        useHttps:
+          description: 'Specifies whether to use http or https to connect to the service.
+
+            If true, a secure connection (https) is used.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: UseHttps
+        username:
+          description: Specifies the account name used to access the QStar host.
+          type:
+          - string
+          - 'null'
+          x-go-name: Username
+      x-go-package: cohesity/iris/server/data/public
+    TapeMediaInformation:
+      description: Provides information about a single tape media in a QStar Archive Vault.
+      type: object
+      title: Tape Media Information.
+      properties:
+        barcode:
+          description: Specifies a unique identifier for the media.
+          type:
+          - string
+          - 'null'
+          x-go-name: Barcode
+        location:
+          description: 'Specifies the location of the offline media as recorded by the
+
+            backup administrator using media management software.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Location
+        online:
+          description: 'Specifies a flag that indicates if the media is online or offline.
+
+            Offline media must be manually loaded into the media library
+
+            before a recovery can occur.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: Online
+      x-go-package: cohesity/iris/server/data/public
+    AzureCloudCredentials:
+      description: 'Specifies the cloud credentials to connect to a Microsoft
+
+        Azure service account.'
+      type: object
+      title: Azure Cloud Credentials.
+      properties:
+        storageAccessKey:
+          description: 'Specifies the access key to use when accessing a storage tier
+
+            in a Azure cloud service.'
+          type:
+          - string
+          - 'null'
+          x-go-name: StorageAccessKey
+        storageAccountName:
+          description: 'Specifies the account name to use when accessing a storage tier
+
+            in a Azure cloud service.'
+          type:
+          - string
+          - 'null'
+          x-go-name: StorageAccountName
+        tierType:
+          description: 'Specifies the storage class of Azure.
+
+            AzureTierType specifies the storage class for Azure.
+
+            ''kAzureTierHot'' indicates a tier type of Azure properties that is accessed
+
+            frequently.
+
+            ''kAzureTierCool'' indicates a tier type of Azure properties that is
+
+            accessed less frequently, and stored for at least 30 days.
+
+            ''kAzureTierArchive'' indicates a tier type of Azure properties that is
+
+            accessed rarely and stored for at least 180 days.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kAzureTierHot
+          - kAzureTierCool
+          - kAzureTierArchive
+          x-go-name: TierType
+      x-go-package: cohesity/iris/server/data/public
+    VaultBandwidthLimits:
+      description: 'VaultBandwidthLimits represents the network bandwidth limits
+
+        while uploading/downloading data to/from the external media.'
+      type: object
+      title: Vault Bandwidth Limits.
+      properties:
+        download:
+          description: Specifies the max rate limit at which we download the data.
+          $ref: '#/components/schemas/BandwidthLimit'
+        upload:
+          description: Specifies the max rate limit at which we upload the data.
+          $ref: '#/components/schemas/BandwidthLimit'
+      x-go-package: cohesity/iris/server/data/public
+    BandwidthLimitOverride:
+      description: 'Specifies bandwidth limit override value to be enforced during
+
+        the specified daily time period for the specified days of the week.'
+      type: object
+      title: Bandwidth Limit Override
+      properties:
+        bytesPerSecond:
+          description: 'Specifies the value to override the regular maximum bandwidth rate
+
+            (rateLimitBytesPerSec) for the specified time period.
+
+            The value is specified in bytes per second.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: BytesPerSecond
+        ioRate:
+          description: 'Specifies the value to override the default IO rate for the specified
+
+            time period.'
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: IoRate
+        timePeriods:
+          description: 'Specifies a daily time period and days of the week when the
+
+            regular maximum bandwidth rate should be overridden.'
+          $ref: '#/components/schemas/TimeOfAWeek'
+      x-go-package: cohesity/iris/server/data/public
+    OracleCloudCredentials:
+      description: 'Specifies the Oracle Cloud Credentials to connect to an Oracle S3 Compatible
+
+        vault account.
+
+
+        Oracle Cloud Credentials Region, Access-Key-Id and Secret-Access-Key.
+
+        Oracle Cloud properties Tenant and Tier Type.'
+      type: object
+      title: Oracle Cloud Credentials.
+      properties:
+        accessKeyId:
+          description: Specifies access key to connect to Oracle S3 Compatible vault account.
+          type:
+          - string
+          - 'null'
+          x-go-name: AccessKeyId
+        region:
+          description: Specifies the region for Oracle S3 Compatible vault account.
+          type:
+          - string
+          - 'null'
+          x-go-name: Region
+        secretAccessKey:
+          description: Specifies the secret access key for Oracle S3 Compatible vault account.
+          type:
+          - string
+          - 'null'
+          x-go-name: SecretAccessKey
+        tenant:
+          description: 'Specifies the tenant which is part of the REST endpoints for Oracle S3
+
+            compatible vaults.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Tenant
+        tierType:
+          description: 'Specifies the storage class of Oracle vault.
+
+            OracleTierType specifies the storage class for Oracle.
+
+            ''kOracleTierStandard'' indicates a tier type of Oracle properties that
+
+            requires fast, immediate and frequent access.
+
+            ''kOracleTierArchive'' indicates a tier type of Oracle properties that is
+
+            rarely accesed and preserved for long times.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kOracleTierStandard
+          - kOracleTierArchive
+          x-go-name: TierType
+      x-go-package: cohesity/iris/server/data/public
+    C2SAccessPortal:
+      description: 'Specifies information required to connect to CAP to get AWS credentials.
+
+        C2SAccessPortal(CAP) is AWS commercial cloud service access portal.'
+      type: object
+      title: C2S Access Portal (CAP).
+      properties:
+        agency:
+          description: Name of the agency.
+          type:
+          - string
+          - 'null'
+          x-go-name: Agency
+        baseUrl:
+          description: The base url of C2S CAP server.
+          type:
+          - string
+          - 'null'
+          x-go-name: BaseUrl
+        clientCertificatePassword:
+          description: Encrypted password of the client private key.
+          type:
+          - string
+          - 'null'
+          x-go-name: EncryptedPassword
+        mission:
+          description: Name of the mission.
+          type:
+          - string
+          - 'null'
+          x-go-name: Mission
+        role:
+          description: Role type.
+          type:
+          - string
+          - 'null'
+          x-go-name: Role
+      x-go-package: cohesity/iris/server/data/public
+  responses:
+    GetArchiveMediaInfoResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            description: 'List the tape media in QStar Archive Vault that match the specified
+
+              filters.'
+            type: array
+            title: Array of Tape Media.
+            items:
+              $ref: '#/components/schemas/TapeMediaInformation'
+    UpdateVaultResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Vault'
+    GetVaultEncryptionKeyResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/VaultEncryptionKey'
+    GetBandwidthSettingsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/VaultBandwidthLimits'
+    NoContentResponse:
+      description: No Content
+    GetVaultByIdResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Vault'
+    GetVaultsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            description: List of Vaults that match the specified filter criteria.
+            type: array
+            title: Array of Vaults.
+            items:
+              $ref: '#/components/schemas/Vault'
+    CreateVaultResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Vault'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'

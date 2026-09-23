@@ -1,0 +1,1784 @@
+openapi: 3.2.0
+info:
+  version: 1.0.0
+  description: Public APIs for Site Continuity v2 service.
+  title: Site Continuity v2 Service DR Plan API
+  termsOfService: https://cohesity.com
+  contact:
+    email: support@cohesity.com
+servers:
+- url: https://helios.cohesity.com/v2/mcm/site-continuity/v2
+security:
+- ApiKeyAuth: []
+tags:
+- name: DRPlan
+paths:
+  /dr-plans:
+    post:
+      description: 'Privileges: DRAAS_MODIFY
+
+
+        Creates a new DR plan consisting of application, primary
+
+        site, DR site and resource profile configuration.'
+      tags:
+      - DRPlan
+      summary: Creates a DR plan
+      operationId: SCCreateDRPlan
+      responses:
+        201:
+          $ref: '#/components/responses/SCCreateDRPlanResponse'
+        default:
+          $ref: '#/components/responses/SCErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SCDRPlanCreateOrUpdateParams'
+        description: Specifies the parameters to create a DR plan.
+        required: true
+    get:
+      description: 'Privileges: DRAAS_VIEW
+
+
+        Returns a list of DR Plans based on the defined filter
+
+        criteria.'
+      tags:
+      - DRPlan
+      summary: Returns a list of DR plans
+      operationId: SCGetDrPlans
+      parameters:
+      - name: drPlanIds
+        description: Specifies IDs to filter the DR plans response.
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: drPlanNames
+        description: Specifies DR plan names to filter the DR plans response. This is case insensitive and supports substring search.
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - name: appIds
+        description: Specifies application IDs to filter the DR plans response.
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: states
+        description: Specifies list of states to filter the DR plans response.
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - Created
+            - Active
+            - Deleted
+            - Failed
+            - Completed
+      - name: primarySiteIds
+        description: Specifies primary site IDs to filter the DR plans response.
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: drSiteIds
+        description: Specifies DR site IDs to filter the DR plans response.
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: statuses
+        description: Specifies list of status to filter the DR plans response.
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - ActivationReady
+            - ActivationInProgress
+            - ActivationNotReady
+            - ConfigurationError
+            - FailoverNotReady
+            - FailoverReady
+            - FailoverInProgress
+            - FailoverFailed
+            - FailoverCompleted
+            - PrepareForFailbackInProgress
+            - FailbackNotReady
+            - FailbackReady
+            - FailbackInProgress
+            - FailbackFailed
+            - FailbackCompleted
+            - TeardownInProgress
+            - CancellationInProgress
+            - TestFailoverInProgress
+            - TestFailbackInProgress
+            - PrepareForFailoverInProgress
+            - SystemError
+      - name: slaStatus
+        description: Specifies the SLA status to filter the DR Plans response.
+        in: query
+        schema:
+          type: string
+          enum:
+          - Satisfied
+          - NotSatisfied
+      - name: includeSummary
+        description: Specifies the filter to include the summary of the DR plans. This must be passed and set to true in order to get the summary.
+        in: query
+        schema:
+          type: boolean
+      responses:
+        200:
+          $ref: '#/components/responses/SCGetDRPlansResponse'
+        default:
+          $ref: '#/components/responses/SCErrorResponse'
+  /dr-plans/{id}:
+    get:
+      description: 'Privileges: DRAAS_VIEW
+
+
+        Gets DR plan information using its ID.'
+      tags:
+      - DRPlan
+      summary: Returns a DR plan by ID
+      operationId: SCGetDRPlanById
+      parameters:
+      - name: id
+        description: Specifies the ID of the DR plan.
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          $ref: '#/components/responses/SCGetDRPlanByIdResponse'
+        default:
+          $ref: '#/components/responses/SCErrorResponse'
+    delete:
+      description: 'Privileges: DRAAS_MODIFY
+
+
+        Deletes a DR plan using its ID.'
+      tags:
+      - DRPlan
+      summary: Deletes a DR plan by ID
+      operationId: SCDeleteDRPlanById
+      parameters:
+      - name: id
+        description: Specifies the ID of the DR plan.
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        204:
+          description: No content
+        default:
+          $ref: '#/components/responses/SCErrorResponse'
+    put:
+      description: 'Privileges: DRAAS_MODIFY
+
+
+        Updates DR plan''s information using its ID.'
+      tags:
+      - DRPlan
+      summary: Updates a DR Plan by ID
+      operationId: SCUpdateDRPlanById
+      parameters:
+      - name: id
+        description: Specifies the ID of the DR plan.
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          $ref: '#/components/responses/SCUpdateDRPlanResponse'
+        default:
+          $ref: '#/components/responses/SCErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SCDRPlanCreateOrUpdateParams'
+        description: Specifies the parameters to update a DR plan.
+        required: true
+  /dr-plans/{id}/actions:
+    post:
+      description: 'Privileges: DRAAS_MODIFY
+
+
+        Performs actions such as activate, failover, failback, etc
+
+        on a given DR plan.'
+      tags:
+      - DRPlan
+      summary: Performs an action on a DR plan
+      operationId: SCPerformActionOnDRPlan
+      parameters:
+      - name: id
+        description: Specifies the ID of the DR plan.
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        202:
+          $ref: '#/components/responses/SCPerformActionDrPlanResponse'
+        default:
+          $ref: '#/components/responses/SCErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SCPerformActionOnDrPlanParams'
+        description: Specifies the parameters to perform action on DR plan.
+        required: true
+  /actions:
+    get:
+      description: 'Privileges: DRAAS_VIEW
+
+
+        Returns a list of actions on DR plans based on the defined
+
+        filter criteria.'
+      tags:
+      - DRPlan
+      summary: Returns a list of actions
+      operationId: SCGetActions
+      parameters:
+      - name: actionIds
+        description: Specifies IDs to filter the actions response.
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: statuses
+        description: Specifies list of statuses to filter the actions response.
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - Running
+            - Completed
+            - Failed
+            - Canceled
+            - Canceling
+      - name: types
+        description: Specifies list of types to filter the actions response.
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - Activate
+            - PrepareForFailover
+            - PrepareForFailback
+            - TestFailover
+            - TestFailback
+            - Failover
+            - Failback
+            - Teardown
+      - name: drPlanIds
+        description: Filter the actions response by DR plan IDs.
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: fromTimeUsecs
+        description: Specifies the starting timestamp in Unix time epoch in microseconds to get actions response. This filter will return the actions having start time greater than equal to this value.
+        in: query
+        schema:
+          type: integer
+          format: int64
+      - name: toTimeUsecs
+        description: Specifies the ending timestamp in Unix time epoch in microseconds to get actions response. This filter will return the actions having finish time less than equal to toTimeUsecs.
+        in: query
+        schema:
+          type: integer
+          format: int64
+      - name: includeStepDetails
+        description: Specifies the filter to include step level details for attempts associated with every DR action. This must be passed as true to include the step details in attempts.
+        in: query
+        schema:
+          type: boolean
+      responses:
+        200:
+          $ref: '#/components/responses/SCGetActionsResponse'
+        default:
+          $ref: '#/components/responses/SCErrorResponse'
+  /actions/{id}:
+    get:
+      description: 'Privileges: DRAAS_VIEW
+
+
+        Gets action information performed on DR plan using its action
+
+        ID.'
+      tags:
+      - DRPlan
+      summary: Returns an action by ID
+      operationId: SCGetActionById
+      parameters:
+      - name: id
+        description: Specifies the ID of the action.
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: includeStepDetails
+        description: Specifies the filter to include step level details for attempts associated with DR action. This must be passed as true to include the step details in attempts.
+        in: query
+        schema:
+          type: boolean
+      responses:
+        200:
+          $ref: '#/components/responses/SCGetActionByIdResponse'
+        default:
+          $ref: '#/components/responses/SCErrorResponse'
+  /actions/{id}/operations:
+    post:
+      description: 'Privileges: DRAAS_MODIFY
+
+
+        Perform operations like cancel, resume and force finish
+
+        on a DR plan action. The provided operation will be validated and error
+
+        will be returned if operation cannot be performed at that time. Resume
+
+        and force finish creates a new attempt on the DR plan action. Cancel
+
+        cancels the latest attempt on the DR plan action. An attempt details
+
+        must be accessed using the GET actions API by providing the the same
+
+        action ID as provided here.'
+      tags:
+      - DRPlan
+      summary: Performs operations on a DR plan action
+      operationId: SCPerformOperationOnDrPlanAction
+      parameters:
+      - name: id
+        description: Specifies the ID of the action on which the operation needs to be performed.
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        204:
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/SCErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SCOperationOnActionParams'
+        description: Specifies the parameters to perform the operation on a DR plan action.
+        required: true
+components:
+  schemas:
+    SCSnapshotDetails:
+      description: Specifies the specific details of the snapshot.
+      type: object
+      properties:
+        snapshotId:
+          description: Specifies the unique identifier for the snapshot.
+          type:
+          - string
+          - 'null'
+        snapshotTimeUsecs:
+          description: Specifies the Unix time epoch in microseconds when the snapshot was taken.
+          type:
+          - integer
+          - 'null'
+          format: int64
+    DrPlanErrorDetails:
+      description: Specifies the error details in case DR plan is in a failed state.
+      type: object
+      properties:
+        message:
+          description: Specifies the overall error in the DR plan.
+          type:
+          - string
+          - 'null'
+        detailedErrors:
+          description: Specifies more detailed errors and can be specific to entities, protection groups, policies etc.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+    SCFailbackActionParams:
+      description: Specifies the action parameters to trigger a failback on a DR plan.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/SCDRPlanActionCommonParams'
+      - type: object
+        required:
+        - environment
+        properties:
+          environment:
+            description: Specifies the environment of the source for which the failback action needs to be performed.
+            type: string
+            enum:
+            - vmware
+          vmwareParams:
+            description: Specifies the VMware specific parameters to perform the failback action.
+            type: object
+            $ref: '#/components/schemas/SCFailbackActionVMwareParams'
+    SCObjectDetails:
+      description: Specifies the object level details.
+      type: object
+      properties:
+        objectId:
+          description: Specifies the ID of the object.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        objectName:
+          description: Specifies the name of the object.
+          type:
+          - string
+          - 'null'
+        objectType:
+          description: Specifies the type of the object.
+          type:
+          - string
+          - 'null'
+          enum:
+          - virtualMachine
+        virtualMachineInfo:
+          description: Specifies the details specific to the virtualMachine object type.
+          type: object
+          $ref: '#/components/schemas/SCVMDetails'
+    SCvCenterDefaultResourceSet:
+      description: Specifies the parameters required to configure default resource set.
+      type: object
+      required:
+      - computeConfig
+      properties:
+        name:
+          description: Specifies name of the resource set. If name is not provided then an internally generated name will be assigned to this resource set.
+          type:
+          - string
+          - 'null'
+        computeConfig:
+          description: Specifies the compute settings for the current resource set.
+          type: object
+          $ref: '#/components/schemas/SCvCenterComputeConfig'
+    SCDRPlan:
+      description: Specifies the information about a DR plan.
+      type: object
+      properties:
+        id:
+          description: Specifies the unique identifier for the DR plan.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        state:
+          description: Specifies the current state of the DR plan.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Created
+          - Active
+          - Failed
+          - Completed
+          - Deleted
+        status:
+          description: Specifies the current status of the DR plan.
+          type:
+          - string
+          - 'null'
+          enum:
+          - ActivationReady
+          - ActivationInProgress
+          - ActivationNotReady
+          - ConfigurationError
+          - FailoverNotReady
+          - FailoverReady
+          - FailoverInProgress
+          - FailoverFailed
+          - FailoverCompleted
+          - PrepareForFailbackInProgress
+          - FailbackNotReady
+          - FailbackReady
+          - FailbackInProgress
+          - FailbackFailed
+          - FailbackCompleted
+          - TeardownInProgress
+          - CancellationInProgress
+          - TestFailoverInProgress
+          - TestFailbackInProgress
+          - PrepareForFailoverInProgress
+          - SystemError
+        errorDetails:
+          description: Specifies the error details in case DR plan is in a failed state.
+          type:
+          - object
+          - 'null'
+          $ref: '#/components/schemas/DrPlanErrorDetails'
+        slaStatus:
+          description: Specifies the SLA status for a DR plan.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Satisfied
+          - NotSatisfied
+        lastActionId:
+          description: Specifies the last action id of a DR plan.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        isAppRunningOnDRSite:
+          description: Specifies whether the app is currently running on the DR site. Value true implies that the app is running on DR site and false implies that the app is running on primary site. If no app is associated with the DR plan, this field will not be populated.
+          type:
+          - boolean
+          - 'null'
+        markedForDeletion:
+          description: Specifies whether the DR plan is undergoing deletion in background. Once the DR plan is fully deleted, the response will not contain this DR plan.
+          type:
+          - boolean
+          - 'null'
+        lastTestActionId:
+          description: Specifies the last test action ID on the DR plan. This will only be populated if at least one test action such as test failover or test failback has run on the DR plan.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        lastHealthCheckDetails:
+          description: Specifies the details of the last health check executed on a DR plan.
+          type:
+          - object
+          - 'null'
+          $ref: '#/components/schemas/SCHealthCheck'
+      allOf:
+      - $ref: '#/components/schemas/SCDRPlanCreateOrUpdateParams'
+    SCInitiateHealthCheckParams:
+      description: Specifies the parameters required to initiate a health check.
+      type: object
+      required:
+      - checkType
+      properties:
+        checkType:
+          description: Specifies the type of the resource on which the health check should be initiated.
+          type:
+          - string
+          - 'null'
+          enum:
+          - DRPlan
+        drPlanHealthCheckParams:
+          description: Specifies the parameters required for initiating health check on a DR plan.
+          type:
+          - object
+          - 'null'
+          $ref: '#/components/schemas/SCDRPlanHealthCheckParams'
+    SCDRPlanCreateOrUpdateParams:
+      description: Specifies the parameters required for creation of DR plan.
+      type: object
+      required:
+      - name
+      - primarySite
+      - drSite
+      - rpo
+      properties:
+        name:
+          description: Specifies the name of the DR Plan.
+          type:
+          - string
+          - 'null'
+        description:
+          description: Specifies the description of the DR Plan.
+          type:
+          - string
+          - 'null'
+        primarySite:
+          description: Specifies the primary site configuration of the DR plan.
+          type: object
+          $ref: '#/components/schemas/SCPrimarySiteConfig'
+        drSite:
+          description: Specifies the DR site configuration of the DR plan.
+          type: object
+          $ref: '#/components/schemas/SCDRSiteConfig'
+        appId:
+          description: Specifies the unique identifier for the application. This field is optional for creation of DR plan but it is required before performing any actions on a DR plan.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        rpo:
+          description: Specifies the Recovery Point Objective (RPO) configuration required for this DR plan. This value is used to validate the RPO expectation of the DR plan by comparing this configuration against the backup and replication frequencies set on the objects in the DR plan.
+          type: object
+          $ref: '#/components/schemas/SCRPOConfig'
+    SCPerformActionOnDrPlanParams:
+      description: Specifies the parameters required to perform a specific action on a DR plan.
+      type: object
+      required:
+      - action
+      properties:
+        action:
+          description: Specifies the current action which is being performed on a DR plan. <br> 'Activate' activates the DR plan which periodically checks the protection and replication status to determine if the DR plan Recovery Point Objective (RPO) is met. <br> 'TestFailover' tests if a failover from primary site to DR site works. <br> 'Failover' fails over the resources from primary site to DR site. <br> 'PrepareForFailback' prepares the DR plan for a Failback operation by validating the required configuration for failback to the primary site. <br> 'TestFailback' tests if a failback from DR site to primary site works. <br> 'Failback' fails back the resources from DR site to primary site. <br> 'PrepareForFailover' prepares the DR plan for subsequent Failover operation (after a successful Failover and Failback) by validating the required configuration for Failover to the DR site. <br> 'Teardown' can be used to tear down configuration after a failed/partially successful Failover or Failback operation. This option can also be used to tear down configuration after a successful/failed/partially successful Test Failover or Test Failback operation. <br>
+          type:
+          - string
+          - 'null'
+          enum:
+          - Activate
+          - PrepareForFailover
+          - PrepareForFailback
+          - TestFailover
+          - TestFailback
+          - Failover
+          - Failback
+          - Teardown
+        failoverParams:
+          description: Specifies the parameters to trigger failover on a DR plan.
+          type: object
+          $ref: '#/components/schemas/SCFailoverActionParams'
+        testFailoverParams:
+          description: Specifies the parameters to trigger a test failover on a DR plan.
+          type: object
+          $ref: '#/components/schemas/SCTestFailoverActionParams'
+        failbackParams:
+          description: Specifies the parameters to trigger a failback on a DR plan.
+          type: object
+          $ref: '#/components/schemas/SCFailbackActionParams'
+        testFailbackParams:
+          description: Specifies the parameters to trigger a test failback on a DR plan.
+          type: object
+          $ref: '#/components/schemas/SCTestFailbackActionParams'
+        teardownParams:
+          description: Specifies the parameters to trigger a teardown operation on a specified action.
+          type: object
+          $ref: '#/components/schemas/SCTeardownActionParams'
+    SCTestFailbackActionParams:
+      description: Specifies the action parameters to trigger a test failback on a DR plan.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/SCDRPlanActionCommonParams'
+      - type: object
+        required:
+        - environment
+        properties:
+          environment:
+            description: Specifies the environment of the source for which the test failback action needs to be performed.
+            type: string
+            enum:
+            - vmware
+          vmwareParams:
+            description: Specifies the VMware specific parameters to perform the test failback action.
+            type: object
+            $ref: '#/components/schemas/SCTestFailbackActionVMwareParams'
+    SCDRSourceVCenterParams:
+      description: Specifies the vCenter parameters to configure a source.
+      type: object
+      required:
+      - objectId
+      properties:
+        objectId:
+          description: Specifies the object ID of the vCenter. This object identifier uniquely locates the vCenter object within Cohesity.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        resourceProfiles:
+          description: Specifies the resource profile settings.
+          type: array
+          items:
+            $ref: '#/components/schemas/SCvCenterResourceProfileParams'
+    SCObjectSnapshotUserConfig:
+      description: Specifies the object and snapshot details from the user provided configuration at the time of action submission.
+      type: object
+      properties:
+        objectDetails:
+          description: Specifies the specific details of the object.
+          type: object
+          $ref: '#/components/schemas/SCObjectDetails'
+        snapshotDetails:
+          description: Specifies the specific details of the snapshot for the object.
+          type: object
+          $ref: '#/components/schemas/SCSnapshotDetails'
+        pointInTimeUsecs:
+          description: Specifies the epoch timestamp in microseconds of a point-in-time selected by the user.
+          type:
+          - integer
+          - 'null'
+          format: int64
+    SCTestFailoverActionVMwareParams:
+      description: Specifies the VMware specific parameters to perform the test failover action.
+      type: object
+      required:
+      - resourceProfileName
+      properties:
+        resourceProfileName:
+          description: Specifies the unique resource profile name which is added as a part of the DR plan.
+          type:
+          - string
+          - 'null'
+        performStorageVmotion:
+          description: Specifies whether to perform the storage vMotion operation with the test failover action. Default value is false if not specified.
+          type:
+          - boolean
+          - 'null'
+    SCvCenterCustomResourceSet:
+      description: Specifies the parameters required to configure a custom resource set.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/SCvCenterDefaultResourceSet'
+      - type: object
+        properties:
+          objectIds:
+            description: Specifies the list of VM object IDs to which the given resource settings will apply. These objects will override the default settings provided in default resource set.
+            type: array
+            items:
+              type: integer
+              format: int64
+            minItems: 1
+    SCFailbackActionVMwareParams:
+      description: Specifies the action parameters to trigger failback for VMware environment.
+      type: object
+      required:
+      - resourceProfileName
+      properties:
+        resourceProfileName:
+          description: Specifies the unique resource profile name which is added as a part of the DR plan.
+          type:
+          - string
+          - 'null'
+        shutdownVms:
+          description: Specifies if the data objects such as VMs at DR site should be shut down after failback is completed.
+          type:
+          - boolean
+          - 'null'
+        protectVms:
+          description: Specifies if the data objects such as VMs at primary site should be re-protected after failback is completed.
+          type:
+          - boolean
+          - 'null'
+    SCDRPlanActionCommonParams:
+      description: Specifies the action parameters to trigger failover or failback on a DR plan.
+      type: object
+      properties:
+        objectSnapshotOverrides:
+          description: Specifies the list of object Ids along with the snapshot ID which will be used during failover. If object ID is not specified then latest snapshot will be used internally for failover action for that object.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SCObjectSnapshotOverride'
+    SCFailoverActionParams:
+      description: Specifies the action parameters to trigger failover on a DR plan.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/SCDRPlanActionCommonParams'
+      - type: object
+        required:
+        - environment
+        properties:
+          environment:
+            description: Specifies the environment of the source for which the failover action needs to be performed.
+            type: string
+            enum:
+            - vmware
+          vmwareParams:
+            description: Specifies the VMware specific parameters to perform the failover action.
+            type: object
+            $ref: '#/components/schemas/SCFailoverActionVMwareParams'
+    SCDRSourceVMwareParams:
+      description: Specifies the source details for adding VMware objects.
+      type: object
+      required:
+      - sourceType
+      properties:
+        sourceType:
+          description: Specifies the type of the VMware source.
+          type:
+          - string
+          - 'null'
+          enum:
+          - vCenter
+        vCenterParams:
+          description: Specifies the parameters to configure vCenter source.
+          type: object
+          $ref: '#/components/schemas/SCDRSourceVCenterParams'
+    SCManualObjectLevelIpConfig:
+      description: Specifies the object level manual IP configuration.
+      allOf:
+      - type: object
+        required:
+        - objectId
+        - ipAddress
+        - subnet
+        - gateway
+        properties:
+          objectId:
+            description: Specifies the object ID for VM for which static IP need to be assigned.
+            type:
+            - integer
+            - 'null'
+            format: int64
+          ipAddress:
+            description: Specifies the static IP address.
+            type:
+            - string
+            - 'null'
+          subnet:
+            description: Specifies the subnet for IP address.
+            type:
+            - string
+            - 'null'
+          gateway:
+            description: Specifies the gateway network address.
+            type:
+            - string
+            - 'null'
+      - $ref: '#/components/schemas/SCCommonDNSSettings'
+    SCIpConfig:
+      description: Specifies the customer IP configuration parameters.
+      type: object
+      required:
+      - configurationType
+      properties:
+        configurationType:
+          description: Specifies the type of the IP configuration.
+          type:
+          - string
+          - 'null'
+          enum:
+          - DHCP
+          - Static
+        dhcpConfig:
+          description: Specifies the dhcp IP configuration.
+          type: object
+          $ref: '#/components/schemas/SCDhcpIpConfig'
+        staticConfig:
+          description: Specifies the static IP configuration.
+          type: object
+          $ref: '#/components/schemas/SCStaticIpConfig'
+    SCError:
+      description: Specifies the error object with error code and a message.
+      type: object
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          $ref: '#/components/schemas/SCErrorCode'
+        errorMessage:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+    SCManualStaticIpConfig:
+      description: Specifies the manual IP configuration.
+      type: object
+      properties:
+        manualObjectLevelConfig:
+          description: Specifies object level network mapping.
+          type: array
+          items:
+            $ref: '#/components/schemas/SCManualObjectLevelIpConfig'
+    SCPrimarySiteConfig:
+      description: Specifies the configuration for primary site.
+      type: object
+      required:
+      - siteId
+      - source
+      properties:
+        siteId:
+          description: Specifies the unique identifier of the site.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        source:
+          description: Specifies the registered source configuration on the primary site.
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/SCSourceConfig'
+    SCAttemptStepObject:
+      description: Specifies the object level details involved in the individual step of an attempt.
+      type: object
+      properties:
+        objectId:
+          description: Specifies the ID of the object.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        objectName:
+          description: Specifies the name of the object.
+          type:
+          - string
+          - 'null'
+    SCAttemptStep:
+      description: Specifies the step level details such as message, status, progress percentage for the respective DR action.
+      type: object
+      properties:
+        message:
+          description: Specifies the detailed message for the step.
+          type:
+          - string
+          - 'null'
+        status:
+          description: Specifies the status of the step. <br> 'Created' state specifies that attempt step has been created. <br> 'InProgress' status specifies that attempt step is in progress. This is a transient status and will not emit a timestamp. Instead, the status will change to 'Success' or 'Failure' when step reaches a terminating status such as success or failure. <br> 'Success' status specifies that attempt step has successfully finished. <br> 'Failure' status specifies that attempt step has failed. <br>
+          type:
+          - string
+          - 'null'
+          enum:
+          - Started
+          - InProgress
+          - Success
+          - Failure
+        stepTimeUsecs:
+          description: Specifies the emit time of the step in microseconds. This timestamp will not be emitted for inProgress steps.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        progressPercentage:
+          description: Specifies the progress in percentage for the step.
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 100
+        objects:
+          description: Specifies the list of objects associated with this step. A single step may be working on one or more objects as per the functioning of the step.
+          type: array
+          items:
+            $ref: '#/components/schemas/SCAttemptStepObject'
+        subSteps:
+          description: Specifies the list of sub-steps associated with the current step. At occasions, larger steps may be divided into smaller sub-steps and details of these steps will be returned here.
+          type: array
+          items:
+            $ref: '#/components/schemas/SCAttemptStep'
+    SCDrPlanAction:
+      description: Specifies the action configuration to be executed on a DR plan.
+      type: object
+      properties:
+        actionId:
+          description: Specifies the identifier which can be used to get the current status of the action.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        action:
+          description: Specifies the current action which is being performed on a DR plan. <br> 'Activate' activates the DR plan which periodically checks the protection and replication status to determine if the DR plan Recovery Point Objective (RPO) is met. <br> 'TestFailover' tests if a failover from primary site to DR site works. <br> 'Failover' fails over the resources from primary site to DR site. <br> 'PrepareForFailback' prepares the DR plan for a Failback operation by validating the required configuration for failback to the primary site. <br> 'TestFailback' tests if a failback from DR site to primary site works. <br> 'Failback' fails back the resources from DR site to primary site. <br> 'PrepareForFailover' prepares the DR plan for subsequent Failover operation (after a successful Failover and Failback) by validating the required configuration for Failover to the DR site. <br> 'Teardown' can be used to tear down configuration after a failed/partially successful Failover or Failback operation. This option can also be used to tear down configuration after a successful/failed/partially successful Test Failover or Test Failback operation. <br>
+          type:
+          - string
+          - 'null'
+          enum:
+          - Activate
+          - PrepareForFailover
+          - PrepareForFailback
+          - TestFailover
+          - TestFailback
+          - Failover
+          - Failback
+          - Teardown
+    SCRPOConfig:
+      description: Specifies the Recovery Point Objective (RPO) configuration for a DR Plan.
+      required:
+      - unit
+      properties:
+        unit:
+          description: Specifies the unit for RPO settings.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Minutes
+          - Hours
+          - Days
+        frequency:
+          description: Specifies the frequency at which RPO need to be executed along with the unit.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          minimum: 1
+    SCTestFailoverActionParams:
+      description: Specifies the action parameters to trigger test failover on a DR plan.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/SCDRPlanActionCommonParams'
+      - type: object
+        required:
+        - environment
+        properties:
+          environment:
+            description: Specifies the environment of the source for which the test failover action needs to be performed.
+            type: string
+            enum:
+            - vmware
+          vmwareParams:
+            description: Specifies the VMware specific parameters to perform the test failover action.
+            type: object
+            $ref: '#/components/schemas/SCTestFailoverActionVMwareParams'
+    SCDRPlansResponse:
+      description: Specifies the list of DR plans.
+      type: object
+      properties:
+        drPlans:
+          description: Specifies the list of DR plans.
+          type: array
+          items:
+            $ref: '#/components/schemas/SCDRPlan'
+        summary:
+          description: Specifies the summary of the DR plans.
+          type: object
+          $ref: '#/components/schemas/SCDRPlansSummary'
+    SCNetworkMappingIpConfig:
+      description: Specifies the network mapping configuration.
+      allOf:
+      - type: object
+        properties:
+          sourceNetwork:
+            description: Specifies the source network.
+            type:
+            - string
+            - 'null'
+          targetNetwork:
+            description: Specifies the target network.
+            type:
+            - string
+            - 'null'
+          gateway:
+            description: Specifies the gateway network address.
+            type:
+            - string
+            - 'null'
+      - $ref: '#/components/schemas/SCCommonDNSSettings'
+    SCNetworkPortGroupComputeConfig:
+      description: Specifies the compute settings for the network port group object located under a specific vCenter object hierarchy on Cohesity.
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          description: Specifies the ID of the network port group object.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        moRef:
+          description: Specifies the Managed Object Reference (MoRef) of the network port group object. This is a unique identifier inside vCenter.
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        name:
+          description: Specifies the name of the network port group object.
+          type:
+          - string
+          - 'null'
+          readOnly: true
+    SCVMDetails:
+      description: Specifies the details specific to the virtualMachine object type.
+      type: object
+      properties:
+        isCdpProtected:
+          description: Specifies true if the VM is protected using Continuous Data Protection (CDP).
+          type:
+          - boolean
+          - 'null'
+    SCErrorCode:
+      description: Specifies all the error codes that are returned by API server
+      type: string
+      enum:
+      - kNoError
+      - kValidationError
+      - kInternalError
+    SCActionsResponse:
+      description: Specifies the list of actions.
+      type: object
+      properties:
+        actions:
+          description: Specifies the list of actions.
+          type: array
+          items:
+            $ref: '#/components/schemas/SCAction'
+    SCDRSiteConfig:
+      description: Specifies the configuration for DR site.
+      type: object
+      required:
+      - siteId
+      - source
+      properties:
+        siteId:
+          description: Specifies the unique identifier of the DR site.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        source:
+          description: Specifies the registered source configuration on the DR site.
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/SCSourceConfig'
+    SCDRPlansSummary:
+      description: Specifies the summary of the DR Plans.
+      type: object
+      properties:
+        totalPlans:
+          description: Specifies the total number DR Plans.
+          type:
+          - integer
+          - 'null'
+          format: int32
+        activePlans:
+          description: Specifies the total number of active DR plans. This includes the plans that are either currently active, completed or failed due to an error.
+          type:
+          - integer
+          - 'null'
+          format: int32
+        runningPlans:
+          description: Specifies the  total number of DR Plans in running status. This includes the plans that are in failover running, failback running, teardown running or cancelling status.
+          type:
+          - integer
+          - 'null'
+          format: int32
+        completedPlans:
+          description: Specifies the total number of completed DR plans. This includes the plans that are currently either failover completed or failback completed.
+          type:
+          - integer
+          - 'null'
+          format: int32
+        readyPlans:
+          description: Specifies the total number of DR plans that are ready for any of the actions such as activation, failover, or failback.
+          type:
+          - integer
+          - 'null'
+          format: int32
+        notReadyPlans:
+          description: Specifies the total number of DR plans that are not ready for any of the actions such as activation, failover, or failback.
+          type:
+          - integer
+          - 'null'
+          format: int32
+        failedPlans:
+          description: Specifies the total number of plans that either failed a failover or failback operation, or have some configuration error.
+          type:
+          - integer
+          - 'null'
+          format: int32
+        slaSatisfiedPlans:
+          description: Specifies the total number of active DR plans where SLA is satisfied.
+          type:
+          - integer
+          - 'null'
+          format: int32
+        slaNotSatisfiedPlans:
+          description: Specifies the total number of active DR plans where SLA is not satisfied.
+          type:
+          - integer
+          - 'null'
+          format: int32
+    SCStaticIpConfig:
+      description: Specifies the Static IP configurations.
+      required:
+      - configOption
+      properties:
+        configOption:
+          description: Specifies the config option for static Ip config.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Original
+          - NetworkMapping
+          - Manual
+        originalConfig:
+          description: Specifies the original static IP configuration.
+          type: object
+          $ref: '#/components/schemas/SCOriginalStaticIpConfig'
+        networkMappingConfig:
+          description: Specifies the new network mapping.
+          type: array
+          items:
+            $ref: '#/components/schemas/SCNetworkMappingIpConfig'
+        manualIpConfig:
+          description: Specifies the manual IP setting at object/vm level.
+          type: object
+          $ref: '#/components/schemas/SCManualStaticIpConfig'
+    SCResourcePoolComputeConfig:
+      description: Specifies the compute settings for the resource pool object located under a specific vCenter object hierarchy on Cohesity.
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          description: Specifies the ID of the resource pool object.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        moRef:
+          description: Specifies the Managed Object Reference (MoRef) of the resource pool object. This is a unique identifier inside vCenter.
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        name:
+          description: Specifies the name of the resource pool object.
+          type:
+          - string
+          - 'null'
+          readOnly: true
+    SCDRPlanHealthCheckParams:
+      description: Specifies the parameters associated with DR plan health check.
+      type: object
+      required:
+      - drPlanId
+      properties:
+        drPlanId:
+          description: Specifies the unique identifier for the DR plan.
+          type:
+          - integer
+          - 'null'
+          format: int64
+    SCClusterComputeConfig:
+      description: Specifies the compute settings for the cluster object located under a specific vCenter object hierarchy on Cohesity.
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          description: Specifies the ID of the cluster object.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        moRef:
+          description: Specifies the Managed Object Reference (MoRef) of the cluster object. This is a unique identifier inside vCenter.
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        name:
+          description: Specifies the name of the cluster object.
+          type:
+          - string
+          - 'null'
+          readOnly: true
+    SCDhcpIpConfig:
+      description: Specifies the DHCP IP configurations.
+      allOf:
+      - $ref: '#/components/schemas/SCCommonDNSSettings'
+    SCCommonDNSSettings:
+      description: Specifies the common DNS IP settings.
+      properties:
+        dnsServers:
+          description: Specifies the list of DNS servers.
+          type: array
+          items:
+            type: string
+        dnsSuffixes:
+          description: Specifies the list of DNS suffixes.
+          type: array
+          items:
+            type: string
+    SCTestFailbackActionVMwareParams:
+      description: Specifies the action parameters to trigger a test failback on a DR plan.
+      type: object
+      required:
+      - resourceProfileName
+      properties:
+        resourceProfileName:
+          description: Specifies the unique resource profile name which is added as a part of the DR plan.
+          type:
+          - string
+          - 'null'
+        performStorageVmotion:
+          description: Specifies whether to perform the storage vMotion operation with the test failback action. Default value is false if not specified.
+          type:
+          - boolean
+          - 'null'
+    SCFailoverActionVMwareParams:
+      description: Specifies the action parameters to trigger failover for VMware environment.
+      type: object
+      required:
+      - resourceProfileName
+      properties:
+        resourceProfileName:
+          description: Specifies the unique resource profile name which is added as a part of the DR plan.
+          type:
+          - string
+          - 'null'
+        shutdownVms:
+          description: Specifies if the data objects such as VMs at primary site should be shut down after failover is completed.
+          type:
+          - boolean
+          - 'null'
+        protectVms:
+          description: Specifies if the data objects such as VMs at DR site should be protected after failover is completed. If this field is not set then failback operation will not be possible as a part of the current DR plan.
+          type:
+          - boolean
+          - 'null'
+    SCvCenterResourceProfileParams:
+      description: Specifies the resource profile settings for vCenter source.
+      type: object
+      required:
+      - name
+      - defaultResourceSet
+      properties:
+        name:
+          description: Specifies name of the resource profile.
+          type:
+          - string
+          - 'null'
+        isValid:
+          description: Specifies whether the resource profile is valid for performing failover/failback on the DR plan.
+          type:
+          - boolean
+          - 'null'
+          readOnly: true
+        defaultResourceSet:
+          description: Specifies the parameters required to configure a default resource set. Default resource set must be configured and all settings will be generically applied to all objects unless they are specifically overridden in custom resource set settings.
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/SCvCenterDefaultResourceSet'
+        customResourceSets:
+          description: Specifies the parameters required to configure custom resource sets. These are additional resource sets added along with default resource set primarily to override default settings.
+          type: array
+          items:
+            $ref: '#/components/schemas/SCvCenterCustomResourceSet'
+        ipConfig:
+          description: Specifies the custom IP configuration for VMs as part of a resource profile.
+          type: object
+          $ref: '#/components/schemas/SCIpConfig'
+    SCvCenterComputeConfig:
+      description: Specifies the compute configuration for a vCenter resource set.
+      type: object
+      required:
+      - dataCenterConfig
+      - clusterComputeConfig
+      - resourcePoolConfig
+      - datastoreConfig
+      - networkPortGroupConfig
+      properties:
+        dataCenterConfig:
+          description: Specifies the compute settings for the data center located under a specific vCenter object hierarchy on Cohesity.
+          type: object
+          $ref: '#/components/schemas/SCDataCenterComputeConfig'
+        clusterComputeConfig:
+          description: Specifies the compute settings for the cluster located under a specific vCenter object hierarchy on Cohesity.
+          type: object
+          $ref: '#/components/schemas/SCClusterComputeConfig'
+        resourcePoolConfig:
+          description: Specifies the compute settings for the resource pool located under a specific vCenter object hierarchy on Cohesity.
+          type: object
+          $ref: '#/components/schemas/SCResourcePoolComputeConfig'
+        datastoreConfig:
+          description: Specifies the compute settings for the data store located under a specific vCenter object hierarchy on Cohesity.
+          type: object
+          $ref: '#/components/schemas/SCDatastoreComputeConfig'
+        networkPortGroupConfig:
+          description: Specifies the compute settings for the data store located under a specific vCenter object hierarchy on Cohesity.
+          type: object
+          $ref: '#/components/schemas/SCNetworkPortGroupComputeConfig'
+    SCAction:
+      description: Specifies the details of an ongoing or past action performed on a DR plan.
+      type: object
+      properties:
+        id:
+          description: Specifies the identifier for an action.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        type:
+          description: Specifies the current action which is being performed on a DR plan. <br> 'Activate' activates the DR plan which periodically checks the protection and replication status to determine if the DR plan Recovery Point Objective (RPO) is met. <br> 'TestFailover' tests if a failover from primary site to DR site works. <br> 'Failover' fails over the resources from primary site to DR site. <br> 'PrepareForFailback' prepares the DR plan for a Failback operation by validating the required configuration for failback to the primary site. <br> 'TestFailback' tests if a failback from DR site to primary site works. <br> 'Failback' fails back the resources from DR site to primary site. <br> 'PrepareForFailover' prepares the DR plan for subsequent Failover operation (after a successful Failover and Failback) by validating the required configuration for Failover to the DR site. <br> 'Teardown' can be used to tear down configuration after a failed/partially successful Failover or Failback operation. This option can also be used to tear down configuration after a successful/failed/partially successful Test Failover or Test Failback operation. <br>
+          type:
+          - string
+          - 'null'
+          enum:
+          - Activate
+          - PrepareForFailover
+          - PrepareForFailback
+          - TestFailover
+          - TestFailback
+          - Failover
+          - Failback
+          - Teardown
+        drPlanId:
+          description: Specifies the ID of the DR plan with which the current action is associated.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        status:
+          description: Specifies the current status of the DR plan action. Following status field will always match with latest attempt's status.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Running
+          - Completed
+          - Failed
+          - Canceled
+          - Canceling
+        message:
+          description: Specifies the message associated with the above status. In case of errors/warnings, this field will be populated with appropriate message.
+          type:
+          - string
+          - 'null'
+        progressPercentage:
+          description: Specifies the progress in percentage for a DR plan action.
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 100
+        startTimeUsecs:
+          description: Specifies the start time of the action in microseconds.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        endTimeUsecs:
+          description: Specifies the end time of the action in microseconds.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        latestAttemptId:
+          description: Specifies the identifier to locate the latest attempt for a DR plan action.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        attempts:
+          description: Specifies the list of attempts associated with an action. The list of attempts will be returned in the order of start timestamps where latest timestamp will appear first and so on.
+          type: array
+          items:
+            $ref: '#/components/schemas/SCActionAttempt'
+        parentId:
+          description: Specifies the identifier of the parent action on which the current action is performed. e.g Teardown action can be performed on failover/test failover/failback/test failback action. This field will not be populated for activities such as Activation, Failover, Test failover, Failback, Test failback etc where no parent action exists.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        supportedOperations:
+          description: Specifies the operations that can be performed to handle the failures that resulted from this action.
+          type: array
+          items:
+            type:
+            - string
+            - 'null'
+            enum:
+            - ForceFinish
+            - Resume
+            - Cancel
+            - Teardown
+        userConfig:
+          description: Specifies the user provided configuration associated with the current activity. This field will only be populated for types of activities such as Failover, TestFailover, Failback, TestFailback etc. where explicit user configuration is provided when performing an action on DR plan.
+          type: object
+          $ref: '#/components/schemas/SCUserActionConfig'
+    SCObjectSnapshotOverride:
+      description: Specifies the list of object Ids along with the snapshot timestamps typically used for actual or test failover/failback.
+      required:
+      - objectId
+      properties:
+        objectId:
+          description: Specifies the unique ID of the object in DR plan. This identifier uniquely locates the data object such as VM in primary site.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        snapshotId:
+          description: Specifies the snapshot identifier associated with the object id mentioned above. If objectID is provided but 'snapshotId' is not, then the field will be defaulted to a latest snapshot Id internally.
+          type:
+          - string
+          - 'null'
+        pointInTimeUsecs:
+          description: Specifies the epoch timestamp in microseconds for recovering to a point-in-time in the past. This option is only available if Continuous Data Protection (CDP) is enabled for data objects.
+          type:
+          - integer
+          - 'null'
+          format: int64
+    SCDatastoreComputeConfig:
+      description: Specifies the compute settings for the data store object located under a specific vCenter object hierarchy on Cohesity.
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          description: Specifies the ID of the data store object.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        moRef:
+          description: Specifies the Managed Object Reference (MoRef) of the data store object. This is a unique identifier inside vCenter.
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        name:
+          description: Specifies the name of the data store object.
+          type:
+          - string
+          - 'null'
+          readOnly: true
+    SCTeardownActionParams:
+      description: Specifies the action parameters to teardown a DR plan action.
+      type: object
+      required:
+      - actionId
+      properties:
+        actionId:
+          description: Specifies the action identifier on which the teardown operation needs to be performed. For specified action ID, if teardown action is not applicable then validation error will be returned.
+          type:
+          - integer
+          - 'null'
+          format: int64
+    SCHealthCheck:
+      description: Specifies the information about the health check.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/SCInitiateHealthCheckParams'
+      properties:
+        status:
+          description: Specifies the current status of the health check.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Scheduled
+          - Running
+          - Successful
+          - Failed
+        startTimeUsecs:
+          description: Specifies the start time of the health check in microseconds.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        endTimeUsecs:
+          description: Specifies the end time of the health check in microseconds.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        message:
+          description: Specifies the message associated with the health check.
+          type:
+          - string
+          - 'null'
+    SCOriginalStaticIpConfig:
+      description: Specifies the original static IP configuration.
+      allOf:
+      - $ref: '#/components/schemas/SCCommonDNSSettings'
+    SCUserActionConfig:
+      description: Specifies the user configuration which was used during the submission of the action.
+      type: object
+      properties:
+        sourceConfig:
+          description: Specifies the source configuration which was used during submission of the action. This configuration will contain the details such as source type, source identifier, resource profile etc. In case of vCenter source, resource profile array will always contain a single entry of the resource profile selected used during the submission of the DR action. This field will only be populated for actions such as Failover, Failback, TestFailover, and TestFailback.
+          type: object
+          $ref: '#/components/schemas/SCSourceConfig'
+        objectSnapshots:
+          description: Specifies the list of object and snapshot details that was provided at the time of action submission.
+          type: array
+          items:
+            $ref: '#/components/schemas/SCObjectSnapshotUserConfig'
+    SCActionAttempt:
+      description: Specifies the attempt details for an action. A new attempt is created under following two conditions. <br> 1. When an top level action (Failover, Failback, Test Failover, Test Failback) is performed on a DR plan, a new attempt will be created. <br> 2. In case if action created from point 1 results into the failed state, then clients can execute operations such as resume or force finish to recover from errors. Each of these operations will create a new attempt and clients must use the latest attempt to track the progress of a DR action. <br>
+      type: object
+      properties:
+        attemptId:
+          description: Specifies the unique identifier for the attempt. This identifier is unique within the scope of the DR plan action.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        operationType:
+          description: Specifies the current operation which is being performed on a DR plan action. This operation type will be populated only if the attempt is initiated by executing an operation on a DR action.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Resume
+          - ForceFinish
+        status:
+          description: Specifies the current status of an attempt.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Running
+          - Completed
+          - Failed
+          - Canceled
+          - Canceling
+        message:
+          description: Specifies the message associated with the status. In case of errors/warnings, this field will be populated with appropriate message.
+          type:
+          - string
+          - 'null'
+        startTimeUsecs:
+          description: Specifies the start time of an attempt in microseconds.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        endTimeUsecs:
+          description: Specifies the end time of an attempt in microseconds.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        cancellationTimeUsecs:
+          description: Specifies the time when cancel operation was initiated on the ongoing attempt. This field will be populated only if the operation type is 'Cancel'.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        steps:
+          description: Specifies the list of steps associated with the attempt. Each step indicates the incremental progression of the attempt.
+          type: array
+          items:
+            $ref: '#/components/schemas/SCAttemptStep'
+    SCDataCenterComputeConfig:
+      description: Specifies the compute settings for the data center located under a specific vCenter object hierarchy on Cohesity.
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          description: Specifies the ID of the data center object.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        moRef:
+          description: Specifies the Managed Object Reference (MoRef) of the data center object. This is a unique identifier inside vCenter.
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        name:
+          description: Specifies the name of the data center object.
+          type:
+          - string
+          - 'null'
+          readOnly: true
+    SCSourceConfig:
+      description: Specifies the source details for DR plan configuration.
+      type: object
+      required:
+      - environment
+      properties:
+        environment:
+          description: Specifies the source environment.
+          type: string
+          enum:
+          - vmware
+        vmwareParams:
+          description: Specifies the source for adding VMware data object parameters. Only vCenter is supported at this time.
+          type: object
+          $ref: '#/components/schemas/SCDRSourceVMwareParams'
+    SCOperationOnActionParams:
+      description: Specifies the parameters for an performing an operation on a DR plan action.
+      type: object
+      required:
+      - operationType
+      properties:
+        operationType:
+          description: Specifies the current operation type which is being performed on an action. <br> 'Cancel' is used to cancel any of the following in-flight actions - Activate, PrepareForFailover, PrepareForFailback, TestFailover, Failover, TestFailback, Failback. This operation will cancel the latest ongoing attempt. <br> 'Resume' resumes a failed/partially successful Failover or Failback action. This operation will create a new attempt to resume the respective DR plan action. <br> 'ForceFinish' forcefully finishes a partially successful Failover or Failback action without attempting to bring up the failed resources. This operation will create a new attempt to force finish the respective DR plan action. <br>
+          type:
+          - string
+          - 'null'
+          enum:
+          - Cancel
+          - Resume
+          - ForceFinish
+  responses:
+    SCGetDRPlansResponse:
+      description: Specifies the response of a successful get DR plans operation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SCDRPlansResponse'
+    SCGetDRPlanByIdResponse:
+      description: Specifies the response of a successful get DR plan operation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SCDRPlan'
+    SCUpdateDRPlanResponse:
+      description: Specifies the response of a successful DR plan update.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SCDRPlan'
+    SCGetActionsResponse:
+      description: Specifies the response of a successful get actions.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SCActionsResponse'
+    SCCreateDRPlanResponse:
+      description: Specifies the response of a successful DR plan creation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SCDRPlan'
+    NoContentResponse:
+      description: No Content
+    SCPerformActionDrPlanResponse:
+      description: Specifies the response after performing an action on DR plan.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SCDrPlanAction'
+    SCErrorResponse:
+      description: Specifies the common error definition.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SCError'
+    SCGetActionByIdResponse:
+      description: Specifies the response of a successful get DR plan operation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SCAction'
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: apiKey

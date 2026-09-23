@@ -1,0 +1,320 @@
+openapi: 3.2.0
+info:
+  description: 'This API list provides operations for interfacing with the Cohesity
+
+    Cluster.'
+  title: Cohesity REST Network API
+  version: '1.0'
+servers:
+- url: https://<CLUSTER_VIP>/irisservices/api/v1
+tags:
+- name: Network
+paths:
+  /public/network/bonds:
+    post:
+      description: 'Sends a request to create a new network bond on the Cluster. This can only be
+
+        performed on a Node before it is part of a Cluster.'
+      tags:
+      - Network
+      summary: Create a new network bond
+      operationId: CreateBond
+      responses:
+        '200':
+          $ref: '#/components/responses/CreateBondResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBondParameters'
+        required: true
+  /public/network/bonds/{name}:
+    delete:
+      description: 'Sends a request to delete a network bond from the Cluster. This can only be
+
+        performed on a Node before it is part of a Cluster.'
+      tags:
+      - Network
+      summary: Delete a network bond
+      operationId: DeleteBond
+      parameters:
+      - x-go-name: Name
+        description: Specifies the name of the bond being deleted.
+        name: name
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/Error'
+  /public/network/hosts:
+    get:
+      description: 'Sends a request to get a list of the current entries in the hosts file
+
+        on the Cluster.'
+      tags:
+      - Network
+      summary: Get the current entries in the hosts file on the Cluster
+      operationId: ListHosts
+      responses:
+        '200':
+          $ref: '#/components/responses/ListHostsResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    put:
+      description: Sends a request to edit one or more entries in the Cluster's /etc/hosts file.
+      tags:
+      - Network
+      summary: Edit entries in the Cluster's /etc/hosts file
+      operationId: EditHosts
+      responses:
+        '200':
+          $ref: '#/components/responses/EditHostsResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditHostsParameters'
+        required: true
+    post:
+      description: 'Sends a request to add one or more new entries to the Cluster''s /etc/hosts
+
+        file.'
+      tags:
+      - Network
+      summary: Add new entries to the /etc/hosts file
+      operationId: AppendHosts
+      responses:
+        '200':
+          $ref: '#/components/responses/AppendHostsResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppendHostsParameters'
+        required: true
+    delete:
+      description: 'Sends a request to remove one or more entries from the Cluster''s
+
+        etc/hosts file.'
+      tags:
+      - Network
+      summary: Remove entries from the /etc/hosts file
+      operationId: DeleteHosts
+      parameters:
+      - x-go-name: Ips
+        description: 'Specifies a list of the IP addresses of entries to remove from the
+
+          Cluster''s /etc/hosts file.'
+        name: ips
+        in: query
+        required: true
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/DeleteHostsResponse'
+        default:
+          $ref: '#/components/responses/Error'
+components:
+  schemas:
+    CreateBondParameters:
+      description: Specifies the parameters needed to create a bond.
+      type: object
+      title: Create Bond Parameters.
+      required:
+      - name
+      - slaves
+      properties:
+        bondingMode:
+          description: 'Specifies the bonding mode to use for this bond. If not specified,
+
+            this value will default to ''kActiveBackup''.
+
+            ''kActiveBackup'' indicates active backup bonding mode.
+
+            ''k802_3ad'' indicates 802.3ad bonding mode.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kActiveBackup
+          - k802_3ad
+          x-go-name: BondingMode
+        name:
+          description: Specifies a unique name to identify the bond being created.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        slaves:
+          description: Specifies the names of the slaves of this bond.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Slaves
+      x-go-package: cohesity/iris/server/data/public
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    AppendHostsParameters:
+      description: Specifies the parameters needed for an append hosts request.
+      type: object
+      title: Append Hosts Parameters.
+      properties:
+        hosts:
+          description: 'Specifies the list of host entries to be added to the Cluster''s
+
+            etc/hosts file.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/HostEntry'
+          x-go-name: Hosts
+      x-go-package: cohesity/iris/server/data/public
+    HostEntry:
+      description: 'Specifies the parameters of a host entry that can be stored in the
+
+        cluster''s /etc/hosts file.'
+      type: object
+      title: Host Entry.
+      required:
+      - ip
+      - domainNames
+      properties:
+        description:
+          description: Description the host entry.
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+        domainNames:
+          description: Specifies the domain names of the host.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: DomainNames
+        ip:
+          description: Specifies the IP address of the host.
+          type:
+          - string
+          - 'null'
+          x-go-name: Ip
+      x-go-package: cohesity/iris/server/data/public
+    HostResult:
+      description: 'Specifies the response received after requesting a PUT, POST, or DELETE
+
+        method on the /network/hosts endpoint.'
+      type: object
+      title: Host Result.
+      properties:
+        message:
+          description: Specifies a message describing the status of the Hosts request.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    EditHostsParameters:
+      description: Specifies the parameters needed for an edit hosts request.
+      type: object
+      title: Edit Hosts Parameters.
+      properties:
+        hosts:
+          description: 'Specifies the list of host entries to be edited. Each IP address listed
+
+            in the list of host entries will have its corresponding domain names in
+
+            the /etc/hosts file replaced with the domain names specified here.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/HostEntry'
+          x-go-name: Hosts
+      x-go-package: cohesity/iris/server/data/public
+    CreateBondResult:
+      description: Specifies the result of a request to create a new bond.
+      type: object
+      title: Create Bond Result.
+      properties:
+        message:
+          description: Specifies a message describing the result of the operation.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+  responses:
+    CreateBondResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateBondResult'
+    ListHostsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/HostEntry'
+    NoContentResponse:
+      description: No Content
+    DeleteHostsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HostResult'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    EditHostsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HostResult'
+    AppendHostsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HostResult'

@@ -1,0 +1,153 @@
+openapi: 3.2.0
+info:
+  description: 'This API list provides operations for interfacing with the Cohesity
+
+    Cluster.'
+  title: Cohesity REST Packages API
+  version: '1.0'
+servers:
+- url: https://<CLUSTER_VIP>/irisservices/api/v1
+tags:
+- name: Packages
+paths:
+  /public/packages:
+    get:
+      description: 'Sends a request retrieve information about all packages which are currently
+
+        installed on the Cluster.'
+      tags:
+      - Packages
+      summary: List all currently installed packages on a Cohesity Cluster
+      operationId: ListPackages
+      responses:
+        '200':
+          $ref: '#/components/responses/ListPackagesResponse'
+        default:
+          $ref: '#/components/responses/Error'
+  /public/packages/url:
+    post:
+      description: Sends a request to download a package from a URL to the Cluster.
+      tags:
+      - Packages
+      summary: Download a package to the Cluster by providing a URL where the package is hosted
+      operationId: DownloadPackage
+      responses:
+        '202':
+          $ref: '#/components/responses/DownloadPackageResponse'
+        default:
+          $ref: '#/components/responses/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DownloadPackageParameters'
+        required: true
+components:
+  schemas:
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    DownloadPackageParameters:
+      description: 'Specifies the parameters needed for a request to download a new software
+
+        package to a Cluster.'
+      type: object
+      title: Download Package Parameters.
+      required:
+      - url
+      properties:
+        url:
+          description: Specifies a URL from which the package can be downloaded to the Cluster.
+          type:
+          - string
+          - 'null'
+          x-go-name: Url
+      x-go-package: cohesity/iris/server/data/public
+    DownloadPackageResult:
+      description: Specifies the result of a request to download a package to a Cluster.
+      type: object
+      title: Download Package Result.
+      properties:
+        message:
+          description: 'Specifies a message describing the result of the request to download
+
+            a package to a Cluster.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    PackageDetails:
+      description: 'Specifies all of the details of a package that is currently installed
+
+        on the cluster.'
+      type: object
+      title: Package Details
+      properties:
+        downtimeRequired:
+          description: Specifies whether or not downtime is required to update to this package.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: DowntimeRequired
+        installedOnNodes:
+          description: 'Specifies the list of IDs of nodes on the cluster where this package is
+
+            currently installed.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int64
+          x-go-name: InstalledOnNodes
+        packageName:
+          description: Specifies the name of the current package.
+          type:
+          - string
+          - 'null'
+          x-go-name: PackageName
+        releaseDate:
+          description: Specifies the release date of this package.
+          type:
+          - string
+          - 'null'
+          x-go-name: ReleaseDate
+      x-go-package: cohesity/iris/server/data/public
+  responses:
+    DownloadPackageResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DownloadPackageResult'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    ListPackagesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/PackageDetails'

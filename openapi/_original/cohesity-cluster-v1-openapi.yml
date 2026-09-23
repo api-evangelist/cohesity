@@ -1,3 +1,5 @@
+# x-archived-from: cohesity-cluster-v1-openapi.yml
+# x-archived-on: 2026-09-16
 consumes:
 - application/json
 produces:

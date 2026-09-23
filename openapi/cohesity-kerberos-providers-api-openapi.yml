@@ -1,0 +1,309 @@
+openapi: 3.2.0
+info:
+  description: Cohesity API provides a RESTful interface to access the various data management operations on Cohesity cluster and Helios.
+  title: Cohesity REST Kerberos Providers API
+  version: '2.0'
+servers:
+- url: /v2
+tags:
+- name: Kerberos Providers
+paths:
+  /kerberos-providers:
+    get:
+      description: Get the list of Kerberos Authentication Providers.
+      tags:
+      - Kerberos Providers
+      summary: Get the list of Kerberos Providers
+      operationId: GetKerberosProviders
+      parameters:
+      - x-omitempty: true
+        description: Filter by a list of realm names.
+        name: realmNames
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - x-omitempty: true
+        description: Filter by a list of Kerberos Provider Ids.
+        name: ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - x-omitempty: true
+        description: Filter by a list of KDC servers.
+        name: kdcServers
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/GetKerberosProvidersResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /kerberos-providers/register:
+    post:
+      description: Register a Kerberos Authentication Provider.
+      tags:
+      - Kerberos Providers
+      summary: Register a Kerberos Authentication Provider
+      operationId: RegisterKerberosProvider
+      responses:
+        '201':
+          $ref: '#/components/responses/RegisterOrUpdateKerberosProviderResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterOrUpdateKerberosProviderRequest'
+        description: Specifies the parameters to Register a Kerberos Provider.
+        required: true
+  /kerberos-providers/unregister/{id}:
+    post:
+      description: Unregister a Kerberos Provider.
+      tags:
+      - Kerberos Providers
+      summary: Unregister a Kerberos Provider
+      operationId: UnregisterKerberosProvider
+      parameters:
+      - description: Specifies the id.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^\d+:\d+:\d+$
+      responses:
+        '200':
+          $ref: '#/components/responses/UnregisterKerberosProviderResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UnregisterKerberosRequest'
+        description: Request to unregister a Kerberos Provider.
+        required: true
+  /kerberos-providers/{id}:
+    get:
+      description: Get the Registered Kerberos Provider by id.
+      tags:
+      - Kerberos Providers
+      summary: Get the Registered Kerberos Provider by id
+      operationId: GetKerberosProviderById
+      parameters:
+      - description: 'Specifies the id which will be of the pattern
+
+          cluster_id:clusterincarnation_id:resource_id.'
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^\d+:\d+:\d+$
+      responses:
+        '200':
+          $ref: '#/components/responses/GetKerberosProviderByIdResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    put:
+      description: Update the Kerberos Provider Registration.
+      tags:
+      - Kerberos Providers
+      summary: Update the Kerberos Provider Registration
+      operationId: UpdateKerberosProvider
+      parameters:
+      - description: 'Specifies the id which will be of the pattern
+
+          cluster_id:clusterincarnation_id:resource_id.'
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^\d+:\d+:\d+$
+      responses:
+        '200':
+          $ref: '#/components/responses/RegisterOrUpdateKerberosProviderResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterOrUpdateKerberosProviderRequest'
+        description: Request to update a Kerberos Provider.
+        required: true
+components:
+  schemas:
+    UnregisterKerberosProvider:
+      description: Response of Unregister Kerberos Provider.
+      type: object
+      properties:
+        message:
+          description: A status message returned upon unregistering.
+          type: string
+          x-order: 0
+    RegisterOrUpdateKerberosProviderRequest:
+      description: 'Specifies the request to register or update a Kerberos
+
+        Provider.'
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/KerberosProvider'
+      - $ref: '#/components/schemas/UnregisterKerberosRequest'
+    KerberosProviders:
+      description: Response of Kerberos Providers.
+      type: object
+      properties:
+        kerberosProviders:
+          description: A list of registered Kerberos Providers.
+          type: array
+          items:
+            $ref: '#/components/schemas/KerberosProvider'
+          x-omitempty: true
+          x-order: 0
+    KerberosProvider:
+      description: Specifies the the Kerberos Provider details.
+      type: object
+      required:
+      - kdcServers
+      - adminServer
+      - realmName
+      - hostAlias
+      properties:
+        id:
+          description: Specifies the id.
+          type:
+          - string
+          - 'null'
+          pattern: ^\d+:\d+:\d+$
+          x-order: 0
+          readOnly: true
+        realmName:
+          description: Specifies the realm name.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        kdcServers:
+          description: Specifies a list of Key distribution Centre(KDC) Severs.
+          type: array
+          items:
+            type: string
+          x-omitempty: true
+          x-order: 2
+        adminServer:
+          description: 'Specifies the admin server used for registration from
+
+            the list of KDC servers.'
+          type:
+          - string
+          - 'null'
+          x-order: 3
+        ldapProviderId:
+          description: Specifies the LDAP provider id to be mapped
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 4
+        overwritehostAlias:
+          description: 'Specifies if specified host alias should
+
+            overwrite existing host alias.'
+          type:
+          - boolean
+          - 'null'
+          x-order: 5
+        hostAlias:
+          description: Specifies the DNS routable host alias names.
+          type: array
+          items:
+            type: string
+            pattern: ^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,13}[a-zA-Z0-9])$
+          x-omitempty: true
+          x-order: 6
+    UnregisterKerberosRequest:
+      description: Specifies the request to unregister a Kerberos Provider.
+      type: object
+      required:
+      - adminPassword
+      properties:
+        adminPassword:
+          description: Specifies the password
+          type:
+          - string
+          - 'null'
+          x-order: 0
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+  responses:
+    GetKerberosProvidersResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/KerberosProviders'
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    GetKerberosProviderByIdResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/KerberosProvider'
+    RegisterOrUpdateKerberosProviderResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/KerberosProvider'
+    UnregisterKerberosProviderResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UnregisterKerberosProvider'
+  securitySchemes:
+    APIKeyHeader:
+      in: header
+      name: apiKey
+      type: apiKey

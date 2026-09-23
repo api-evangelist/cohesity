@@ -1,0 +1,435 @@
+openapi: 3.2.0
+info:
+  description: 'This API list provides operations for interfacing with the Cohesity
+
+    Cluster.'
+  title: Cohesity REST App API
+  version: '1.0'
+servers:
+- url: https://<CLUSTER_VIP>/irisservices/api/v1
+tags:
+- name: App
+paths:
+  /public/apps:
+    get:
+      description: 'Api provides the list of the apps which are available for the user to install
+
+        or are already installed. App object provides basic app information along with
+
+        app metadata.'
+      tags:
+      - App
+      summary: Lists the apps
+      operationId: GetApps
+      responses:
+        '200':
+          $ref: '#/components/responses/GetAppsResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    post:
+      description: 'Api provides the list of the apps which are available for the user to install
+
+        or are already installed. App object provides basic app information along with
+
+        app metadata.'
+      tags:
+      - App
+      summary: Upload and install an app from image
+      operationId: UploadApp
+      responses:
+        '201':
+          $ref: '#/components/responses/InstallAppResponse'
+        default:
+          $ref: '#/components/responses/Error'
+  /public/apps/{appUid}/versions/{version}:
+    post:
+      description: Only purchased apps can be installed using this api.
+      tags:
+      - App
+      summary: Starts the application installation on the cluster
+      operationId: InstallApp
+      parameters:
+      - x-go-name: AppUid
+        description: Specifies the app Id.
+        name: appUid
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - x-go-name: Version
+        description: Specifies the app version.
+        name: version
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '201':
+          $ref: '#/components/responses/InstallAppResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    delete:
+      description: App must already been installed for this api to work.
+      tags:
+      - App
+      summary: Starts the application uninstall from the cluster
+      operationId: UninstallApp
+      parameters:
+      - x-go-name: AppUid
+        description: Specifies the app Id.
+        name: appUid
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - x-go-name: Version
+        description: Specifies the app version.
+        name: version
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '202':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/Error'
+components:
+  schemas:
+    VmNameInfo:
+      description: 'Struct containing vm-name and ui-name (to be displayed on the UI to get
+
+        number of replicas as input) as members.'
+      type: object
+      properties:
+        uiName:
+          description: UI-name. To be displayed on the UI.
+          type:
+          - string
+          - 'null'
+          x-go-name: UiName
+        vmName:
+          description: Vm-name.
+          type:
+          - string
+          - 'null'
+          x-go-name: VmName
+      x-go-package: cohesity/iris/server/data/public
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    ClusterInfo:
+      type: object
+      properties:
+        clusterId:
+          description: Specifies the id of the cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Id
+        incarnationId:
+          description: Specifies the incarnation id of the cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: IncarnationId
+      x-go-package: cohesity/iris/server/data/public
+    App:
+      description: App provides information about an application.
+      type: object
+      title: App information.
+      properties:
+        appId:
+          description: Specifies unique id allocated by the AppStore.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: AppId
+        clusters:
+          description: 'Specifies the list of clusters on which the app is installed for a
+
+            particular account Id.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ClusterInfo'
+          x-go-name: Clusters
+        downloadProgressPct:
+          description: Specifies app download progress percentage.
+          type:
+          - number
+          - 'null'
+          format: double
+          x-go-name: DownloadProgressPct
+        externalIpRequired:
+          description: Specifies if an external ip is required for the app.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: ExternalIpRequired
+        externalNetworks:
+          description: List of external network information available for the app.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ExternalNetworkInfo'
+          x-go-name: ExternalNetworks
+        installState:
+          description: 'Specifies app installation status.
+
+            Specifies status of the app installation.
+
+            kNotInstalled - App yet to be installed.
+
+            kInstallInProgress - App installation is in progress.
+
+            kInstalled - App is installed successfully and can be launched.
+
+            kInstallFailed - App installation failed.
+
+            kUninstallInProgress - App uninstallation is in progress.
+
+            kUninstallFailed - App uninstallation failed.
+
+            kDownloadNotStarted - App download has not started.
+
+            kDownloadInProgress - App download in progress.
+
+            kDownloadComplete - App download completed.
+
+            kDownloadFailed - App download failed.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kNotInstalled
+          - kInstallInProgress
+          - kInstalled
+          - kInstallFailed
+          - kUninstallInProgress
+          - kUninstallFailed
+          - kDownloadNotStarted
+          - kDownloadInProgress
+          - kDownloadComplete
+          - kDownloadFailed
+          x-go-name: InstallState
+        installTime:
+          description: Specifies timestamp when the app was installed.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: InstallTime
+        instanceSizes:
+          description: 'List of applicable instance size specifications (e.g. small/medium/large)
+
+            for the app. Used to determine container resources.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: InstanceSizes
+        isLatest:
+          description: 'Specifies whether the app currently installed on all clusters is the
+
+            latest version or not.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IsLatest
+        latestVersion:
+          description: 'Specifies application version assigned by the AppStore for the latest
+
+            version of an app.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: LatestVersion
+        metadata:
+          description: Specifies metadata information about the app.
+          $ref: '#/components/schemas/AppMetadata'
+        requiredPrivileges:
+          description: 'Specifies privileges that are required for this app.
+
+            App privilege information.
+
+
+            Specifies privileges that are required for this app.
+
+            kReadAccess - App needs views for read access.
+
+            kReadWriteAccess - App needs views for Read/write access.
+
+            kManagementAccess - App needs management access via iris API.
+
+            kAutoMountAccess - Whether to allow auto-mounting all the views.
+
+            kUnrestrictedAppUIAccess - Whether app requires unrestricted UI access (i.e. without passing app access token in URL).
+
+            kAuditLogViewReadAccess - Whether app requires read access to the internal audit log view.
+
+            kProtectedObjectAccess - Whether app requires read access to protected objects.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            enum:
+            - kReadAccess
+            - kReadWriteAccess
+            - kManagementAccess
+            - kAutoMountAccess
+            - kUnrestrictedAppUIAccess
+            - kAuditLogViewReadAccess
+            - kProtectedObjectAccess
+          x-go-name: RequiredPrivileges
+        uninstallTime:
+          description: Specifies timestamp when the app was uninstalled.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: UninstallTime
+        version:
+          description: Specifies application version assigned by the AppStore.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Version
+        vmNameInfoList:
+          description: List of vm name info objects.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/VmNameInfo'
+          x-go-name: VmNameInfoList
+      x-go-package: cohesity/iris/server/data/public
+    ExternalNetworkInfo:
+      description: 'This is used to display the list of external networks, from which one can
+
+        potentially be selected for an app instance.'
+      type: object
+      title: Specifies the external network information of the app instance.
+      properties:
+        axonNetworkName:
+          description: 'Name of axon network corresponding to this external network. Used for
+
+            internal purposes only.'
+          type:
+          - string
+          - 'null'
+          x-go-name: AxonNetworkName
+        vlanId:
+          description: VLAN id of the network.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: VlanId
+        vlanNetworkName:
+          description: Display name for the UI to select the external network.
+          type:
+          - string
+          - 'null'
+          x-go-name: VlanNetworkName
+      x-go-package: cohesity/iris/server/data/public
+    AppMetadata:
+      description: AppMetadata provides metadata information about an application.
+      type: object
+      title: App metadata information.
+      properties:
+        author:
+          description: Specifies author of the app.
+          type:
+          - string
+          - 'null'
+          x-go-name: Author
+        createdDate:
+          description: Specifies date when the first version of the app was created.
+          type:
+          - string
+          - 'null'
+          x-go-name: CreatedDate
+        description:
+          description: Specifies description about what app does.
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+        devVersion:
+          description: Specifies version of the app provided by the developer.
+          type:
+          - string
+          - 'null'
+          x-go-name: DevVersion
+        iconImage:
+          description: Specifies application icon.
+          type:
+          - string
+          - 'null'
+          x-go-name: IconImage
+        lastModifiedDate:
+          description: Specifies date when the app was last modified.
+          type:
+          - string
+          - 'null'
+          x-go-name: LastModifiedDate
+        name:
+          description: Specifies name of the app.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+      x-go-package: cohesity/iris/server/data/public
+  responses:
+    InstallAppResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/App'
+    NoContentResponse:
+      description: No Content
+    GetAppsResponse:
+      description: GetAppsResponse specifies response for getting apps
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/App'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'

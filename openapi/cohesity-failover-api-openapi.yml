@@ -1,0 +1,941 @@
+openapi: 3.2.0
+info:
+  description: Cohesity API provides a RESTful interface to access the various data management operations on Cohesity cluster and Helios.
+  title: Cohesity REST Failover API
+  version: '2.0'
+servers:
+- url: /v2
+tags:
+- name: Failover
+paths:
+  /data-protect/failover/pollPlannedRuns:
+    get:
+      description: Poll to see whether planned run has been scheduled or not.
+      tags:
+      - Failover
+      summary: Get the list of failover planned runs
+      operationId: PollPlannedRuns
+      parameters:
+      - description: Get runs for specific failover workflows.
+        name: failoverIds
+        in: query
+        required: true
+        schema:
+          type: array
+          items:
+            type: string
+      - description: TenantIds contains ids of the tenants for which objects are to be returned.
+        name: tenantIds
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - description: If true, the response will include Protection Groups which were created by all tenants which the current user has permission to see. If false, then only Protection Groups created by the current user will be returned.
+        name: includeTenants
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/FailoverRunsResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /data-protect/failover/views/{id}:
+    get:
+      description: Get failover tasks of a View.
+      tags:
+      - Failover
+      summary: Get View Failover
+      operationId: GetViewFailover
+      parameters:
+      - description: Specifies a view id to create an failover task.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/components/responses/GetViewFailoverResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+    post:
+      description: Create a view failover task.
+      tags:
+      - Failover
+      summary: Create View Failover Task
+      operationId: CreateViewFailover
+      parameters:
+      - description: Specifies a view id to create an failover task.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '201':
+          $ref: '#/components/responses/CreateViewFailoverResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateViewFailoverRequest'
+        description: Specifies the request body to create failover task.
+        required: true
+  /data-protect/failover/views/{id}/cancel:
+    post:
+      description: Cancel an in progress view failover task.
+      tags:
+      - Failover
+      summary: Cancel View Failover Task
+      operationId: CancelViewFailover
+      parameters:
+      - description: Specifies a view id to cancel it's failover.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /data-protect/failover/{id}:
+    post:
+      description: Initiate a failover request.
+      tags:
+      - Failover
+      summary: Initiate a failover request
+      operationId: InitFailover
+      parameters:
+      - description: Specifies the id of the failover workflow.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          $ref: '#/components/responses/InitFailoverResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InitFailoverRequest'
+        description: Specifies the parameters to initiate a failover. This failover request should be intiaited from replication cluster.
+        required: true
+  /data-protect/failover/{id}/backupActivation:
+    post:
+      description: Specifies the configuration required for activating backup for failover objects on replication cluster. Here orchastrator can call this API multiple times as long as full set of object are non-overlapping. They can also use the existing job if its compatible to backup failover objects.
+      tags:
+      - Failover
+      summary: Activate failover entity backup on replication clsuter
+      operationId: ReplicationBackupActivation
+      parameters:
+      - description: Specifies the id of the failover workflow.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          $ref: '#/components/responses/ReplicationBackupActivationResult'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReplicationBackupActivation'
+        description: Specifies the paramteres to activate the backup of failover entities.
+        required: true
+  /data-protect/failover/{id}/backupDeactivation:
+    post:
+      description: Specifies the configuration required for deactivating backup for failover entities on source cluster.
+      tags:
+      - Failover
+      summary: Deactivate failover entity backup on source clsuter
+      operationId: SourceBackupDeactivation
+      parameters:
+      - description: Specifies the id of the failover workflow.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SourceBackupDeactivation'
+        description: Specifies the paramteres to deactivate the backup of failover entities.
+        required: true
+  /data-protect/failover/{id}/cancel:
+    post:
+      description: Specifies the request to cancel failover workflow. The cancellation request should not be made if '/backupActivation' or '/backupDeactivaetion' are already called on replication or source cluster respectively.
+      tags:
+      - Failover
+      summary: Cancel failover workflow
+      operationId: CancelFailover
+      parameters:
+      - description: Specifies the id of the failover workflow.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+  /data-protect/failover/{id}/objectLinkage:
+    post:
+      description: Specifies the request to link failover objects on replication cluster to the replicated entity from source cluster. This linking need to be done after perforing recoveries for failed entities on replication cluster. This linkage will be useful when merging snapshots of object across replications and failovers.
+      tags:
+      - Failover
+      summary: Linking between replicated objects and failover objects
+      operationId: ObjectLinkage
+      parameters:
+      - description: Specifies the id of the failover workflow.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          $ref: '#/components/responses/NoContentResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectLinkingRequest'
+        description: Specifies the paramteres to create links between replicated objects and failover objects.
+        required: true
+  /data-protect/failover/{id}/plannedRun:
+    post:
+      description: Specifies the configuration required for executing a special run as a part of failover workflow. This special run is triggered during palnned failover to sync the source cluster to replication cluster with minimum possible delta.
+      tags:
+      - Failover
+      summary: Create a planned run for backup and replication
+      operationId: CreatePlannedRun
+      parameters:
+      - description: Specifies the id of the failover workflow.
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          $ref: '#/components/responses/FailoverCreateRunResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FailoverRunConfiguration'
+        description: Specifies the paramteres to create a planned run while failover workflow.
+        required: true
+components:
+  schemas:
+    InitFailoverRequest:
+      description: Specifies the failover request parameters to initiate a failover.
+      type: object
+      title: Init Failover Request.
+      properties:
+        sourceCluster:
+          description: Specifies the details about source cluster involved in the failover operation.
+          type:
+          - object
+          - 'null'
+          x-order: 0
+          $ref: '#/components/schemas/FailoverSourceCluster'
+        replicationCluster:
+          description: Specifies the details about replcaition cluster involved in the failover operation.
+          type:
+          - object
+          - 'null'
+          x-order: 1
+          $ref: '#/components/schemas/FailoverReplicaCluster'
+    Failover:
+      description: Specifies the details of a failover.
+      type: object
+      properties:
+        id:
+          description: Specifies the failover id.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        type:
+          description: Specifies the failover type.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Planned
+          - Unplanned
+          x-order: 1
+        status:
+          description: Specifies the failover status.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Running
+          - Succeeded
+          - Failed
+          x-order: 2
+        errorMessage:
+          description: Specifies the error details if failover status is 'Failed'.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+        startTimeUsecs:
+          description: Specifies the failover start time in micro seconds.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 4
+        endTimeUsecs:
+          description: Specifies the failover complete time in micro seconds.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 5
+        replications:
+          description: Specifies a list of replications in this failover.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FailoverReplication'
+          x-order: 6
+    PlannedRunPollStatus:
+      description: Specifies whether run has been scheduled or not and also returns the unique run id along with failoverId upon scheduling the run.
+      type: object
+      properties:
+        failoverId:
+          description: Specifies the unique failover Id which will be generated by orchestrator. This Id will be used to uniquely identify current failover operation.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        waitingOnOtherRunCancellations:
+          description: If cancelNonFailoverRuns was passed as true during creation of run for current failover then this will return the status of other run cacellations. If other runs are still pending for cancellations then this will be returned as true otherwise it will be return as false.
+          type:
+          - boolean
+          - 'null'
+          x-order: 1
+        runId:
+          description: If run has been scheduled then this field will be populated with unique run id.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        protectionGroupId:
+          description: Specifies the protection group id to which this run belongs.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+    PlannedFailoverParams:
+      description: Specifies parameters of a planned failover.
+      type: object
+      required:
+      - type
+      properties:
+        type:
+          description: Spcifies the planned failover type.<br> 'Prepare' indicates this is a preparation for failover.<br> 'Finalize' indicates this is finalization of failover. After this is done, the view can be used as source view.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Prepare
+          - Finalize
+          x-order: 0
+        preparePlannedFailverParams:
+          description: Specifies parameters of preparation of a planned failover.
+          allOf:
+          - $ref: '#/components/schemas/PreparePlannedFailverParams'
+          - {}
+          x-order: 1
+    InitFailoverResponse:
+      description: Specifies the response after succesfully initiating the failover request.
+      type: object
+      properties:
+        replicaToSourceObjects:
+          description: Specifies the list of corrosponding source objects mapped with replica objects provided at the time of initiating failover request.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SourceReplicaObject'
+          x-order: 0
+        sourceClusterInfo:
+          description: Specifies the information about source cluster in failover workflow.
+          type:
+          - object
+          - 'null'
+          x-order: 1
+          $ref: '#/components/schemas/FailoverSourceCluster'
+    ReverseReplicationResult:
+      description: Specifies the request parameters to create a view failover task.
+      type: object
+      properties:
+        isReverseReplicationEnabled:
+          description: Specifies whether the reverse replication was enabled or not during group creation. It can be false, if source cluster is not reachable for reverse replication.
+          type:
+          - boolean
+          - 'null'
+          x-order: 0
+        errorReason:
+          description: Specifies the reason of not enabling reverse replication.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    FailoverSourceCluster:
+      description: Specifies the details about source cluster involved in the failover operation.
+      type: object
+      title: Failover source cluster.
+      required:
+      - id
+      properties:
+        id:
+          description: Specifies the source cluster Id involved in failover operation.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        incarnationId:
+          description: Specifies the source cluster incarnation Id involved in failover operation.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+          readOnly: true
+        protectionGroupId:
+          description: Specifies the protection group Id involved in failover operation.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+          readOnly: true
+        viewId:
+          description: If failover is initiated by view based orchastrator, then this field specifies the local view id of source cluster which is being failed over.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 3
+          readOnly: true
+    GetViewFailoverResponseBody:
+      description: Specifies planned failovers and unplanned failovers of a view.
+      type: object
+      properties:
+        failovers:
+          description: Specifies a list of failovers.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Failover'
+          x-order: 0
+    ReplicationBackupActivationResult:
+      description: Specifies the result returned after creating a protection group for backing up failover objects on replication cluster.
+      type: object
+      properties:
+        protectionGroupId:
+          description: Specifies the protection group id that will be returned upon creation of new group or existing group for backing up failover entities.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        reverseReplicationResult:
+          description: Specifies the reverse replication result.
+          type:
+          - object
+          - 'null'
+          x-order: 1
+          $ref: '#/components/schemas/ReverseReplicationResult'
+        objects:
+          description: Specifies the list of failover object that are going to be protected on replication cluster.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FailoverObject'
+          x-order: 2
+    FailoverRunConfiguration:
+      description: Specifies the configuration required for execting special run as a part of failover workflow. This special run is triggered during palnned failover to sync the source cluster to replication cluster with minimum possible delta. Please note that if this object is passed then this special run will ignore the other archivals and retention settings.
+      type: object
+      required:
+      - replicationClusterId
+      - objects
+      - protectionGroupId
+      properties:
+        replicationClusterId:
+          description: Specifies the replication cluster Id where planned run will replicate objects.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        objects:
+          description: Specifies the list of all local entity ids of all the objects being failed from the source cluster.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FailoverObject'
+          x-order: 1
+        protectionGroupId:
+          description: Specifies the active protection group id on the source cluster from where the objects are being failed over.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        runType:
+          description: Specifies the type of the backup run to be triggered by this request. If this is not set defaults to incremental backup.
+          type: string
+          enum:
+          - kAll
+          - kLog
+          - kSystem
+          - kIncremental
+          - kFull
+          x-order: 3
+        viewId:
+          description: If failover is initiated by view based orchastrator, then this field specifies the local view id of source cluster which is being failed over.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 4
+        cancelNonFailoverRuns:
+          description: If set to true, other ongoing runs backing up the same set of entities being failed over will be initiated for cancellation. Non conflicting run operations such as replications to other clusters, archivals will not be cancelled. If set to false, then new run will wait for all the pending operations to finish normally before scheduling a new backup/replication.
+          type:
+          - boolean
+          - 'null'
+          x-order: 5
+        pauseNextRuns:
+          description: If this is set to true then unless failover operation is completed, all the next runs will be pasued.
+          type:
+          - boolean
+          - 'null'
+          x-order: 6
+    FailoverReplicaCluster:
+      description: Specifies the details about replication cluster involved in the failover operation.
+      type: object
+      title: Failover source cluster.
+      required:
+      - objects
+      properties:
+        objects:
+          description: Specifies the details about the objects being failed over. In case if view based orchastrator is calling this then they should pass a object id for replicated view entity which belongs to the live tracking view on replication cluster.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FailoverObject'
+          x-order: 0
+        protectionGroupId:
+          description: Specifies the protection group id from the replication cluster from where the objects being failed over. If this is not specified then it will be infer from the list of objects being failed over. The protection group id must be specified in this format <cluster_id>:<cluster_incarnation_id:jobid>
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    FailoverObject:
+      description: Specifies the details about the objects being failed over.
+      type: object
+      title: Failover Objects
+      required:
+      - objectId
+      properties:
+        objectId:
+          description: Specifies the object Id involved in failover operation.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+    UnplannedFailoverParams:
+      description: Specifies parameters of an unplanned failover.
+      type: object
+      properties:
+        reverseReplication:
+          description: Specifies whether a reverse replication needs to be set for the view on target cluster after failover.
+          type:
+          - boolean
+          - 'null'
+          x-order: 0
+    FailoverCreateRunResponse:
+      description: Specifies the response upon creating a special run during failover workflow.
+      type: object
+      properties:
+        failoverId:
+          description: Specifies the unique failover Id which will be generated by orchestrator. This Id will be used to uniquely identify current failover operation.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+    FailoverReplication:
+      description: Specifies the details of a failover replication.
+      type: object
+      properties:
+        id:
+          description: Specifies the replication id.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        status:
+          description: Specifies the replication status.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Running
+          - Succeeded
+          - Failed
+          x-order: 1
+        errorMessage:
+          description: Specifies the error details if replication status is 'Failed'.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        startTimeUsecs:
+          description: Specifies the replication start time in micro seconds.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 3
+        endTimeUsecs:
+          description: Specifies the replication complete time in micro seconds.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 4
+        percentageCompleted:
+          description: Specifies the percentage completed in the replication.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-order: 5
+        logicalSizeBytes:
+          description: Specifies the total amount of logical data to be transferred for this replication.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 6
+        logicalBytesTransferred:
+          description: Specifies the number of logical bytes transferred for this replication so far. This value can never exceed the total logical size of the replicated view.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 7
+        physicalBytesTransferred:
+          description: Specifies the number of bytes sent over the wire for this replication so far.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 8
+        targetClusterId:
+          description: Specifies the failover target cluster id.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 9
+        targetClusterIncarnationId:
+          description: Specifies the failover target cluster incarnation id.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 10
+        targetClusterName:
+          description: Specifies the failover target cluster name.
+          type:
+          - string
+          - 'null'
+          x-order: 11
+    CreateViewFailoverRequest:
+      description: Specifies the request parameters to create a view failover task.
+      type: object
+      required:
+      - type
+      properties:
+        type:
+          description: Specifies the failover type.<br> 'Planned' indicates this is a planned failover.<br> 'Unplanned' indicates this is an unplanned failover, which is used when source cluster is down.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Planned
+          - Unplanned
+          x-order: 0
+        plannedFailoverParams:
+          description: Specifies parameters to create a planned failover.
+          allOf:
+          - $ref: '#/components/schemas/PlannedFailoverParams'
+          - {}
+          x-order: 1
+        unplannedFailoverParams:
+          description: Specifies parameters to create an unplanned failover.
+          allOf:
+          - $ref: '#/components/schemas/UnplannedFailoverParams'
+          - {}
+          x-order: 2
+    FailoverRunsResponse:
+      description: Specifies the response upon creating a special run during failover workflow.
+      type: object
+      properties:
+        failoverPlannedRuns:
+          description: Specifies the list of planned runs created during various planeed failover workflows. Each planned run is uniqely identified by falioverId and runId.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PlannedRunPollStatus'
+          x-order: 0
+    SourceBackupDeactivation:
+      description: Specifies the request parmeters to deactivate the backup of failover entities on source cluster.
+      type: object
+      properties:
+        replicationClusterId:
+          description: Specifies the replication cluster Id involved in failover operation.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        viewId:
+          description: If failover is initiated by view based orchastrator, then this field specifies the local view id of source cluster which is being failed over. Backup will be deactivated for view object.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+          readOnly: true
+        objects:
+          description: Specifies the list of all local entity ids of all the objects being failed from the source cluster. Backup will be deactiaved for all given objects.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FailoverObject'
+          x-order: 2
+        protectionGroupId:
+          description: Specifies the protection group id of the source cluster from where the objects being failed over. If this is not specified then it will be infer from the list of objects being failed over.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+        keepFailoverObjects:
+          description: If this is set to true then objects will not be removed from protection group. If this is set to false, then all objects which are being failed over will be removed from the protection group. If protection group left with zero entities then it will be paused automatically.
+          type:
+          - boolean
+          - 'null'
+          x-order: 4
+    PreparePlannedFailverParams:
+      description: Specifies parameters of preparation of a planned failover.
+      type: object
+      properties:
+        reverseReplication:
+          description: Specifies whether a reverse replication needs to be set for the view on target cluster after failover.
+          type:
+          - boolean
+          - 'null'
+          x-order: 0
+    SourceReplicaObject:
+      description: Specifies the response after succesfully initiating the failover request.
+      type: object
+      properties:
+        replicaObjectId:
+          description: Specifies the object Id existing on the replciation cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        sourceObjectId:
+          description: Specifies the corrosponding object id existing on the source cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+    ReplicaFailoverObject:
+      description: Specifies the object paring of replicated object and failover object created after restore.
+      type: object
+      properties:
+        replicaObjectId:
+          description: Specifies the object Id existing on the replciation cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        failoverObjectId:
+          description: Specifies the corrosponding object id of the failover object.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+    ObjectLinkingRequest:
+      description: Request for linking replicated objects to failover objects on replication cluster.
+      type: object
+      properties:
+        objectMap:
+          description: Specifies the objectMap that will be used to create linking between given replicated source entity and newly restored entity on erplication cluster.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ReplicaFailoverObject'
+          x-order: 0
+    ReplicationBackupActivation:
+      description: Specifies the request parmeters to activate the backup of failover entities on replication cluster.
+      type: object
+      properties:
+        objects:
+          description: Specifies the list of failover object that need to be protected on replication cluster. If the object set that was sent earlier is provided again then API will return an error. If this objects list is not specified then internally it will be inferred if '/objectLinkage' API has been called previously.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FailoverObject'
+          x-order: 0
+        protectionGroupId:
+          description: Specifies the protection group id that will be used for backing up the failover entities on replication cluster. This is a optional argument and only need to be passed if user wants to use the existing job for the backup. If specified then Orchastrator should enusre that protection group is compatible to handle all provided failover objects.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        enableReverseReplication:
+          description: If this is specifed as true, then reverse replication of failover objects will be enabled from replication cluster to source cluster. If source cluster is not reachable, then replications will fail until source cluster comes up again. Here orchastrator should also ensure that storage domain on replication cluster is correctly mapped to the same storage domain on the source cluster.
+          type:
+          - boolean
+          - 'null'
+          x-order: 2
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+  responses:
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ReplicationBackupActivationResult:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReplicationBackupActivationResult'
+    InitFailoverResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InitFailoverResponse'
+    FailoverRunsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FailoverRunsResponse'
+    NoContentResponse:
+      description: No Content
+    GetViewFailoverResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetViewFailoverResponseBody'
+    FailoverCreateRunResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FailoverCreateRunResponse'
+    CreateViewFailoverResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Failover'
+  securitySchemes:
+    APIKeyHeader:
+      in: header
+      name: apiKey
+      type: apiKey
