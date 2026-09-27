@@ -32,14 +32,14 @@ paths:
       - APIKeyHeader: []
 components:
   responses:
-    NoContentResponse:
-      description: No Content
     ErrorResponse:
       description: Error
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+    NoContentResponse:
+      description: No Content
   schemas:
     Error:
       description: Specifies the error object with error code and a message.

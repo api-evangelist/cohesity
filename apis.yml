@@ -1,6 +1,10 @@
 aid: cohesity
 url: https://raw.githubusercontent.com/api-evangelist/cohesity/refs/heads/main/apis.yml
 name: Cohesity
+x-docs-platform: docusaurus
+x-docs-platform-confidence: medium
+x-docs-platform-checked: 2026-09-24
+x-docs-hosting: github-pages
 tags:
 - Automation
 - Backup
@@ -2434,8 +2438,6 @@ apis:
   humanURL: https://developer.cohesity.com/helios-api.html
   baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
   tags:
-  - Audit Logs
-  tags_raw:
   - Audit Log
   properties:
   - type: OpenAPI

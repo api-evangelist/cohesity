@@ -174,14 +174,6 @@ paths:
           $ref: '#/components/responses/Error'
 components:
   responses:
-    GetReplicationEncryptionKeyResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReplicationEncryptionKeyReponse'
-    NoContentResponse:
-      description: No Content
     UpdateRemoteClusterResponse:
       description: Success
       content:
@@ -194,6 +186,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/RequestError'
+    CreateRemoteClusterResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RemoteCluster'
     GetRemoteClusterByIdResponse:
       description: Success
       content:
@@ -206,12 +204,6 @@ components:
             title: Single Remote Cluster in Array.
             items:
               $ref: '#/components/schemas/RemoteCluster'
-    CreateRemoteClusterResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RemoteCluster'
     GetRemoteClustersResponse:
       description: Success
       content:
@@ -224,59 +216,15 @@ components:
             title: Array of Remote Clusters.
             items:
               $ref: '#/components/schemas/RemoteCluster'
+    GetReplicationEncryptionKeyResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReplicationEncryptionKeyReponse'
+    NoContentResponse:
+      description: No Content
   schemas:
-    RequestError:
-      description: Details about the Error.
-      type: object
-      title: Error
-      properties:
-        errorCode:
-          description: Operation response error code.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ErrorCode
-        message:
-          description: Description of the error.
-          type:
-          - string
-          - 'null'
-          x-go-name: Message
-      x-go-package: cohesity/iris/server/data/public
-    AccessTokenCredential:
-      description: Specifies the Cohesity credentials required for generating an access token.
-      type: object
-      title: Create Access Token Credential Request.
-      required:
-      - username
-      - password
-      properties:
-        domain:
-          description: 'Specifies the domain the user is logging in to. For a Local user model,
-
-            the domain is always LOCAL. For LDAP/AD user models, the domain will map to
-
-            an LDAP connection string. A user is uniquely identified by a
-
-            combination of username and domain. If this is not set, LOCAL is assumed.'
-          type:
-          - string
-          - 'null'
-          x-go-name: Domain
-        password:
-          description: Specifies the password of the Cohesity user account.
-          type:
-          - string
-          - 'null'
-          x-go-name: Password
-        username:
-          description: Specifies the login name of the Cohesity user.
-          type:
-          - string
-          - 'null'
-          x-go-name: Username
-      x-go-package: cohesity/iris/server/data/public
     RemoteCluster:
       description: 'Specifies information about a remote Cluster that has been registered
 
@@ -473,19 +421,38 @@ components:
             $ref: '#/components/schemas/ViewBoxPairInfo'
           x-go-name: ViewBoxPairInfoList
       x-go-package: cohesity/iris/server/data/public
-    ReplicationEncryptionKeyReponse:
-      description: 'Specifies the encryption key that is used for encrypting replication data
+    BandwidthLimitOverride:
+      description: 'Specifies bandwidth limit override value to be enforced during
 
-        from this Cluster to a remote Cluster.'
+        the specified daily time period for the specified days of the week.'
       type: object
-      title: Replication Encryption Key.
+      title: Bandwidth Limit Override
       properties:
-        encryptionKey:
-          description: Specifies a replication encryption key.
+        bytesPerSecond:
+          description: 'Specifies the value to override the regular maximum bandwidth rate
+
+            (rateLimitBytesPerSec) for the specified time period.
+
+            The value is specified in bytes per second.'
           type:
-          - string
+          - integer
           - 'null'
-          x-go-name: EncryptionKey
+          format: int64
+          x-go-name: BytesPerSecond
+        ioRate:
+          description: 'Specifies the value to override the default IO rate for the specified
+
+            time period.'
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: IoRate
+        timePeriods:
+          description: 'Specifies a daily time period and days of the week when the
+
+            regular maximum bandwidth rate should be overridden.'
+          $ref: '#/components/schemas/TimeOfAWeek'
       x-go-package: cohesity/iris/server/data/public
     BandwidthLimit:
       description: 'Specifies settings for limiting the data transfer rate between
@@ -547,103 +514,6 @@ components:
           - string
           - 'null'
           x-go-name: Timezone
-      x-go-package: cohesity/iris/server/data/public
-    BandwidthLimitOverride:
-      description: 'Specifies bandwidth limit override value to be enforced during
-
-        the specified daily time period for the specified days of the week.'
-      type: object
-      title: Bandwidth Limit Override
-      properties:
-        bytesPerSecond:
-          description: 'Specifies the value to override the regular maximum bandwidth rate
-
-            (rateLimitBytesPerSec) for the specified time period.
-
-            The value is specified in bytes per second.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: BytesPerSecond
-        ioRate:
-          description: 'Specifies the value to override the default IO rate for the specified
-
-            time period.'
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: IoRate
-        timePeriods:
-          description: 'Specifies a daily time period and days of the week when the
-
-            regular maximum bandwidth rate should be overridden.'
-          $ref: '#/components/schemas/TimeOfAWeek'
-      x-go-package: cohesity/iris/server/data/public
-    TimeOfDay:
-      description: Specifies a time in day with hours and minutes.
-      type: object
-      title: Time of Day.
-      properties:
-        hour:
-          description: Specifies an (0-23) hour in a day.
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: Hour
-        minute:
-          description: Specifies a (0-59) minute in an hour.
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: Minute
-      x-go-package: cohesity/iris/server/data/public
-    ViewBoxPairInfo:
-      description: 'Specifies a pairing between a Storage Domain (View Box) on local Cluster
-
-        with a Storage Domain (View Box) on a remote Cluster.
-
-        When replication is configured between a local Cluster and a
-
-        remote Cluster, the Snapshots are replicated from the specified
-
-        Storage Domain (View Box) on the local Cluster to the Storage Domain
-
-        (View Box) on the remote Cluster. See the online help for details about the
-
-        supported Storage Domains (View Box) pairings between Clusters.'
-      type: object
-      title: Storage Domain (View Box) Pairing.
-      properties:
-        localViewBoxId:
-          description: Specifies the id of the Storage Domain (View Box) on the local Cluster.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: LocalViewBoxId
-        localViewBoxName:
-          description: Specifies the name of the Storage Domain (View Box) on the local Cluster.
-          type:
-          - string
-          - 'null'
-          x-go-name: LocalViewBoxName
-        remoteViewBoxId:
-          description: Specifies the id of the Storage Domain (View Box) on the remote Cluster.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: RemoteViewBoxId
-        remoteViewBoxName:
-          description: Specifies the name of the Storage Domain (View Box) on the remote Cluster.
-          type:
-          - string
-          - 'null'
-          x-go-name: RemoteViewBoxName
       x-go-package: cohesity/iris/server/data/public
     RegisterRemoteCluster:
       description: 'Specifies the settings required for registering a remote Cluster
@@ -848,6 +718,92 @@ components:
             $ref: '#/components/schemas/ViewBoxPairInfo'
           x-go-name: ViewBoxPairInfoList
       x-go-package: cohesity/iris/server/data/public
+    AccessTokenCredential:
+      description: Specifies the Cohesity credentials required for generating an access token.
+      type: object
+      title: Create Access Token Credential Request.
+      required:
+      - username
+      - password
+      properties:
+        domain:
+          description: 'Specifies the domain the user is logging in to. For a Local user model,
+
+            the domain is always LOCAL. For LDAP/AD user models, the domain will map to
+
+            an LDAP connection string. A user is uniquely identified by a
+
+            combination of username and domain. If this is not set, LOCAL is assumed.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Domain
+        password:
+          description: Specifies the password of the Cohesity user account.
+          type:
+          - string
+          - 'null'
+          x-go-name: Password
+        username:
+          description: Specifies the login name of the Cohesity user.
+          type:
+          - string
+          - 'null'
+          x-go-name: Username
+      x-go-package: cohesity/iris/server/data/public
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    TimeOfDay:
+      description: Specifies a time in day with hours and minutes.
+      type: object
+      title: Time of Day.
+      properties:
+        hour:
+          description: Specifies an (0-23) hour in a day.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Hour
+        minute:
+          description: Specifies a (0-59) minute in an hour.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Minute
+      x-go-package: cohesity/iris/server/data/public
+    ReplicationEncryptionKeyReponse:
+      description: 'Specifies the encryption key that is used for encrypting replication data
+
+        from this Cluster to a remote Cluster.'
+      type: object
+      title: Replication Encryption Key.
+      properties:
+        encryptionKey:
+          description: Specifies a replication encryption key.
+          type:
+          - string
+          - 'null'
+          x-go-name: EncryptionKey
+      x-go-package: cohesity/iris/server/data/public
     TimeOfAWeek:
       description: 'Specifies a time period by specifying a single daily time period
 
@@ -905,4 +861,48 @@ components:
           title: Start Time.
           allOf:
           - $ref: '#/components/schemas/TimeOfDay'
+      x-go-package: cohesity/iris/server/data/public
+    ViewBoxPairInfo:
+      description: 'Specifies a pairing between a Storage Domain (View Box) on local Cluster
+
+        with a Storage Domain (View Box) on a remote Cluster.
+
+        When replication is configured between a local Cluster and a
+
+        remote Cluster, the Snapshots are replicated from the specified
+
+        Storage Domain (View Box) on the local Cluster to the Storage Domain
+
+        (View Box) on the remote Cluster. See the online help for details about the
+
+        supported Storage Domains (View Box) pairings between Clusters.'
+      type: object
+      title: Storage Domain (View Box) Pairing.
+      properties:
+        localViewBoxId:
+          description: Specifies the id of the Storage Domain (View Box) on the local Cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: LocalViewBoxId
+        localViewBoxName:
+          description: Specifies the name of the Storage Domain (View Box) on the local Cluster.
+          type:
+          - string
+          - 'null'
+          x-go-name: LocalViewBoxName
+        remoteViewBoxId:
+          description: Specifies the id of the Storage Domain (View Box) on the remote Cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: RemoteViewBoxId
+        remoteViewBoxName:
+          description: Specifies the name of the Storage Domain (View Box) on the remote Cluster.
+          type:
+          - string
+          - 'null'
+          x-go-name: RemoteViewBoxName
       x-go-package: cohesity/iris/server/data/public

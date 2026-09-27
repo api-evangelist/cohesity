@@ -262,13 +262,31 @@ paths:
       - APIKeyHeader: []
 components:
   responses:
+    GetBifrostConnectionResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BifrostConnections'
     ErrorResponse:
       description: Error
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    GetBifrostConnectionByIdResponse:
+    GetRigelConnectionByIdResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RigelConnection'
+    GetRigelConnectionResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RigelConnections'
+    CreateOrUpdateBifrostConnectionResponse:
       description: Success
       content:
         application/json:
@@ -280,63 +298,15 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/RigelConnection'
-    NoContentResponse:
-      description: No Content
-    CreateOrUpdateBifrostConnectionResponse:
+    GetBifrostConnectionByIdResponse:
       description: Success
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/BifrostConnection'
-    GetRigelConnectionResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RigelConnections'
-    GetRigelConnectionByIdResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RigelConnection'
-    GetBifrostConnectionResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BifrostConnections'
+    NoContentResponse:
+      description: No Content
   schemas:
-    CreateRigelConnectionRequest:
-      description: Specify the params to create a connection of Rigel.
-      type: object
-      title: Create Rigel Connection Request.
-      allOf:
-      - $ref: '#/components/schemas/CommonCreateOrUpdateRigelConnectionRequest'
-      - type: object
-        required:
-        - connectionId
-        properties:
-          connectionId:
-            description: Specifies the id of the connection.
-            type:
-            - integer
-            - 'null'
-            format: int64
-            x-order: 0
-    RigelConnections:
-      description: Specify a list of connection of Rigel.
-      type: object
-      title: Rigel connections.
-      properties:
-        RigelConnections:
-          description: Specifies a list of connection of Rigel.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/RigelConnection'
-          x-order: 0
     CreateOrUpdateBifrostConnectionRequest:
       description: Specify the params to create or update a connection of Bifrost.
       type: object
@@ -371,25 +341,19 @@ components:
           - 'null'
           format: int64
           x-order: 3
-    BifrostConnections:
-      description: Specify a list of connection of Bifrost.
+    RigelConnections:
+      description: Specify a list of connection of Rigel.
       type: object
-      title: Bifrost connections.
+      title: Rigel connections.
       properties:
-        BifrostConnections:
-          description: Specifies a list of connection of Bifrost.
+        RigelConnections:
+          description: Specifies a list of connection of Rigel.
           type:
           - array
           - 'null'
           items:
-            $ref: '#/components/schemas/BifrostConnection'
+            $ref: '#/components/schemas/RigelConnection'
           x-order: 0
-    UpdateRigelConnectionRequest:
-      description: Specify the params to update a connection of Rigel.
-      type: object
-      title: Update Rigel Connection Request.
-      allOf:
-      - $ref: '#/components/schemas/CommonCreateOrUpdateRigelConnectionRequest'
     RigelConnection:
       description: Specify a connection of Rigel.
       type: object
@@ -447,6 +411,43 @@ components:
           - 'null'
           x-order: 4
           $ref: '#/components/schemas/NetworkConnectionInfo'
+    CreateRigelConnectionRequest:
+      description: Specify the params to create a connection of Rigel.
+      type: object
+      title: Create Rigel Connection Request.
+      allOf:
+      - $ref: '#/components/schemas/CommonCreateOrUpdateRigelConnectionRequest'
+      - type: object
+        required:
+        - connectionId
+        properties:
+          connectionId:
+            description: Specifies the id of the connection.
+            type:
+            - integer
+            - 'null'
+            format: int64
+            x-order: 0
+    CommonCreateOrUpdateRigelConnectionRequest:
+      description: Specify the common params to create or update a connection of Rigel.
+      type: object
+      title: Common Create Or Update Rigel Connection Request.
+      required:
+      - tenantId
+      - name
+      properties:
+        tenantId:
+          description: Specifies the id of the tenant which the connection belongs to.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        name:
+          description: Specifies the name of the connection.
+          type:
+          - string
+          - 'null'
+          x-order: 1
     NetworkConnectionInfo:
       description: Specify the network connection information.
       type: object
@@ -476,6 +477,42 @@ components:
           - string
           - 'null'
           x-order: 3
+    UpdateRigelConnectionRequest:
+      description: Specify the params to update a connection of Rigel.
+      type: object
+      title: Update Rigel Connection Request.
+      allOf:
+      - $ref: '#/components/schemas/CommonCreateOrUpdateRigelConnectionRequest'
+    BifrostConnections:
+      description: Specify a list of connection of Bifrost.
+      type: object
+      title: Bifrost connections.
+      properties:
+        BifrostConnections:
+          description: Specifies a list of connection of Bifrost.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BifrostConnection'
+          x-order: 0
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
     ConnectionSubnet:
       description: Specify the subnet used in connection.
       type: object
@@ -493,43 +530,6 @@ components:
           - integer
           - 'null'
           format: int32
-          x-order: 1
-    CommonCreateOrUpdateRigelConnectionRequest:
-      description: Specify the common params to create or update a connection of Rigel.
-      type: object
-      title: Common Create Or Update Rigel Connection Request.
-      required:
-      - tenantId
-      - name
-      properties:
-        tenantId:
-          description: Specifies the id of the tenant which the connection belongs to.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        name:
-          description: Specifies the name of the connection.
-          type:
-          - string
-          - 'null'
-          x-order: 1
-    Error:
-      description: Specifies the error object with error code and a message.
-      type: object
-      title: Error.
-      properties:
-        errorCode:
-          description: Specifies the error code.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        message:
-          description: Specifies the error message.
-          type:
-          - string
-          - 'null'
           x-order: 1
   securitySchemes:
     APIKeyHeader:

@@ -272,12 +272,12 @@ paths:
         required: true
 components:
   responses:
-    GetFilerAuditLogConfigsResponse:
+    GetAuditLogsEntityTypesResponse:
       description: Success
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/FilerAuditLogConfigs'
+            $ref: '#/components/schemas/AuditLogsEntityTypes'
     GetAuditLogsActionsResponse:
       description: Success
       content:
@@ -296,76 +296,13 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/AuditLogs'
-    GetAuditLogsEntityTypesResponse:
+    GetFilerAuditLogConfigsResponse:
       description: Success
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/AuditLogsEntityTypes'
+            $ref: '#/components/schemas/FilerAuditLogConfigs'
   schemas:
-    FilerAuditLogConfigs:
-      description: Specifies the filer audit log configs.
-      type: object
-      properties:
-        sharePermissions:
-          description: Specifies a list of share level permissions.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/SmbPermission'
-          x-order: 0
-        subnetWhitelist:
-          description: Specifies a list of Subnets with IP addresses that have permissions to access a Cohesity View containing filer audit logs.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/Subnet'
-          x-order: 1
-        overrideGlobalSubnetWhitelist:
-          description: Specifies whether view level client subnet whitelist overrides cluster and global setting.
-          type:
-          - boolean
-          - 'null'
-          x-order: 2
-        smbMountPaths:
-          description: Specifies a list of SMB mount paths of a Cohesity View containing filer audit logs.
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-order: 3
-          readOnly: true
-        nfsMountPath:
-          description: This field is currently deprecated. Please use NFS MountPaths which would be an array of strings.
-          type:
-          - string
-          - 'null'
-          x-order: 4
-          readOnly: true
-        nfsMountPaths:
-          description: Specifies a list of NFS mount paths of a Cohesity View containing filer audit logs.
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-order: 5
-          readOnly: true
-    AuditLogsEntityTypes:
-      description: Specifies entity types of audit logs.
-      type: object
-      properties:
-        entityTypes:
-          description: Specifies a list of audit logs entity types.
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-order: 0
     Subnet:
       description: 'Defines a Subnet (Subnetwork).
 
@@ -501,42 +438,18 @@ components:
           - kReadOnly
           - kReadWrite
           x-order: 10
-    Error:
-      description: Specifies the error object with error code and a message.
-      type: object
-      title: Error.
-      properties:
-        errorCode:
-          description: Specifies the error code.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        message:
-          description: Specifies the error message.
-          type:
-          - string
-          - 'null'
-          x-order: 1
-    AuditLogs:
-      description: Sepcifies the audit logs.
+    AuditLogsActions:
+      description: Specifies actions of audit logs.
       type: object
       properties:
-        auditLogs:
-          description: Specifies a list of audit logs.
+        actions:
+          description: Specifies a list of audit logs actions.
           type:
           - array
           - 'null'
           items:
-            $ref: '#/components/schemas/AuditLog'
+            type: string
           x-order: 0
-        count:
-          description: Specifies the total number of audit logs that match the filter and search criteria. Use this value to determine how many additional requests are required to get the full result.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-order: 1
     SmbPermission:
       description: Specifies information about a single SMB permission.
       type: object
@@ -739,18 +652,105 @@ components:
           - string
           - 'null'
           x-order: 14
-    AuditLogsActions:
-      description: Specifies actions of audit logs.
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    AuditLogsEntityTypes:
+      description: Specifies entity types of audit logs.
       type: object
       properties:
-        actions:
-          description: Specifies a list of audit logs actions.
+        entityTypes:
+          description: Specifies a list of audit logs entity types.
           type:
           - array
           - 'null'
           items:
             type: string
           x-order: 0
+    FilerAuditLogConfigs:
+      description: Specifies the filer audit log configs.
+      type: object
+      properties:
+        sharePermissions:
+          description: Specifies a list of share level permissions.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SmbPermission'
+          x-order: 0
+        subnetWhitelist:
+          description: Specifies a list of Subnets with IP addresses that have permissions to access a Cohesity View containing filer audit logs.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Subnet'
+          x-order: 1
+        overrideGlobalSubnetWhitelist:
+          description: Specifies whether view level client subnet whitelist overrides cluster and global setting.
+          type:
+          - boolean
+          - 'null'
+          x-order: 2
+        smbMountPaths:
+          description: Specifies a list of SMB mount paths of a Cohesity View containing filer audit logs.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 3
+          readOnly: true
+        nfsMountPath:
+          description: This field is currently deprecated. Please use NFS MountPaths which would be an array of strings.
+          type:
+          - string
+          - 'null'
+          x-order: 4
+          readOnly: true
+        nfsMountPaths:
+          description: Specifies a list of NFS mount paths of a Cohesity View containing filer audit logs.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 5
+          readOnly: true
+    AuditLogs:
+      description: Sepcifies the audit logs.
+      type: object
+      properties:
+        auditLogs:
+          description: Specifies a list of audit logs.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AuditLog'
+          x-order: 0
+        count:
+          description: Specifies the total number of audit logs that match the filter and search criteria. Use this value to determine how many additional requests are required to get the full result.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
   securitySchemes:
     APIKeyHeader:
       in: header

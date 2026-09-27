@@ -291,25 +291,104 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 components:
+  responses:
+    CreateRemoteVaultRestoreTaskResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UniversalId'
+    CreateRemoteVaultSearchJobResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreatedRemoteVaultSearchJobUid'
+    ListRemoteVaultRestoreTasksStatusResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            description: List of details about the statuses of remote Vault restore tasks.
+            type: array
+            title: Array of Remote Vault Restore Tasks Statuses.
+            items:
+              $ref: '#/components/schemas/RemoteVaultRestoreTaskStatus'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    ListRemoteVaultSearchJobByIdResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RemoteVaultSearchJobInformation'
+    GetRemoteVaultSearchJobResultsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RemoteVaultSearchJobResults'
+    NoContentResponse:
+      description: No Content
+    ListRemoteVaultSearchJobsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            description: Specifies of a list of searches of remote Vaults.
+            type: array
+            title: Array of Remote Vault Searches.
+            items:
+              $ref: '#/components/schemas/RemoteVaultSearchJobInformation'
   schemas:
-    RequestError:
-      description: Details about the Error.
+    UniversalId:
+      description: 'Specifies an id for an object that is unique across Cohesity Clusters.
+
+        The id is composite of all the ids listed below.'
       type: object
-      title: Error
+      title: Unique Global Id.
       properties:
-        errorCode:
-          description: Operation response error code.
+        clusterId:
+          description: Specifies the Cohesity Cluster id where the object was created.
           type:
           - integer
           - 'null'
           format: int64
-          x-go-name: ErrorCode
-        message:
-          description: Description of the error.
+          x-go-name: ClusterId
+        clusterIncarnationId:
+          description: 'Specifies an id for the Cohesity Cluster that is generated when
+
+            a Cohesity Cluster is initially created.'
           type:
-          - string
+          - integer
           - 'null'
-          x-go-name: Message
+          format: int64
+          x-go-name: ClusterIncarnationId
+        id:
+          description: 'Specifies a unique id assigned to an object (such as a Job)
+
+            by the Cohesity Cluster.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Id
+      x-go-package: cohesity/iris/server/data/public
+    CreatedRemoteVaultSearchJobUid:
+      description: 'Specifies the Uid of the Job created to search the
+
+        remote vault.'
+      type: object
+      title: Remote Vault Search Job Uid.
+      properties:
+        searchJobUid:
+          description: Specifies the unique id assigned for the search Job on the Cluster.
+          allOf:
+          - $ref: '#/components/schemas/UniversalId'
       x-go-package: cohesity/iris/server/data/public
     RemoteProtectionJobRunInformation:
       description: Specifies details about a Protection Job Runs (Snapshots).
@@ -638,280 +717,132 @@ components:
           - 'null'
           x-go-name: VaultName
       x-go-package: cohesity/iris/server/data/public
-    VaultEncryptionKey:
-      description: Specifies the encryption information needed to restore data.
+    RequestError:
+      description: Details about the Error.
       type: object
-      title: Vault Encryption Key.
+      title: Error
       properties:
-        clusterName:
-          description: 'Specifies the name of the source Cohesity Cluster
-
-            that archived the data on the Vault.'
-          type:
-          - string
-          - 'null'
-          x-go-name: ClusterName
-        encryptionKeyData:
-          description: 'Specifies the encryption key data corresponding to the specified keyUid.
-
-            It contains a Key Encryption Key (KEK) or a
-
-            Encrypted Data Encryption Key (eDEK).'
-          type:
-          - string
-          - 'null'
-          x-go-name: EncryptionKeyData
-        keyUid:
-          description: Specifies the universal id of the Data Encryption Key.
-          title: Universal Id.
-          allOf:
-          - $ref: '#/components/schemas/UniversalId'
-        vaultId:
-          description: 'Specifies the id of the Vault whose data is encrypted by
-
-            this key.'
+        errorCode:
+          description: Operation response error code.
           type:
           - integer
           - 'null'
           format: int64
-          x-go-name: VaultId
-        vaultName:
-          description: Specifies the name of the Vault whose data is encrypted by this key.
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
           type:
           - string
           - 'null'
-          x-go-name: VaultName
+          x-go-name: Message
       x-go-package: cohesity/iris/server/data/public
-    StopRemoteVaultSearchJobParameters:
-      description: Request to stop a remote Vault search Job.
+    IndexAndSnapshots:
+      description: 'Specifies settings required to restore the index and Snapshots of
+
+        a Protection Job.'
       type: object
-      title: Search Job Stop Request.
+      title: Restore Protection Job Index and Snapshots.
       properties:
-        searchJobUid:
-          description: Specifies the unique id of the Remote Vault search job in progress.
+        archiveTaskUid:
+          description: 'Specifies a unique id of the Archive task that originally archived the
+
+            object to the Vault.'
+          title: Archive Task Uid.
           allOf:
           - $ref: '#/components/schemas/UniversalId'
-      x-go-package: cohesity/iris/server/data/public
-    RemoteRestoreIndexingStatus:
-      description: Specifies the status of an indexing task.
-      type: object
-      title: Status of Indexing Task.
-      properties:
         endTimeUsecs:
-          description: 'Specifies the end time of the time range that is being indexed.
+          description: 'Specifies the end time as a Unix epoch Timestamp (in microseconds).
 
-            The indexing task is creating an index of the Job Runs that occurred
+            If set, only index and Snapshots for Protection Job Runs that
 
-            between the startTimeUsecs and this endTimeUsecs.
-
-            This field is recorded as a Unix epoch Timestamp (in microseconds).'
+            started before the specified end time are restored.'
           type:
           - integer
           - 'null'
           format: int64
           x-go-name: EndTimeUsecs
-        error:
-          description: Specifies the error message if the indexing Job/task fails.
-          type:
-          - string
-          - 'null'
-          x-go-name: Error
-        indexingTaskEndTimeUsecs:
-          description: 'Specifies when the indexing task completed. This time is recorded
+        remoteProtectionJobUid:
+          description: 'Specifies a unique id assigned to the original Protection Job
 
-            as a Unix epoch Timestamp (in microseconds).
-
-            This field is not set if the indexing task is still in progress.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: IndexingTaskEndTimeUsecs
-        indexingTaskStartTimeUsecs:
-          description: 'Specifies when the indexing task started. This time is recorded
-
-            as a Unix epoch Timestamp (in microseconds).'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: IndexingTaskStartTimeUsecs
-        indexingTaskStatus:
-          description: 'Specifies the status of the indexing Job/task.
-
-            ''kJobRunning'' indicates that the Job/task is currently running.
-
-            ''kJobFinished'' indicates that the Job/task completed and finished.
-
-            ''kJobFailed'' indicates that the Job/task failed and did not complete.
-
-            ''kJobCanceled'' indicates that the Job/task was canceled.
-
-            ''kJobPaused'' indicates the Job/task is paused.'
-          type:
-          - string
-          - 'null'
-          enum:
-          - kJobRunning
-          - kJobFinished
-          - kJobFailed
-          - kJobCanceled
-          - kJobPaused
-          x-go-name: IndexingTaskStatus
-        indexingTaskUid:
-          description: Specifies the unique id of the indexing task assigned by this Cluster.
-          title: Indexing Task Uid.
+            by the original Cluster that archived data to the remote Vault.'
+          title: Protection Job Uid.
           allOf:
           - $ref: '#/components/schemas/UniversalId'
-        latestExpiryTimeUsecs:
-          description: 'For all the Snapshots retrieved by this Job, specifies the latest time
-
-            when a Snapshot expires.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: LatestExpiryTimeUsecs
-        progressMonitorTask:
-          description: 'Specifies the path to progress monitor task to track the progress
-
-            of building the index.'
-          type:
-          - string
-          - 'null'
-          x-go-name: ProgressMonitorTask
         startTimeUsecs:
-          description: 'Specifies the start time of the time range that is being indexed.
+          description: 'Specifies the start time as a Unix epoch Timestamp (in microseconds).
 
-            The indexing task is creating an index of the Job Runs that occurred
+            If set, only the index and Snapshots for Protection Job Runs that
 
-            between this startTimeUsecs and the endTimeUsecs.
-
-            This field is recorded as a Unix epoch Timestamp (in microseconds).'
+            started after the specified start time are restored.'
           type:
           - integer
           - 'null'
           format: int64
           x-go-name: StartTimeUsecs
-      x-go-package: cohesity/iris/server/data/public
-    UniversalId:
-      description: 'Specifies an id for an object that is unique across Cohesity Clusters.
+        viewBoxId:
+          description: 'Specifies the id of the local Storage Domain (View Box) where the index
 
-        The id is composite of all the ids listed below.'
-      type: object
-      title: Unique Global Id.
-      properties:
-        clusterId:
-          description: Specifies the Cohesity Cluster id where the object was created.
+            and the Snapshot will be restored to.'
           type:
           - integer
           - 'null'
           format: int64
-          x-go-name: ClusterId
-        clusterIncarnationId:
-          description: 'Specifies an id for the Cohesity Cluster that is generated when
-
-            a Cohesity Cluster is initially created.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ClusterIncarnationId
-        id:
-          description: 'Specifies a unique id assigned to an object (such as a Job)
-
-            by the Cohesity Cluster.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: Id
+          x-go-name: ViewBoxId
       x-go-package: cohesity/iris/server/data/public
-    CreatedRemoteVaultSearchJobUid:
-      description: 'Specifies the Uid of the Job created to search the
+    RemoteProtectionJobRunInstance:
+      description: 'Specifies details about one Job Run (Snapshot) archived to a remote Vault
 
-        remote vault.'
+        that was captured by a Protection Job.'
       type: object
-      title: Remote Vault Search Job Uid.
-      properties:
-        searchJobUid:
-          description: Specifies the unique id assigned for the search Job on the Cluster.
-          allOf:
-          - $ref: '#/components/schemas/UniversalId'
-      x-go-package: cohesity/iris/server/data/public
-    RemoteRestoreSnapshotStatus:
-      description: Specifies the status of a restore Snapshot task.
-      type: object
-      title: Status of Restore Snapshot Task.
+      title: Remote Protection Job Run Instance.
       properties:
         archiveTaskUid:
           description: 'Specifies the globally unique id of the archival task that archived
 
-            the Snapshots to the remote Vault.'
+            the Snapshot to the Vault.'
           title: Archive Task Uid.
           allOf:
           - $ref: '#/components/schemas/UniversalId'
-        error:
-          description: Specifies the error message if the indexing task fails.
+        archiveVersion:
+          description: Specifies the version of the archive.
           type:
-          - string
+          - integer
           - 'null'
-          x-go-name: Error
+          format: int32
+          x-go-name: ArchiveVersion
         expiryTimeUsecs:
-          description: 'Specifies the time when the Snapshot expires on the remote Vault.
+          description: 'Specifies the time when the archive expires.
 
-            This field is recorded as a Unix epoch Timestamp (in microseconds).'
+            This time is recorded as a Unix epoch Timestamp (in microseconds).'
           type:
           - integer
           - 'null'
           format: int64
           x-go-name: ExpiryTimeUsecs
+        indexSizeBytes:
+          description: Specifies the size of the index for the archive.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: IndexSizeBytes
         jobRunId:
-          description: Specifies the id of the Job Run that originally captured the Snapshot.
+          description: Specifies the instance id of the Job Run task capturing the Snapshot.
           type:
           - integer
           - 'null'
           format: int64
           x-go-name: JobRunId
-        progressMonitorTask:
-          description: 'Specifies the path to the progress monitor task that tracks the progress
-
-            of building the index.'
+        metadataComplete:
+          description: Specifies whether a full set of metadata is available now.
           type:
-          - string
+          - boolean
           - 'null'
-          x-go-name: ProgressMonitorTask
-        snapshotTaskStatus:
-          description: 'Specifies the status of the indexing task.
-
-            ''kJobRunning'' indicates that the Job/task is currently running.
-
-            ''kJobFinished'' indicates that the Job/task completed and finished.
-
-            ''kJobFailed'' indicates that the Job/task failed and did not complete.
-
-            ''kJobCanceled'' indicates that the Job/task was canceled.
-
-            ''kJobPaused'' indicates the Job/task is paused.'
-          type:
-          - string
-          - 'null'
-          enum:
-          - kJobRunning
-          - kJobFinished
-          - kJobFailed
-          - kJobCanceled
-          - kJobPaused
-          x-go-name: SnapshotTaskStatus
-        snapshotTaskUid:
-          description: Specifies the globally unique id of the task capturing the Snapshot.
-          title: Snapshot Task Uid.
-          allOf:
-          - $ref: '#/components/schemas/UniversalId'
+          x-go-name: MetadataComplete
         snapshotTimeUsecs:
-          description: 'Specify the time the Snapshot was captured.
+          description: 'Specify the time the Snapshot was captured as a Unix epoch Timestamp (in
 
-            This time is recorded as a Unix epoch Timestamp (in microseconds).'
+            microseconds).'
           type:
           - integer
           - 'null'
@@ -1083,6 +1014,108 @@ components:
           allOf:
           - $ref: '#/components/schemas/UniversalId'
       x-go-package: cohesity/iris/server/data/public
+    RemoteRestoreIndexingStatus:
+      description: Specifies the status of an indexing task.
+      type: object
+      title: Status of Indexing Task.
+      properties:
+        endTimeUsecs:
+          description: 'Specifies the end time of the time range that is being indexed.
+
+            The indexing task is creating an index of the Job Runs that occurred
+
+            between the startTimeUsecs and this endTimeUsecs.
+
+            This field is recorded as a Unix epoch Timestamp (in microseconds).'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: EndTimeUsecs
+        error:
+          description: Specifies the error message if the indexing Job/task fails.
+          type:
+          - string
+          - 'null'
+          x-go-name: Error
+        indexingTaskEndTimeUsecs:
+          description: 'Specifies when the indexing task completed. This time is recorded
+
+            as a Unix epoch Timestamp (in microseconds).
+
+            This field is not set if the indexing task is still in progress.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: IndexingTaskEndTimeUsecs
+        indexingTaskStartTimeUsecs:
+          description: 'Specifies when the indexing task started. This time is recorded
+
+            as a Unix epoch Timestamp (in microseconds).'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: IndexingTaskStartTimeUsecs
+        indexingTaskStatus:
+          description: 'Specifies the status of the indexing Job/task.
+
+            ''kJobRunning'' indicates that the Job/task is currently running.
+
+            ''kJobFinished'' indicates that the Job/task completed and finished.
+
+            ''kJobFailed'' indicates that the Job/task failed and did not complete.
+
+            ''kJobCanceled'' indicates that the Job/task was canceled.
+
+            ''kJobPaused'' indicates the Job/task is paused.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kJobRunning
+          - kJobFinished
+          - kJobFailed
+          - kJobCanceled
+          - kJobPaused
+          x-go-name: IndexingTaskStatus
+        indexingTaskUid:
+          description: Specifies the unique id of the indexing task assigned by this Cluster.
+          title: Indexing Task Uid.
+          allOf:
+          - $ref: '#/components/schemas/UniversalId'
+        latestExpiryTimeUsecs:
+          description: 'For all the Snapshots retrieved by this Job, specifies the latest time
+
+            when a Snapshot expires.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: LatestExpiryTimeUsecs
+        progressMonitorTask:
+          description: 'Specifies the path to progress monitor task to track the progress
+
+            of building the index.'
+          type:
+          - string
+          - 'null'
+          x-go-name: ProgressMonitorTask
+        startTimeUsecs:
+          description: 'Specifies the start time of the time range that is being indexed.
+
+            The indexing task is creating an index of the Job Runs that occurred
+
+            between this startTimeUsecs and the endTimeUsecs.
+
+            This field is recorded as a Unix epoch Timestamp (in microseconds).'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: StartTimeUsecs
+      x-go-package: cohesity/iris/server/data/public
     CreateRemoteVaultRestoreTaskParameters:
       description: 'Specifies settings required to create a task that restores the
 
@@ -1175,58 +1208,49 @@ components:
           format: int64
           x-go-name: VaultId
       x-go-package: cohesity/iris/server/data/public
-    IndexAndSnapshots:
-      description: 'Specifies settings required to restore the index and Snapshots of
-
-        a Protection Job.'
+    VaultEncryptionKey:
+      description: Specifies the encryption information needed to restore data.
       type: object
-      title: Restore Protection Job Index and Snapshots.
+      title: Vault Encryption Key.
       properties:
-        archiveTaskUid:
-          description: 'Specifies a unique id of the Archive task that originally archived the
+        clusterName:
+          description: 'Specifies the name of the source Cohesity Cluster
 
-            object to the Vault.'
-          title: Archive Task Uid.
+            that archived the data on the Vault.'
+          type:
+          - string
+          - 'null'
+          x-go-name: ClusterName
+        encryptionKeyData:
+          description: 'Specifies the encryption key data corresponding to the specified keyUid.
+
+            It contains a Key Encryption Key (KEK) or a
+
+            Encrypted Data Encryption Key (eDEK).'
+          type:
+          - string
+          - 'null'
+          x-go-name: EncryptionKeyData
+        keyUid:
+          description: Specifies the universal id of the Data Encryption Key.
+          title: Universal Id.
           allOf:
           - $ref: '#/components/schemas/UniversalId'
-        endTimeUsecs:
-          description: 'Specifies the end time as a Unix epoch Timestamp (in microseconds).
+        vaultId:
+          description: 'Specifies the id of the Vault whose data is encrypted by
 
-            If set, only index and Snapshots for Protection Job Runs that
-
-            started before the specified end time are restored.'
+            this key.'
           type:
           - integer
           - 'null'
           format: int64
-          x-go-name: EndTimeUsecs
-        remoteProtectionJobUid:
-          description: 'Specifies a unique id assigned to the original Protection Job
-
-            by the original Cluster that archived data to the remote Vault.'
-          title: Protection Job Uid.
-          allOf:
-          - $ref: '#/components/schemas/UniversalId'
-        startTimeUsecs:
-          description: 'Specifies the start time as a Unix epoch Timestamp (in microseconds).
-
-            If set, only the index and Snapshots for Protection Job Runs that
-
-            started after the specified start time are restored.'
+          x-go-name: VaultId
+        vaultName:
+          description: Specifies the name of the Vault whose data is encrypted by this key.
           type:
-          - integer
+          - string
           - 'null'
-          format: int64
-          x-go-name: StartTimeUsecs
-        viewBoxId:
-          description: 'Specifies the id of the local Storage Domain (View Box) where the index
-
-            and the Snapshot will be restored to.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ViewBoxId
+          x-go-name: VaultName
       x-go-package: cohesity/iris/server/data/public
     RemoteVaultRestoreTaskStatus:
       description: Specifies the status of a remote Vault restore task.
@@ -1282,6 +1306,109 @@ components:
           title: Search Job Uid.
           allOf:
           - $ref: '#/components/schemas/UniversalId'
+      x-go-package: cohesity/iris/server/data/public
+    CreateRemoteVaultSearchJobParameters:
+      description: 'Specifies settings required to create a search of a
+
+        remote Vault for data that has been archived from other Clusters.'
+      type: object
+      title: Create Remote Vault Search Request.
+      required:
+      - searchJobName
+      - vaultId
+      properties:
+        clusterMatchString:
+          description: 'Filter by specifying a Cluster name prefix string.
+
+            Only Clusters with names that start with this prefix string are returned
+
+            in the search result.
+
+            If not set, all Clusters archiving data to the Vault
+
+            are returned in the search results.'
+          type:
+          - string
+          - 'null'
+          x-go-name: ClusterMatchString
+        encryptionKeys:
+          description: 'Array of Encryption Keys.
+
+
+            Specifies an optional list of encryption keys that may be needed to
+
+            search and restore data that was archived to a remote Vault.
+
+            Archived data cannot be searched or restored without the
+
+            corresponding encryption key used by the original Cluster
+
+            to archive the data.
+
+            Encryption keys can be uploaded using the REST API
+
+            public/remoteVaults/encryptionKeys operation.
+
+            If the key is already uploaded, this field does not need to be
+
+            specified.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/VaultEncryptionKey'
+          x-go-name: EncryptionKeys
+        endTimeUsecs:
+          description: 'Filter by a end time specified as a Unix epoch Timestamp
+
+            (in microseconds). Only Job Runs that completed before the specified
+
+            end time are included in the search results.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: EndTimeUsecs
+        jobMatchString:
+          description: 'Filter by specifying a Protection Job name prefix string.
+
+            Only Protection Jobs with names that start with this prefix string
+
+            are returned in the search result.
+
+            If not set, all Protection Jobs archiving data to the Vault
+
+            are returned in the search results.'
+          type:
+          - string
+          - 'null'
+          x-go-name: JobMatchString
+        searchJobName:
+          description: Specifies the search Job name.
+          type:
+          - string
+          - 'null'
+          x-go-name: SearchJobName
+        startTimeUsecs:
+          description: 'Filter by a start time specified as a Unix epoch Timestamp
+
+            (in microseconds). Only Job Runs that started after the specified
+
+            time are included in the search results.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: StartTimeUsecs
+        vaultId:
+          description: 'Specifies the id of the Vault to search. This id was assigned by the
+
+            local Cohesity Cluster when Vault was registered as an External Target.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: VaultId
       x-go-package: cohesity/iris/server/data/public
     RemoteVaultSearchJobInformation:
       description: Specifies information about a search of a remote Vault.
@@ -1397,219 +1524,92 @@ components:
           - 'null'
           x-go-name: VaultName
       x-go-package: cohesity/iris/server/data/public
-    CreateRemoteVaultSearchJobParameters:
-      description: 'Specifies settings required to create a search of a
-
-        remote Vault for data that has been archived from other Clusters.'
+    RemoteRestoreSnapshotStatus:
+      description: Specifies the status of a restore Snapshot task.
       type: object
-      title: Create Remote Vault Search Request.
-      required:
-      - searchJobName
-      - vaultId
-      properties:
-        clusterMatchString:
-          description: 'Filter by specifying a Cluster name prefix string.
-
-            Only Clusters with names that start with this prefix string are returned
-
-            in the search result.
-
-            If not set, all Clusters archiving data to the Vault
-
-            are returned in the search results.'
-          type:
-          - string
-          - 'null'
-          x-go-name: ClusterMatchString
-        encryptionKeys:
-          description: 'Array of Encryption Keys.
-
-
-            Specifies an optional list of encryption keys that may be needed to
-
-            search and restore data that was archived to a remote Vault.
-
-            Archived data cannot be searched or restored without the
-
-            corresponding encryption key used by the original Cluster
-
-            to archive the data.
-
-            Encryption keys can be uploaded using the REST API
-
-            public/remoteVaults/encryptionKeys operation.
-
-            If the key is already uploaded, this field does not need to be
-
-            specified.'
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/VaultEncryptionKey'
-          x-go-name: EncryptionKeys
-        endTimeUsecs:
-          description: 'Filter by a end time specified as a Unix epoch Timestamp
-
-            (in microseconds). Only Job Runs that completed before the specified
-
-            end time are included in the search results.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: EndTimeUsecs
-        jobMatchString:
-          description: 'Filter by specifying a Protection Job name prefix string.
-
-            Only Protection Jobs with names that start with this prefix string
-
-            are returned in the search result.
-
-            If not set, all Protection Jobs archiving data to the Vault
-
-            are returned in the search results.'
-          type:
-          - string
-          - 'null'
-          x-go-name: JobMatchString
-        searchJobName:
-          description: Specifies the search Job name.
-          type:
-          - string
-          - 'null'
-          x-go-name: SearchJobName
-        startTimeUsecs:
-          description: 'Filter by a start time specified as a Unix epoch Timestamp
-
-            (in microseconds). Only Job Runs that started after the specified
-
-            time are included in the search results.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: StartTimeUsecs
-        vaultId:
-          description: 'Specifies the id of the Vault to search. This id was assigned by the
-
-            local Cohesity Cluster when Vault was registered as an External Target.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: VaultId
-      x-go-package: cohesity/iris/server/data/public
-    RemoteProtectionJobRunInstance:
-      description: 'Specifies details about one Job Run (Snapshot) archived to a remote Vault
-
-        that was captured by a Protection Job.'
-      type: object
-      title: Remote Protection Job Run Instance.
+      title: Status of Restore Snapshot Task.
       properties:
         archiveTaskUid:
           description: 'Specifies the globally unique id of the archival task that archived
 
-            the Snapshot to the Vault.'
+            the Snapshots to the remote Vault.'
           title: Archive Task Uid.
           allOf:
           - $ref: '#/components/schemas/UniversalId'
-        archiveVersion:
-          description: Specifies the version of the archive.
+        error:
+          description: Specifies the error message if the indexing task fails.
+          type:
+          - string
+          - 'null'
+          x-go-name: Error
+        expiryTimeUsecs:
+          description: 'Specifies the time when the Snapshot expires on the remote Vault.
+
+            This field is recorded as a Unix epoch Timestamp (in microseconds).'
           type:
           - integer
           - 'null'
-          format: int32
-          x-go-name: ArchiveVersion
-        expiryTimeUsecs:
-          description: 'Specifies the time when the archive expires.
+          format: int64
+          x-go-name: ExpiryTimeUsecs
+        jobRunId:
+          description: Specifies the id of the Job Run that originally captured the Snapshot.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: JobRunId
+        progressMonitorTask:
+          description: 'Specifies the path to the progress monitor task that tracks the progress
+
+            of building the index.'
+          type:
+          - string
+          - 'null'
+          x-go-name: ProgressMonitorTask
+        snapshotTaskStatus:
+          description: 'Specifies the status of the indexing task.
+
+            ''kJobRunning'' indicates that the Job/task is currently running.
+
+            ''kJobFinished'' indicates that the Job/task completed and finished.
+
+            ''kJobFailed'' indicates that the Job/task failed and did not complete.
+
+            ''kJobCanceled'' indicates that the Job/task was canceled.
+
+            ''kJobPaused'' indicates the Job/task is paused.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kJobRunning
+          - kJobFinished
+          - kJobFailed
+          - kJobCanceled
+          - kJobPaused
+          x-go-name: SnapshotTaskStatus
+        snapshotTaskUid:
+          description: Specifies the globally unique id of the task capturing the Snapshot.
+          title: Snapshot Task Uid.
+          allOf:
+          - $ref: '#/components/schemas/UniversalId'
+        snapshotTimeUsecs:
+          description: 'Specify the time the Snapshot was captured.
 
             This time is recorded as a Unix epoch Timestamp (in microseconds).'
           type:
           - integer
           - 'null'
           format: int64
-          x-go-name: ExpiryTimeUsecs
-        indexSizeBytes:
-          description: Specifies the size of the index for the archive.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: IndexSizeBytes
-        jobRunId:
-          description: Specifies the instance id of the Job Run task capturing the Snapshot.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: JobRunId
-        metadataComplete:
-          description: Specifies whether a full set of metadata is available now.
-          type:
-          - boolean
-          - 'null'
-          x-go-name: MetadataComplete
-        snapshotTimeUsecs:
-          description: 'Specify the time the Snapshot was captured as a Unix epoch Timestamp (in
-
-            microseconds).'
-          type:
-          - integer
-          - 'null'
-          format: int64
           x-go-name: SnapshotTimeUsecs
       x-go-package: cohesity/iris/server/data/public
-  responses:
-    ListRemoteVaultSearchJobByIdResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RemoteVaultSearchJobInformation'
-    GetRemoteVaultSearchJobResultsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RemoteVaultSearchJobResults'
-    ListRemoteVaultRestoreTasksStatusResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            description: List of details about the statuses of remote Vault restore tasks.
-            type: array
-            title: Array of Remote Vault Restore Tasks Statuses.
-            items:
-              $ref: '#/components/schemas/RemoteVaultRestoreTaskStatus'
-    NoContentResponse:
-      description: No Content
-    CreateRemoteVaultSearchJobResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CreatedRemoteVaultSearchJobUid'
-    CreateRemoteVaultRestoreTaskResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/UniversalId'
-    ListRemoteVaultSearchJobsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            description: Specifies of a list of searches of remote Vaults.
-            type: array
-            title: Array of Remote Vault Searches.
-            items:
-              $ref: '#/components/schemas/RemoteVaultSearchJobInformation'
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
+    StopRemoteVaultSearchJobParameters:
+      description: Request to stop a remote Vault search Job.
+      type: object
+      title: Search Job Stop Request.
+      properties:
+        searchJobUid:
+          description: Specifies the unique id of the Remote Vault search job in progress.
+          allOf:
+          - $ref: '#/components/schemas/UniversalId'
+      x-go-package: cohesity/iris/server/data/public

@@ -64,7 +64,48 @@ paths:
             schema:
               $ref: '#/components/schemas/Interface'
 components:
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    ListInterfaceResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/NodeNetworkInterfaces'
+    UpdateInterfaceResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Interface'
   schemas:
+    BondingOpts:
+      description: Bonding Opts
+      type: object
+      properties:
+        lacpRate:
+          type:
+          - string
+          - 'null'
+          x-go-name: LacpRate
+        mode:
+          type:
+          - string
+          - 'null'
+          x-go-name: Mode
+        xmitHashPolicy:
+          type:
+          - string
+          - 'null'
+          x-go-name: XmitHashPolicy
+      x-go-package: cohesity/iris/server/data/public
     RequestError:
       description: Details about the Error.
       type: object
@@ -83,6 +124,48 @@ components:
           - string
           - 'null'
           x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    NodeNetworkInterfaces:
+      description: Specifies the network interfaces present on a specific Node in a Cluster.
+      type: object
+      title: Node Network Interfaces.
+      properties:
+        chassisSerial:
+          description: Specifies the serial number of Chassis.
+          type:
+          - string
+          - 'null'
+          x-go-name: ChassisSerial
+        interfaces:
+          description: Specifies the list of network interfaces present on this Node.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/NetworkInterface'
+          x-go-name: Interfaces
+        message:
+          description: 'Specifies an optional message describing the result of the request
+
+            pertaining to this Node.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+        nodeId:
+          description: Specifies the ID of the Node.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NodeId
+        slot:
+          description: Specifies the slot number the Node is located in.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Slot
       x-go-package: cohesity/iris/server/data/public
     Interface:
       type: object
@@ -250,68 +333,6 @@ components:
           - 'null'
           x-go-name: VirtualIp
       x-go-package: cohesity/iris/server/data/public
-    BondingOpts:
-      description: Bonding Opts
-      type: object
-      properties:
-        lacpRate:
-          type:
-          - string
-          - 'null'
-          x-go-name: LacpRate
-        mode:
-          type:
-          - string
-          - 'null'
-          x-go-name: Mode
-        xmitHashPolicy:
-          type:
-          - string
-          - 'null'
-          x-go-name: XmitHashPolicy
-      x-go-package: cohesity/iris/server/data/public
-    NodeNetworkInterfaces:
-      description: Specifies the network interfaces present on a specific Node in a Cluster.
-      type: object
-      title: Node Network Interfaces.
-      properties:
-        chassisSerial:
-          description: Specifies the serial number of Chassis.
-          type:
-          - string
-          - 'null'
-          x-go-name: ChassisSerial
-        interfaces:
-          description: Specifies the list of network interfaces present on this Node.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/NetworkInterface'
-          x-go-name: Interfaces
-        message:
-          description: 'Specifies an optional message describing the result of the request
-
-            pertaining to this Node.'
-          type:
-          - string
-          - 'null'
-          x-go-name: Message
-        nodeId:
-          description: Specifies the ID of the Node.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NodeId
-        slot:
-          description: Specifies the slot number the Node is located in.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: Slot
-      x-go-package: cohesity/iris/server/data/public
     NetworkParams:
       type: object
       properties:
@@ -324,24 +345,3 @@ components:
           format: int32
           x-go-name: Mtu
       x-go-package: cohesity/iris/server/data/public
-  responses:
-    UpdateInterfaceResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Interface'
-    ListInterfaceResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/NodeNetworkInterfaces'
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'

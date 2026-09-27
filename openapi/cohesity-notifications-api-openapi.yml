@@ -46,129 +46,22 @@ paths:
         description: Specifies the list of notificationIds and the operation to be performed.
         required: true
 components:
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    GetNotificationsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Notifications'
+    NoContentResponse:
+      description: No Content
   schemas:
-    CloneTaskInfo:
-      description: Parameters for a clone op.
-      type: object
-      title: Clone Task Information.
-      properties:
-        name:
-          description: Name of the recovery task.
-          type:
-          - string
-          - 'null'
-          x-go-name: Name
-        taskId:
-          description: Id of the recovery task.
-          type:
-          - string
-          - 'null'
-          x-go-name: TaskId
-      x-go-package: cohesity/iris/server/data/public
-    RequestError:
-      description: Details about the Error.
-      type: object
-      title: Error
-      properties:
-        errorCode:
-          description: Operation response error code.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ErrorCode
-        message:
-          description: Description of the error.
-          type:
-          - string
-          - 'null'
-          x-go-name: Message
-      x-go-package: cohesity/iris/server/data/public
-    BasicTaskInfo:
-      type: object
-      title: BasicTaskInfo handles the basic elements of the notification task.
-      properties:
-        name:
-          description: Name of the recovery task.
-          type:
-          - string
-          - 'null'
-          x-go-name: Name
-        taskId:
-          description: Id of the recovery task.
-          type:
-          - string
-          - 'null'
-          x-go-name: TaskId
-      x-go-package: cohesity/iris/server/data/public
-    BulkInstallAppTaskInfo:
-      description: Parameters for a bulk install app task.
-      type: object
-      title: Bulk Install App Task Information.
-      properties:
-        jobId:
-          description: Job id of the task.
-          type:
-          - string
-          - 'null'
-          x-go-name: JobId
-        numMachinesFailed:
-          description: Number of machines on which task is started.
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: NumMachinesFailed
-        numMachinesPassed:
-          description: Number of machines on which task is started.
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: NumMachinesPassed
-        numMachinesTotal:
-          description: Number of machines on which task is started.
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: NumMachinesTotal
-        registeringApp:
-          description: 'Application being registered.
-
-            This param is used to indicate the app for which the job is created.
-
-            ''oracle'' indicates that the job was created for oracle app.
-
-            ''msSql'' indicates that the job was created for msSql app.
-
-            ''physical'' indicates that the job was created for physical machine.'
-          type:
-          - string
-          - 'null'
-          enum:
-          - oracle
-          - msSql
-          - physical
-          x-go-name: RegisteringApp
-        state:
-          description: 'Current state of the task.
-
-            This param is used to indicate the state of the job created by the bulk
-
-            install app.
-
-            ''started'' indicates that the job has been started by the user.
-
-            ''completed'' indicates that the job has completed.'
-          type:
-          - string
-          - 'null'
-          enum:
-          - started
-          - completed
-          x-go-name: State
-      x-go-package: cohesity/iris/server/data/public
     Notifications:
       description: 'All the Notification events generated for a given user. This is used for
 
@@ -199,34 +92,59 @@ components:
           format: int64
           x-go-name: UnreadCount
       x-go-package: cohesity/iris/server/data/public
-    BackupTaskInfo:
+    RequestError:
+      description: Details about the Error.
       type: object
-      title: Parameters for a backup op.
+      title: Error
       properties:
-        instanceId:
-          description: Id of that particular instance
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
           type:
           - string
           - 'null'
-          x-go-name: InstanceId
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    RecoveryTaskInfo:
+      description: Parameters for a recovery op.
+      type: object
+      title: Recovery Task Information.
+      properties:
         name:
           description: Name of the recovery task.
           type:
           - string
           - 'null'
           x-go-name: Name
-        startTimeUsecs:
-          description: Denotes the start time of the backuptask, needed for deeplinking.
-          type:
-          - string
-          - 'null'
-          x-go-name: StartTimeUSecs
         taskId:
           description: Id of the recovery task.
           type:
           - string
           - 'null'
           x-go-name: TaskId
+        type:
+          description: 'Denotes if the recovery task has an archival target.
+
+            This param is used to reflect if the recovery op has an archival
+
+            target to work with.
+
+            ''local'' indicates no archival target.
+
+            ''archive'' indicates that objects restored using an archival target.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - local
+          - archive
+          x-go-name: Type
       x-go-package: cohesity/iris/server/data/public
     TaskNotification:
       description: Structure that captures Task Notifications for a user.
@@ -343,40 +261,34 @@ components:
           format: int64
           x-go-name: VisitedTimeSecs
       x-go-package: cohesity/iris/server/data/public
-    RecoveryTaskInfo:
-      description: Parameters for a recovery op.
+    BackupTaskInfo:
       type: object
-      title: Recovery Task Information.
+      title: Parameters for a backup op.
       properties:
+        instanceId:
+          description: Id of that particular instance
+          type:
+          - string
+          - 'null'
+          x-go-name: InstanceId
         name:
           description: Name of the recovery task.
           type:
           - string
           - 'null'
           x-go-name: Name
+        startTimeUsecs:
+          description: Denotes the start time of the backuptask, needed for deeplinking.
+          type:
+          - string
+          - 'null'
+          x-go-name: StartTimeUSecs
         taskId:
           description: Id of the recovery task.
           type:
           - string
           - 'null'
           x-go-name: TaskId
-        type:
-          description: 'Denotes if the recovery task has an archival target.
-
-            This param is used to reflect if the recovery op has an archival
-
-            target to work with.
-
-            ''local'' indicates no archival target.
-
-            ''archive'' indicates that objects restored using an archival target.'
-          type:
-          - string
-          - 'null'
-          enum:
-          - local
-          - archive
-          x-go-name: Type
       x-go-package: cohesity/iris/server/data/public
     UpdateNotifications:
       description: Specifies the list of notificationIds and the operation to be performed.
@@ -400,18 +312,106 @@ components:
             type: string
           x-go-name: NotificationIds
       x-go-package: cohesity/iris/server/data/public
-  responses:
-    NoContentResponse:
-      description: No Content
-    GetNotificationsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Notifications'
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
+    CloneTaskInfo:
+      description: Parameters for a clone op.
+      type: object
+      title: Clone Task Information.
+      properties:
+        name:
+          description: Name of the recovery task.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        taskId:
+          description: Id of the recovery task.
+          type:
+          - string
+          - 'null'
+          x-go-name: TaskId
+      x-go-package: cohesity/iris/server/data/public
+    BasicTaskInfo:
+      type: object
+      title: BasicTaskInfo handles the basic elements of the notification task.
+      properties:
+        name:
+          description: Name of the recovery task.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        taskId:
+          description: Id of the recovery task.
+          type:
+          - string
+          - 'null'
+          x-go-name: TaskId
+      x-go-package: cohesity/iris/server/data/public
+    BulkInstallAppTaskInfo:
+      description: Parameters for a bulk install app task.
+      type: object
+      title: Bulk Install App Task Information.
+      properties:
+        jobId:
+          description: Job id of the task.
+          type:
+          - string
+          - 'null'
+          x-go-name: JobId
+        numMachinesFailed:
+          description: Number of machines on which task is started.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: NumMachinesFailed
+        numMachinesPassed:
+          description: Number of machines on which task is started.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: NumMachinesPassed
+        numMachinesTotal:
+          description: Number of machines on which task is started.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: NumMachinesTotal
+        registeringApp:
+          description: 'Application being registered.
+
+            This param is used to indicate the app for which the job is created.
+
+            ''oracle'' indicates that the job was created for oracle app.
+
+            ''msSql'' indicates that the job was created for msSql app.
+
+            ''physical'' indicates that the job was created for physical machine.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - oracle
+          - msSql
+          - physical
+          x-go-name: RegisteringApp
+        state:
+          description: 'Current state of the task.
+
+            This param is used to indicate the state of the job created by the bulk
+
+            install app.
+
+            ''started'' indicates that the job has been started by the user.
+
+            ''completed'' indicates that the job has completed.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - started
+          - completed
+          x-go-name: State
+      x-go-package: cohesity/iris/server/data/public

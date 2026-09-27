@@ -271,6 +271,35 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 components:
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    GetObjectsDetailsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/GetObjectsDetailsResult'
+    GetJobRunInfoResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetJobRunInfoResult'
+    GetAllJobRunsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/GetAllJobRunsResult'
   schemas:
     RequestError:
       description: Details about the Error.
@@ -477,72 +506,6 @@ components:
           format: int64
           x-go-name: ViewBoxId
       x-go-package: cohesity/iris/server/data/public
-    GetObjectsDetailsResult:
-      type: object
-      title: Specifies the common result structure of the objects response of a job run.
-      properties:
-        endTimeMsecs:
-          description: Specifies the end time of the run.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: EndTimeMsecs
-        entityEnv:
-          description: Specifies the entity environment of the object.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: EntityEnv
-        entityId:
-          description: Specifies the entity id of the object.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: EntityId
-        entityName:
-          description: Specifies the name of the entity.
-          type:
-          - string
-          - 'null'
-          x-go-name: EntityName
-        jobId:
-          description: Specifies the job id.
-          type:
-          - string
-          - 'null'
-          x-go-name: JobId
-        jobRunId:
-          description: Specifies the job run id.
-          type:
-          - string
-          - 'null'
-          x-go-name: JobRunId
-        jobType:
-          description: 'Specifies the job type, protection, replication, archival, apollo,
-
-            indexing etc.'
-          type:
-          - string
-          - 'null'
-          x-go-name: JobType
-        startTimeMsecs:
-          description: Specifies the start time of the run.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: StartTimeMsecs
-        status:
-          description: Specifies status of the object run.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: Status
-      x-go-package: cohesity/iris/server/data/public
     GetJobRunInfoResult:
       type: object
       title: Specifies the common result structure of the response of a job run.
@@ -623,32 +586,69 @@ components:
           format: int64
           x-go-name: TotalEntities
       x-go-package: cohesity/iris/server/data/public
-  responses:
-    GetObjectsDetailsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/GetObjectsDetailsResult'
-    GetAllJobRunsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/GetAllJobRunsResult'
-    GetJobRunInfoResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GetJobRunInfoResult'
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
+    GetObjectsDetailsResult:
+      type: object
+      title: Specifies the common result structure of the objects response of a job run.
+      properties:
+        endTimeMsecs:
+          description: Specifies the end time of the run.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: EndTimeMsecs
+        entityEnv:
+          description: Specifies the entity environment of the object.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: EntityEnv
+        entityId:
+          description: Specifies the entity id of the object.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: EntityId
+        entityName:
+          description: Specifies the name of the entity.
+          type:
+          - string
+          - 'null'
+          x-go-name: EntityName
+        jobId:
+          description: Specifies the job id.
+          type:
+          - string
+          - 'null'
+          x-go-name: JobId
+        jobRunId:
+          description: Specifies the job run id.
+          type:
+          - string
+          - 'null'
+          x-go-name: JobRunId
+        jobType:
+          description: 'Specifies the job type, protection, replication, archival, apollo,
+
+            indexing etc.'
+          type:
+          - string
+          - 'null'
+          x-go-name: JobType
+        startTimeMsecs:
+          description: Specifies the start time of the run.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: StartTimeMsecs
+        status:
+          description: Specifies status of the object run.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Status
+      x-go-package: cohesity/iris/server/data/public

@@ -28,87 +28,20 @@ paths:
             schema:
               $ref: '#/components/schemas/KmsCreateRequestParameters'
 components:
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    CreateKmsConfigResponse:
+      description: Response after KMS has been created.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/KmsConfigurationResponse'
   schemas:
-    CryptsoftKmsConfigResponse:
-      type: object
-      title: CryptsoftKmsConfigResponse specifies response parameters for cryptsoftKMS.
-      properties:
-        clientCertificateExpiryDate:
-          description: Specifies expiry date of client certificate.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ClientCertificateExpiryDate
-        kmipProtocolVersion:
-          description: Specifies protocol version used to communicate with the KMS.
-          type:
-          - string
-          - 'null'
-          x-go-name: KmipProtocolVersion
-        serverIp:
-          description: Specifies the KMS IP address.
-          type:
-          - string
-          - 'null'
-          x-go-name: ServerIp
-        serverPort:
-          description: 'Specifies port on which the server is listening.
-
-            Default port is 5696.'
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: ServerPort
-      x-go-package: cohesity/iris/server/data/public
-    KmsConfigurationResponse:
-      description: Specifies response parameters to a KMS request.
-      type: object
-      title: Get KMS Configuration Response Parameters.
-      properties:
-        awsKms:
-          description: AWS KMS conifg response.
-          $ref: '#/components/schemas/AwsKmsConfiguration'
-        connectionStatus:
-          description: Specifies if connection to this KMS exists.
-          type:
-          - boolean
-          - 'null'
-          x-go-name: ConnectionStatus
-        cryptsoftKms:
-          description: Specifies the config response for cryptsoftKMS.
-          $ref: '#/components/schemas/CryptsoftKmsConfigResponse'
-        id:
-          description: The Id of a KMS server.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ID
-        serverName:
-          description: Specifies the name given to the KMS Server.
-          type:
-          - string
-          - 'null'
-          x-go-name: ServerName
-        serverType:
-          description: 'Specifies the type of key mangement system.
-
-            ''kInternalKms'' indicates an internal KMS object.
-
-            ''kAwsKms'' indicates an Aws KMS object.
-
-            ''kCryptsoftKms'' indicates a Cryptsoft KMS object.'
-          type:
-          - string
-          - 'null'
-          enum:
-          - kInternalKms
-          - kAwsKms
-          - kCryptsoftKms
-          x-go-name: ServerType
-      x-go-package: cohesity/iris/server/data/public
     AwsKmsConfiguration:
       type: object
       title: AwsKmsConfiguration to define AWS KMS config.
@@ -178,35 +111,23 @@ components:
           - 'null'
           x-go-name: VerifySSL
       x-go-package: cohesity/iris/server/data/public
-    RequestError:
-      description: Details about the Error.
+    KmsConfigurationResponse:
+      description: Specifies response parameters to a KMS request.
       type: object
-      title: Error
-      properties:
-        errorCode:
-          description: Operation response error code.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ErrorCode
-        message:
-          description: Description of the error.
-          type:
-          - string
-          - 'null'
-          x-go-name: Message
-      x-go-package: cohesity/iris/server/data/public
-    KmsCreateRequestParameters:
-      type: object
-      title: Request to create a KMS with specified configuration.
+      title: Get KMS Configuration Response Parameters.
       properties:
         awsKms:
-          description: AWS KMS conifg.
+          description: AWS KMS conifg response.
           $ref: '#/components/schemas/AwsKmsConfiguration'
+        connectionStatus:
+          description: Specifies if connection to this KMS exists.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: ConnectionStatus
         cryptsoftKms:
-          description: Cryptsoft KMS config.
-          $ref: '#/components/schemas/CryptsoftKmsConfiguration'
+          description: Specifies the config response for cryptsoftKMS.
+          $ref: '#/components/schemas/CryptsoftKmsConfigResponse'
         id:
           description: The Id of a KMS server.
           type:
@@ -236,6 +157,58 @@ components:
           - kAwsKms
           - kCryptsoftKms
           x-go-name: ServerType
+      x-go-package: cohesity/iris/server/data/public
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    CryptsoftKmsConfigResponse:
+      type: object
+      title: CryptsoftKmsConfigResponse specifies response parameters for cryptsoftKMS.
+      properties:
+        clientCertificateExpiryDate:
+          description: Specifies expiry date of client certificate.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ClientCertificateExpiryDate
+        kmipProtocolVersion:
+          description: Specifies protocol version used to communicate with the KMS.
+          type:
+          - string
+          - 'null'
+          x-go-name: KmipProtocolVersion
+        serverIp:
+          description: Specifies the KMS IP address.
+          type:
+          - string
+          - 'null'
+          x-go-name: ServerIp
+        serverPort:
+          description: 'Specifies port on which the server is listening.
+
+            Default port is 5696.'
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: ServerPort
       x-go-package: cohesity/iris/server/data/public
     CryptsoftKmsConfiguration:
       type: object
@@ -283,16 +256,43 @@ components:
           format: int32
           x-go-name: ServerPort
       x-go-package: cohesity/iris/server/data/public
-  responses:
-    CreateKmsConfigResponse:
-      description: Response after KMS has been created.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/KmsConfigurationResponse'
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
+    KmsCreateRequestParameters:
+      type: object
+      title: Request to create a KMS with specified configuration.
+      properties:
+        awsKms:
+          description: AWS KMS conifg.
+          $ref: '#/components/schemas/AwsKmsConfiguration'
+        cryptsoftKms:
+          description: Cryptsoft KMS config.
+          $ref: '#/components/schemas/CryptsoftKmsConfiguration'
+        id:
+          description: The Id of a KMS server.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ID
+        serverName:
+          description: Specifies the name given to the KMS Server.
+          type:
+          - string
+          - 'null'
+          x-go-name: ServerName
+        serverType:
+          description: 'Specifies the type of key mangement system.
+
+            ''kInternalKms'' indicates an internal KMS object.
+
+            ''kAwsKms'' indicates an Aws KMS object.
+
+            ''kCryptsoftKms'' indicates a Cryptsoft KMS object.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kInternalKms
+          - kAwsKms
+          - kCryptsoftKms
+          x-go-name: ServerType
+      x-go-package: cohesity/iris/server/data/public

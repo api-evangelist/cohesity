@@ -314,443 +314,6 @@ paths:
               $ref: '#/components/schemas/ExternalClientSubnets'
 components:
   schemas:
-    RequestError:
-      description: Details about the Error.
-      type: object
-      title: Error
-      properties:
-        errorCode:
-          description: Operation response error code.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ErrorCode
-        message:
-          description: Description of the error.
-          type:
-          - string
-          - 'null'
-          x-go-name: Message
-      x-go-package: cohesity/iris/server/data/public
-    BandwidthLimit:
-      description: 'Specifies settings for limiting the data transfer rate between
-
-        the local and remote Clusters or bandwidth limiting schedule for apollo.
-
-        Only one of RateLimitBytesPerSec or IoRate should be set in this struct and
-
-        corresponding BandwidthLimitOverrides should also be in the same unit.'
-      type: object
-      title: Bandwidth Limit.
-      properties:
-        bandwidthLimitOverrides:
-          description: 'Array of Override Bandwidth Limits.
-
-
-            Specifies a list of override bandwidth limits and time periods
-
-            when those limits override the rateLimitBytesPerSec limit.
-
-            If overlapping time periods are specified, the last one in the
-
-            array takes precedence.'
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/BandwidthLimitOverride'
-          x-go-name: BandwidthLimitOverrides
-        ioRate:
-          description: 'Specifies the default IO Rate of the throttling schedule. This value is
-
-            internally mapped to some notion of how many resources a process should be
-
-            consuming.'
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: IoRate
-        rateLimitBytesPerSec:
-          description: 'Specifies the maximum allowed data transfer rate between the local Cluster
-
-            and remote Clusters. The value is specified in bytes per second.
-
-            If not set, the data transfer rate is not limited.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: RateLimitBytesPerSec
-        timezone:
-          description: 'Specifies a time zone for the specified time period.
-
-            The time zone is defined in the following format: "Area/Location",
-
-            for example: "America/New_York".'
-          type:
-          - string
-          - 'null'
-          x-go-name: Timezone
-      x-go-package: cohesity/iris/server/data/public
-    VirtualNodeConfiguration:
-      description: Specifies the configuration for a node in the Cluster.
-      type: object
-      title: Virtual Node Configuration.
-      properties:
-        nodeId:
-          description: Specifies the Node ID for this node.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NodeId
-        nodeIp:
-          description: Specifies the Node IP address for this node.
-          type:
-          - string
-          - 'null'
-          x-go-name: NodeIp
-        useAsComputeNode:
-          description: Specifies whether to use the Node for compute only.
-          type:
-          - boolean
-          - 'null'
-          x-go-name: UseAsComputeNode
-      x-go-package: cohesity/iris/server/data/public
-    ChangeServiceStateParameters:
-      description: 'Specifies the parameters needed to change the state of one or more
-
-        services running on the Cluster.'
-      type: object
-      title: Change Service State Parameters.
-      properties:
-        action:
-          description: 'Specifies the action to take on the specified service.
-
-            ''kStop'' indicates that the specified services will be stopped.
-
-            ''kStart'' indicates that the specified services will be started.
-
-            ''kRestart'' indicates that the specified services will be restarted.'
-          type:
-          - string
-          - 'null'
-          enum:
-          - kStop
-          - kStart
-          - kRestart
-          x-go-name: Action
-        services:
-          description: 'Specifies the list of services to take the specified action on.
-
-            If none are specified, all Cluster services will be affected. It should
-
-            also be noted that some Cluster services are not stoppable and may
-
-            not be affected by the action specified.
-
-            ''kApollo'' is a service for reclaiming freed disk sectors on Nodes in the
-
-            SnapFS distributed file system.
-
-            ''kBridge'' is a service for managing the SnapFS distributed file system.
-
-            ''kGenie'' is a service that is responsible for monitoring hardware health
-
-            on the Cluster.
-
-            ''kGenieGofer'' is a service that links the Genie service to other services
-
-            on the Cluster.
-
-            ''kMagneto'' is the data protection service of the Cohesity Data Platform.
-
-            ''kIris'' is the service which serves REST API calls to the UI, CLI, and any
-
-            scripts written by customers.
-
-            ''kIrisProxy'' is a service that links the Iris service to other services
-
-            on the Cluster.
-
-            ''kScribe'' is the service responsible for storing filesystem metadata.
-
-            ''kStats'' is the service that is responsible for retrieving and aggregating
-
-            disk metrics across the Cluster.
-
-            ''kYoda'' is an elastic search indexing service.
-
-            ''kAlerts'' is a publisher and subscribing service for alerts.
-
-            ''kKeychain'' is a service for managing disk encryption keys.
-
-            ''kLogWatcher'' is a service that scans the log directory and reduces
-
-            the number of logs if required.
-
-            ''kStatsCollector'' is a service that periodically logs system stats.
-
-            ''kGandalf'' is a distributed lock service and coordination manager.
-
-            ''kNexus'' indicates the Nexus service. This is the service that is
-
-            responsible for creation of Clusters and configuration of Nodes and
-
-            networking.
-
-            ''kNexusProxy'' is a service that links the Nexus service to other services
-
-            on the Cluster.
-
-            ''kStorageProxy'' is a service for accessing data on external entities.
-
-            ''kTricorder'' is a diagnostic health testing service for Clusters.
-
-            ''kRtClient'' is a reverse tunneling client service.
-
-            ''kVaultProxy'' is a service for managing external targets that Clusters
-
-            can be backed up to.
-
-            ''kSmbProxy'' is an SMB protocol service.
-
-            ''kBridgeProxy'' is the service that links the Bridge service to other
-
-            services on the Cluster.
-
-            ''kLibrarian'' is an elastic search indexing service.
-
-            ''kGroot'' is a service for managing replication of SQL databases across
-
-            multiple nodes in a Cluster.
-
-            ''kEagleAgent'' is a service that is responsible for retrieving information
-
-            on Cluster health.
-
-            ''kAthena'' is a service for running distributed containerized applications
-
-            on the Cohesity Data Platform.
-
-            ''kBifrostBroker'' is a service for communicating with the Cohesity proxies
-
-            for multitenancy.
-
-            ''kSmb2Proxy'' is a new SMB protocol service.
-
-            ''kOs'' can be specified in order to do a full reboot.
-
-            ''kAtom'' is a service for receiving data for the Continuous Data Protection.'
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-            enum:
-            - kApollo
-            - kBridge
-            - kGenie
-            - kGenieGofer
-            - kMagneto
-            - kIris
-            - kIrisProxy
-            - kScribe
-            - kStats
-            - kYoda
-            - kAlerts
-            - kKeychain
-            - kLogWatcher
-            - kStatsCollecter
-            - kGandalf
-            - kNexus
-            - kNexusProxy
-            - kStorageProxy
-            - kTricorder
-            - kRtClient
-            - kVaultProxy
-            - kSmbProxy
-            - kBridgeProxy
-            - kLibrarian
-            - kGroot
-            - kEagleAgent
-            - kAthena
-            - kBifrostBroker
-            - kSmb2Proxy
-            - kOs
-            - kAtom
-          x-go-name: Services
-      x-go-package: cohesity/iris/server/data/public
-    CreateCloudClusterParameters:
-      description: Specifies the parameters needed for creation of a new Cluster.
-      type: object
-      title: Create Cloud Cluster Parameters.
-      required:
-      - clusterName
-      - networkConfig
-      - nodeIps
-      properties:
-        clusterName:
-          description: Specifies the name of the new Cluster.
-          type:
-          - string
-          - 'null'
-          x-go-name: ClusterName
-        encryptionConfig:
-          description: Specifies the encryption configuration parameters.
-          $ref: '#/components/schemas/EncryptionConfiguration'
-        ipPreference:
-          description: Specifies IP preference.
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: IpPreference
-        metadataFaultTolerance:
-          description: Specifies the metadata fault tolerance.
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: MetadataFaultTolerance
-        networkConfig:
-          description: Specifies the network configuration parameters.
-          $ref: '#/components/schemas/CloudNetworkConfiguration'
-        nodeIps:
-          description: Specifies the configuration for the nodes in the new cluster.
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-go-name: NodeIps
-      x-go-package: cohesity/iris/server/data/public
-    CreatePhysicalClusterParameters:
-      description: Specifies the parameters needed for creation of a new Cluster.
-      type: object
-      title: Create Physical Cluster Parameters.
-      required:
-      - clusterName
-      - networkConfig
-      - nodeConfigs
-      - ipmiConfig
-      properties:
-        clusterDestroyHmacKey:
-          description: 'Specifies HMAC secret key that will be used to validate OTP used
-
-            for destroy request. This is b32 format of the HMAC key.
-
-            This should only be set/modified during cluster creation.'
-          type:
-          - string
-          - 'null'
-          x-go-name: ClusterDestroyHmacKey
-        clusterName:
-          description: Specifies the name of the new Cluster.
-          type:
-          - string
-          - 'null'
-          x-go-name: ClusterName
-        enableClusterDestroy:
-          description: 'Specifies if cluster destroy op is enabled on this cluster.
-
-            This should only be set/modified during cluster creation.'
-          type:
-          - boolean
-          - 'null'
-          x-go-name: EnableClusterDestroy
-        encryptionConfig:
-          description: Specifies the encryption configuration parameters.
-          $ref: '#/components/schemas/EncryptionConfiguration'
-        ipPreference:
-          description: Specifies IP preference.
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: IpPreference
-        ipmiConfig:
-          description: Specifies the IPMI configuration parameters.
-          $ref: '#/components/schemas/IpmiConfiguration'
-        metadataFaultTolerance:
-          description: Specifies the metadata fault tolerance.
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: MetadataFaultTolerance
-        networkConfig:
-          description: Specifies the network configuration parameters.
-          $ref: '#/components/schemas/NetworkConfiguration'
-        nodeConfigs:
-          description: Specifies the configuration for the nodes in the new cluster.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/PhysicalNodeConfiguration'
-          x-go-name: NodeConfigs
-      x-go-package: cohesity/iris/server/data/public
-    TimeOfAWeek:
-      description: 'Specifies a time period by specifying a single daily time period
-
-        and one or more days of the week, for example 9 AM - 5 PM
-
-        on Monday, Wednesday or Friday. If different time periods are required
-
-        on different days, then multiple instances of this Weekly Time Period
-
-        must be specified.'
-      type: object
-      title: Time Period.
-      properties:
-        days:
-          description: 'Array of Week Days.
-
-
-            Specifies a list of days of a week (such as ''kSunday'') when the
-
-            time period should be applied.
-
-            If not set, the time range applies to all days of the week.
-
-            Specifies a day in a week such as ''kSunday'', ''kMonday'', etc.'
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-            enum:
-            - kSunday
-            - kMonday
-            - kTuesday
-            - kWednesday
-            - kThursday
-            - kFriday
-            - kSaturday
-          x-go-name: Days
-        endTime:
-          description: Specifies the end time for the daily time period.
-          title: End Time.
-          allOf:
-          - $ref: '#/components/schemas/TimeOfDay'
-        isAllDay:
-          description: 'All Day.
-
-
-            Specifies that time range is applied for entire day.'
-          type:
-          - boolean
-          - 'null'
-          x-go-name: IsAllDay
-        startTime:
-          description: Specifies the start time for the daily time period.
-          title: Start Time.
-          allOf:
-          - $ref: '#/components/schemas/TimeOfDay'
-      x-go-package: cohesity/iris/server/data/public
     EncryptionConfiguration:
       description: 'Specifies the parameters the user wants to use when configuring encryption
 
@@ -784,225 +347,176 @@ components:
           format: int32
           x-go-name: RotationPeriod
       x-go-package: cohesity/iris/server/data/public
-    UpgradeClusterResult:
-      description: Specifies the result returned from a request to upgrade a Cluster.
+    ClusterPublicKeys:
+      description: Specifies public keys stored on the Cluster.
       type: object
-      title: Upgrade Cluster Result.
+      title: Cluster Public Keys.
       properties:
-        message:
-          description: Specifies a message describing the result of the request.
+        sshPublicKey:
+          description: Specifies the SSH public key used to login to Cluster nodes.
           type:
           - string
           - 'null'
-          x-go-name: Message
-        statusUrl:
-          description: 'Specifies the URL that can be queried to get the status of the operation
+          x-go-name: SshPublicKey
+      x-go-package: cohesity/iris/server/data/public
+    ExpandCloudClusterParameters:
+      description: Specifies the parameters needed to expand a Cohesity Cloud Edition Cluster.
+      type: object
+      title: Expand Cloud Cluster Parameters.
+      required:
+      - nodeIps
+      properties:
+        nodeIps:
+          description: Specifies the list of IPs of the new Nodes.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: NodeIps
+      x-go-package: cohesity/iris/server/data/public
+    ExpandPhysicalClusterParameters:
+      description: 'Specifies the parameters needed to expand a Cohesity Physical
 
-            once it has begun.'
-          type:
-          - string
-          - 'null'
-          x-go-name: StatusUrl
-      x-go-package: cohesity/iris/server/data/public
-    PhysicalNodeConfiguration:
-      description: Specifies the configuration for a node in the Cluster.
+        Edition Cluster.'
       type: object
-      title: Physical Node Configuration.
+      title: Expand Physical Cluster Parameters.
+      required:
+      - nodeConfigs
       properties:
-        nodeId:
-          description: Specifies the Node ID for this node.
+        chassisSerialToRackIdMap:
+          description: ChassisSerialToRackId map.
           type:
-          - integer
+          - object
           - 'null'
-          format: int64
-          x-go-name: NodeId
-        nodeIp:
-          description: Specifies the Node IP address for this node.
-          type:
-          - string
-          - 'null'
-          x-go-name: NodeIp
-        nodeIpmiIp:
-          description: Specifies IPMI IP for this node.
-          type:
-          - string
-          - 'null'
-          x-go-name: NodeIpmiIp
-        useAsComputeNode:
-          description: Specifies whether to use the Node for compute only.
-          type:
-          - boolean
-          - 'null'
-          x-go-name: UseAsComputeNode
-      x-go-package: cohesity/iris/server/data/public
-    IoPreferentialTier:
-      description: Specifies the preferred storage tier for IO operations.
-      type: object
-      title: IO Preferential Tier.
-      properties:
-        apolloIOPreferentialTier:
-          description: Specifies the preferred storage tier used by Apollo as its working directory.
-          type: array
-          items:
-            type:
-            - string
-            - 'null'
-            enum:
-            - kPcieSsd
-            - kSataSsd
-            - kSataHdd
-            - kCloud
-          x-go-name: ApolloIOPreferentialTier
-        apolloWalIOPreferentialTier:
-          description: Specifies the preferred storage tier used by Apollo as its actions WAL.
-          type: array
-          items:
-            type:
-            - string
-            - 'null'
-            enum:
-            - kPcieSsd
-            - kSataSsd
-            - kSataHdd
-            - kCloud
-          x-go-name: ApolloWalIOPreferentialTier
-        athenaIOPreferentialTier:
-          description: Specifies the list of perferred storage tiers used by Athena.
-          type: array
-          items:
-            type:
-            - string
-            - 'null'
-            enum:
-            - kPcieSsd
-            - kSataSsd
-            - kSataHdd
-            - kCloud
-          x-go-name: AthenaIOPreferentialTier
-        athenaSlowerIOPreferentialTier:
-          description: Specifies the list of perferred storage tiers used by Athena for slower storage.
-          type: array
-          items:
-            type:
-            - string
-            - 'null'
-            enum:
-            - kPcieSsd
-            - kSataSsd
-            - kSataHdd
-            - kCloud
-          x-go-name: AthenaSlowerIOPreferentialTier
-        downTierUsagePercentThresholds:
-          description: Specifies the usage percentage thresholds for the correponding storage tier.
-          type: array
-          items:
+          additionalProperties:
             type: integer
-            format: int32
-          x-go-name: DownTierUsagePercentThresholds
-        grootIOPreferentialTier:
-          description: Specifies the preferred storage tier used by Groot as its working directory.
-          type: array
+            format: int64
+          x-go-name: ChassisSerialToRackIdMap
+        nodeConfigs:
+          description: Specifies the configuration details of the Nodes in the Cluster.
+          type:
+          - array
+          - 'null'
           items:
-            type:
-            - string
-            - 'null'
-            enum:
-            - kPcieSsd
-            - kSataSsd
-            - kSataHdd
-            - kCloud
-          x-go-name: GrootIOPreferentialTier
-        hydraDowntierIOPreferentialTier:
-          description: Specifies the list of perferred storage tiers used by Hydra for offloading.
-          type: array
+            $ref: '#/components/schemas/PhysicalNodeConfiguration'
+          x-go-name: NodeConfigs
+        vips:
+          description: Specifies the virtual IPs to add to the Cluster.
+          type:
+          - array
+          - 'null'
           items:
-            type:
-            - string
-            - 'null'
-            enum:
-            - kPcieSsd
-            - kSataSsd
-            - kSataHdd
-            - kCloud
-          x-go-name: HydraDowntierIOPreferentialTier
-        hydraIOPreferentialTier:
-          description: Specifies the list of perferred storage tiers used by Hydra.
-          type: array
+            type: string
+          x-go-name: Vips
+      x-go-package: cohesity/iris/server/data/public
+    IpmiConfiguration:
+      description: 'Specifies the parameters for configuration of IPMI. This is only needed
+
+        for physical clusters.'
+      type: object
+      title: IPMI Configuration.
+      properties:
+        ipmiGateway:
+          description: Specifies the default Gateway IP Address for the IPMI network.
+          type:
+          - string
+          - 'null'
+          x-go-name: IpmiGateway
+        ipmiPassword:
+          description: Specifies the IPMI Password.
+          type:
+          - string
+          - 'null'
+          x-go-name: IpmiPassword
+        ipmiSubnetMask:
+          description: Specifies the subnet mask for the IPMI network.
+          type:
+          - string
+          - 'null'
+          x-go-name: IpmiSubnetMask
+        ipmiUsername:
+          description: Specifies the IPMI Username.
+          type:
+          - string
+          - 'null'
+          x-go-name: IpmiUsername
+      x-go-package: cohesity/iris/server/data/public
+    NetworkConfiguration:
+      description: 'Specifies all of the parameters needed for network configuration of
+
+        the new Cluster.'
+      type: object
+      title: Network Configuration.
+      properties:
+        clusterGateway:
+          description: 'Specifies the default gateway IP address (or addresses) for the Cluster
+
+            network.'
+          type:
+          - string
+          - 'null'
+          x-go-name: ClusterGateway
+        clusterSubnetMask:
+          description: Specifies the subnet mask (or masks) of the Cluster network.
+          type:
+          - string
+          - 'null'
+          x-go-name: ClusterSubnetMask
+        dnsServers:
+          description: Specifies the list of DNS Servers this cluster should be configured with.
+          type:
+          - array
+          - 'null'
           items:
-            type:
-            - string
-            - 'null'
-            enum:
-            - kPcieSsd
-            - kSataSsd
-            - kSataHdd
-            - kCloud
-          x-go-name: HydraIOPreferentialTier
-        librarianIOPreferentialTier:
-          description: Specifies the list of perferred storage tiers used by librarian.
-          type: array
+            type: string
+          x-go-name: DnsServers
+        domainNames:
+          description: 'Specifies the list of domain names this cluster should be configured
+
+            with.'
+          type:
+          - array
+          - 'null'
           items:
-            type:
-            - string
-            - 'null'
-            enum:
-            - kPcieSsd
-            - kSataSsd
-            - kSataHdd
-            - kCloud
-          x-go-name: LibrarianIOPreferentialTier
-        randomIOPreferentialTier:
-          description: Specifies the order of perferred storage tiers for random IO operations.
-          type: array
+            type: string
+          x-go-name: DomainNames
+        ntpServers:
+          description: Specifies the list of NTP Servers this cluster should be configured with.
+          type:
+          - array
+          - 'null'
           items:
-            type:
-            - string
-            - 'null'
-            enum:
-            - kPcieSsd
-            - kSataSsd
-            - kSataHdd
-            - kCloud
-          x-go-name: RandomIOPreferentialTier
-        scribeIOPreferentialTier:
-          description: Specifies the list of perferred storage tiers used by Scribe.
-          type: array
+            type: string
+          x-go-name: NtpServers
+        vipHostname:
+          description: Specifies the virtual IP hostname.
+          type:
+          - string
+          - 'null'
+          x-go-name: VipHostname
+        vips:
+          description: Specifies the list of virtual IPs for the new cluster.
+          type:
+          - array
+          - 'null'
           items:
-            type:
-            - string
-            - 'null'
-            enum:
-            - kPcieSsd
-            - kSataSsd
-            - kSataHdd
-            - kCloud
-          x-go-name: ScribeIOPreferentialTier
-        sequentialIOPreferentialTier:
-          description: Specifies the preferred storage tier for sequential IO operations.
-          type: array
+            type: string
+          x-go-name: Vips
+      x-go-package: cohesity/iris/server/data/public
+    ExternalClientSubnets:
+      type: object
+      title: Specifies the external Client Subnets that can communicate with this cluster.
+      properties:
+        clientSubnets:
+          description: Specifies the Client Subnets for the cluster.
+          type:
+          - array
+          - 'null'
           items:
-            type:
-            - string
-            - 'null'
-            enum:
-            - kPcieSsd
-            - kSataSsd
-            - kSataHdd
-            - kCloud
-          x-go-name: SequentialIOPreferentialTier
-        yodaIOPreferentialTier:
-          description: Specifies the list of perferred storage tiers used by Yoda.
-          type: array
-          items:
-            type:
-            - string
-            - 'null'
-            enum:
-            - kPcieSsd
-            - kSataSsd
-            - kSataHdd
-            - kCloud
-          x-go-name: YodaIOPreferentialTier
+            $ref: '#/components/schemas/Subnet'
+          x-go-name: ClientSubnets
+      x-go-package: cohesity/iris/server/data/public
     ClusterCreationProgressResult:
       description: 'Specifies the values returned after a successful request to get the
 
@@ -1233,25 +747,66 @@ components:
           - kServiceRestarting
           x-go-name: State
       x-go-package: cohesity/iris/server/data/public
-    TimeOfDay:
-      description: Specifies a time in day with hours and minutes.
+    BandwidthLimit:
+      description: 'Specifies settings for limiting the data transfer rate between
+
+        the local and remote Clusters or bandwidth limiting schedule for apollo.
+
+        Only one of RateLimitBytesPerSec or IoRate should be set in this struct and
+
+        corresponding BandwidthLimitOverrides should also be in the same unit.'
       type: object
-      title: Time of Day.
+      title: Bandwidth Limit.
       properties:
-        hour:
-          description: Specifies an (0-23) hour in a day.
+        bandwidthLimitOverrides:
+          description: 'Array of Override Bandwidth Limits.
+
+
+            Specifies a list of override bandwidth limits and time periods
+
+            when those limits override the rateLimitBytesPerSec limit.
+
+            If overlapping time periods are specified, the last one in the
+
+            array takes precedence.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BandwidthLimitOverride'
+          x-go-name: BandwidthLimitOverrides
+        ioRate:
+          description: 'Specifies the default IO Rate of the throttling schedule. This value is
+
+            internally mapped to some notion of how many resources a process should be
+
+            consuming.'
           type:
           - integer
           - 'null'
           format: int32
-          x-go-name: Hour
-        minute:
-          description: Specifies a (0-59) minute in an hour.
+          x-go-name: IoRate
+        rateLimitBytesPerSec:
+          description: 'Specifies the maximum allowed data transfer rate between the local Cluster
+
+            and remote Clusters. The value is specified in bytes per second.
+
+            If not set, the data transfer rate is not limited.'
           type:
           - integer
           - 'null'
-          format: int32
-          x-go-name: Minute
+          format: int64
+          x-go-name: RateLimitBytesPerSec
+        timezone:
+          description: 'Specifies a time zone for the specified time period.
+
+            The time zone is defined in the following format: "Area/Location",
+
+            for example: "America/New_York".'
+          type:
+          - string
+          - 'null'
+          x-go-name: Timezone
       x-go-package: cohesity/iris/server/data/public
     ChangeServiceStateResult:
       description: 'Specifies the result returned after a successful request to change the
@@ -1275,331 +830,33 @@ components:
           - 'null'
           x-go-name: StatusUrl
       x-go-package: cohesity/iris/server/data/public
-    UpgradeClusterParameters:
-      description: Specifies the parameters needed for a Cluster Upgrade request.
+    RequestError:
+      description: Details about the Error.
       type: object
-      title: Upgrade Cluster Parameters.
-      required:
-      - targetSwVersion
+      title: Error
       properties:
-        targetSwVersion:
-          description: 'Specifies the target software version. If specified, all Nodes on the
-
-            Cluster will be searched to see if they have had the specified software
-
-            package uploaded to them. If the specified package is found, then it
-
-            will be used for the upgrade.'
-          type:
-          - string
-          - 'null'
-          x-go-name: TargetSwVersion
-      x-go-package: cohesity/iris/server/data/public
-    CreateClusterResult:
-      description: 'Specifies the immediate result of a Cluster creation request. Contains
-
-        validation results for each node. If the request is valid, it also
-
-        indicates that the individual node bringup operation is started in
-
-        the background.'
-      type: object
-      title: Create Cluster Result.
-      properties:
-        clusterId:
-          description: Specifies the ID of the new Cluster.
+        errorCode:
+          description: Operation response error code.
           type:
           - integer
           - 'null'
           format: int64
-          x-go-name: ClusterId
-        clusterName:
-          description: Specifies the name of the new Cluster.
-          type:
-          - string
-          - 'null'
-          x-go-name: ClusterName
-        clusterSwVersion:
-          description: Specifies the software version of the new Cluster.
-          type:
-          - string
-          - 'null'
-          x-go-name: ClusterSwVersion
-        healthyNodes:
-          description: 'Specifies the status of the Nodes in the Cluster. All Nodes that
-
-            are accepted to the Cluster are appended to this list.'
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/NodeStatus'
-          x-go-name: HealthyNodes
-        incarnationId:
-          description: Specifies the Incarnation ID of the new Cluster.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: IncarnationId
+          x-go-name: ErrorCode
         message:
-          description: Specifies an optional message field.
+          description: Description of the error.
           type:
           - string
           - 'null'
           x-go-name: Message
-        unhealthyNodes:
-          description: 'Specifies the status of the Nodes in the Cluster. All Nodes that are
-
-            not accepted to the Cluster are appended to this list.'
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/NodeStatus'
-          x-go-name: UnhealthyNodes
       x-go-package: cohesity/iris/server/data/public
-    ExternalClientSubnets:
-      type: object
-      title: Specifies the external Client Subnets that can communicate with this cluster.
-      properties:
-        clientSubnets:
-          description: Specifies the Client Subnets for the cluster.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/Subnet'
-          x-go-name: ClientSubnets
-      x-go-package: cohesity/iris/server/data/public
-    IpmiConfiguration:
-      description: 'Specifies the parameters for configuration of IPMI. This is only needed
-
-        for physical clusters.'
-      type: object
-      title: IPMI Configuration.
-      properties:
-        ipmiGateway:
-          description: Specifies the default Gateway IP Address for the IPMI network.
-          type:
-          - string
-          - 'null'
-          x-go-name: IpmiGateway
-        ipmiPassword:
-          description: Specifies the IPMI Password.
-          type:
-          - string
-          - 'null'
-          x-go-name: IpmiPassword
-        ipmiSubnetMask:
-          description: Specifies the subnet mask for the IPMI network.
-          type:
-          - string
-          - 'null'
-          x-go-name: IpmiSubnetMask
-        ipmiUsername:
-          description: Specifies the IPMI Username.
-          type:
-          - string
-          - 'null'
-          x-go-name: IpmiUsername
-      x-go-package: cohesity/iris/server/data/public
-    CloudNetworkConfiguration:
-      description: 'Specifies all of the parameters needed for network configuration of
-
-        the new Cloud Cluster.'
-      type: object
-      title: Cloud Network Configuration.
-      properties:
-        clusterGateway:
-          description: 'Specifies the default gateway IP address (or addresses) for the Cluster
-
-            network.'
-          type:
-          - string
-          - 'null'
-          x-go-name: ClusterGateway
-        clusterSubnetMask:
-          description: Specifies the subnet mask (or masks) of the Cluster network.
-          type:
-          - string
-          - 'null'
-          x-go-name: ClusterSubnetMask
-        dnsServers:
-          description: Specifies the list of DNS Servers this cluster should be configured with.
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-go-name: DnsServers
-        domainNames:
-          description: 'Specifies the list of domain names this cluster should be configured
-
-            with.'
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-go-name: DomainNames
-        ntpServers:
-          description: Specifies the list of NTP Servers this cluster should be configured with.
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-go-name: NtpServers
-      x-go-package: cohesity/iris/server/data/public
-    NetworkConfiguration:
-      description: 'Specifies all of the parameters needed for network configuration of
-
-        the new Cluster.'
-      type: object
-      title: Network Configuration.
-      properties:
-        clusterGateway:
-          description: 'Specifies the default gateway IP address (or addresses) for the Cluster
-
-            network.'
-          type:
-          - string
-          - 'null'
-          x-go-name: ClusterGateway
-        clusterSubnetMask:
-          description: Specifies the subnet mask (or masks) of the Cluster network.
-          type:
-          - string
-          - 'null'
-          x-go-name: ClusterSubnetMask
-        dnsServers:
-          description: Specifies the list of DNS Servers this cluster should be configured with.
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-go-name: DnsServers
-        domainNames:
-          description: 'Specifies the list of domain names this cluster should be configured
-
-            with.'
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-go-name: DomainNames
-        ntpServers:
-          description: Specifies the list of NTP Servers this cluster should be configured with.
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-go-name: NtpServers
-        vipHostname:
-          description: Specifies the virtual IP hostname.
-          type:
-          - string
-          - 'null'
-          x-go-name: VipHostname
-        vips:
-          description: Specifies the list of virtual IPs for the new cluster.
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-go-name: Vips
-      x-go-package: cohesity/iris/server/data/public
-    ClusterPublicKeys:
-      description: Specifies public keys stored on the Cluster.
-      type: object
-      title: Cluster Public Keys.
-      properties:
-        sshPublicKey:
-          description: Specifies the SSH public key used to login to Cluster nodes.
-          type:
-          - string
-          - 'null'
-          x-go-name: SshPublicKey
-      x-go-package: cohesity/iris/server/data/public
-    NodeStatus:
-      description: Specifies the status of each node in the cluster being created.
-      type: object
-      title: Node Status.
-      properties:
-        errorMessage:
-          description: Specifies an optional message relating to the node status.
-          type:
-          - string
-          - 'null'
-          x-go-name: ErrorMessage
-        ipmiIp:
-          description: Specifies the IPMI IP of the node (if physical cluster).
-          type:
-          - string
-          - 'null'
-          x-go-name: IpmiIp
-        nodeId:
-          description: Specifies the ID of the node.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NodeId
-        nodeIp:
-          description: For physical nodes this will specify the IP address of the node.
-          type:
-          - string
-          - 'null'
-          x-go-name: NodeIp
-      x-go-package: cohesity/iris/server/data/public
-    ExpandPhysicalClusterParameters:
-      description: 'Specifies the parameters needed to expand a Cohesity Physical
-
-        Edition Cluster.'
-      type: object
-      title: Expand Physical Cluster Parameters.
-      required:
-      - nodeConfigs
-      properties:
-        chassisSerialToRackIdMap:
-          description: ChassisSerialToRackId map.
-          type:
-          - object
-          - 'null'
-          additionalProperties:
-            type: integer
-            format: int64
-          x-go-name: ChassisSerialToRackIdMap
-        nodeConfigs:
-          description: Specifies the configuration details of the Nodes in the Cluster.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/PhysicalNodeConfiguration'
-          x-go-name: NodeConfigs
-        vips:
-          description: Specifies the virtual IPs to add to the Cluster.
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-go-name: Vips
-      x-go-package: cohesity/iris/server/data/public
-    CreateVirtualClusterParameters:
+    CreateCloudClusterParameters:
       description: Specifies the parameters needed for creation of a new Cluster.
       type: object
-      title: Create Virtual Cluster Parameters.
+      title: Create Cloud Cluster Parameters.
       required:
       - clusterName
       - networkConfig
-      - nodeConfigs
+      - nodeIps
       properties:
         clusterName:
           description: Specifies the name of the new Cluster.
@@ -1626,25 +883,9 @@ components:
           x-go-name: MetadataFaultTolerance
         networkConfig:
           description: Specifies the network configuration parameters.
-          $ref: '#/components/schemas/NetworkConfiguration'
-        nodeConfigs:
-          description: Specifies the configuration for the nodes in the new cluster.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/VirtualNodeConfiguration'
-          x-go-name: NodeConfigs
-      x-go-package: cohesity/iris/server/data/public
-    ExpandCloudClusterParameters:
-      description: Specifies the parameters needed to expand a Cohesity Cloud Edition Cluster.
-      type: object
-      title: Expand Cloud Cluster Parameters.
-      required:
-      - nodeIps
-      properties:
+          $ref: '#/components/schemas/CloudNetworkConfiguration'
         nodeIps:
-          description: Specifies the list of IPs of the new Nodes.
+          description: Specifies the configuration for the nodes in the new cluster.
           type:
           - array
           - 'null'
@@ -1789,6 +1030,274 @@ components:
           - kReadWrite
           x-go-name: SmbAccess
       x-go-package: cohesity/iris/server/data/public
+    CloudNetworkConfiguration:
+      description: 'Specifies all of the parameters needed for network configuration of
+
+        the new Cloud Cluster.'
+      type: object
+      title: Cloud Network Configuration.
+      properties:
+        clusterGateway:
+          description: 'Specifies the default gateway IP address (or addresses) for the Cluster
+
+            network.'
+          type:
+          - string
+          - 'null'
+          x-go-name: ClusterGateway
+        clusterSubnetMask:
+          description: Specifies the subnet mask (or masks) of the Cluster network.
+          type:
+          - string
+          - 'null'
+          x-go-name: ClusterSubnetMask
+        dnsServers:
+          description: Specifies the list of DNS Servers this cluster should be configured with.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: DnsServers
+        domainNames:
+          description: 'Specifies the list of domain names this cluster should be configured
+
+            with.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: DomainNames
+        ntpServers:
+          description: Specifies the list of NTP Servers this cluster should be configured with.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: NtpServers
+      x-go-package: cohesity/iris/server/data/public
+    UpgradeClusterResult:
+      description: Specifies the result returned from a request to upgrade a Cluster.
+      type: object
+      title: Upgrade Cluster Result.
+      properties:
+        message:
+          description: Specifies a message describing the result of the request.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+        statusUrl:
+          description: 'Specifies the URL that can be queried to get the status of the operation
+
+            once it has begun.'
+          type:
+          - string
+          - 'null'
+          x-go-name: StatusUrl
+      x-go-package: cohesity/iris/server/data/public
+    VirtualNodeConfiguration:
+      description: Specifies the configuration for a node in the Cluster.
+      type: object
+      title: Virtual Node Configuration.
+      properties:
+        nodeId:
+          description: Specifies the Node ID for this node.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NodeId
+        nodeIp:
+          description: Specifies the Node IP address for this node.
+          type:
+          - string
+          - 'null'
+          x-go-name: NodeIp
+        useAsComputeNode:
+          description: Specifies whether to use the Node for compute only.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: UseAsComputeNode
+      x-go-package: cohesity/iris/server/data/public
+    PhysicalNodeConfiguration:
+      description: Specifies the configuration for a node in the Cluster.
+      type: object
+      title: Physical Node Configuration.
+      properties:
+        nodeId:
+          description: Specifies the Node ID for this node.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NodeId
+        nodeIp:
+          description: Specifies the Node IP address for this node.
+          type:
+          - string
+          - 'null'
+          x-go-name: NodeIp
+        nodeIpmiIp:
+          description: Specifies IPMI IP for this node.
+          type:
+          - string
+          - 'null'
+          x-go-name: NodeIpmiIp
+        useAsComputeNode:
+          description: Specifies whether to use the Node for compute only.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: UseAsComputeNode
+      x-go-package: cohesity/iris/server/data/public
+    CreatePhysicalClusterParameters:
+      description: Specifies the parameters needed for creation of a new Cluster.
+      type: object
+      title: Create Physical Cluster Parameters.
+      required:
+      - clusterName
+      - networkConfig
+      - nodeConfigs
+      - ipmiConfig
+      properties:
+        clusterDestroyHmacKey:
+          description: 'Specifies HMAC secret key that will be used to validate OTP used
+
+            for destroy request. This is b32 format of the HMAC key.
+
+            This should only be set/modified during cluster creation.'
+          type:
+          - string
+          - 'null'
+          x-go-name: ClusterDestroyHmacKey
+        clusterName:
+          description: Specifies the name of the new Cluster.
+          type:
+          - string
+          - 'null'
+          x-go-name: ClusterName
+        enableClusterDestroy:
+          description: 'Specifies if cluster destroy op is enabled on this cluster.
+
+            This should only be set/modified during cluster creation.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: EnableClusterDestroy
+        encryptionConfig:
+          description: Specifies the encryption configuration parameters.
+          $ref: '#/components/schemas/EncryptionConfiguration'
+        ipPreference:
+          description: Specifies IP preference.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: IpPreference
+        ipmiConfig:
+          description: Specifies the IPMI configuration parameters.
+          $ref: '#/components/schemas/IpmiConfiguration'
+        metadataFaultTolerance:
+          description: Specifies the metadata fault tolerance.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: MetadataFaultTolerance
+        networkConfig:
+          description: Specifies the network configuration parameters.
+          $ref: '#/components/schemas/NetworkConfiguration'
+        nodeConfigs:
+          description: Specifies the configuration for the nodes in the new cluster.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PhysicalNodeConfiguration'
+          x-go-name: NodeConfigs
+      x-go-package: cohesity/iris/server/data/public
+    TimeOfAWeek:
+      description: 'Specifies a time period by specifying a single daily time period
+
+        and one or more days of the week, for example 9 AM - 5 PM
+
+        on Monday, Wednesday or Friday. If different time periods are required
+
+        on different days, then multiple instances of this Weekly Time Period
+
+        must be specified.'
+      type: object
+      title: Time Period.
+      properties:
+        days:
+          description: 'Array of Week Days.
+
+
+            Specifies a list of days of a week (such as ''kSunday'') when the
+
+            time period should be applied.
+
+            If not set, the time range applies to all days of the week.
+
+            Specifies a day in a week such as ''kSunday'', ''kMonday'', etc.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            enum:
+            - kSunday
+            - kMonday
+            - kTuesday
+            - kWednesday
+            - kThursday
+            - kFriday
+            - kSaturday
+          x-go-name: Days
+        endTime:
+          description: Specifies the end time for the daily time period.
+          title: End Time.
+          allOf:
+          - $ref: '#/components/schemas/TimeOfDay'
+        isAllDay:
+          description: 'All Day.
+
+
+            Specifies that time range is applied for entire day.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IsAllDay
+        startTime:
+          description: Specifies the start time for the daily time period.
+          title: Start Time.
+          allOf:
+          - $ref: '#/components/schemas/TimeOfDay'
+      x-go-package: cohesity/iris/server/data/public
+    TimeOfDay:
+      description: Specifies a time in day with hours and minutes.
+      type: object
+      title: Time of Day.
+      properties:
+        hour:
+          description: Specifies an (0-23) hour in a day.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Hour
+        minute:
+          description: Specifies a (0-59) minute in an hour.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Minute
+      x-go-package: cohesity/iris/server/data/public
     Error:
       description: Specifies the error object with error code and a message.
       type: object
@@ -1806,20 +1315,579 @@ components:
           - string
           - 'null'
           x-go-name: ErrorMessage
+    UpgradeClusterParameters:
+      description: Specifies the parameters needed for a Cluster Upgrade request.
+      type: object
+      title: Upgrade Cluster Parameters.
+      required:
+      - targetSwVersion
+      properties:
+        targetSwVersion:
+          description: 'Specifies the target software version. If specified, all Nodes on the
+
+            Cluster will be searched to see if they have had the specified software
+
+            package uploaded to them. If the specified package is found, then it
+
+            will be used for the upgrade.'
+          type:
+          - string
+          - 'null'
+          x-go-name: TargetSwVersion
+      x-go-package: cohesity/iris/server/data/public
+    IoPreferentialTier:
+      description: Specifies the preferred storage tier for IO operations.
+      type: object
+      title: IO Preferential Tier.
+      properties:
+        apolloIOPreferentialTier:
+          description: Specifies the preferred storage tier used by Apollo as its working directory.
+          type: array
+          items:
+            type:
+            - string
+            - 'null'
+            enum:
+            - kPcieSsd
+            - kSataSsd
+            - kSataHdd
+            - kCloud
+          x-go-name: ApolloIOPreferentialTier
+        apolloWalIOPreferentialTier:
+          description: Specifies the preferred storage tier used by Apollo as its actions WAL.
+          type: array
+          items:
+            type:
+            - string
+            - 'null'
+            enum:
+            - kPcieSsd
+            - kSataSsd
+            - kSataHdd
+            - kCloud
+          x-go-name: ApolloWalIOPreferentialTier
+        athenaIOPreferentialTier:
+          description: Specifies the list of perferred storage tiers used by Athena.
+          type: array
+          items:
+            type:
+            - string
+            - 'null'
+            enum:
+            - kPcieSsd
+            - kSataSsd
+            - kSataHdd
+            - kCloud
+          x-go-name: AthenaIOPreferentialTier
+        athenaSlowerIOPreferentialTier:
+          description: Specifies the list of perferred storage tiers used by Athena for slower storage.
+          type: array
+          items:
+            type:
+            - string
+            - 'null'
+            enum:
+            - kPcieSsd
+            - kSataSsd
+            - kSataHdd
+            - kCloud
+          x-go-name: AthenaSlowerIOPreferentialTier
+        downTierUsagePercentThresholds:
+          description: Specifies the usage percentage thresholds for the correponding storage tier.
+          type: array
+          items:
+            type: integer
+            format: int32
+          x-go-name: DownTierUsagePercentThresholds
+        grootIOPreferentialTier:
+          description: Specifies the preferred storage tier used by Groot as its working directory.
+          type: array
+          items:
+            type:
+            - string
+            - 'null'
+            enum:
+            - kPcieSsd
+            - kSataSsd
+            - kSataHdd
+            - kCloud
+          x-go-name: GrootIOPreferentialTier
+        hydraDowntierIOPreferentialTier:
+          description: Specifies the list of perferred storage tiers used by Hydra for offloading.
+          type: array
+          items:
+            type:
+            - string
+            - 'null'
+            enum:
+            - kPcieSsd
+            - kSataSsd
+            - kSataHdd
+            - kCloud
+          x-go-name: HydraDowntierIOPreferentialTier
+        hydraIOPreferentialTier:
+          description: Specifies the list of perferred storage tiers used by Hydra.
+          type: array
+          items:
+            type:
+            - string
+            - 'null'
+            enum:
+            - kPcieSsd
+            - kSataSsd
+            - kSataHdd
+            - kCloud
+          x-go-name: HydraIOPreferentialTier
+        librarianIOPreferentialTier:
+          description: Specifies the list of perferred storage tiers used by librarian.
+          type: array
+          items:
+            type:
+            - string
+            - 'null'
+            enum:
+            - kPcieSsd
+            - kSataSsd
+            - kSataHdd
+            - kCloud
+          x-go-name: LibrarianIOPreferentialTier
+        randomIOPreferentialTier:
+          description: Specifies the order of perferred storage tiers for random IO operations.
+          type: array
+          items:
+            type:
+            - string
+            - 'null'
+            enum:
+            - kPcieSsd
+            - kSataSsd
+            - kSataHdd
+            - kCloud
+          x-go-name: RandomIOPreferentialTier
+        scribeIOPreferentialTier:
+          description: Specifies the list of perferred storage tiers used by Scribe.
+          type: array
+          items:
+            type:
+            - string
+            - 'null'
+            enum:
+            - kPcieSsd
+            - kSataSsd
+            - kSataHdd
+            - kCloud
+          x-go-name: ScribeIOPreferentialTier
+        sequentialIOPreferentialTier:
+          description: Specifies the preferred storage tier for sequential IO operations.
+          type: array
+          items:
+            type:
+            - string
+            - 'null'
+            enum:
+            - kPcieSsd
+            - kSataSsd
+            - kSataHdd
+            - kCloud
+          x-go-name: SequentialIOPreferentialTier
+        yodaIOPreferentialTier:
+          description: Specifies the list of perferred storage tiers used by Yoda.
+          type: array
+          items:
+            type:
+            - string
+            - 'null'
+            enum:
+            - kPcieSsd
+            - kSataSsd
+            - kSataHdd
+            - kCloud
+          x-go-name: YodaIOPreferentialTier
+    CreateClusterResult:
+      description: 'Specifies the immediate result of a Cluster creation request. Contains
+
+        validation results for each node. If the request is valid, it also
+
+        indicates that the individual node bringup operation is started in
+
+        the background.'
+      type: object
+      title: Create Cluster Result.
+      properties:
+        clusterId:
+          description: Specifies the ID of the new Cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ClusterId
+        clusterName:
+          description: Specifies the name of the new Cluster.
+          type:
+          - string
+          - 'null'
+          x-go-name: ClusterName
+        clusterSwVersion:
+          description: Specifies the software version of the new Cluster.
+          type:
+          - string
+          - 'null'
+          x-go-name: ClusterSwVersion
+        healthyNodes:
+          description: 'Specifies the status of the Nodes in the Cluster. All Nodes that
+
+            are accepted to the Cluster are appended to this list.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/NodeStatus'
+          x-go-name: HealthyNodes
+        incarnationId:
+          description: Specifies the Incarnation ID of the new Cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: IncarnationId
+        message:
+          description: Specifies an optional message field.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+        unhealthyNodes:
+          description: 'Specifies the status of the Nodes in the Cluster. All Nodes that are
+
+            not accepted to the Cluster are appended to this list.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/NodeStatus'
+          x-go-name: UnhealthyNodes
+      x-go-package: cohesity/iris/server/data/public
+    ChangeServiceStateParameters:
+      description: 'Specifies the parameters needed to change the state of one or more
+
+        services running on the Cluster.'
+      type: object
+      title: Change Service State Parameters.
+      properties:
+        action:
+          description: 'Specifies the action to take on the specified service.
+
+            ''kStop'' indicates that the specified services will be stopped.
+
+            ''kStart'' indicates that the specified services will be started.
+
+            ''kRestart'' indicates that the specified services will be restarted.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kStop
+          - kStart
+          - kRestart
+          x-go-name: Action
+        services:
+          description: 'Specifies the list of services to take the specified action on.
+
+            If none are specified, all Cluster services will be affected. It should
+
+            also be noted that some Cluster services are not stoppable and may
+
+            not be affected by the action specified.
+
+            ''kApollo'' is a service for reclaiming freed disk sectors on Nodes in the
+
+            SnapFS distributed file system.
+
+            ''kBridge'' is a service for managing the SnapFS distributed file system.
+
+            ''kGenie'' is a service that is responsible for monitoring hardware health
+
+            on the Cluster.
+
+            ''kGenieGofer'' is a service that links the Genie service to other services
+
+            on the Cluster.
+
+            ''kMagneto'' is the data protection service of the Cohesity Data Platform.
+
+            ''kIris'' is the service which serves REST API calls to the UI, CLI, and any
+
+            scripts written by customers.
+
+            ''kIrisProxy'' is a service that links the Iris service to other services
+
+            on the Cluster.
+
+            ''kScribe'' is the service responsible for storing filesystem metadata.
+
+            ''kStats'' is the service that is responsible for retrieving and aggregating
+
+            disk metrics across the Cluster.
+
+            ''kYoda'' is an elastic search indexing service.
+
+            ''kAlerts'' is a publisher and subscribing service for alerts.
+
+            ''kKeychain'' is a service for managing disk encryption keys.
+
+            ''kLogWatcher'' is a service that scans the log directory and reduces
+
+            the number of logs if required.
+
+            ''kStatsCollector'' is a service that periodically logs system stats.
+
+            ''kGandalf'' is a distributed lock service and coordination manager.
+
+            ''kNexus'' indicates the Nexus service. This is the service that is
+
+            responsible for creation of Clusters and configuration of Nodes and
+
+            networking.
+
+            ''kNexusProxy'' is a service that links the Nexus service to other services
+
+            on the Cluster.
+
+            ''kStorageProxy'' is a service for accessing data on external entities.
+
+            ''kTricorder'' is a diagnostic health testing service for Clusters.
+
+            ''kRtClient'' is a reverse tunneling client service.
+
+            ''kVaultProxy'' is a service for managing external targets that Clusters
+
+            can be backed up to.
+
+            ''kSmbProxy'' is an SMB protocol service.
+
+            ''kBridgeProxy'' is the service that links the Bridge service to other
+
+            services on the Cluster.
+
+            ''kLibrarian'' is an elastic search indexing service.
+
+            ''kGroot'' is a service for managing replication of SQL databases across
+
+            multiple nodes in a Cluster.
+
+            ''kEagleAgent'' is a service that is responsible for retrieving information
+
+            on Cluster health.
+
+            ''kAthena'' is a service for running distributed containerized applications
+
+            on the Cohesity Data Platform.
+
+            ''kBifrostBroker'' is a service for communicating with the Cohesity proxies
+
+            for multitenancy.
+
+            ''kSmb2Proxy'' is a new SMB protocol service.
+
+            ''kOs'' can be specified in order to do a full reboot.
+
+            ''kAtom'' is a service for receiving data for the Continuous Data Protection.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            enum:
+            - kApollo
+            - kBridge
+            - kGenie
+            - kGenieGofer
+            - kMagneto
+            - kIris
+            - kIrisProxy
+            - kScribe
+            - kStats
+            - kYoda
+            - kAlerts
+            - kKeychain
+            - kLogWatcher
+            - kStatsCollecter
+            - kGandalf
+            - kNexus
+            - kNexusProxy
+            - kStorageProxy
+            - kTricorder
+            - kRtClient
+            - kVaultProxy
+            - kSmbProxy
+            - kBridgeProxy
+            - kLibrarian
+            - kGroot
+            - kEagleAgent
+            - kAthena
+            - kBifrostBroker
+            - kSmb2Proxy
+            - kOs
+            - kAtom
+          x-go-name: Services
+      x-go-package: cohesity/iris/server/data/public
+    CreateVirtualClusterParameters:
+      description: Specifies the parameters needed for creation of a new Cluster.
+      type: object
+      title: Create Virtual Cluster Parameters.
+      required:
+      - clusterName
+      - networkConfig
+      - nodeConfigs
+      properties:
+        clusterName:
+          description: Specifies the name of the new Cluster.
+          type:
+          - string
+          - 'null'
+          x-go-name: ClusterName
+        encryptionConfig:
+          description: Specifies the encryption configuration parameters.
+          $ref: '#/components/schemas/EncryptionConfiguration'
+        ipPreference:
+          description: Specifies IP preference.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: IpPreference
+        metadataFaultTolerance:
+          description: Specifies the metadata fault tolerance.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: MetadataFaultTolerance
+        networkConfig:
+          description: Specifies the network configuration parameters.
+          $ref: '#/components/schemas/NetworkConfiguration'
+        nodeConfigs:
+          description: Specifies the configuration for the nodes in the new cluster.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/VirtualNodeConfiguration'
+          x-go-name: NodeConfigs
+      x-go-package: cohesity/iris/server/data/public
+    NodeStatus:
+      description: Specifies the status of each node in the cluster being created.
+      type: object
+      title: Node Status.
+      properties:
+        errorMessage:
+          description: Specifies an optional message relating to the node status.
+          type:
+          - string
+          - 'null'
+          x-go-name: ErrorMessage
+        ipmiIp:
+          description: Specifies the IPMI IP of the node (if physical cluster).
+          type:
+          - string
+          - 'null'
+          x-go-name: IpmiIp
+        nodeId:
+          description: Specifies the ID of the node.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NodeId
+        nodeIp:
+          description: For physical nodes this will specify the IP address of the node.
+          type:
+          - string
+          - 'null'
+          x-go-name: NodeIp
+      x-go-package: cohesity/iris/server/data/public
   responses:
+    IoPreferentialTierResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/IoPreferentialTier'
     ErrorResponse:
       description: Error
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+    ListServiceStatesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ServiceStateResult'
+    UpgradeClusterResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpgradeClusterResult'
+    GetBackgroundActivityScheduleResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BandwidthLimit'
+    ExpandCloudClusterResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateClusterResult'
+    GetClusterCreationProgressResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ClusterCreationProgressResult'
+    ExpandPhysicalClusterResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateClusterResult'
+    ExternalClientSubnetsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ExternalClientSubnets'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    GetClusterKeysResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ClusterPublicKeys'
+    CreatePhysicalClusterResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateClusterResult'
     ChangeServiceStateResponse:
       description: Success
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ChangeServiceStateResult'
-    CreatePhysicalClusterResponse:
+    CreateVirtualClusterResponse:
       description: Success
       content:
         application/json:
@@ -1831,18 +1899,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/CreateClusterResult'
-    GetClusterKeysResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ClusterPublicKeys'
-    GetClusterCreationProgressResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ClusterCreationProgressResult'
     NoContentResponse:
       description: No Content
     UpdateBackgroundActivityScheduleResponse:
@@ -1851,59 +1907,3 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/BandwidthLimit'
-    ExpandPhysicalClusterResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CreateClusterResult'
-    UpgradeClusterResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/UpgradeClusterResult'
-    ExternalClientSubnetsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ExternalClientSubnets'
-    GetBackgroundActivityScheduleResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BandwidthLimit'
-    CreateVirtualClusterResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CreateClusterResult'
-    IoPreferentialTierResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/IoPreferentialTier'
-    ExpandCloudClusterResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CreateClusterResult'
-    ListServiceStatesResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/ServiceStateResult'
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'

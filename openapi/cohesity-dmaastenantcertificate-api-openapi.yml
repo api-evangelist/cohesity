@@ -72,64 +72,32 @@ paths:
       security:
       - APIKeyHeader: []
 components:
+  responses:
+    GetDmaasTenantCertsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TenantDmaasCerts'
+    NoContentResponse:
+      description: No Content
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    AddDmaasTenantCertResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AddDmaasTenantCertRequest'
   schemas:
-    TenantDmaasCerts:
-      description: Specifies a list of tenant certificates.
-      type: object
-      title: Tenant Dmaas Certificates.
-      properties:
-        certificates:
-          description: Specifies a list of tenant certificates.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/TenantDmaasCert'
-          x-order: 0
     TenantDmaasCert:
       description: Specifies the parameters to of a tenant certificate.
       type: object
       title: Tenant Dmaas Certificate.
-      properties:
-        tenantId:
-          description: The id of the tenant.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        certificate:
-          description: Specifies the tenant certificate.
-          type:
-          - string
-          - 'null'
-          x-order: 1
-        privateKey:
-          description: Specifies the tenant private key.
-          type:
-          - string
-          - 'null'
-          x-order: 2
-        connectorCaChain:
-          description: Specifies the CA chain that is used to sign the connector certificate.
-          type:
-          - string
-          - 'null'
-          x-order: 3
-        passphrase:
-          description: Specifies the passphrase used to encode the private key.
-          type:
-          - string
-          - 'null'
-          x-order: 4
-    AddDmaasTenantCertRequest:
-      description: Specifies the parameters to add an Orion tenant certificate.
-      type: object
-      title: Add Tenant Cert Request.
-      required:
-      - tenantId
-      - certificate
-      - privateKey
-      - connectorCaChain
       properties:
         tenantId:
           description: The id of the tenant.
@@ -178,27 +146,59 @@ components:
           - string
           - 'null'
           x-order: 1
-  responses:
-    GetDmaasTenantCertsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/TenantDmaasCerts'
-    NoContentResponse:
-      description: No Content
-    ErrorResponse:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    AddDmaasTenantCertResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AddDmaasTenantCertRequest'
+    TenantDmaasCerts:
+      description: Specifies a list of tenant certificates.
+      type: object
+      title: Tenant Dmaas Certificates.
+      properties:
+        certificates:
+          description: Specifies a list of tenant certificates.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TenantDmaasCert'
+          x-order: 0
+    AddDmaasTenantCertRequest:
+      description: Specifies the parameters to add an Orion tenant certificate.
+      type: object
+      title: Add Tenant Cert Request.
+      required:
+      - tenantId
+      - certificate
+      - privateKey
+      - connectorCaChain
+      properties:
+        tenantId:
+          description: The id of the tenant.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        certificate:
+          description: Specifies the tenant certificate.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        privateKey:
+          description: Specifies the tenant private key.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        connectorCaChain:
+          description: Specifies the CA chain that is used to sign the connector certificate.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+        passphrase:
+          description: Specifies the passphrase used to encode the private key.
+          type:
+          - string
+          - 'null'
+          x-order: 4
   securitySchemes:
     APIKeyHeader:
       in: header

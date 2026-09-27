@@ -129,72 +129,29 @@ paths:
           $ref: '#/components/responses/Error'
 components:
   schemas:
-    CreateBondParameters:
-      description: Specifies the parameters needed to create a bond.
+    CreateBondResult:
+      description: Specifies the result of a request to create a new bond.
       type: object
-      title: Create Bond Parameters.
-      required:
-      - name
-      - slaves
+      title: Create Bond Result.
       properties:
-        bondingMode:
-          description: 'Specifies the bonding mode to use for this bond. If not specified,
-
-            this value will default to ''kActiveBackup''.
-
-            ''kActiveBackup'' indicates active backup bonding mode.
-
-            ''k802_3ad'' indicates 802.3ad bonding mode.'
-          type:
-          - string
-          - 'null'
-          enum:
-          - kActiveBackup
-          - k802_3ad
-          x-go-name: BondingMode
-        name:
-          description: Specifies a unique name to identify the bond being created.
-          type:
-          - string
-          - 'null'
-          x-go-name: Name
-        slaves:
-          description: Specifies the names of the slaves of this bond.
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-go-name: Slaves
-      x-go-package: cohesity/iris/server/data/public
-    RequestError:
-      description: Details about the Error.
-      type: object
-      title: Error
-      properties:
-        errorCode:
-          description: Operation response error code.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ErrorCode
         message:
-          description: Description of the error.
+          description: Specifies a message describing the result of the operation.
           type:
           - string
           - 'null'
           x-go-name: Message
       x-go-package: cohesity/iris/server/data/public
-    AppendHostsParameters:
-      description: Specifies the parameters needed for an append hosts request.
+    EditHostsParameters:
+      description: Specifies the parameters needed for an edit hosts request.
       type: object
-      title: Append Hosts Parameters.
+      title: Edit Hosts Parameters.
       properties:
         hosts:
-          description: 'Specifies the list of host entries to be added to the Cluster''s
+          description: 'Specifies the list of host entries to be edited. Each IP address listed
 
-            etc/hosts file.'
+            in the list of host entries will have its corresponding domain names in
+
+            the /etc/hosts file replaced with the domain names specified here.'
           type:
           - array
           - 'null'
@@ -233,6 +190,41 @@ components:
           - 'null'
           x-go-name: Ip
       x-go-package: cohesity/iris/server/data/public
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    AppendHostsParameters:
+      description: Specifies the parameters needed for an append hosts request.
+      type: object
+      title: Append Hosts Parameters.
+      properties:
+        hosts:
+          description: 'Specifies the list of host entries to be added to the Cluster''s
+
+            etc/hosts file.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/HostEntry'
+          x-go-name: Hosts
+      x-go-package: cohesity/iris/server/data/public
     HostResult:
       description: 'Specifies the response received after requesting a PUT, POST, or DELETE
 
@@ -247,43 +239,71 @@ components:
           - 'null'
           x-go-name: Message
       x-go-package: cohesity/iris/server/data/public
-    EditHostsParameters:
-      description: Specifies the parameters needed for an edit hosts request.
+    CreateBondParameters:
+      description: Specifies the parameters needed to create a bond.
       type: object
-      title: Edit Hosts Parameters.
+      title: Create Bond Parameters.
+      required:
+      - name
+      - slaves
       properties:
-        hosts:
-          description: 'Specifies the list of host entries to be edited. Each IP address listed
+        bondingMode:
+          description: 'Specifies the bonding mode to use for this bond. If not specified,
 
-            in the list of host entries will have its corresponding domain names in
+            this value will default to ''kActiveBackup''.
 
-            the /etc/hosts file replaced with the domain names specified here.'
+            ''kActiveBackup'' indicates active backup bonding mode.
+
+            ''k802_3ad'' indicates 802.3ad bonding mode.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kActiveBackup
+          - k802_3ad
+          x-go-name: BondingMode
+        name:
+          description: Specifies a unique name to identify the bond being created.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        slaves:
+          description: Specifies the names of the slaves of this bond.
           type:
           - array
           - 'null'
           items:
-            $ref: '#/components/schemas/HostEntry'
-          x-go-name: Hosts
-      x-go-package: cohesity/iris/server/data/public
-    CreateBondResult:
-      description: Specifies the result of a request to create a new bond.
-      type: object
-      title: Create Bond Result.
-      properties:
-        message:
-          description: Specifies a message describing the result of the operation.
-          type:
-          - string
-          - 'null'
-          x-go-name: Message
+            type: string
+          x-go-name: Slaves
       x-go-package: cohesity/iris/server/data/public
   responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
     CreateBondResponse:
       description: Success
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/CreateBondResult'
+    AppendHostsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HostResult'
+    EditHostsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HostResult'
+    NoContentResponse:
+      description: No Content
     ListHostsResponse:
       description: Success
       content:
@@ -292,27 +312,7 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/HostEntry'
-    NoContentResponse:
-      description: No Content
     DeleteHostsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/HostResult'
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
-    EditHostsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/HostResult'
-    AppendHostsResponse:
       description: Success
       content:
         application/json:

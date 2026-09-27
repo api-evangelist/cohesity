@@ -31,18 +31,18 @@ paths:
         required: true
 components:
   responses:
-    FilterObjectsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/FilteredObjectsResponseBody'
     ErrorResponse:
       description: Error
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+    FilterObjectsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FilteredObjectsResponseBody'
   schemas:
     Filter:
       description: Specifies the filter details.
@@ -61,35 +61,22 @@ components:
           - 'null'
           default: false
           x-order: 1
-    FilteredObjectsResponseBody:
-      description: Specifies the filter details.
+    Error:
+      description: Specifies the error object with error code and a message.
       type: object
+      title: Error.
       properties:
-        filteredObjects:
-          description: Specifies the list of filtered Objects.
+        errorCode:
+          description: Specifies the error code.
           type:
-          - array
+          - string
           - 'null'
-          items:
-            $ref: '#/components/schemas/FilteredObject'
           x-order: 0
-    FilteredObject:
-      description: Specifies the filter details.
-      type: object
-      properties:
-        id:
-          description: Specifies object id.
+        message:
+          description: Specifies the error message.
           type:
-          - integer
+          - string
           - 'null'
-          format: int64
-          x-order: 0
-        sourceId:
-          description: Specifies the source id to which this object belongs to.
-          type:
-          - integer
-          - 'null'
-          format: int64
           x-order: 1
     FilterObjectsRequest:
       description: Specifies the filter details.
@@ -150,23 +137,36 @@ components:
           - 'null'
           default: false
           x-order: 5
-    Error:
-      description: Specifies the error object with error code and a message.
+    FilteredObject:
+      description: Specifies the filter details.
       type: object
-      title: Error.
       properties:
-        errorCode:
-          description: Specifies the error code.
+        id:
+          description: Specifies object id.
           type:
-          - string
+          - integer
           - 'null'
+          format: int64
           x-order: 0
-        message:
-          description: Specifies the error message.
+        sourceId:
+          description: Specifies the source id to which this object belongs to.
           type:
-          - string
+          - integer
           - 'null'
+          format: int64
           x-order: 1
+    FilteredObjectsResponseBody:
+      description: Specifies the filter details.
+      type: object
+      properties:
+        filteredObjects:
+          description: Specifies the list of filtered Objects.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FilteredObject'
+          x-order: 0
   securitySchemes:
     APIKeyHeader:
       in: header

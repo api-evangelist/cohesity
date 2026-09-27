@@ -78,44 +78,137 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 components:
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    ClusterPartitionResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ClusterPartition'
+    GetClusterPartitionsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            description: 'Specifies a list of Cluster Partitions that match the specified
+
+              filter criteria.'
+            type: array
+            title: Array of Cluster Partitions.
+            items:
+              $ref: '#/components/schemas/ClusterPartition'
+    NotFoundResponse:
+      description: Not Found
   schemas:
-    RequestError:
-      description: Details about the Error.
+    Subnet:
+      description: 'Defines a Subnet (Subnetwork).
+
+        The netmask can be specified by setting netmaskBits or netmaskIp4.
+
+        The netmask can only be set using netmaskIp4 if the IP address
+
+        is an IPv4 address.'
       type: object
-      title: Error
+      title: Subnet
       properties:
-        errorCode:
-          description: Operation response error code.
+        component:
+          description: Component that has reserved the subnet.
+          type:
+          - string
+          - 'null'
+          x-go-name: Component
+        description:
+          description: Description of the subnet.
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+        id:
+          description: ID of the subnet.
           type:
           - integer
           - 'null'
-          format: int64
-          x-go-name: ErrorCode
-        message:
-          description: Description of the error.
+          format: int32
+          x-go-name: Id
+        ip:
+          description: Specifies either an IPv6 address or an IPv4 address.
           type:
           - string
           - 'null'
-          x-go-name: Message
-      x-go-package: cohesity/iris/server/data/public
-    IpRange:
-      description: IP Range for range of vip address addition
-      type: object
-      properties:
-        endIp:
-          description: 'Optional End IP of the range
+          x-go-name: Ip
+        netmaskBits:
+          description: Specifies the netmask using bits.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: NetmaskBits
+        netmaskIp4:
+          description: 'Specifies the netmask using an IP4 address.
 
-            If not specified, EndIp is same as StartIp'
+            The netmask can only be set using netmaskIp4 if the IP address
+
+            is an IPv4 address.'
           type:
           - string
           - 'null'
-          x-go-name: EndIp
-        startIp:
-          description: Start IP of the range
+          x-go-name: NetmaskIp4
+        nfsAccess:
+          description: 'Specifies whether clients from this subnet can mount using NFS protocol.
+
+            Protocol access level.
+
+            ''kDisabled'' indicates Protocol access level ''Disabled''
+
+            ''kReadOnly'' indicates Protocol access level ''ReadOnly''
+
+            ''kReadWrite'' indicates Protocol access level ''ReadWrite'''
           type:
           - string
           - 'null'
-          x-go-name: StartIp
+          enum:
+          - kDisabled
+          - kReadOnly
+          - kReadWrite
+          x-go-name: NfsAccess
+        nfsAllSquash:
+          description: 'Specifies whether all clients from this subnet can map view with
+
+            view_all_squash_uid/view_all_squash_gid configured in the view.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: NfsAllSquash
+        nfsRootSquash:
+          description: Specifies whether clients from this subnet can mount as root on NFS.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: NfsRootSquash
+        smbAccess:
+          description: 'Specifies whether clients from this subnet can mount using SMB protocol.
+
+            Protocol access level.
+
+            ''kDisabled'' indicates Protocol access level ''Disabled''
+
+            ''kReadOnly'' indicates Protocol access level ''ReadOnly''
+
+            ''kReadWrite'' indicates Protocol access level ''ReadWrite'''
+          type:
+          - string
+          - 'null'
+          enum:
+          - kDisabled
+          - kReadOnly
+          - kReadWrite
+          x-go-name: SmbAccess
       x-go-package: cohesity/iris/server/data/public
     Vlan:
       description: 'Specifies the settings of a VLAN.
@@ -287,6 +380,44 @@ components:
           - 'null'
           x-go-name: VlanName
       x-go-package: cohesity/iris/server/data/public
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    IpRange:
+      description: IP Range for range of vip address addition
+      type: object
+      properties:
+        endIp:
+          description: 'Optional End IP of the range
+
+            If not specified, EndIp is same as StartIp'
+          type:
+          - string
+          - 'null'
+          x-go-name: EndIp
+        startIp:
+          description: Start IP of the range
+          type:
+          - string
+          - 'null'
+          x-go-name: StartIp
+      x-go-package: cohesity/iris/server/data/public
     ClusterPartition:
       description: Provides details about a Cluster Partition.
       type: object
@@ -363,134 +494,3 @@ components:
             $ref: '#/components/schemas/Vlan'
           x-go-name: Vlans
       x-go-package: cohesity/iris/server/data/public
-    Subnet:
-      description: 'Defines a Subnet (Subnetwork).
-
-        The netmask can be specified by setting netmaskBits or netmaskIp4.
-
-        The netmask can only be set using netmaskIp4 if the IP address
-
-        is an IPv4 address.'
-      type: object
-      title: Subnet
-      properties:
-        component:
-          description: Component that has reserved the subnet.
-          type:
-          - string
-          - 'null'
-          x-go-name: Component
-        description:
-          description: Description of the subnet.
-          type:
-          - string
-          - 'null'
-          x-go-name: Description
-        id:
-          description: ID of the subnet.
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: Id
-        ip:
-          description: Specifies either an IPv6 address or an IPv4 address.
-          type:
-          - string
-          - 'null'
-          x-go-name: Ip
-        netmaskBits:
-          description: Specifies the netmask using bits.
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: NetmaskBits
-        netmaskIp4:
-          description: 'Specifies the netmask using an IP4 address.
-
-            The netmask can only be set using netmaskIp4 if the IP address
-
-            is an IPv4 address.'
-          type:
-          - string
-          - 'null'
-          x-go-name: NetmaskIp4
-        nfsAccess:
-          description: 'Specifies whether clients from this subnet can mount using NFS protocol.
-
-            Protocol access level.
-
-            ''kDisabled'' indicates Protocol access level ''Disabled''
-
-            ''kReadOnly'' indicates Protocol access level ''ReadOnly''
-
-            ''kReadWrite'' indicates Protocol access level ''ReadWrite'''
-          type:
-          - string
-          - 'null'
-          enum:
-          - kDisabled
-          - kReadOnly
-          - kReadWrite
-          x-go-name: NfsAccess
-        nfsAllSquash:
-          description: 'Specifies whether all clients from this subnet can map view with
-
-            view_all_squash_uid/view_all_squash_gid configured in the view.'
-          type:
-          - boolean
-          - 'null'
-          x-go-name: NfsAllSquash
-        nfsRootSquash:
-          description: Specifies whether clients from this subnet can mount as root on NFS.
-          type:
-          - boolean
-          - 'null'
-          x-go-name: NfsRootSquash
-        smbAccess:
-          description: 'Specifies whether clients from this subnet can mount using SMB protocol.
-
-            Protocol access level.
-
-            ''kDisabled'' indicates Protocol access level ''Disabled''
-
-            ''kReadOnly'' indicates Protocol access level ''ReadOnly''
-
-            ''kReadWrite'' indicates Protocol access level ''ReadWrite'''
-          type:
-          - string
-          - 'null'
-          enum:
-          - kDisabled
-          - kReadOnly
-          - kReadWrite
-          x-go-name: SmbAccess
-      x-go-package: cohesity/iris/server/data/public
-  responses:
-    NotFoundResponse:
-      description: Not Found
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
-    ClusterPartitionResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ClusterPartition'
-    GetClusterPartitionsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            description: 'Specifies a list of Cluster Partitions that match the specified
-
-              filter criteria.'
-            type: array
-            title: Array of Cluster Partitions.
-            items:
-              $ref: '#/components/schemas/ClusterPartition'

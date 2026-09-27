@@ -236,42 +236,64 @@ paths:
       security:
       - APIKeyHeader: []
 components:
+  responses:
+    GetNisNetgroupByNameResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NisNetgroup'
+    NoContentResponse:
+      description: No Content
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NisProviderResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NisProvider'
+    GetNisProviderByDomainNameResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NisProvider'
+    GetNisNetgroupsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NisNetgroups'
+    NisNetgroupResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NisNetgroup'
+    GetNisProvidersResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NisProviders'
   schemas:
-    NisProvider:
-      description: Specifies an NIS Provider.
+    NisProviders:
+      description: Response of NIS Providers.
       type: object
-      required:
-      - domain
-      - masterServerHostname
       properties:
-        domain:
-          description: Specifies the Domain Name of NIS Provider.
+        nisProviders:
+          description: A list of NIS Providers.
           type:
-          - string
+          - array
           - 'null'
+          items:
+            $ref: '#/components/schemas/NisProvider'
           x-order: 0
-        masterServerHostname:
-          description: Specifies the hostname of Master Server.
-          type:
-          - string
-          - 'null'
-          x-order: 1
-        slaveServers:
-          description: Specifies a list of slave servers in the NIS Domain.
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-order: 2
-        tenantIds:
-          description: Specifies the list of tenant Ids for NIS Provider.
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-order: 3
     NisNetgroup:
       description: Specifies an NIS netgroup.
       type: object
@@ -323,30 +345,6 @@ components:
           - kRootSquash
           - kAllSquash
           x-order: 3
-    NisNetgroups:
-      description: Response of NIS Netgroups.
-      type: object
-      properties:
-        nisNetgroups:
-          description: A list of NIS Netgroups.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/NisNetgroup'
-          x-order: 0
-    NisProviders:
-      description: Response of NIS Providers.
-      type: object
-      properties:
-        nisProviders:
-          description: A list of NIS Providers.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/NisProvider'
-          x-order: 0
     Error:
       description: Specifies the error object with error code and a message.
       type: object
@@ -364,51 +362,53 @@ components:
           - string
           - 'null'
           x-order: 1
-  responses:
-    GetNisProviderByDomainNameResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NisProvider'
-    GetNisNetgroupsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NisNetgroups'
-    NisNetgroupResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
+    NisNetgroups:
+      description: Response of NIS Netgroups.
+      type: object
+      properties:
+        nisNetgroups:
+          description: A list of NIS Netgroups.
+          type:
+          - array
+          - 'null'
+          items:
             $ref: '#/components/schemas/NisNetgroup'
-    NoContentResponse:
-      description: No Content
-    ErrorResponse:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    GetNisProvidersResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NisProviders'
-    GetNisNetgroupByNameResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NisNetgroup'
-    NisProviderResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NisProvider'
+          x-order: 0
+    NisProvider:
+      description: Specifies an NIS Provider.
+      type: object
+      required:
+      - domain
+      - masterServerHostname
+      properties:
+        domain:
+          description: Specifies the Domain Name of NIS Provider.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        masterServerHostname:
+          description: Specifies the hostname of Master Server.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        slaveServers:
+          description: Specifies a list of slave servers in the NIS Domain.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 2
+        tenantIds:
+          description: Specifies the list of tenant Ids for NIS Provider.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 3
   securitySchemes:
     APIKeyHeader:
       in: header

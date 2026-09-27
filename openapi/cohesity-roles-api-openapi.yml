@@ -122,7 +122,69 @@ paths:
               $ref: '#/components/schemas/RoleUpdateParameters'
         description: Request to update a custom role.
 components:
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    UpdateRoleResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Role'
+    GetRolesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            description: Specifies a list of roles.
+            type: array
+            title: Array of Roles.
+            items:
+              $ref: '#/components/schemas/Role'
+    CreateRoleResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Role'
+    NoContentResponse:
+      description: No Content
   schemas:
+    RoleCreateParameters:
+      description: 'Specifies the parameters required to create a new custom role such
+
+        as the name, description and the privileges to assign to the role.'
+      type: object
+      title: Role Create.
+      properties:
+        description:
+          description: Specifies a description about the role.
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+        name:
+          description: Specifies the name of the custom role.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        privileges:
+          description: 'Array of Privileges.
+
+
+            Specifies the list of privileges to assign to the role.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Privileges
+      x-go-package: cohesity/iris/server/data/public
     RequestError:
       description: Details about the Error.
       type: object
@@ -262,37 +324,6 @@ components:
             type: string
           x-go-name: Privileges
       x-go-package: cohesity/iris/server/data/public
-    RoleCreateParameters:
-      description: 'Specifies the parameters required to create a new custom role such
-
-        as the name, description and the privileges to assign to the role.'
-      type: object
-      title: Role Create.
-      properties:
-        description:
-          description: Specifies a description about the role.
-          type:
-          - string
-          - 'null'
-          x-go-name: Description
-        name:
-          description: Specifies the name of the custom role.
-          type:
-          - string
-          - 'null'
-          x-go-name: Name
-        privileges:
-          description: 'Array of Privileges.
-
-
-            Specifies the list of privileges to assign to the role.'
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-go-name: Privileges
-      x-go-package: cohesity/iris/server/data/public
     RoleDeleteParameters:
       description: Specifies the parameters required for deleting one or more roles.
       type: object
@@ -312,34 +343,3 @@ components:
             type: string
           x-go-name: Names
       x-go-package: cohesity/iris/server/data/public
-  responses:
-    NoContentResponse:
-      description: No Content
-    CreateRoleResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Role'
-    UpdateRoleResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Role'
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
-    GetRolesResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            description: Specifies a list of roles.
-            type: array
-            title: Array of Roles.
-            items:
-              $ref: '#/components/schemas/Role'

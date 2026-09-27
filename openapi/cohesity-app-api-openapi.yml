@@ -99,26 +99,30 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 components:
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    GetAppsResponse:
+      description: GetAppsResponse specifies response for getting apps
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/App'
+    NoContentResponse:
+      description: No Content
+    InstallAppResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/App'
   schemas:
-    VmNameInfo:
-      description: 'Struct containing vm-name and ui-name (to be displayed on the UI to get
-
-        number of replicas as input) as members.'
-      type: object
-      properties:
-        uiName:
-          description: UI-name. To be displayed on the UI.
-          type:
-          - string
-          - 'null'
-          x-go-name: UiName
-        vmName:
-          description: Vm-name.
-          type:
-          - string
-          - 'null'
-          x-go-name: VmName
-      x-go-package: cohesity/iris/server/data/public
     RequestError:
       description: Details about the Error.
       type: object
@@ -137,24 +141,6 @@ components:
           - string
           - 'null'
           x-go-name: Message
-      x-go-package: cohesity/iris/server/data/public
-    ClusterInfo:
-      type: object
-      properties:
-        clusterId:
-          description: Specifies the id of the cluster.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: Id
-        incarnationId:
-          description: Specifies the incarnation id of the cluster.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: IncarnationId
       x-go-package: cohesity/iris/server/data/public
     App:
       description: App provides information about an application.
@@ -333,34 +319,24 @@ components:
             $ref: '#/components/schemas/VmNameInfo'
           x-go-name: VmNameInfoList
       x-go-package: cohesity/iris/server/data/public
-    ExternalNetworkInfo:
-      description: 'This is used to display the list of external networks, from which one can
+    VmNameInfo:
+      description: 'Struct containing vm-name and ui-name (to be displayed on the UI to get
 
-        potentially be selected for an app instance.'
+        number of replicas as input) as members.'
       type: object
-      title: Specifies the external network information of the app instance.
       properties:
-        axonNetworkName:
-          description: 'Name of axon network corresponding to this external network. Used for
-
-            internal purposes only.'
+        uiName:
+          description: UI-name. To be displayed on the UI.
           type:
           - string
           - 'null'
-          x-go-name: AxonNetworkName
-        vlanId:
-          description: VLAN id of the network.
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: VlanId
-        vlanNetworkName:
-          description: Display name for the UI to select the external network.
+          x-go-name: UiName
+        vmName:
+          description: Vm-name.
           type:
           - string
           - 'null'
-          x-go-name: VlanNetworkName
+          x-go-name: VmName
       x-go-package: cohesity/iris/server/data/public
     AppMetadata:
       description: AppMetadata provides metadata information about an application.
@@ -410,26 +386,50 @@ components:
           - 'null'
           x-go-name: Name
       x-go-package: cohesity/iris/server/data/public
-  responses:
-    InstallAppResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/App'
-    NoContentResponse:
-      description: No Content
-    GetAppsResponse:
-      description: GetAppsResponse specifies response for getting apps
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/App'
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
+    ClusterInfo:
+      type: object
+      properties:
+        clusterId:
+          description: Specifies the id of the cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Id
+        incarnationId:
+          description: Specifies the incarnation id of the cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: IncarnationId
+      x-go-package: cohesity/iris/server/data/public
+    ExternalNetworkInfo:
+      description: 'This is used to display the list of external networks, from which one can
+
+        potentially be selected for an app instance.'
+      type: object
+      title: Specifies the external network information of the app instance.
+      properties:
+        axonNetworkName:
+          description: 'Name of axon network corresponding to this external network. Used for
+
+            internal purposes only.'
+          type:
+          - string
+          - 'null'
+          x-go-name: AxonNetworkName
+        vlanId:
+          description: VLAN id of the network.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: VlanId
+        vlanNetworkName:
+          description: Display name for the UI to select the external network.
+          type:
+          - string
+          - 'null'
+          x-go-name: VlanNetworkName
+      x-go-package: cohesity/iris/server/data/public

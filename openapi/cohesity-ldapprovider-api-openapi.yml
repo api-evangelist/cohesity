@@ -126,6 +126,35 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 components:
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    CreateLdapProviderResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LdapProviderResponse'
+    UpdateLdapProviderResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LdapProviderResponse'
+    NoContentResponse:
+      description: No Content
+    GetLdapProviderResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/LdapProviderResponse'
   schemas:
     RequestError:
       description: Details about the Error.
@@ -192,109 +221,6 @@ components:
           - string
           - 'null'
           x-go-name: DomainName
-        name:
-          description: Specifies the name of the LDAP provider.
-          type:
-          - string
-          - 'null'
-          x-go-name: Name
-        port:
-          description: Specifies LDAP server port.
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: Port
-        preferredLdapServerList:
-          description: 'Specifies the preferred LDAP servers. Server names should be either in
-
-            fully qualified domain name (FQDN) format or IP addresses.'
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-go-name: PreferredLdapServerList
-        tenantId:
-          description: Specifies the unique id of the tenant.
-          type:
-          - string
-          - 'null'
-          x-go-name: TenantId
-        useSsl:
-          description: Specifies whether to use SSL for LDAP connections.
-          type:
-          - boolean
-          - 'null'
-          x-go-name: UseSsl
-        userDistinguishedName:
-          description: 'Specifies the user distinguished name that is used for LDAP authentication.
-
-            It should be provided if the AuthType is set to either kSimple or kSasl.'
-          type:
-          - string
-          - 'null'
-          x-go-name: UserDistinguishedName
-        userPassword:
-          description: Specifies the user password that is used for LDAP authentication.
-          type:
-          - string
-          - 'null'
-          x-go-name: UserPassword
-      x-go-package: cohesity/iris/server/data/public
-    UpdateLdapProviderParam:
-      description: Specifies the update LDAP provider params.
-      type: object
-      title: Update LDAP Provider Parameters.
-      properties:
-        adDomainName:
-          description: 'Specifies the domain name of an Active Directory which is mapped to this
-
-            LDAP provider'
-          type:
-          - string
-          - 'null'
-          x-go-name: AdDomainName
-        authType:
-          description: 'Specifies the authentication type used while connecting to LDAP servers.
-
-            Authentication level.
-
-            ''kAnonymous'' indicates LDAP authentication type ''Anonymous''
-
-            ''kSimple'' indicates LDAP authentication type ''Simple'''
-          type:
-          - string
-          - 'null'
-          enum:
-          - kAnonymous
-          - kSimple
-          x-go-name: AuthType
-        baseDistinguishedName:
-          description: 'Specifies the base distinguished name used as the base for LDAP
-
-            search requests.'
-          type:
-          - string
-          - 'null'
-          x-go-name: BaseDistinguishedName
-        domainName:
-          description: 'Specifies the name of the domain name to be used for querying LDAP servers
-
-            from DNS. If PreferredLdapServerList is set, then DomainName field is
-
-            ignored.'
-          type:
-          - string
-          - 'null'
-          x-go-name: DomainName
-        id:
-          description: Specifies the ID of the LDAP provider.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: Id
         name:
           description: Specifies the name of the LDAP provider.
           type:
@@ -448,32 +374,106 @@ components:
           - 'null'
           x-go-name: UserPassword
       x-go-package: cohesity/iris/server/data/public
-  responses:
-    UpdateLdapProviderResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/LdapProviderResponse'
-    NoContentResponse:
-      description: No Content
-    CreateLdapProviderResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/LdapProviderResponse'
-    GetLdapProviderResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/LdapProviderResponse'
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
+    UpdateLdapProviderParam:
+      description: Specifies the update LDAP provider params.
+      type: object
+      title: Update LDAP Provider Parameters.
+      properties:
+        adDomainName:
+          description: 'Specifies the domain name of an Active Directory which is mapped to this
+
+            LDAP provider'
+          type:
+          - string
+          - 'null'
+          x-go-name: AdDomainName
+        authType:
+          description: 'Specifies the authentication type used while connecting to LDAP servers.
+
+            Authentication level.
+
+            ''kAnonymous'' indicates LDAP authentication type ''Anonymous''
+
+            ''kSimple'' indicates LDAP authentication type ''Simple'''
+          type:
+          - string
+          - 'null'
+          enum:
+          - kAnonymous
+          - kSimple
+          x-go-name: AuthType
+        baseDistinguishedName:
+          description: 'Specifies the base distinguished name used as the base for LDAP
+
+            search requests.'
+          type:
+          - string
+          - 'null'
+          x-go-name: BaseDistinguishedName
+        domainName:
+          description: 'Specifies the name of the domain name to be used for querying LDAP servers
+
+            from DNS. If PreferredLdapServerList is set, then DomainName field is
+
+            ignored.'
+          type:
+          - string
+          - 'null'
+          x-go-name: DomainName
+        id:
+          description: Specifies the ID of the LDAP provider.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Id
+        name:
+          description: Specifies the name of the LDAP provider.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        port:
+          description: Specifies LDAP server port.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Port
+        preferredLdapServerList:
+          description: 'Specifies the preferred LDAP servers. Server names should be either in
+
+            fully qualified domain name (FQDN) format or IP addresses.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: PreferredLdapServerList
+        tenantId:
+          description: Specifies the unique id of the tenant.
+          type:
+          - string
+          - 'null'
+          x-go-name: TenantId
+        useSsl:
+          description: Specifies whether to use SSL for LDAP connections.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: UseSsl
+        userDistinguishedName:
+          description: 'Specifies the user distinguished name that is used for LDAP authentication.
+
+            It should be provided if the AuthType is set to either kSimple or kSasl.'
+          type:
+          - string
+          - 'null'
+          x-go-name: UserDistinguishedName
+        userPassword:
+          description: Specifies the user password that is used for LDAP authentication.
+          type:
+          - string
+          - 'null'
+          x-go-name: UserPassword
+      x-go-package: cohesity/iris/server/data/public

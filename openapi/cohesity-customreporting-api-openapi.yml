@@ -23,21 +23,6 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 components:
-  responses:
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
-    GetPostgresResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/PostgresNodeInfo'
   schemas:
     RequestError:
       description: Details about the Error.
@@ -98,3 +83,18 @@ components:
           format: int32
           x-go-name: Port
       x-go-package: cohesity/iris/server/data/public
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    GetPostgresResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/PostgresNodeInfo'

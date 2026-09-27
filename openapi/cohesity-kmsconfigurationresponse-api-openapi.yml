@@ -31,39 +31,6 @@ paths:
           $ref: '#/components/responses/Error'
 components:
   schemas:
-    CryptsoftKmsConfigResponse:
-      type: object
-      title: CryptsoftKmsConfigResponse specifies response parameters for cryptsoftKMS.
-      properties:
-        clientCertificateExpiryDate:
-          description: Specifies expiry date of client certificate.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ClientCertificateExpiryDate
-        kmipProtocolVersion:
-          description: Specifies protocol version used to communicate with the KMS.
-          type:
-          - string
-          - 'null'
-          x-go-name: KmipProtocolVersion
-        serverIp:
-          description: Specifies the KMS IP address.
-          type:
-          - string
-          - 'null'
-          x-go-name: ServerIp
-        serverPort:
-          description: 'Specifies port on which the server is listening.
-
-            Default port is 5696.'
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: ServerPort
-      x-go-package: cohesity/iris/server/data/public
     KmsConfigurationResponse:
       description: Specifies response parameters to a KMS request.
       type: object
@@ -199,7 +166,46 @@ components:
           - 'null'
           x-go-name: Message
       x-go-package: cohesity/iris/server/data/public
+    CryptsoftKmsConfigResponse:
+      type: object
+      title: CryptsoftKmsConfigResponse specifies response parameters for cryptsoftKMS.
+      properties:
+        clientCertificateExpiryDate:
+          description: Specifies expiry date of client certificate.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ClientCertificateExpiryDate
+        kmipProtocolVersion:
+          description: Specifies protocol version used to communicate with the KMS.
+          type:
+          - string
+          - 'null'
+          x-go-name: KmipProtocolVersion
+        serverIp:
+          description: Specifies the KMS IP address.
+          type:
+          - string
+          - 'null'
+          x-go-name: ServerIp
+        serverPort:
+          description: 'Specifies port on which the server is listening.
+
+            Default port is 5696.'
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: ServerPort
+      x-go-package: cohesity/iris/server/data/public
   responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
     GetKmsConfigResponse:
       description: Specifies a list of KMS configurations.
       content:
@@ -211,9 +217,3 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/KmsConfigurationResponse'
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'

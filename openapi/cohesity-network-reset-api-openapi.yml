@@ -45,6 +45,10 @@ paths:
       - APIKeyHeader: []
 components:
   schemas:
+    ResetStates:
+      type: array
+      items:
+        $ref: '#/components/schemas/NodeResetState'
     NodeResetState:
       description: Node reset state information
       type: object
@@ -72,10 +76,21 @@ components:
           - 'null'
           x-go-name: State
           x-order: 2
-    ResetStates:
-      type: array
-      items:
-        $ref: '#/components/schemas/NodeResetState'
+    ResetOrRestoreNetworking:
+      description: Update cluster or node reset state information
+      type: object
+      title: ResetOrRestoreNetworking
+      properties:
+        operation:
+          description: Cancel reset cluster or node state operation.
+          type:
+          - string
+          - 'null'
+          enum:
+          - network-reset
+          - restore
+          x-go-name: Operation
+          x-order: 0
     Error:
       description: Specifies the error object with error code and a message.
       type: object
@@ -93,21 +108,6 @@ components:
           - string
           - 'null'
           x-order: 1
-    ResetOrRestoreNetworking:
-      description: Update cluster or node reset state information
-      type: object
-      title: ResetOrRestoreNetworking
-      properties:
-        operation:
-          description: Cancel reset cluster or node state operation.
-          type:
-          - string
-          - 'null'
-          enum:
-          - network-reset
-          - restore
-          x-go-name: Operation
-          x-order: 0
   responses:
     ErrorResponse:
       description: Error

@@ -139,7 +139,108 @@ paths:
               $ref: '#/components/schemas/GroupDeleteParameters'
         description: Request to delete one or more groups on the Cohesity Cluster.
 components:
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    CreateGroupResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Group'
+    GetGroupsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            description: Specifies the groups that match the specified filter criteria.
+            type: array
+            title: Array of Groups.
+            items:
+              $ref: '#/components/schemas/Group'
+    UpdateGroupResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Group'
+    NoContentResponse:
+      description: No Content
   schemas:
+    GroupDeleteParameters:
+      description: Specifies the groups to delete on the Cohesity Cluster.
+      type: object
+      title: Delete Groups Request.
+      properties:
+        domain:
+          description: 'Specifies the domain associated with the groups to delete.
+
+            Only groups associated with the same domain can be deleted
+
+            by a single request.
+
+            If no domain is specified, the specified groups are deleted from the
+
+            LOCAL domain on the Cohesity Cluster.
+
+            If a non-LOCAL domain is specified, the specified groups are deleted
+
+            on the Cohesity Cluster. However, the referenced group principals on the
+
+            Active Directory are not deleted.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Domain
+        names:
+          description: 'Array of Groups.
+
+
+            Specifies the list of groups to delete on the Cohesity Cluster.
+
+            Only groups from the same domain can be deleted by a single request.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Names
+      x-go-package: cohesity/iris/server/data/public
+    SmbPrincipal:
+      type: object
+      title: Specifies struct with SMB principal details.
+      properties:
+        domain:
+          description: Specifies domain name of the principal.
+          type:
+          - string
+          - 'null'
+          x-go-name: Domain
+        name:
+          description: Specifies name of the SMB principal which may be a group or user.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        sid:
+          description: 'Specifies unique Security ID (SID) of the principal that look similar to
+
+            windows domain SID.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Sid
+        type:
+          description: Specifies the type. This can be a user or a group.
+          type:
+          - string
+          - 'null'
+          x-go-name: Type
+      x-go-package: cohesity/iris/server/data/public
     RequestError:
       description: Details about the Error.
       type: object
@@ -239,45 +340,6 @@ components:
           items:
             type: string
           x-go-name: Users
-      x-go-package: cohesity/iris/server/data/public
-    GroupDeleteParameters:
-      description: Specifies the groups to delete on the Cohesity Cluster.
-      type: object
-      title: Delete Groups Request.
-      properties:
-        domain:
-          description: 'Specifies the domain associated with the groups to delete.
-
-            Only groups associated with the same domain can be deleted
-
-            by a single request.
-
-            If no domain is specified, the specified groups are deleted from the
-
-            LOCAL domain on the Cohesity Cluster.
-
-            If a non-LOCAL domain is specified, the specified groups are deleted
-
-            on the Cohesity Cluster. However, the referenced group principals on the
-
-            Active Directory are not deleted.'
-          type:
-          - string
-          - 'null'
-          x-go-name: Domain
-        names:
-          description: 'Array of Groups.
-
-
-            Specifies the list of groups to delete on the Cohesity Cluster.
-
-            Only groups from the same domain can be deleted by a single request.'
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-go-name: Names
       x-go-package: cohesity/iris/server/data/public
     Group:
       description: Specifies details about the group.
@@ -388,65 +450,3 @@ components:
             type: string
           x-go-name: Users
       x-go-package: cohesity/iris/server/data/public
-    SmbPrincipal:
-      type: object
-      title: Specifies struct with SMB principal details.
-      properties:
-        domain:
-          description: Specifies domain name of the principal.
-          type:
-          - string
-          - 'null'
-          x-go-name: Domain
-        name:
-          description: Specifies name of the SMB principal which may be a group or user.
-          type:
-          - string
-          - 'null'
-          x-go-name: Name
-        sid:
-          description: 'Specifies unique Security ID (SID) of the principal that look similar to
-
-            windows domain SID.'
-          type:
-          - string
-          - 'null'
-          x-go-name: Sid
-        type:
-          description: Specifies the type. This can be a user or a group.
-          type:
-          - string
-          - 'null'
-          x-go-name: Type
-      x-go-package: cohesity/iris/server/data/public
-  responses:
-    NoContentResponse:
-      description: No Content
-    GetGroupsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            description: Specifies the groups that match the specified filter criteria.
-            type: array
-            title: Array of Groups.
-            items:
-              $ref: '#/components/schemas/Group'
-    UpdateGroupResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Group'
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
-    CreateGroupResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Group'

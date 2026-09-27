@@ -44,18 +44,6 @@ components:
       - kNoError
       - kValidationError
       - kInternalError
-    SCError:
-      description: Specifies the error object with error code and a message.
-      type: object
-      properties:
-        errorCode:
-          description: Specifies the error code.
-          $ref: '#/components/schemas/SCErrorCode'
-        errorMessage:
-          description: Specifies the error message.
-          type:
-          - string
-          - 'null'
     SCInitiateHealthCheckParams:
       description: Specifies the parameters required to initiate a health check.
       type: object
@@ -75,6 +63,18 @@ components:
           - object
           - 'null'
           $ref: '#/components/schemas/SCDRPlanHealthCheckParams'
+    SCError:
+      description: Specifies the error object with error code and a message.
+      type: object
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          $ref: '#/components/schemas/SCErrorCode'
+        errorMessage:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
     SCDRPlanHealthCheckParams:
       description: Specifies the parameters associated with DR plan health check.
       type: object
@@ -88,14 +88,14 @@ components:
           - 'null'
           format: int64
   responses:
-    NoContentResponse:
-      description: No Content
     SCErrorResponse:
       description: Specifies the common error definition.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/SCError'
+    NoContentResponse:
+      description: No Content
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

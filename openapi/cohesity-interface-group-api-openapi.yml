@@ -75,7 +75,57 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 components:
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    GetInterfaceGroupsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            title: Specifies a list of the interface groups.
+            items:
+              $ref: '#/components/schemas/InterfaceGroup'
+    UpdateInterfaceGroupResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InterfaceGroup'
+    CreateInterfaceGroupResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InterfaceGroup'
+    NoContentResponse:
+      description: No Content
   schemas:
+    BondingOpts:
+      description: Bonding Opts
+      type: object
+      properties:
+        lacpRate:
+          type:
+          - string
+          - 'null'
+          x-go-name: LacpRate
+        mode:
+          type:
+          - string
+          - 'null'
+          x-go-name: Mode
+        xmitHashPolicy:
+          type:
+          - string
+          - 'null'
+          x-go-name: XmitHashPolicy
+      x-go-package: cohesity/iris/server/data/public
     RequestError:
       description: Details about the Error.
       type: object
@@ -112,26 +162,6 @@ components:
           - string
           - 'null'
           x-go-name: ProductModelName
-      x-go-package: cohesity/iris/server/data/public
-    BondingOpts:
-      description: Bonding Opts
-      type: object
-      properties:
-        lacpRate:
-          type:
-          - string
-          - 'null'
-          x-go-name: LacpRate
-        mode:
-          type:
-          - string
-          - 'null'
-          x-go-name: Mode
-        xmitHashPolicy:
-          type:
-          - string
-          - 'null'
-          x-go-name: XmitHashPolicy
       x-go-package: cohesity/iris/server/data/public
     InterfaceGroup:
       description: Specifies the settings of an interface group.
@@ -177,33 +207,3 @@ components:
           format: int32
           x-go-name: Mtu
       x-go-package: cohesity/iris/server/data/public
-  responses:
-    NoContentResponse:
-      description: No Content
-    UpdateInterfaceGroupResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InterfaceGroup'
-    GetInterfaceGroupsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            title: Specifies a list of the interface groups.
-            items:
-              $ref: '#/components/schemas/InterfaceGroup'
-    CreateInterfaceGroupResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InterfaceGroup'
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'

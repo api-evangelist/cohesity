@@ -54,6 +54,19 @@ paths:
         description: Request to generate access token.
         required: true
 components:
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    GenerateAccessTokenResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AccessToken'
   schemas:
     RequestError:
       description: Details about the Error.
@@ -73,6 +86,34 @@ components:
           - string
           - 'null'
           x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    AccessToken:
+      description: 'Specifies an Access Token that provides permissions for a client to access
+
+        the Cohesity REST API available from a Cohesity Cluster.'
+      type: object
+      title: Access Token.
+      properties:
+        accessToken:
+          description: Generated access token.
+          type:
+          - string
+          - 'null'
+          x-go-name: AccessToken
+        privileges:
+          description: Privileges for the user.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Privileges
+        tokenType:
+          description: Access token type.
+          type:
+          - string
+          - 'null'
+          x-go-name: TokenType
       x-go-package: cohesity/iris/server/data/public
     AccessTokenCredential:
       description: Specifies the Cohesity credentials required for generating an access token.
@@ -107,44 +148,3 @@ components:
           - 'null'
           x-go-name: Username
       x-go-package: cohesity/iris/server/data/public
-    AccessToken:
-      description: 'Specifies an Access Token that provides permissions for a client to access
-
-        the Cohesity REST API available from a Cohesity Cluster.'
-      type: object
-      title: Access Token.
-      properties:
-        accessToken:
-          description: Generated access token.
-          type:
-          - string
-          - 'null'
-          x-go-name: AccessToken
-        privileges:
-          description: Privileges for the user.
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-go-name: Privileges
-        tokenType:
-          description: Access token type.
-          type:
-          - string
-          - 'null'
-          x-go-name: TokenType
-      x-go-package: cohesity/iris/server/data/public
-  responses:
-    GenerateAccessTokenResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AccessToken'
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
