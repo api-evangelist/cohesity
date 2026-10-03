@@ -173,58 +173,121 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 components:
-  responses:
-    UpdateRemoteClusterResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RemoteCluster'
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
-    CreateRemoteClusterResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RemoteCluster'
-    GetRemoteClusterByIdResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            description: 'A single remote Cluster instance with the specified Cluster id is returned
-
-              in this Array.'
-            type: array
-            title: Single Remote Cluster in Array.
-            items:
-              $ref: '#/components/schemas/RemoteCluster'
-    GetRemoteClustersResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            description: 'Specifies the remote Clusters that are registered on this Cluster
-
-              for replication that match the specified filter criteria.'
-            type: array
-            title: Array of Remote Clusters.
-            items:
-              $ref: '#/components/schemas/RemoteCluster'
-    GetReplicationEncryptionKeyResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReplicationEncryptionKeyReponse'
-    NoContentResponse:
-      description: No Content
   schemas:
+    BandwidthLimit:
+      description: 'Specifies settings for limiting the data transfer rate between
+
+        the local and remote Clusters or bandwidth limiting schedule for apollo.
+
+        Only one of RateLimitBytesPerSec or IoRate should be set in this struct and
+
+        corresponding BandwidthLimitOverrides should also be in the same unit.'
+      type: object
+      title: Bandwidth Limit.
+      properties:
+        bandwidthLimitOverrides:
+          description: 'Array of Override Bandwidth Limits.
+
+
+            Specifies a list of override bandwidth limits and time periods
+
+            when those limits override the rateLimitBytesPerSec limit.
+
+            If overlapping time periods are specified, the last one in the
+
+            array takes precedence.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BandwidthLimitOverride'
+          x-go-name: BandwidthLimitOverrides
+        ioRate:
+          description: 'Specifies the default IO Rate of the throttling schedule. This value is
+
+            internally mapped to some notion of how many resources a process should be
+
+            consuming.'
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: IoRate
+        rateLimitBytesPerSec:
+          description: 'Specifies the maximum allowed data transfer rate between the local Cluster
+
+            and remote Clusters. The value is specified in bytes per second.
+
+            If not set, the data transfer rate is not limited.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: RateLimitBytesPerSec
+        timezone:
+          description: 'Specifies a time zone for the specified time period.
+
+            The time zone is defined in the following format: "Area/Location",
+
+            for example: "America/New_York".'
+          type:
+          - string
+          - 'null'
+          x-go-name: Timezone
+      x-go-package: cohesity/iris/server/data/public
+    BandwidthLimitOverride:
+      description: 'Specifies bandwidth limit override value to be enforced during
+
+        the specified daily time period for the specified days of the week.'
+      type: object
+      title: Bandwidth Limit Override
+      properties:
+        bytesPerSecond:
+          description: 'Specifies the value to override the regular maximum bandwidth rate
+
+            (rateLimitBytesPerSec) for the specified time period.
+
+            The value is specified in bytes per second.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: BytesPerSecond
+        ioRate:
+          description: 'Specifies the value to override the default IO rate for the specified
+
+            time period.'
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: IoRate
+        timePeriods:
+          description: 'Specifies a daily time period and days of the week when the
+
+            regular maximum bandwidth rate should be overridden.'
+          $ref: '#/components/schemas/TimeOfAWeek'
+      x-go-package: cohesity/iris/server/data/public
+    TimeOfDay:
+      description: Specifies a time in day with hours and minutes.
+      type: object
+      title: Time of Day.
+      properties:
+        hour:
+          description: Specifies an (0-23) hour in a day.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Hour
+        minute:
+          description: Specifies a (0-59) minute in an hour.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Minute
+      x-go-package: cohesity/iris/server/data/public
     RemoteCluster:
       description: 'Specifies information about a remote Cluster that has been registered
 
@@ -421,99 +484,63 @@ components:
             $ref: '#/components/schemas/ViewBoxPairInfo'
           x-go-name: ViewBoxPairInfoList
       x-go-package: cohesity/iris/server/data/public
-    BandwidthLimitOverride:
-      description: 'Specifies bandwidth limit override value to be enforced during
+    ViewBoxPairInfo:
+      description: 'Specifies a pairing between a Storage Domain (View Box) on local Cluster
 
-        the specified daily time period for the specified days of the week.'
+        with a Storage Domain (View Box) on a remote Cluster.
+
+        When replication is configured between a local Cluster and a
+
+        remote Cluster, the Snapshots are replicated from the specified
+
+        Storage Domain (View Box) on the local Cluster to the Storage Domain
+
+        (View Box) on the remote Cluster. See the online help for details about the
+
+        supported Storage Domains (View Box) pairings between Clusters.'
       type: object
-      title: Bandwidth Limit Override
+      title: Storage Domain (View Box) Pairing.
       properties:
-        bytesPerSecond:
-          description: 'Specifies the value to override the regular maximum bandwidth rate
-
-            (rateLimitBytesPerSec) for the specified time period.
-
-            The value is specified in bytes per second.'
+        localViewBoxId:
+          description: Specifies the id of the Storage Domain (View Box) on the local Cluster.
           type:
           - integer
           - 'null'
           format: int64
-          x-go-name: BytesPerSecond
-        ioRate:
-          description: 'Specifies the value to override the default IO rate for the specified
-
-            time period.'
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: IoRate
-        timePeriods:
-          description: 'Specifies a daily time period and days of the week when the
-
-            regular maximum bandwidth rate should be overridden.'
-          $ref: '#/components/schemas/TimeOfAWeek'
-      x-go-package: cohesity/iris/server/data/public
-    BandwidthLimit:
-      description: 'Specifies settings for limiting the data transfer rate between
-
-        the local and remote Clusters or bandwidth limiting schedule for apollo.
-
-        Only one of RateLimitBytesPerSec or IoRate should be set in this struct and
-
-        corresponding BandwidthLimitOverrides should also be in the same unit.'
-      type: object
-      title: Bandwidth Limit.
-      properties:
-        bandwidthLimitOverrides:
-          description: 'Array of Override Bandwidth Limits.
-
-
-            Specifies a list of override bandwidth limits and time periods
-
-            when those limits override the rateLimitBytesPerSec limit.
-
-            If overlapping time periods are specified, the last one in the
-
-            array takes precedence.'
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/BandwidthLimitOverride'
-          x-go-name: BandwidthLimitOverrides
-        ioRate:
-          description: 'Specifies the default IO Rate of the throttling schedule. This value is
-
-            internally mapped to some notion of how many resources a process should be
-
-            consuming.'
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: IoRate
-        rateLimitBytesPerSec:
-          description: 'Specifies the maximum allowed data transfer rate between the local Cluster
-
-            and remote Clusters. The value is specified in bytes per second.
-
-            If not set, the data transfer rate is not limited.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: RateLimitBytesPerSec
-        timezone:
-          description: 'Specifies a time zone for the specified time period.
-
-            The time zone is defined in the following format: "Area/Location",
-
-            for example: "America/New_York".'
+          x-go-name: LocalViewBoxId
+        localViewBoxName:
+          description: Specifies the name of the Storage Domain (View Box) on the local Cluster.
           type:
           - string
           - 'null'
-          x-go-name: Timezone
+          x-go-name: LocalViewBoxName
+        remoteViewBoxId:
+          description: Specifies the id of the Storage Domain (View Box) on the remote Cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: RemoteViewBoxId
+        remoteViewBoxName:
+          description: Specifies the name of the Storage Domain (View Box) on the remote Cluster.
+          type:
+          - string
+          - 'null'
+          x-go-name: RemoteViewBoxName
+      x-go-package: cohesity/iris/server/data/public
+    ReplicationEncryptionKeyReponse:
+      description: 'Specifies the encryption key that is used for encrypting replication data
+
+        from this Cluster to a remote Cluster.'
+      type: object
+      title: Replication Encryption Key.
+      properties:
+        encryptionKey:
+          description: Specifies a replication encryption key.
+          type:
+          - string
+          - 'null'
+          x-go-name: EncryptionKey
       x-go-package: cohesity/iris/server/data/public
     RegisterRemoteCluster:
       description: 'Specifies the settings required for registering a remote Cluster
@@ -718,6 +745,25 @@ components:
             $ref: '#/components/schemas/ViewBoxPairInfo'
           x-go-name: ViewBoxPairInfoList
       x-go-package: cohesity/iris/server/data/public
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
     AccessTokenCredential:
       description: Specifies the Cohesity credentials required for generating an access token.
       type: object
@@ -750,59 +796,6 @@ components:
           - string
           - 'null'
           x-go-name: Username
-      x-go-package: cohesity/iris/server/data/public
-    RequestError:
-      description: Details about the Error.
-      type: object
-      title: Error
-      properties:
-        errorCode:
-          description: Operation response error code.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ErrorCode
-        message:
-          description: Description of the error.
-          type:
-          - string
-          - 'null'
-          x-go-name: Message
-      x-go-package: cohesity/iris/server/data/public
-    TimeOfDay:
-      description: Specifies a time in day with hours and minutes.
-      type: object
-      title: Time of Day.
-      properties:
-        hour:
-          description: Specifies an (0-23) hour in a day.
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: Hour
-        minute:
-          description: Specifies a (0-59) minute in an hour.
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: Minute
-      x-go-package: cohesity/iris/server/data/public
-    ReplicationEncryptionKeyReponse:
-      description: 'Specifies the encryption key that is used for encrypting replication data
-
-        from this Cluster to a remote Cluster.'
-      type: object
-      title: Replication Encryption Key.
-      properties:
-        encryptionKey:
-          description: Specifies a replication encryption key.
-          type:
-          - string
-          - 'null'
-          x-go-name: EncryptionKey
       x-go-package: cohesity/iris/server/data/public
     TimeOfAWeek:
       description: 'Specifies a time period by specifying a single daily time period
@@ -862,47 +855,54 @@ components:
           allOf:
           - $ref: '#/components/schemas/TimeOfDay'
       x-go-package: cohesity/iris/server/data/public
-    ViewBoxPairInfo:
-      description: 'Specifies a pairing between a Storage Domain (View Box) on local Cluster
+  responses:
+    GetRemoteClustersResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            description: 'Specifies the remote Clusters that are registered on this Cluster
 
-        with a Storage Domain (View Box) on a remote Cluster.
+              for replication that match the specified filter criteria.'
+            type: array
+            title: Array of Remote Clusters.
+            items:
+              $ref: '#/components/schemas/RemoteCluster'
+    UpdateRemoteClusterResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RemoteCluster'
+    CreateRemoteClusterResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RemoteCluster'
+    GetRemoteClusterByIdResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            description: 'A single remote Cluster instance with the specified Cluster id is returned
 
-        When replication is configured between a local Cluster and a
-
-        remote Cluster, the Snapshots are replicated from the specified
-
-        Storage Domain (View Box) on the local Cluster to the Storage Domain
-
-        (View Box) on the remote Cluster. See the online help for details about the
-
-        supported Storage Domains (View Box) pairings between Clusters.'
-      type: object
-      title: Storage Domain (View Box) Pairing.
-      properties:
-        localViewBoxId:
-          description: Specifies the id of the Storage Domain (View Box) on the local Cluster.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: LocalViewBoxId
-        localViewBoxName:
-          description: Specifies the name of the Storage Domain (View Box) on the local Cluster.
-          type:
-          - string
-          - 'null'
-          x-go-name: LocalViewBoxName
-        remoteViewBoxId:
-          description: Specifies the id of the Storage Domain (View Box) on the remote Cluster.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: RemoteViewBoxId
-        remoteViewBoxName:
-          description: Specifies the name of the Storage Domain (View Box) on the remote Cluster.
-          type:
-          - string
-          - 'null'
-          x-go-name: RemoteViewBoxName
-      x-go-package: cohesity/iris/server/data/public
+              in this Array.'
+            type: array
+            title: Single Remote Cluster in Array.
+            items:
+              $ref: '#/components/schemas/RemoteCluster'
+    NoContentResponse:
+      description: No Content
+    GetReplicationEncryptionKeyResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReplicationEncryptionKeyReponse'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'

@@ -91,27 +91,6 @@ paths:
         description: Specifies the parameters to unregister a Swift service from Keystone server.
         required: true
 components:
-  responses:
-    ErrorResponse:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    UpdateSwiftResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SwiftParams'
-    GetSwiftResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SwiftParams'
-    NoContentResponse:
-      description: No Content
   schemas:
     KeystoneScopeParams:
       description: Specifies scope paramteres of a Keystone.
@@ -142,6 +121,18 @@ components:
           - $ref: '#/components/schemas/DomainScopeParams'
           - {}
           x-order: 2
+    DomainScopeParams:
+      description: Specifies the parameters for domain type scope
+      type: object
+      required:
+      - domainName
+      properties:
+        domainName:
+          description: Specifies the domain name.
+          type:
+          - string
+          - 'null'
+          x-order: 0
     SwiftParams:
       description: Specifies the parameters to update a Swift configuration.
       type: object
@@ -188,6 +179,23 @@ components:
           - 'null'
           x-order: 1
           $ref: '#/components/schemas/KeystoneCredentials'
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
     RegisterSwiftParams:
       description: Specifies the parameters to register a Swift service on Keystone server.
       type: object
@@ -207,35 +215,6 @@ components:
           - 'null'
           x-order: 1
           $ref: '#/components/schemas/KeystoneCredentials'
-    DomainScopeParams:
-      description: Specifies the parameters for domain type scope
-      type: object
-      required:
-      - domainName
-      properties:
-        domainName:
-          description: Specifies the domain name.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-    Error:
-      description: Specifies the error object with error code and a message.
-      type: object
-      title: Error.
-      properties:
-        errorCode:
-          description: Specifies the error code.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        message:
-          description: Specifies the error message.
-          type:
-          - string
-          - 'null'
-          x-order: 1
     ProjectScopeParams:
       description: Specifies the parameters for project type scope.
       type: object
@@ -301,6 +280,27 @@ components:
           - $ref: '#/components/schemas/KeystoneScopeParams'
           - {}
           x-order: 1
+  responses:
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    GetSwiftResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SwiftParams'
+    NoContentResponse:
+      description: No Content
+    UpdateSwiftResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SwiftParams'
   securitySchemes:
     APIKeyHeader:
       in: header

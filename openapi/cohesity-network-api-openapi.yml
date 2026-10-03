@@ -129,36 +129,6 @@ paths:
           $ref: '#/components/responses/Error'
 components:
   schemas:
-    CreateBondResult:
-      description: Specifies the result of a request to create a new bond.
-      type: object
-      title: Create Bond Result.
-      properties:
-        message:
-          description: Specifies a message describing the result of the operation.
-          type:
-          - string
-          - 'null'
-          x-go-name: Message
-      x-go-package: cohesity/iris/server/data/public
-    EditHostsParameters:
-      description: Specifies the parameters needed for an edit hosts request.
-      type: object
-      title: Edit Hosts Parameters.
-      properties:
-        hosts:
-          description: 'Specifies the list of host entries to be edited. Each IP address listed
-
-            in the list of host entries will have its corresponding domain names in
-
-            the /etc/hosts file replaced with the domain names specified here.'
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/HostEntry'
-          x-go-name: Hosts
-      x-go-package: cohesity/iris/server/data/public
     HostEntry:
       description: 'Specifies the parameters of a host entry that can be stored in the
 
@@ -190,34 +160,29 @@ components:
           - 'null'
           x-go-name: Ip
       x-go-package: cohesity/iris/server/data/public
-    RequestError:
-      description: Details about the Error.
+    CreateBondResult:
+      description: Specifies the result of a request to create a new bond.
       type: object
-      title: Error
+      title: Create Bond Result.
       properties:
-        errorCode:
-          description: Operation response error code.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ErrorCode
         message:
-          description: Description of the error.
+          description: Specifies a message describing the result of the operation.
           type:
           - string
           - 'null'
           x-go-name: Message
       x-go-package: cohesity/iris/server/data/public
-    AppendHostsParameters:
-      description: Specifies the parameters needed for an append hosts request.
+    EditHostsParameters:
+      description: Specifies the parameters needed for an edit hosts request.
       type: object
-      title: Append Hosts Parameters.
+      title: Edit Hosts Parameters.
       properties:
         hosts:
-          description: 'Specifies the list of host entries to be added to the Cluster''s
+          description: 'Specifies the list of host entries to be edited. Each IP address listed
 
-            etc/hosts file.'
+            in the list of host entries will have its corresponding domain names in
+
+            the /etc/hosts file replaced with the domain names specified here.'
           type:
           - array
           - 'null'
@@ -277,33 +242,42 @@ components:
             type: string
           x-go-name: Slaves
       x-go-package: cohesity/iris/server/data/public
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    AppendHostsParameters:
+      description: Specifies the parameters needed for an append hosts request.
+      type: object
+      title: Append Hosts Parameters.
+      properties:
+        hosts:
+          description: 'Specifies the list of host entries to be added to the Cluster''s
+
+            etc/hosts file.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/HostEntry'
+          x-go-name: Hosts
+      x-go-package: cohesity/iris/server/data/public
   responses:
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
-    CreateBondResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CreateBondResult'
-    AppendHostsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/HostResult'
-    EditHostsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/HostResult'
-    NoContentResponse:
-      description: No Content
     ListHostsResponse:
       description: Success
       content:
@@ -312,9 +286,35 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/HostEntry'
+    AppendHostsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HostResult'
     DeleteHostsResponse:
       description: Success
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/HostResult'
+    NoContentResponse:
+      description: No Content
+    CreateBondResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateBondResult'
+    EditHostsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HostResult'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'

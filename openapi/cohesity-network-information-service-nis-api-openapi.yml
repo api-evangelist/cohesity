@@ -237,44 +237,44 @@ paths:
       - APIKeyHeader: []
 components:
   responses:
-    GetNisNetgroupByNameResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NisNetgroup'
-    NoContentResponse:
-      description: No Content
-    ErrorResponse:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NisProviderResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NisProvider'
-    GetNisProviderByDomainNameResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NisProvider'
-    GetNisNetgroupsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NisNetgroups'
     NisNetgroupResponse:
       description: Success
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/NisNetgroup'
+    GetNisNetgroupByNameResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NisNetgroup'
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    GetNisNetgroupsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NisNetgroups'
+    GetNisProviderByDomainNameResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NisProvider'
+    NoContentResponse:
+      description: No Content
+    NisProviderResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NisProvider'
     GetNisProvidersResponse:
       description: Success
       content:
@@ -282,17 +282,17 @@ components:
           schema:
             $ref: '#/components/schemas/NisProviders'
   schemas:
-    NisProviders:
-      description: Response of NIS Providers.
+    NisNetgroups:
+      description: Response of NIS Netgroups.
       type: object
       properties:
-        nisProviders:
-          description: A list of NIS Providers.
+        nisNetgroups:
+          description: A list of NIS Netgroups.
           type:
           - array
           - 'null'
           items:
-            $ref: '#/components/schemas/NisProvider'
+            $ref: '#/components/schemas/NisNetgroup'
           x-order: 0
     NisNetgroup:
       description: Specifies an NIS netgroup.
@@ -362,17 +362,17 @@ components:
           - string
           - 'null'
           x-order: 1
-    NisNetgroups:
-      description: Response of NIS Netgroups.
+    NisProviders:
+      description: Response of NIS Providers.
       type: object
       properties:
-        nisNetgroups:
-          description: A list of NIS Netgroups.
+        nisProviders:
+          description: A list of NIS Providers.
           type:
           - array
           - 'null'
           items:
-            $ref: '#/components/schemas/NisNetgroup'
+            $ref: '#/components/schemas/NisProvider'
           x-order: 0
     NisProvider:
       description: Specifies an NIS Provider.

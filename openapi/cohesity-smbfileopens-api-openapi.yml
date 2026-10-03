@@ -87,40 +87,82 @@ paths:
         description: Request to close an active SMB file open.
         required: true
 components:
-  responses:
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
-    GetSmbFileOpensResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SmbActiveFileOpensResponse'
-    NoContentResponse:
-      description: No Content
   schemas:
-    RequestError:
-      description: Details about the Error.
+    SmbActiveSession:
+      description: Specifies an active session and its opens.
       type: object
-      title: Error
+      title: SMB Active Session.
       properties:
-        errorCode:
-          description: Operation response error code.
+        activeOpens:
+          description: Specifies the list of active opens of the file in this session.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SmbActiveOpen'
+          x-go-name: ActiveOpens
+        clientIp:
+          description: Specifies the IP address from which the file is still open.
+          type:
+          - string
+          - 'null'
+          x-go-name: ClientIp
+        domain:
+          description: Specifies the domain of the user.
+          type:
+          - string
+          - 'null'
+          x-go-name: Domain
+        serverIp:
+          description: Specifies the IP address of the server where the file exists.
+          type:
+          - string
+          - 'null'
+          x-go-name: ServerIp
+        sessionId:
+          description: Specifies the id of the session.
           type:
           - integer
           - 'null'
           format: int64
-          x-go-name: ErrorCode
-        message:
-          description: Description of the error.
+          x-go-name: SessionId
+        username:
+          description: Specifies the username who keeps the file open.
           type:
           - string
           - 'null'
-          x-go-name: Message
+          x-go-name: Username
+      x-go-package: cohesity/iris/server/data/public
+    CloseSmbFileOpenParameters:
+      description: Specifies parameters required to force close an active SMB file open.
+      type: object
+      title: Close SMB File Open Parameters.
+      properties:
+        filePath:
+          description: 'Specifies the filepath in the view relative to the root filesystem.
+
+            If this field is specified, viewName field must also be specified.'
+          type:
+          - string
+          - 'null'
+          x-go-name: FilePath
+        openId:
+          description: Specifies the id of the active open.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: OpenId
+        viewName:
+          description: 'Specifies the name of the View in which to search. If a view name is not
+
+            specified, all the views in the Cluster is searched.
+
+            This field is mandatory if filePath field is specified.'
+          type:
+          - string
+          - 'null'
+          x-go-name: ViewName
       x-go-package: cohesity/iris/server/data/public
     SmbActiveOpen:
       description: Specifies an active open of an SMB file, its access and sharing information.
@@ -329,79 +371,37 @@ components:
           - 'null'
           x-go-name: ViewName
       x-go-package: cohesity/iris/server/data/public
-    CloseSmbFileOpenParameters:
-      description: Specifies parameters required to force close an active SMB file open.
+    RequestError:
+      description: Details about the Error.
       type: object
-      title: Close SMB File Open Parameters.
+      title: Error
       properties:
-        filePath:
-          description: 'Specifies the filepath in the view relative to the root filesystem.
-
-            If this field is specified, viewName field must also be specified.'
-          type:
-          - string
-          - 'null'
-          x-go-name: FilePath
-        openId:
-          description: Specifies the id of the active open.
+        errorCode:
+          description: Operation response error code.
           type:
           - integer
           - 'null'
           format: int64
-          x-go-name: OpenId
-        viewName:
-          description: 'Specifies the name of the View in which to search. If a view name is not
-
-            specified, all the views in the Cluster is searched.
-
-            This field is mandatory if filePath field is specified.'
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
           type:
           - string
           - 'null'
-          x-go-name: ViewName
+          x-go-name: Message
       x-go-package: cohesity/iris/server/data/public
-    SmbActiveSession:
-      description: Specifies an active session and its opens.
-      type: object
-      title: SMB Active Session.
-      properties:
-        activeOpens:
-          description: Specifies the list of active opens of the file in this session.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/SmbActiveOpen'
-          x-go-name: ActiveOpens
-        clientIp:
-          description: Specifies the IP address from which the file is still open.
-          type:
-          - string
-          - 'null'
-          x-go-name: ClientIp
-        domain:
-          description: Specifies the domain of the user.
-          type:
-          - string
-          - 'null'
-          x-go-name: Domain
-        serverIp:
-          description: Specifies the IP address of the server where the file exists.
-          type:
-          - string
-          - 'null'
-          x-go-name: ServerIp
-        sessionId:
-          description: Specifies the id of the session.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: SessionId
-        username:
-          description: Specifies the username who keeps the file open.
-          type:
-          - string
-          - 'null'
-          x-go-name: Username
-      x-go-package: cohesity/iris/server/data/public
+  responses:
+    GetSmbFileOpensResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SmbActiveFileOpensResponse'
+    NoContentResponse:
+      description: No Content
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'

@@ -149,49 +149,56 @@ paths:
         required: true
 components:
   responses:
-    SCCreateSiteResponse:
-      description: Specifies the response of a successful site creation.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SCSite'
     SCGetSiteByIdResponse:
       description: Specifies the response of a successful get site operation.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/SCSite'
-    SCGetSitesResponse:
-      description: Specifies the response of a successful get sites operation.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SCSitesResponse'
     SCErrorResponse:
       description: Specifies the common error definition.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/SCError'
+    SCGetSitesResponse:
+      description: Specifies the response of a successful get sites operation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SCSitesResponse'
     SCUpdateSiteResponse:
       description: Specifies the response of a successful site update.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/SCSite'
-  schemas:
-    SCSitesResponse:
-      description: Specifies the list of sites.
-      type: object
-      properties:
-        sites:
-          description: Specifies the list of sites.
-          type: array
-          items:
+    SCCreateSiteResponse:
+      description: Specifies the response of a successful site creation.
+      content:
+        application/json:
+          schema:
             $ref: '#/components/schemas/SCSite'
-        paginationInfo:
-          description: Specifies the information needed in order to support pagination. This will not be included for the last page of results.
-          $ref: '#/components/schemas/SCPaginationInfo'
+  schemas:
+    SCOnPremSite:
+      description: Specifies the details of an on prem site.
+      type: object
+      required:
+      - clusterId
+      - incarnationId
+      properties:
+        clusterId:
+          description: Specifies the ID of the on prem cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        incarnationId:
+          description: Specifies the incarnation ID of the on prem cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
     SCErrorCode:
       description: Specifies all the error codes that are returned by API server
       type: string
@@ -199,6 +206,18 @@ components:
       - kNoError
       - kValidationError
       - kInternalError
+    SCError:
+      description: Specifies the error object with error code and a message.
+      type: object
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          $ref: '#/components/schemas/SCErrorCode'
+        errorMessage:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
     SCSite:
       description: Specifies the site details.
       type: object
@@ -221,25 +240,27 @@ components:
             - Healthy
             - Unhealthy
       - $ref: '#/components/schemas/SCCommonSite'
-    SCOnPremSite:
-      description: Specifies the details of an on prem site.
+    SCSitesResponse:
+      description: Specifies the list of sites.
       type: object
-      required:
-      - clusterId
-      - incarnationId
       properties:
-        clusterId:
-          description: Specifies the ID of the on prem cluster.
+        sites:
+          description: Specifies the list of sites.
+          type: array
+          items:
+            $ref: '#/components/schemas/SCSite'
+        paginationInfo:
+          description: Specifies the information needed in order to support pagination. This will not be included for the last page of results.
+          $ref: '#/components/schemas/SCPaginationInfo'
+    SCPaginationInfo:
+      description: Specifies information needed to support pagination.
+      type: object
+      properties:
+        cookie:
+          description: Specifies a cookie which can be passed in by the user in order to retrieve the next page of results.
           type:
-          - integer
+          - string
           - 'null'
-          format: int64
-        incarnationId:
-          description: Specifies the incarnation ID of the on prem cluster.
-          type:
-          - integer
-          - 'null'
-          format: int64
     SCCommonSite:
       description: Specifies the common site parameters.
       type: object
@@ -303,27 +324,6 @@ components:
           format: float64
         state:
           description: Specifies name of the region or state to which the site belongs to.
-          type:
-          - string
-          - 'null'
-    SCError:
-      description: Specifies the error object with error code and a message.
-      type: object
-      properties:
-        errorCode:
-          description: Specifies the error code.
-          $ref: '#/components/schemas/SCErrorCode'
-        errorMessage:
-          description: Specifies the error message.
-          type:
-          - string
-          - 'null'
-    SCPaginationInfo:
-      description: Specifies information needed to support pagination.
-      type: object
-      properties:
-        cookie:
-          description: Specifies a cookie which can be passed in by the user in order to retrieve the next page of results.
           type:
           - string
           - 'null'

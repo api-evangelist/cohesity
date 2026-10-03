@@ -65,12 +65,6 @@ paths:
               $ref: '#/components/schemas/Interface'
 components:
   responses:
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
     ListInterfaceResponse:
       description: Success
       content:
@@ -85,6 +79,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Interface'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
   schemas:
     BondingOpts:
       description: Bonding Opts
@@ -106,24 +106,21 @@ components:
           - 'null'
           x-go-name: XmitHashPolicy
       x-go-package: cohesity/iris/server/data/public
-    RequestError:
-      description: Details about the Error.
+    Interface:
       type: object
-      title: Error
       properties:
-        errorCode:
-          description: Operation response error code.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ErrorCode
         message:
-          description: Description of the error.
           type:
           - string
           - 'null'
           x-go-name: Message
+        name:
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        networkParams:
+          $ref: '#/components/schemas/NetworkParams'
       x-go-package: cohesity/iris/server/data/public
     NodeNetworkInterfaces:
       description: Specifies the network interfaces present on a specific Node in a Cluster.
@@ -167,21 +164,36 @@ components:
           format: int64
           x-go-name: Slot
       x-go-package: cohesity/iris/server/data/public
-    Interface:
+    NetworkParams:
       type: object
       properties:
+        bondingOpts:
+          $ref: '#/components/schemas/BondingOpts'
+        mtu:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Mtu
+      x-go-package: cohesity/iris/server/data/public
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
         message:
+          description: Description of the error.
           type:
           - string
           - 'null'
           x-go-name: Message
-        name:
-          type:
-          - string
-          - 'null'
-          x-go-name: Name
-        networkParams:
-          $ref: '#/components/schemas/NetworkParams'
       x-go-package: cohesity/iris/server/data/public
     NetworkInterface:
       description: Specifies the properties of a network interface.
@@ -332,16 +344,4 @@ components:
           - string
           - 'null'
           x-go-name: VirtualIp
-      x-go-package: cohesity/iris/server/data/public
-    NetworkParams:
-      type: object
-      properties:
-        bondingOpts:
-          $ref: '#/components/schemas/BondingOpts'
-        mtu:
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: Mtu
       x-go-package: cohesity/iris/server/data/public

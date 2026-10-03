@@ -139,40 +139,26 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 components:
-  responses:
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
-    NoContentResponse:
-      description: No Content
-    GetVlansResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            description: Specifies a list of VLANs for this Cohesity Cluster.
-            type: array
-            title: Array of VLANs.
-            items:
-              $ref: '#/components/schemas/Vlan'
-    GetVlanByIdResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Vlan'
-    VlanResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Vlan'
-    NotFoundResponse:
-      description: Not Found
   schemas:
+    IpRange:
+      description: IP Range for range of vip address addition
+      type: object
+      properties:
+        endIp:
+          description: 'Optional End IP of the range
+
+            If not specified, EndIp is same as StartIp'
+          type:
+          - string
+          - 'null'
+          x-go-name: EndIp
+        startIp:
+          description: Start IP of the range
+          type:
+          - string
+          - 'null'
+          x-go-name: StartIp
+      x-go-package: cohesity/iris/server/data/public
     Subnet:
       description: 'Defines a Subnet (Subnetwork).
 
@@ -466,22 +452,36 @@ components:
           - 'null'
           x-go-name: Message
       x-go-package: cohesity/iris/server/data/public
-    IpRange:
-      description: IP Range for range of vip address addition
-      type: object
-      properties:
-        endIp:
-          description: 'Optional End IP of the range
-
-            If not specified, EndIp is same as StartIp'
-          type:
-          - string
-          - 'null'
-          x-go-name: EndIp
-        startIp:
-          description: Start IP of the range
-          type:
-          - string
-          - 'null'
-          x-go-name: StartIp
-      x-go-package: cohesity/iris/server/data/public
+  responses:
+    GetVlansResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            description: Specifies a list of VLANs for this Cohesity Cluster.
+            type: array
+            title: Array of VLANs.
+            items:
+              $ref: '#/components/schemas/Vlan'
+    VlanResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Vlan'
+    GetVlanByIdResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Vlan'
+    NotFoundResponse:
+      description: Not Found
+    NoContentResponse:
+      description: No Content
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'

@@ -40,6 +40,23 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 components:
+  responses:
+    GetPrivilegesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            description: Specifies a list of privileges.
+            type: array
+            title: Array of Privileges.
+            items:
+              $ref: '#/components/schemas/PrivilegeInfo'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
   schemas:
     RequestError:
       description: Details about the Error.
@@ -202,20 +219,3 @@ components:
           - 'null'
           x-go-name: Name
       x-go-package: cohesity/iris/server/data/public
-  responses:
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
-    GetPrivilegesResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            description: Specifies a list of privileges.
-            type: array
-            title: Array of Privileges.
-            items:
-              $ref: '#/components/schemas/PrivilegeInfo'

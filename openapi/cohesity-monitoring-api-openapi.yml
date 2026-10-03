@@ -271,36 +271,87 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 components:
-  responses:
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
-    GetObjectsDetailsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/GetObjectsDetailsResult'
-    GetJobRunInfoResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GetJobRunInfoResult'
-    GetAllJobRunsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/GetAllJobRunsResult'
   schemas:
+    GetJobRunInfoResult:
+      type: object
+      title: Specifies the common result structure of the response of a job run.
+      properties:
+        bytesTransferred:
+          description: Specifies bytes transferred in the run.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: BytesTransferred
+        endTimeUsecs:
+          description: Specifies the end time of the run.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: EndTimeUsecs
+        failureEntities:
+          description: Specifies the number of failed objects in the run.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: FailureEntities
+        jobId:
+          description: Specifies the job id.
+          type:
+          - string
+          - 'null'
+          x-go-name: JobId
+        jobRunId:
+          description: Specifies the job run id.
+          type:
+          - string
+          - 'null'
+          x-go-name: JobRunId
+        jobType:
+          description: 'Specifies the job type, protection, replication, archival, apollo,
+
+            indexing etc.'
+          type:
+          - string
+          - 'null'
+          x-go-name: JobType
+        slaViolated:
+          description: Specifies if the sla was violated the run.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: SlaViolated
+        startTimeUsecs:
+          description: Specifies the start time of the run.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: StartTimeUsecs
+        status:
+          description: Specifies status of the run
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Status
+        successEntities:
+          description: Specifies the number successful objects in the run.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: SuccessEntities
+        totalEntities:
+          description: Specifies the number of objects in the run.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: TotalEntities
+      x-go-package: cohesity/iris/server/data/public
     RequestError:
       description: Details about the Error.
       type: object
@@ -506,86 +557,6 @@ components:
           format: int64
           x-go-name: ViewBoxId
       x-go-package: cohesity/iris/server/data/public
-    GetJobRunInfoResult:
-      type: object
-      title: Specifies the common result structure of the response of a job run.
-      properties:
-        bytesTransferred:
-          description: Specifies bytes transferred in the run.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: BytesTransferred
-        endTimeUsecs:
-          description: Specifies the end time of the run.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: EndTimeUsecs
-        failureEntities:
-          description: Specifies the number of failed objects in the run.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: FailureEntities
-        jobId:
-          description: Specifies the job id.
-          type:
-          - string
-          - 'null'
-          x-go-name: JobId
-        jobRunId:
-          description: Specifies the job run id.
-          type:
-          - string
-          - 'null'
-          x-go-name: JobRunId
-        jobType:
-          description: 'Specifies the job type, protection, replication, archival, apollo,
-
-            indexing etc.'
-          type:
-          - string
-          - 'null'
-          x-go-name: JobType
-        slaViolated:
-          description: Specifies if the sla was violated the run.
-          type:
-          - boolean
-          - 'null'
-          x-go-name: SlaViolated
-        startTimeUsecs:
-          description: Specifies the start time of the run.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: StartTimeUsecs
-        status:
-          description: Specifies status of the run
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: Status
-        successEntities:
-          description: Specifies the number successful objects in the run.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: SuccessEntities
-        totalEntities:
-          description: Specifies the number of objects in the run.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: TotalEntities
-      x-go-package: cohesity/iris/server/data/public
     GetObjectsDetailsResult:
       type: object
       title: Specifies the common result structure of the objects response of a job run.
@@ -652,3 +623,32 @@ components:
           format: int64
           x-go-name: Status
       x-go-package: cohesity/iris/server/data/public
+  responses:
+    GetJobRunInfoResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetJobRunInfoResult'
+    GetAllJobRunsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/GetAllJobRunsResult'
+    GetObjectsDetailsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/GetObjectsDetailsResult'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'

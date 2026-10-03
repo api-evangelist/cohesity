@@ -73,65 +73,7 @@ paths:
       security:
       - APIKeyHeader: []
 components:
-  responses:
-    ErrorResponse:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    GetSecurityPrincipalsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SecurityPrincipals'
-    UserSessionResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/UserSession'
-    NoContentResponse:
-      description: No Content
   schemas:
-    SecurityPrincipals:
-      description: Specifies a list of security principals.
-      type: object
-      properties:
-        securityPrincipals:
-          description: Specifies a list of security principals.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/SecurityPrincipal'
-          x-order: 0
-    Error:
-      description: Specifies the error object with error code and a message.
-      type: object
-      title: Error.
-      properties:
-        errorCode:
-          description: Specifies the error code.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        message:
-          description: Specifies the error message.
-          type:
-          - string
-          - 'null'
-          x-order: 1
-    UserSession:
-      description: User session response
-      type: object
-      properties:
-        sessionId:
-          description: Specifies the session id
-          type: string
-          x-order: 0
     CreateUserSessionRequestParams:
       description: Specifies user session request parameters
       type: object
@@ -166,6 +108,43 @@ components:
           - string
           - 'null'
           x-order: 4
+    UserSession:
+      description: User session response
+      type: object
+      properties:
+        sessionId:
+          description: Specifies the session id
+          type: string
+          x-order: 0
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    SecurityPrincipals:
+      description: Specifies a list of security principals.
+      type: object
+      properties:
+        securityPrincipals:
+          description: Specifies a list of security principals.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SecurityPrincipal'
+          x-order: 0
     SecurityPrincipal:
       description: Specifies a security principal.
       type: object
@@ -205,6 +184,27 @@ components:
           - string
           - 'null'
           x-order: 4
+  responses:
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    GetSecurityPrincipalsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SecurityPrincipals'
+    NoContentResponse:
+      description: No Content
+    UserSessionResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserSession'
   securitySchemes:
     APIKeyHeader:
       in: header

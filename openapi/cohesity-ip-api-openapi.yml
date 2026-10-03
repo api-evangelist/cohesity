@@ -45,21 +45,67 @@ paths:
               $ref: '#/components/schemas/IpUnconfig'
 components:
   responses:
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
-    NoContentResponse:
-      description: No Content
     IpConfigResponse:
       description: Success
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/IpConfig'
+    NoContentResponse:
+      description: No Content
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
   schemas:
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    IpUnconfig:
+      description: Specifies the unconfiguration of an IP.
+      type: object
+      title: Unconfig Ip Parameters.
+      properties:
+        IpFamily:
+          description: IpFamily of this config.
+          type:
+          - integer
+          - 'null'
+          format: int32
+        interfaceName:
+          description: The interface name.
+          type:
+          - string
+          - 'null'
+          x-go-name: InterfaceName
+        nodeIds:
+          description: Node ids.
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int64
+          x-go-name: NodeIds
+      x-go-package: cohesity/iris/server/data/public
     IpConfig:
       description: Specifies the configuration of an IP.
       type: object
@@ -117,50 +163,4 @@ components:
           - 'null'
           format: int32
           x-go-name: SubnetMaskBits
-      x-go-package: cohesity/iris/server/data/public
-    IpUnconfig:
-      description: Specifies the unconfiguration of an IP.
-      type: object
-      title: Unconfig Ip Parameters.
-      properties:
-        IpFamily:
-          description: IpFamily of this config.
-          type:
-          - integer
-          - 'null'
-          format: int32
-        interfaceName:
-          description: The interface name.
-          type:
-          - string
-          - 'null'
-          x-go-name: InterfaceName
-        nodeIds:
-          description: Node ids.
-          type:
-          - array
-          - 'null'
-          items:
-            type: integer
-            format: int64
-          x-go-name: NodeIds
-      x-go-package: cohesity/iris/server/data/public
-    RequestError:
-      description: Details about the Error.
-      type: object
-      title: Error
-      properties:
-        errorCode:
-          description: Operation response error code.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ErrorCode
-        message:
-          description: Description of the error.
-          type:
-          - string
-          - 'null'
-          x-go-name: Message
       x-go-package: cohesity/iris/server/data/public

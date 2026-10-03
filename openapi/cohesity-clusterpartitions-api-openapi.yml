@@ -78,34 +78,26 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 components:
-  responses:
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
-    ClusterPartitionResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ClusterPartition'
-    GetClusterPartitionsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            description: 'Specifies a list of Cluster Partitions that match the specified
-
-              filter criteria.'
-            type: array
-            title: Array of Cluster Partitions.
-            items:
-              $ref: '#/components/schemas/ClusterPartition'
-    NotFoundResponse:
-      description: Not Found
   schemas:
+    IpRange:
+      description: IP Range for range of vip address addition
+      type: object
+      properties:
+        endIp:
+          description: 'Optional End IP of the range
+
+            If not specified, EndIp is same as StartIp'
+          type:
+          - string
+          - 'null'
+          x-go-name: EndIp
+        startIp:
+          description: Start IP of the range
+          type:
+          - string
+          - 'null'
+          x-go-name: StartIp
+      x-go-package: cohesity/iris/server/data/public
     Subnet:
       description: 'Defines a Subnet (Subnetwork).
 
@@ -380,44 +372,6 @@ components:
           - 'null'
           x-go-name: VlanName
       x-go-package: cohesity/iris/server/data/public
-    RequestError:
-      description: Details about the Error.
-      type: object
-      title: Error
-      properties:
-        errorCode:
-          description: Operation response error code.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ErrorCode
-        message:
-          description: Description of the error.
-          type:
-          - string
-          - 'null'
-          x-go-name: Message
-      x-go-package: cohesity/iris/server/data/public
-    IpRange:
-      description: IP Range for range of vip address addition
-      type: object
-      properties:
-        endIp:
-          description: 'Optional End IP of the range
-
-            If not specified, EndIp is same as StartIp'
-          type:
-          - string
-          - 'null'
-          x-go-name: EndIp
-        startIp:
-          description: Start IP of the range
-          type:
-          - string
-          - 'null'
-          x-go-name: StartIp
-      x-go-package: cohesity/iris/server/data/public
     ClusterPartition:
       description: Provides details about a Cluster Partition.
       type: object
@@ -494,3 +448,49 @@ components:
             $ref: '#/components/schemas/Vlan'
           x-go-name: Vlans
       x-go-package: cohesity/iris/server/data/public
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+  responses:
+    GetClusterPartitionsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            description: 'Specifies a list of Cluster Partitions that match the specified
+
+              filter criteria.'
+            type: array
+            title: Array of Cluster Partitions.
+            items:
+              $ref: '#/components/schemas/ClusterPartition'
+    ClusterPartitionResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ClusterPartition'
+    NotFoundResponse:
+      description: Not Found
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'

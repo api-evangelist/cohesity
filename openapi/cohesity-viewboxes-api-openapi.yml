@@ -196,192 +196,6 @@ paths:
           $ref: '#/components/responses/Error'
 components:
   schemas:
-    StoragePolicy:
-      description: Specifies the storage options applied to a Storage Domain (View Box).
-      type: object
-      title: Storage Policy.
-      properties:
-        appMarkerDetection:
-          description: 'Specifies Whether to support app marker detection. When this is set to
-
-            true, app markers (like commvault markers) will be removed from data and
-
-            put in separate chunks. This way deduplication is improved as it is done
-
-            on data that has no app markers.'
-          type:
-          - boolean
-          - 'null'
-          x-go-name: AppMarkerDetection
-        cloudSpillVaultId:
-          description: 'Specifies the vault id assigned for an external Storage
-
-            Target to facilitate cloud spill.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: CloudSpillVaultId
-        compressionPolicy:
-          description: 'Specifies the compression setting to be applied to a Storage Domain
-
-            (View Box).
-
-            ''kCompressionNone'' indicates that data is not compressed.
-
-            ''kCompressionLow'' indicates that data is compressed using LZ4 or Snappy.
-
-            ''kCompressionHigh'' indicates that data is compressed in Gzip.'
-          type:
-          - string
-          - 'null'
-          enum:
-          - kCompressionNone
-          - kCompressionLow
-          - kCompressionHigh
-          x-go-name: Compression
-        deduplicateCompressDelaySecs:
-          description: 'Specifies the time in seconds when deduplication and compression
-
-            of data on the Storage Domain (View Box) starts.
-
-            If set to 0, deduplication and compression is done inline
-
-            (as the data is being written).
-
-            Otherwise, post-process deduplication and compression is done after the
-
-            specified delay.'
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: DeduplicateCompressDelaySecs
-        deduplicationEnabled:
-          description: 'Specifies if deduplication is enabled for the Storage Domain (View Box).
-
-            If deduplication is enabled, the Cohesity Cluster eliminates
-
-            duplicate blocks of repeating data stored on the Cluster
-
-            thus reducing the amount of storage space needed to store data.'
-          type:
-          - boolean
-          - 'null'
-          x-go-name: DeduplicationEnabled
-        encryptionPolicy:
-          description: 'Specifies the encryption setting for the Storage Domain (View Box).
-
-            ''kEncryptionNone'' indicates the data is not encrypted.
-
-            ''kEncryptionStrong'' indicates the data is encrypted.'
-          type:
-          - string
-          - 'null'
-          enum:
-          - kEncryptionNone
-          - kEncryptionStrong
-          - kEncryptionWeak
-          x-go-name: EncryptionLevel
-        erasureCodingInfo:
-          description: 'Specifies information about erasure coding algorithm if erasure coding is
-
-            enabled.'
-          $ref: '#/components/schemas/ErasureCodingInfo'
-        inlineCompress:
-          description: 'Specifies if compression should occur inline (as the data is being
-
-            written). This field is only relevant if compression is enabled. If
-
-            deduplication is set to inline, Cohesity recommends setting compression to
-
-            inline.'
-          type:
-          - boolean
-          - 'null'
-          x-go-name: InlineCompress
-        inlineDeduplicate:
-          description: 'Specifies if deduplication should occur inline (as the data is being
-
-            written). This field is only relevant if deduplication is enabled.'
-          type:
-          - boolean
-          - 'null'
-          x-go-name: InlineDeduplicate
-        numFailuresTolerated:
-          description: 'Number of disk failures to tolerate. This is an optional field. Default value
-
-            is 1 for cluster having 3 or more nodes. If erasure coding is not enabled,
-
-            then this specifies the replication factor for the Storage Domain (View Box).
-
-            For RF=2, number of failures to tolerate should be specified as 1. If
-
-            erasure coding is enabled, then this value will be same as number of coded
-
-            stripes.'
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: NumFailuresTolerated
-        numNodeFailuresTolerated:
-          description: 'Number of node failures to tolerate. If NumNodeFailuresTolerated is set to
-
-            2, then we would tolerate up to two node failures. If the following is not
-
-            set, then the number of node failures tolerated would be same as
-
-            replication factor - 1 for replicated chunk files or number of coded
-
-            stripes for erasure coding chunk files.'
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: NumNodeFailuresTolerated
-      x-go-package: cohesity/iris/server/data/public
-    ViewBoxStats:
-      description: Provides statistics about the Storage Domain (View Box).
-      type: object
-      title: Storage Domain (View Box) Stats.
-      properties:
-        cloudUsagePerfStats:
-          description: 'Provides the usage statistics for the data stored in the
-
-            cloud for the Storage Domain (View Box). Performance statistics are not
-
-            populated.'
-          $ref: '#/components/schemas/UsageAndPerformanceStats'
-        dataUsageStats:
-          description: 'Specifies the data usage metric of the data stored on the Storage Domain
-
-            (View Box).'
-          title: Data Usage Statistics.
-          $ref: '#/components/schemas/DataUsageStats'
-        id:
-          description: Specifies the id of the Storage Domain (View Box).
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: Id
-        localUsagePerfStats:
-          description: 'Provides usage statistics for the locally stored data
-
-            on the Storage Domain (View Box). Performance statistics are not populated.'
-          $ref: '#/components/schemas/UsageAndPerformanceStats'
-        logicalStats:
-          description: Provides the logical usage statistics for the Storage Domain (View Box).
-          $ref: '#/components/schemas/LogicalStats'
-        usagePerfStats:
-          description: 'Provides usage and performance statistics for the Storage Domain
-
-            (View Box)
-
-            (includes both local and cloud data).'
-          $ref: '#/components/schemas/UsageAndPerformanceStats'
-      x-go-package: cohesity/iris/server/data/public
     DataUsageStats:
       description: 'Specifies the data usage metric of the data stored on the Cohesity
 
@@ -632,6 +446,83 @@ components:
           format: int64
           x-go-name: UniquePhysicalDataBytes
       x-go-package: cohesity/iris/server/data/public
+    QuotaPolicy:
+      description: 'Specifies a quota limit that can be optionally applied to Views and
+
+        View Boxes.
+
+        At the View level, this quota defines a logical limit for usage on the View.
+
+        At the View Box level, this quota defines a physical limit or
+
+        a default logical View limit.
+
+        If a physical quota is specified for View Box, this quota defines a physical
+
+        limit for the usage on the View Box.
+
+        If a default logical View quota is specified for View Box, this limit
+
+        is inherited by all the Views in that View Box.
+
+        However, this inherited quota can be overwritten at the View level.
+
+        A new write is not allowed if the resource will exceed the specified quota.
+
+        However, it takes time for the Cohesity Cluster to calculate
+
+        the usage across Nodes, so the limit may be exceeded by a small amount.
+
+        In addition, if the limit is increased or data is removed,
+
+        there may be a delay before the Cohesity Cluster allows more data
+
+        to be written to the resource, as the Cluster calculates the usage
+
+        across Nodes.'
+      type: object
+      title: Quota Policy
+      properties:
+        alertLimitBytes:
+          description: 'Specifies if an alert should be triggered when the usage of this
+
+            resource exceeds this quota limit.
+
+            This limit is optional and is specified in bytes.
+
+            If no value is specified, there is no limit.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: AlertLimitBytes
+        alertThresholdPercentage:
+          description: 'Supported only for user quota policy. Specifies when the usage goes above
+
+            an alert threshold percentage which is:
+
+            HardLimitBytes * AlertThresholdPercentage, eg: 80% of HardLimitBytes
+
+            Can only be set if HardLimitBytes is set.
+
+            Cannot be set if AlertLimitBytes is already set.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: AlertThresholdPercentage
+        hardLimitBytes:
+          description: 'Specifies an optional quota limit on the usage allowed for this
+
+            resource. This limit is specified in bytes. If no value is specified,
+
+            there is no limit.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: HardLimitBytes
+      x-go-package: cohesity/iris/server/data/public
     RequestError:
       description: Details about the Error.
       type: object
@@ -650,6 +541,184 @@ components:
           - string
           - 'null'
           x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    LogicalStats:
+      description: 'Provides logical statistics for logical entities such as Clusters
+
+        and Domains (View Boxes).
+
+        The logical size is the size of the data when it is fully hydrated or
+
+        expanded.
+
+        The actual physical data stored on the Cohesity Cluster is
+
+        reduced by change-block tracking, compression and deduplication.'
+      type: object
+      title: Logical Statistics
+      properties:
+        totalLogicalUsageBytes:
+          description: 'Provides the combined data residing on protected objects.
+
+            The size of data before reduction by deduplication and compression.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: TotalLogicalUsageBytes
+      x-go-package: cohesity/iris/server/data/public
+    ErasureCodingInfo:
+      description: Specifies information for erasure coding.
+      type: object
+      title: Erasure Coding Information.
+      properties:
+        algorithm:
+          description: 'Algorthm used for erasure coding.
+
+            REED_SOLOMON indicates the algorithm used for erasure coding.
+
+            LRC indicates the algorithm used for erasure coding.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - REED_SOLOMON
+          - LRC
+          x-go-name: Algorithm
+        erasureCodingEnabled:
+          description: 'Specifies whether Erasure coding is enabled on the Storage Domain
+
+            (View Box).'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: ErasureCodingEnabled
+        inlineErasureCoding:
+          description: 'Specifies if erasure coding should occur inline (as the data is being
+
+            written). This field is only relevant if erasure coding is enabled.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: InlineErasureCoding
+        numCodedStripes:
+          description: The number of coded stripes.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: NumCodedStripes
+        numDataStripes:
+          description: The number of stripes containing data.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: NumDataStripes
+      x-go-package: cohesity/iris/server/data/public
+    Subnet:
+      description: 'Defines a Subnet (Subnetwork).
+
+        The netmask can be specified by setting netmaskBits or netmaskIp4.
+
+        The netmask can only be set using netmaskIp4 if the IP address
+
+        is an IPv4 address.'
+      type: object
+      title: Subnet
+      properties:
+        component:
+          description: Component that has reserved the subnet.
+          type:
+          - string
+          - 'null'
+          x-go-name: Component
+        description:
+          description: Description of the subnet.
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+        id:
+          description: ID of the subnet.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Id
+        ip:
+          description: Specifies either an IPv6 address or an IPv4 address.
+          type:
+          - string
+          - 'null'
+          x-go-name: Ip
+        netmaskBits:
+          description: Specifies the netmask using bits.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: NetmaskBits
+        netmaskIp4:
+          description: 'Specifies the netmask using an IP4 address.
+
+            The netmask can only be set using netmaskIp4 if the IP address
+
+            is an IPv4 address.'
+          type:
+          - string
+          - 'null'
+          x-go-name: NetmaskIp4
+        nfsAccess:
+          description: 'Specifies whether clients from this subnet can mount using NFS protocol.
+
+            Protocol access level.
+
+            ''kDisabled'' indicates Protocol access level ''Disabled''
+
+            ''kReadOnly'' indicates Protocol access level ''ReadOnly''
+
+            ''kReadWrite'' indicates Protocol access level ''ReadWrite'''
+          type:
+          - string
+          - 'null'
+          enum:
+          - kDisabled
+          - kReadOnly
+          - kReadWrite
+          x-go-name: NfsAccess
+        nfsAllSquash:
+          description: 'Specifies whether all clients from this subnet can map view with
+
+            view_all_squash_uid/view_all_squash_gid configured in the view.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: NfsAllSquash
+        nfsRootSquash:
+          description: Specifies whether clients from this subnet can mount as root on NFS.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: NfsRootSquash
+        smbAccess:
+          description: 'Specifies whether clients from this subnet can mount using SMB protocol.
+
+            Protocol access level.
+
+            ''kDisabled'' indicates Protocol access level ''Disabled''
+
+            ''kReadOnly'' indicates Protocol access level ''ReadOnly''
+
+            ''kReadWrite'' indicates Protocol access level ''ReadWrite'''
+          type:
+          - string
+          - 'null'
+          enum:
+          - kDisabled
+          - kReadOnly
+          - kReadWrite
+          x-go-name: SmbAccess
       x-go-package: cohesity/iris/server/data/public
     SchemaInfo:
       description: 'Specifies the metric data point where public data metric name as key and the
@@ -682,6 +751,254 @@ components:
           - string
           - 'null'
           x-go-name: SchemaName
+      x-go-package: cohesity/iris/server/data/public
+    ViewBoxStats:
+      description: Provides statistics about the Storage Domain (View Box).
+      type: object
+      title: Storage Domain (View Box) Stats.
+      properties:
+        cloudUsagePerfStats:
+          description: 'Provides the usage statistics for the data stored in the
+
+            cloud for the Storage Domain (View Box). Performance statistics are not
+
+            populated.'
+          $ref: '#/components/schemas/UsageAndPerformanceStats'
+        dataUsageStats:
+          description: 'Specifies the data usage metric of the data stored on the Storage Domain
+
+            (View Box).'
+          title: Data Usage Statistics.
+          $ref: '#/components/schemas/DataUsageStats'
+        id:
+          description: Specifies the id of the Storage Domain (View Box).
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Id
+        localUsagePerfStats:
+          description: 'Provides usage statistics for the locally stored data
+
+            on the Storage Domain (View Box). Performance statistics are not populated.'
+          $ref: '#/components/schemas/UsageAndPerformanceStats'
+        logicalStats:
+          description: Provides the logical usage statistics for the Storage Domain (View Box).
+          $ref: '#/components/schemas/LogicalStats'
+        usagePerfStats:
+          description: 'Provides usage and performance statistics for the Storage Domain
+
+            (View Box)
+
+            (includes both local and cloud data).'
+          $ref: '#/components/schemas/UsageAndPerformanceStats'
+      x-go-package: cohesity/iris/server/data/public
+    CreateViewBoxParams:
+      description: Provides details about the Storage Domain (View Box).
+      type: object
+      title: Storage Domain (View Box) Request.
+      required:
+      - name
+      - clusterPartitionId
+      properties:
+        adDomainName:
+          description: Specifies an active directory domain that this view box is mapped to.
+          type:
+          - string
+          - 'null'
+          x-go-name: AdDomainName
+        clientSubnetWhiteList:
+          description: 'Array of Subnets.
+
+
+            Specifies the Subnets from which this Storage Domain (View Box) accepts
+
+            requests.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Subnet'
+          x-go-name: ClientSubnetWhitelist
+        cloudDownWaterfallThresholdPct:
+          description: 'Specifies the cloud down water-fall threshold percentage. This indicates
+
+            how full should a viewbox at least be before we down water-fall its data
+
+            to cloud tier. If this field is set, the physical quota limit must be set
+
+            also and will be used as viewbox capacity.'
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: CloudDownWaterfallThresholdPct
+        cloudDownWaterfallThresholdSecs:
+          description: 'Specifies the cloud down water-fall threshold seconds. This indicates
+
+            what''s the time threshold on water-falling data to cloud tier.'
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: CloudDownWaterfallThresholdSecs
+        clusterPartitionId:
+          description: 'Specifies the Cluster Partition id where the Storage Domain (View Box) is
+
+            located.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ClusterPartitionId
+        defaultUserQuotaPolicy:
+          description: 'Specifies an optional quota policy/limits that are inherited by all users
+
+            within the views in this viewbox.'
+          allOf:
+          - $ref: '#/components/schemas/QuotaPolicy'
+        defaultViewQuotaPolicy:
+          description: 'Specifies an optional default logical quota limit (in bytes)
+
+            for the Views in this Storage Domain (View Box).
+
+            (Logical data is when the data is fully hydrated and expanded.)
+
+            However, this inherited quota can be overwritten at the View level.
+
+            A new write is not allowed if the Storage Domain (View Box) will exceed
+
+            the specified quota.
+
+            However, it takes time for the Cohesity Cluster to calculate
+
+            the usage across Nodes, so the limit may be exceeded by a small amount.
+
+            In addition, if the limit is increased or data is removed,
+
+            there may be delay before the Cohesity Cluster allows more data
+
+            to be written to the Storage Domain (View Box), as the Cluster is
+
+            calculating the usage across Nodes.'
+          allOf:
+          - $ref: '#/components/schemas/QuotaPolicy'
+        directArchiveEnabled:
+          description: 'Specifies whether this viewbox can be used as a staging area while copying
+
+            a largedataset that can''t fit on the cluster to an external target. The
+
+            amount of data that can be stored on the viewbox can be specified using
+
+            ''physical_quota''.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: DirectArchiveEnabled
+        ldapProviderId:
+          description: 'When set, the following provides the LDAP provider the view box is
+
+            mapped to. For any view from this view box, when accessed via NFS the
+
+            following LDAP provider is looked up for getting Unix IDs of the
+
+            corresponding user. Similarly, when a view is accessed via SMB and if
+
+            the AD user''s domain matches with the view box''s AD, the following LDAP
+
+            provider will be used to lookup Unix IDs for the corresponding AD user.
+
+            Additionally there is also a mapping between LDAP provider and AD domain
+
+            that is stored in AD provider config. It will be used if AD is not set
+
+            on the view box.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: LdapProviderId
+        name:
+          description: Specifies the name of the Storage Domain (View Box).
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        nisDomainNameVec:
+          description: Specifies the NIS domain that this view box is mapped to.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: NisDomainNameVec
+        physicalQuota:
+          description: 'Specifies an optional quota limit (in bytes) for the physical
+
+            usage of this Storage Domain (View Box).
+
+            This quota limit defines a physical limit for size of the data that
+
+            can be physically stored on the Storage Domain (View Box), after the data
+
+            has been reduced by change block tracking, compression and deduplication.
+
+            The physical usage is the aggregate sum of the data stored for this
+
+            Storage Domain (View Box) on all disks in the Cluster.
+
+            (The usage includes Cloud Tier data and user data.)
+
+            A new write is not allowed if the Storage Domain (View Box) will exceed
+
+            the specified quota. However, it takes time for the Cohesity Cluster to
+
+            calculate the usage across Nodes, so the limit may be exceeded by a small
+
+            amount. In addition, if the limit is increased or data is removed,
+
+            there may be a delay before the Cohesity Cluster allows more data
+
+            to be written to the Storage Domain (View Box), as the Cluster is
+
+            calculating the usage across Nodes.'
+          allOf:
+          - $ref: '#/components/schemas/QuotaPolicy'
+        s3BucketsAllowed:
+          description: 'Specifies whether creation of a S3 bucket is allowed in this
+
+            Storage Domain (View Box).
+
+            When a new S3 bucket creation request arrives, we''ll look at all the View
+
+            Boxes and the first Storage Domain (View Box) that allows creating S3
+
+            buckets in it will be the one where the bucket will be placed.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: S3BucketsAllowed
+        storagePolicy:
+          description: Specifies the storage options applied to the Storage Domain (View Box).
+          $ref: '#/components/schemas/StoragePolicy'
+        tenantIdVec:
+          description: 'Optional ids for the tenants that this view box belongs. This must be
+
+            checked before granting access to users. Unless the cluster enables view
+
+            box sharing between tenants is allowed, there shall be at most one item
+
+            in this list. Note that if all tenant may be deleted - such viewboxes
+
+            must be garbage collected. This is currently done by a background thread
+
+            in iris.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: TenantIdVec
       x-go-package: cohesity/iris/server/data/public
     ViewBox:
       description: Provides details about a Storage Domain (View Box).
@@ -971,261 +1288,6 @@ components:
           - 'null'
           x-go-name: TreatFileSyncAsDataSync
       x-go-package: cohesity/iris/server/data/public
-    ErasureCodingInfo:
-      description: Specifies information for erasure coding.
-      type: object
-      title: Erasure Coding Information.
-      properties:
-        algorithm:
-          description: 'Algorthm used for erasure coding.
-
-            REED_SOLOMON indicates the algorithm used for erasure coding.
-
-            LRC indicates the algorithm used for erasure coding.'
-          type:
-          - string
-          - 'null'
-          enum:
-          - REED_SOLOMON
-          - LRC
-          x-go-name: Algorithm
-        erasureCodingEnabled:
-          description: 'Specifies whether Erasure coding is enabled on the Storage Domain
-
-            (View Box).'
-          type:
-          - boolean
-          - 'null'
-          x-go-name: ErasureCodingEnabled
-        inlineErasureCoding:
-          description: 'Specifies if erasure coding should occur inline (as the data is being
-
-            written). This field is only relevant if erasure coding is enabled.'
-          type:
-          - boolean
-          - 'null'
-          x-go-name: InlineErasureCoding
-        numCodedStripes:
-          description: The number of coded stripes.
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: NumCodedStripes
-        numDataStripes:
-          description: The number of stripes containing data.
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: NumDataStripes
-      x-go-package: cohesity/iris/server/data/public
-    Subnet:
-      description: 'Defines a Subnet (Subnetwork).
-
-        The netmask can be specified by setting netmaskBits or netmaskIp4.
-
-        The netmask can only be set using netmaskIp4 if the IP address
-
-        is an IPv4 address.'
-      type: object
-      title: Subnet
-      properties:
-        component:
-          description: Component that has reserved the subnet.
-          type:
-          - string
-          - 'null'
-          x-go-name: Component
-        description:
-          description: Description of the subnet.
-          type:
-          - string
-          - 'null'
-          x-go-name: Description
-        id:
-          description: ID of the subnet.
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: Id
-        ip:
-          description: Specifies either an IPv6 address or an IPv4 address.
-          type:
-          - string
-          - 'null'
-          x-go-name: Ip
-        netmaskBits:
-          description: Specifies the netmask using bits.
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: NetmaskBits
-        netmaskIp4:
-          description: 'Specifies the netmask using an IP4 address.
-
-            The netmask can only be set using netmaskIp4 if the IP address
-
-            is an IPv4 address.'
-          type:
-          - string
-          - 'null'
-          x-go-name: NetmaskIp4
-        nfsAccess:
-          description: 'Specifies whether clients from this subnet can mount using NFS protocol.
-
-            Protocol access level.
-
-            ''kDisabled'' indicates Protocol access level ''Disabled''
-
-            ''kReadOnly'' indicates Protocol access level ''ReadOnly''
-
-            ''kReadWrite'' indicates Protocol access level ''ReadWrite'''
-          type:
-          - string
-          - 'null'
-          enum:
-          - kDisabled
-          - kReadOnly
-          - kReadWrite
-          x-go-name: NfsAccess
-        nfsAllSquash:
-          description: 'Specifies whether all clients from this subnet can map view with
-
-            view_all_squash_uid/view_all_squash_gid configured in the view.'
-          type:
-          - boolean
-          - 'null'
-          x-go-name: NfsAllSquash
-        nfsRootSquash:
-          description: Specifies whether clients from this subnet can mount as root on NFS.
-          type:
-          - boolean
-          - 'null'
-          x-go-name: NfsRootSquash
-        smbAccess:
-          description: 'Specifies whether clients from this subnet can mount using SMB protocol.
-
-            Protocol access level.
-
-            ''kDisabled'' indicates Protocol access level ''Disabled''
-
-            ''kReadOnly'' indicates Protocol access level ''ReadOnly''
-
-            ''kReadWrite'' indicates Protocol access level ''ReadWrite'''
-          type:
-          - string
-          - 'null'
-          enum:
-          - kDisabled
-          - kReadOnly
-          - kReadWrite
-          x-go-name: SmbAccess
-      x-go-package: cohesity/iris/server/data/public
-    LogicalStats:
-      description: 'Provides logical statistics for logical entities such as Clusters
-
-        and Domains (View Boxes).
-
-        The logical size is the size of the data when it is fully hydrated or
-
-        expanded.
-
-        The actual physical data stored on the Cohesity Cluster is
-
-        reduced by change-block tracking, compression and deduplication.'
-      type: object
-      title: Logical Statistics
-      properties:
-        totalLogicalUsageBytes:
-          description: 'Provides the combined data residing on protected objects.
-
-            The size of data before reduction by deduplication and compression.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: TotalLogicalUsageBytes
-      x-go-package: cohesity/iris/server/data/public
-    QuotaPolicy:
-      description: 'Specifies a quota limit that can be optionally applied to Views and
-
-        View Boxes.
-
-        At the View level, this quota defines a logical limit for usage on the View.
-
-        At the View Box level, this quota defines a physical limit or
-
-        a default logical View limit.
-
-        If a physical quota is specified for View Box, this quota defines a physical
-
-        limit for the usage on the View Box.
-
-        If a default logical View quota is specified for View Box, this limit
-
-        is inherited by all the Views in that View Box.
-
-        However, this inherited quota can be overwritten at the View level.
-
-        A new write is not allowed if the resource will exceed the specified quota.
-
-        However, it takes time for the Cohesity Cluster to calculate
-
-        the usage across Nodes, so the limit may be exceeded by a small amount.
-
-        In addition, if the limit is increased or data is removed,
-
-        there may be a delay before the Cohesity Cluster allows more data
-
-        to be written to the resource, as the Cluster calculates the usage
-
-        across Nodes.'
-      type: object
-      title: Quota Policy
-      properties:
-        alertLimitBytes:
-          description: 'Specifies if an alert should be triggered when the usage of this
-
-            resource exceeds this quota limit.
-
-            This limit is optional and is specified in bytes.
-
-            If no value is specified, there is no limit.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: AlertLimitBytes
-        alertThresholdPercentage:
-          description: 'Supported only for user quota policy. Specifies when the usage goes above
-
-            an alert threshold percentage which is:
-
-            HardLimitBytes * AlertThresholdPercentage, eg: 80% of HardLimitBytes
-
-            Can only be set if HardLimitBytes is set.
-
-            Cannot be set if AlertLimitBytes is already set.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: AlertThresholdPercentage
-        hardLimitBytes:
-          description: 'Specifies an optional quota limit on the usage allowed for this
-
-            resource. This limit is specified in bytes. If no value is specified,
-
-            there is no limit.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: HardLimitBytes
-      x-go-package: cohesity/iris/server/data/public
     UsageAndPerformanceStats:
       description: 'Provides usage and performance statistics
 
@@ -1364,242 +1426,152 @@ components:
           format: double
           x-go-name: WriteLatencyMsecs
       x-go-package: cohesity/iris/server/data/public
-    CreateViewBoxParams:
-      description: Provides details about the Storage Domain (View Box).
+    StoragePolicy:
+      description: Specifies the storage options applied to a Storage Domain (View Box).
       type: object
-      title: Storage Domain (View Box) Request.
-      required:
-      - name
-      - clusterPartitionId
+      title: Storage Policy.
       properties:
-        adDomainName:
-          description: Specifies an active directory domain that this view box is mapped to.
+        appMarkerDetection:
+          description: 'Specifies Whether to support app marker detection. When this is set to
+
+            true, app markers (like commvault markers) will be removed from data and
+
+            put in separate chunks. This way deduplication is improved as it is done
+
+            on data that has no app markers.'
           type:
-          - string
+          - boolean
           - 'null'
-          x-go-name: AdDomainName
-        clientSubnetWhiteList:
-          description: 'Array of Subnets.
+          x-go-name: AppMarkerDetection
+        cloudSpillVaultId:
+          description: 'Specifies the vault id assigned for an external Storage
 
-
-            Specifies the Subnets from which this Storage Domain (View Box) accepts
-
-            requests.'
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/Subnet'
-          x-go-name: ClientSubnetWhitelist
-        cloudDownWaterfallThresholdPct:
-          description: 'Specifies the cloud down water-fall threshold percentage. This indicates
-
-            how full should a viewbox at least be before we down water-fall its data
-
-            to cloud tier. If this field is set, the physical quota limit must be set
-
-            also and will be used as viewbox capacity.'
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: CloudDownWaterfallThresholdPct
-        cloudDownWaterfallThresholdSecs:
-          description: 'Specifies the cloud down water-fall threshold seconds. This indicates
-
-            what''s the time threshold on water-falling data to cloud tier.'
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: CloudDownWaterfallThresholdSecs
-        clusterPartitionId:
-          description: 'Specifies the Cluster Partition id where the Storage Domain (View Box) is
-
-            located.'
+            Target to facilitate cloud spill.'
           type:
           - integer
           - 'null'
           format: int64
-          x-go-name: ClusterPartitionId
-        defaultUserQuotaPolicy:
-          description: 'Specifies an optional quota policy/limits that are inherited by all users
+          x-go-name: CloudSpillVaultId
+        compressionPolicy:
+          description: 'Specifies the compression setting to be applied to a Storage Domain
 
-            within the views in this viewbox.'
-          allOf:
-          - $ref: '#/components/schemas/QuotaPolicy'
-        defaultViewQuotaPolicy:
-          description: 'Specifies an optional default logical quota limit (in bytes)
+            (View Box).
 
-            for the Views in this Storage Domain (View Box).
+            ''kCompressionNone'' indicates that data is not compressed.
 
-            (Logical data is when the data is fully hydrated and expanded.)
+            ''kCompressionLow'' indicates that data is compressed using LZ4 or Snappy.
 
-            However, this inherited quota can be overwritten at the View level.
-
-            A new write is not allowed if the Storage Domain (View Box) will exceed
-
-            the specified quota.
-
-            However, it takes time for the Cohesity Cluster to calculate
-
-            the usage across Nodes, so the limit may be exceeded by a small amount.
-
-            In addition, if the limit is increased or data is removed,
-
-            there may be delay before the Cohesity Cluster allows more data
-
-            to be written to the Storage Domain (View Box), as the Cluster is
-
-            calculating the usage across Nodes.'
-          allOf:
-          - $ref: '#/components/schemas/QuotaPolicy'
-        directArchiveEnabled:
-          description: 'Specifies whether this viewbox can be used as a staging area while copying
-
-            a largedataset that can''t fit on the cluster to an external target. The
-
-            amount of data that can be stored on the viewbox can be specified using
-
-            ''physical_quota''.'
-          type:
-          - boolean
-          - 'null'
-          x-go-name: DirectArchiveEnabled
-        ldapProviderId:
-          description: 'When set, the following provides the LDAP provider the view box is
-
-            mapped to. For any view from this view box, when accessed via NFS the
-
-            following LDAP provider is looked up for getting Unix IDs of the
-
-            corresponding user. Similarly, when a view is accessed via SMB and if
-
-            the AD user''s domain matches with the view box''s AD, the following LDAP
-
-            provider will be used to lookup Unix IDs for the corresponding AD user.
-
-            Additionally there is also a mapping between LDAP provider and AD domain
-
-            that is stored in AD provider config. It will be used if AD is not set
-
-            on the view box.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: LdapProviderId
-        name:
-          description: Specifies the name of the Storage Domain (View Box).
+            ''kCompressionHigh'' indicates that data is compressed in Gzip.'
           type:
           - string
           - 'null'
-          x-go-name: Name
-        nisDomainNameVec:
-          description: Specifies the NIS domain that this view box is mapped to.
+          enum:
+          - kCompressionNone
+          - kCompressionLow
+          - kCompressionHigh
+          x-go-name: Compression
+        deduplicateCompressDelaySecs:
+          description: 'Specifies the time in seconds when deduplication and compression
+
+            of data on the Storage Domain (View Box) starts.
+
+            If set to 0, deduplication and compression is done inline
+
+            (as the data is being written).
+
+            Otherwise, post-process deduplication and compression is done after the
+
+            specified delay.'
           type:
-          - array
+          - integer
           - 'null'
-          items:
-            type: string
-          x-go-name: NisDomainNameVec
-        physicalQuota:
-          description: 'Specifies an optional quota limit (in bytes) for the physical
+          format: int32
+          x-go-name: DeduplicateCompressDelaySecs
+        deduplicationEnabled:
+          description: 'Specifies if deduplication is enabled for the Storage Domain (View Box).
 
-            usage of this Storage Domain (View Box).
+            If deduplication is enabled, the Cohesity Cluster eliminates
 
-            This quota limit defines a physical limit for size of the data that
+            duplicate blocks of repeating data stored on the Cluster
 
-            can be physically stored on the Storage Domain (View Box), after the data
-
-            has been reduced by change block tracking, compression and deduplication.
-
-            The physical usage is the aggregate sum of the data stored for this
-
-            Storage Domain (View Box) on all disks in the Cluster.
-
-            (The usage includes Cloud Tier data and user data.)
-
-            A new write is not allowed if the Storage Domain (View Box) will exceed
-
-            the specified quota. However, it takes time for the Cohesity Cluster to
-
-            calculate the usage across Nodes, so the limit may be exceeded by a small
-
-            amount. In addition, if the limit is increased or data is removed,
-
-            there may be a delay before the Cohesity Cluster allows more data
-
-            to be written to the Storage Domain (View Box), as the Cluster is
-
-            calculating the usage across Nodes.'
-          allOf:
-          - $ref: '#/components/schemas/QuotaPolicy'
-        s3BucketsAllowed:
-          description: 'Specifies whether creation of a S3 bucket is allowed in this
-
-            Storage Domain (View Box).
-
-            When a new S3 bucket creation request arrives, we''ll look at all the View
-
-            Boxes and the first Storage Domain (View Box) that allows creating S3
-
-            buckets in it will be the one where the bucket will be placed.'
+            thus reducing the amount of storage space needed to store data.'
           type:
           - boolean
           - 'null'
-          x-go-name: S3BucketsAllowed
-        storagePolicy:
-          description: Specifies the storage options applied to the Storage Domain (View Box).
-          $ref: '#/components/schemas/StoragePolicy'
-        tenantIdVec:
-          description: 'Optional ids for the tenants that this view box belongs. This must be
+          x-go-name: DeduplicationEnabled
+        encryptionPolicy:
+          description: 'Specifies the encryption setting for the Storage Domain (View Box).
 
-            checked before granting access to users. Unless the cluster enables view
+            ''kEncryptionNone'' indicates the data is not encrypted.
 
-            box sharing between tenants is allowed, there shall be at most one item
-
-            in this list. Note that if all tenant may be deleted - such viewboxes
-
-            must be garbage collected. This is currently done by a background thread
-
-            in iris.'
+            ''kEncryptionStrong'' indicates the data is encrypted.'
           type:
-          - array
+          - string
           - 'null'
-          items:
-            type: string
-          x-go-name: TenantIdVec
+          enum:
+          - kEncryptionNone
+          - kEncryptionStrong
+          - kEncryptionWeak
+          x-go-name: EncryptionLevel
+        erasureCodingInfo:
+          description: 'Specifies information about erasure coding algorithm if erasure coding is
+
+            enabled.'
+          $ref: '#/components/schemas/ErasureCodingInfo'
+        inlineCompress:
+          description: 'Specifies if compression should occur inline (as the data is being
+
+            written). This field is only relevant if compression is enabled. If
+
+            deduplication is set to inline, Cohesity recommends setting compression to
+
+            inline.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: InlineCompress
+        inlineDeduplicate:
+          description: 'Specifies if deduplication should occur inline (as the data is being
+
+            written). This field is only relevant if deduplication is enabled.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: InlineDeduplicate
+        numFailuresTolerated:
+          description: 'Number of disk failures to tolerate. This is an optional field. Default value
+
+            is 1 for cluster having 3 or more nodes. If erasure coding is not enabled,
+
+            then this specifies the replication factor for the Storage Domain (View Box).
+
+            For RF=2, number of failures to tolerate should be specified as 1. If
+
+            erasure coding is enabled, then this value will be same as number of coded
+
+            stripes.'
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: NumFailuresTolerated
+        numNodeFailuresTolerated:
+          description: 'Number of node failures to tolerate. If NumNodeFailuresTolerated is set to
+
+            2, then we would tolerate up to two node failures. If the following is not
+
+            set, then the number of node failures tolerated would be same as
+
+            replication factor - 1 for replicated chunk files or number of coded
+
+            stripes for erasure coding chunk files.'
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: NumNodeFailuresTolerated
       x-go-package: cohesity/iris/server/data/public
   responses:
-    CreateViewBoxResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ViewBox'
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
-    GetViewBoxByIdResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ViewBox'
-    UpdateViewBoxResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ViewBox'
-    NoContentResponse:
-      description: No Content
-    NotFoundResponse:
-      description: Not Found
     GetViewBoxesResponse:
       description: Success
       content:
@@ -1612,3 +1584,31 @@ components:
             title: Array of View Boxes.
             items:
               $ref: '#/components/schemas/ViewBox'
+    NoContentResponse:
+      description: No Content
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    NotFoundResponse:
+      description: Not Found
+    GetViewBoxByIdResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ViewBox'
+    CreateViewBoxResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ViewBox'
+    UpdateViewBoxResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ViewBox'

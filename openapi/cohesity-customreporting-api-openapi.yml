@@ -84,12 +84,6 @@ components:
           x-go-name: Port
       x-go-package: cohesity/iris/server/data/public
   responses:
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
     GetPostgresResponse:
       description: Success
       content:
@@ -98,3 +92,9 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/PostgresNodeInfo'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'

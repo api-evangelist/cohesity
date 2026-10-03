@@ -160,68 +160,31 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/KerberosProvider'
-    RegisterOrUpdateKerberosProviderResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/KerberosProvider'
     ErrorResponse:
       description: Error
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    UnregisterKerberosProviderResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/UnregisterKerberosProvider'
     GetKerberosProvidersResponse:
       description: Success
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/KerberosProviders'
+    RegisterOrUpdateKerberosProviderResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/KerberosProvider'
+    UnregisterKerberosProviderResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UnregisterKerberosProvider'
   schemas:
-    UnregisterKerberosRequest:
-      description: Specifies the request to unregister a Kerberos Provider.
-      type: object
-      required:
-      - adminPassword
-      properties:
-        adminPassword:
-          description: Specifies the password
-          type:
-          - string
-          - 'null'
-          x-order: 0
-    Error:
-      description: Specifies the error object with error code and a message.
-      type: object
-      title: Error.
-      properties:
-        errorCode:
-          description: Specifies the error code.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        message:
-          description: Specifies the error message.
-          type:
-          - string
-          - 'null'
-          x-order: 1
-    RegisterOrUpdateKerberosProviderRequest:
-      description: 'Specifies the request to register or update a Kerberos
-
-        Provider.'
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/KerberosProvider'
-      - $ref: '#/components/schemas/UnregisterKerberosRequest'
     KerberosProvider:
       description: Specifies the the Kerberos Provider details.
       type: object
@@ -283,13 +246,42 @@ components:
             pattern: ^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,13}[a-zA-Z0-9])$
           x-omitempty: true
           x-order: 6
-    UnregisterKerberosProvider:
-      description: Response of Unregister Kerberos Provider.
+    RegisterOrUpdateKerberosProviderRequest:
+      description: 'Specifies the request to register or update a Kerberos
+
+        Provider.'
       type: object
+      allOf:
+      - $ref: '#/components/schemas/KerberosProvider'
+      - $ref: '#/components/schemas/UnregisterKerberosRequest'
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
       properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
         message:
-          description: A status message returned upon unregistering.
-          type: string
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    UnregisterKerberosRequest:
+      description: Specifies the request to unregister a Kerberos Provider.
+      type: object
+      required:
+      - adminPassword
+      properties:
+        adminPassword:
+          description: Specifies the password
+          type:
+          - string
+          - 'null'
           x-order: 0
     KerberosProviders:
       description: Response of Kerberos Providers.
@@ -301,6 +293,14 @@ components:
           items:
             $ref: '#/components/schemas/KerberosProvider'
           x-omitempty: true
+          x-order: 0
+    UnregisterKerberosProvider:
+      description: Response of Unregister Kerberos Provider.
+      type: object
+      properties:
+        message:
+          description: A status message returned upon unregistering.
+          type: string
           x-order: 0
   securitySchemes:
     APIKeyHeader:

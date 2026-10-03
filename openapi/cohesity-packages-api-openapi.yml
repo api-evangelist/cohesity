@@ -43,27 +43,6 @@ paths:
               $ref: '#/components/schemas/DownloadPackageParameters'
         required: true
 components:
-  responses:
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
-    ListPackagesResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/PackageDetails'
-    DownloadPackageResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/DownloadPackageResult'
   schemas:
     PackageDetails:
       description: 'Specifies all of the details of a package that is currently installed
@@ -102,6 +81,22 @@ components:
           - 'null'
           x-go-name: ReleaseDate
       x-go-package: cohesity/iris/server/data/public
+    DownloadPackageParameters:
+      description: 'Specifies the parameters needed for a request to download a new software
+
+        package to a Cluster.'
+      type: object
+      title: Download Package Parameters.
+      required:
+      - url
+      properties:
+        url:
+          description: Specifies a URL from which the package can be downloaded to the Cluster.
+          type:
+          - string
+          - 'null'
+          x-go-name: Url
+      x-go-package: cohesity/iris/server/data/public
     RequestError:
       description: Details about the Error.
       type: object
@@ -135,19 +130,24 @@ components:
           - 'null'
           x-go-name: Message
       x-go-package: cohesity/iris/server/data/public
-    DownloadPackageParameters:
-      description: 'Specifies the parameters needed for a request to download a new software
-
-        package to a Cluster.'
-      type: object
-      title: Download Package Parameters.
-      required:
-      - url
-      properties:
-        url:
-          description: Specifies a URL from which the package can be downloaded to the Cluster.
-          type:
-          - string
-          - 'null'
-          x-go-name: Url
-      x-go-package: cohesity/iris/server/data/public
+  responses:
+    DownloadPackageResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DownloadPackageResult'
+    ListPackagesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/PackageDetails'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'

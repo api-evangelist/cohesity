@@ -79,7 +79,69 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 components:
+  responses:
+    UpdateWebServerCertificateResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SslCertificateConfig'
+    DeployHostCertResponse:
+      description: Host Certificate Download Response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CertificateDetails'
+    GetCertificateResponse:
+      description: List Host Certificate Response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ListCertResponse'
+    NoContentResponse:
+      description: No Content
+    GetWebServerCertificateResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SslCertificateConfig'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
   schemas:
+    SslCertificateConfig:
+      description: 'SslCertificateConfig represents the SSL certificate object exposed to the
+
+        user.'
+      type: object
+      title: SSL Certificate Configuration.
+      properties:
+        certificate:
+          description: Certificate is a SSL certificate used by Iris HTTPS webserver.
+          type:
+          - string
+          - 'null'
+          x-go-name: Certificate
+        lastUpdateTimeMsecs:
+          description: 'LastUpdateTimeMsecs is a time in milliseconds at which certificate was
+
+            last updated.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: LastUpdateTimeMsecs
+        privateKey:
+          description: PrivateKey is a matching private key of the above certificate.
+          type:
+          - string
+          - 'null'
+          x-go-name: PrivateKey
+      x-go-package: cohesity/iris/server/data/public
     CertificateDetails:
       description: Specifies details about a certificate.
       type: object
@@ -129,103 +191,6 @@ components:
           - kSapOracle
           - kSapHana
           x-go-name: Type
-      x-go-package: cohesity/iris/server/data/public
-    RequestError:
-      description: Details about the Error.
-      type: object
-      title: Error
-      properties:
-        errorCode:
-          description: Operation response error code.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ErrorCode
-        message:
-          description: Description of the error.
-          type:
-          - string
-          - 'null'
-          x-go-name: Message
-      x-go-package: cohesity/iris/server/data/public
-    SslCertificateConfig:
-      description: 'SslCertificateConfig represents the SSL certificate object exposed to the
-
-        user.'
-      type: object
-      title: SSL Certificate Configuration.
-      properties:
-        certificate:
-          description: Certificate is a SSL certificate used by Iris HTTPS webserver.
-          type:
-          - string
-          - 'null'
-          x-go-name: Certificate
-        lastUpdateTimeMsecs:
-          description: 'LastUpdateTimeMsecs is a time in milliseconds at which certificate was
-
-            last updated.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: LastUpdateTimeMsecs
-        privateKey:
-          description: PrivateKey is a matching private key of the above certificate.
-          type:
-          - string
-          - 'null'
-          x-go-name: PrivateKey
-      x-go-package: cohesity/iris/server/data/public
-    HostInfo:
-      description: Specifies the list of all hosts on which the certificate is deployed.
-      type: object
-      title: Hosts Information list.
-      properties:
-        password:
-          description: 'Specifies the password of the host to establish SSH connection.
-
-            The certificate is copied to the host after generating the certificate
-
-            on the cluster.'
-          type:
-          - string
-          - 'null'
-          x-go-name: Password
-        serverName:
-          description: Specifies the servername of the host where certificate is to be deployed.
-          type:
-          - string
-          - 'null'
-          x-go-name: ServerName
-        target:
-          description: 'Specifies the target location on the host where the certificate is
-
-            deployed.'
-          type:
-          - string
-          - 'null'
-          x-go-name: Target
-        userName:
-          description: Specifies the username of the host.
-          type:
-          - string
-          - 'null'
-          x-go-name: UserName
-      x-go-package: cohesity/iris/server/data/public
-    ListCertResponse:
-      description: Specifies list of all certificates deployed from the cluster.
-      type: object
-      title: List Certificates Response
-      properties:
-        certificateList:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/CertificateDetails'
-          x-go-name: CertificateList
       x-go-package: cohesity/iris/server/data/public
     DeployCertParameters:
       description: Specifies the parameters used to generate and deploy a certificate.
@@ -280,36 +245,71 @@ components:
           format: int64
           x-go-name: ValidDays
       x-go-package: cohesity/iris/server/data/public
-  responses:
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
-    GetWebServerCertificateResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SslCertificateConfig'
-    NoContentResponse:
-      description: No Content
-    GetCertificateResponse:
-      description: List Host Certificate Response.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ListCertResponse'
-    UpdateWebServerCertificateResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SslCertificateConfig'
-    DeployHostCertResponse:
-      description: Host Certificate Download Response.
-      content:
-        application/json:
-          schema:
+    HostInfo:
+      description: Specifies the list of all hosts on which the certificate is deployed.
+      type: object
+      title: Hosts Information list.
+      properties:
+        password:
+          description: 'Specifies the password of the host to establish SSH connection.
+
+            The certificate is copied to the host after generating the certificate
+
+            on the cluster.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Password
+        serverName:
+          description: Specifies the servername of the host where certificate is to be deployed.
+          type:
+          - string
+          - 'null'
+          x-go-name: ServerName
+        target:
+          description: 'Specifies the target location on the host where the certificate is
+
+            deployed.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Target
+        userName:
+          description: Specifies the username of the host.
+          type:
+          - string
+          - 'null'
+          x-go-name: UserName
+      x-go-package: cohesity/iris/server/data/public
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    ListCertResponse:
+      description: Specifies list of all certificates deployed from the cluster.
+      type: object
+      title: List Certificates Response
+      properties:
+        certificateList:
+          type:
+          - array
+          - 'null'
+          items:
             $ref: '#/components/schemas/CertificateDetails'
+          x-go-name: CertificateList
+      x-go-package: cohesity/iris/server/data/public

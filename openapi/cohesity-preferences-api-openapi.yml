@@ -60,6 +60,19 @@ paths:
                 type: string
         description: Request to create or update User Preferences.
 components:
+  responses:
+    UserPreferencesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserPreferencesResult'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
   schemas:
     RequestError:
       description: Details about the Error.
@@ -94,16 +107,3 @@ components:
             type: string
           x-go-name: Preferences
       x-go-package: cohesity/iris/server/data/public
-  responses:
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
-    UserPreferencesResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/UserPreferencesResult'

@@ -37,13 +37,6 @@ paths:
         required: true
 components:
   schemas:
-    SCErrorCode:
-      description: Specifies all the error codes that are returned by API server
-      type: string
-      enum:
-      - kNoError
-      - kValidationError
-      - kInternalError
     SCInitiateHealthCheckParams:
       description: Specifies the parameters required to initiate a health check.
       type: object
@@ -63,6 +56,13 @@ components:
           - object
           - 'null'
           $ref: '#/components/schemas/SCDRPlanHealthCheckParams'
+    SCErrorCode:
+      description: Specifies all the error codes that are returned by API server
+      type: string
+      enum:
+      - kNoError
+      - kValidationError
+      - kInternalError
     SCError:
       description: Specifies the error object with error code and a message.
       type: object

@@ -72,28 +72,20 @@ paths:
       security:
       - APIKeyHeader: []
 components:
-  responses:
-    GetDmaasTenantCertsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/TenantDmaasCerts'
-    NoContentResponse:
-      description: No Content
-    ErrorResponse:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    AddDmaasTenantCertResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AddDmaasTenantCertRequest'
   schemas:
+    TenantDmaasCerts:
+      description: Specifies a list of tenant certificates.
+      type: object
+      title: Tenant Dmaas Certificates.
+      properties:
+        certificates:
+          description: Specifies a list of tenant certificates.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TenantDmaasCert'
+          x-order: 0
     TenantDmaasCert:
       description: Specifies the parameters to of a tenant certificate.
       type: object
@@ -146,19 +138,6 @@ components:
           - string
           - 'null'
           x-order: 1
-    TenantDmaasCerts:
-      description: Specifies a list of tenant certificates.
-      type: object
-      title: Tenant Dmaas Certificates.
-      properties:
-        certificates:
-          description: Specifies a list of tenant certificates.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/TenantDmaasCert'
-          x-order: 0
     AddDmaasTenantCertRequest:
       description: Specifies the parameters to add an Orion tenant certificate.
       type: object
@@ -199,6 +178,27 @@ components:
           - string
           - 'null'
           x-order: 4
+  responses:
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    AddDmaasTenantCertResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AddDmaasTenantCertRequest'
+    NoContentResponse:
+      description: No Content
+    GetDmaasTenantCertsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TenantDmaasCerts'
   securitySchemes:
     APIKeyHeader:
       in: header

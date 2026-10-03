@@ -30,6 +30,24 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 components:
+  responses:
+    GetKmsConfigResponse:
+      description: Specifies a list of KMS configurations.
+      content:
+        application/json:
+          schema:
+            description: 'KMS Configuration corresponding to the server name
+
+              specified in the list KMS request.'
+            type: array
+            items:
+              $ref: '#/components/schemas/KmsConfigurationResponse'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
   schemas:
     KmsConfigurationResponse:
       description: Specifies response parameters to a KMS request.
@@ -77,6 +95,25 @@ components:
           - kAwsKms
           - kCryptsoftKms
           x-go-name: ServerType
+      x-go-package: cohesity/iris/server/data/public
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
       x-go-package: cohesity/iris/server/data/public
     AwsKmsConfiguration:
       type: object
@@ -147,25 +184,6 @@ components:
           - 'null'
           x-go-name: VerifySSL
       x-go-package: cohesity/iris/server/data/public
-    RequestError:
-      description: Details about the Error.
-      type: object
-      title: Error
-      properties:
-        errorCode:
-          description: Operation response error code.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ErrorCode
-        message:
-          description: Description of the error.
-          type:
-          - string
-          - 'null'
-          x-go-name: Message
-      x-go-package: cohesity/iris/server/data/public
     CryptsoftKmsConfigResponse:
       type: object
       title: CryptsoftKmsConfigResponse specifies response parameters for cryptsoftKMS.
@@ -199,21 +217,3 @@ components:
           format: int32
           x-go-name: ServerPort
       x-go-package: cohesity/iris/server/data/public
-  responses:
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
-    GetKmsConfigResponse:
-      description: Specifies a list of KMS configurations.
-      content:
-        application/json:
-          schema:
-            description: 'KMS Configuration corresponding to the server name
-
-              specified in the list KMS request.'
-            type: array
-            items:
-              $ref: '#/components/schemas/KmsConfigurationResponse'
