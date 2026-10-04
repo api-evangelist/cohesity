@@ -290,139 +290,33 @@ paths:
         description: Specifies the parameters to delete a connector.
         required: true
 components:
-  responses:
-    ErrorResponse:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    CreateOrUpdateRigelConnectorResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RigelConnector'
-    GetRigelConnectorByIdResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RigelConnector'
-    GetBifrostConnectorByIdResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BifrostConnector'
-    CreateOrUpdateBifrostConnectorResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BifrostConnector'
-    NoContentResponse:
-      description: No Content
-    GetRigelConnectorResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RigelConnectors'
-    GetBifrostConnectorResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BifrostConnectors'
   schemas:
-    CommonCreateOrUpdateRigelConnectorRequest:
-      description: Specify the common params to create or update a Rigel connector.
+    RigelConnectors:
+      description: Specify a list of Rigel connectors.
       type: object
-      title: Common Create Or Update Rigel connector Request.
-      required:
-      - connectionId
-      - tenantId
-      - name
-      - certificateVersion
+      title: Rigel Connectors.
       properties:
-        connectionId:
-          description: Specifies the Id of the connection which this connector belongs to.
+        RigelConnectors:
+          description: Specifies a list of Rigel Connectors.
           type:
-          - integer
+          - array
           - 'null'
-          format: int64
+          items:
+            $ref: '#/components/schemas/RigelConnector'
           x-order: 0
+    DeleteRigelConnectorRequest:
+      description: Specify the params to delete a Rigel connector.
+      type: object
+      title: Delete Rigel Connector Request.
+      required:
+      - tenantId
+      properties:
         tenantId:
           description: Specifies the id of the tenant which the connector belongs to.
           type:
           - string
           - 'null'
-          x-order: 1
-        name:
-          description: Specifies the name of the connector.
-          type:
-          - string
-          - 'null'
-          x-order: 2
-        certificateVersion:
-          description: Specifies the version of the connector's certificate. The version is used to revoke/renew connector's certificates.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-order: 3
-    UpdateRigelConnectorRequest:
-      description: Specify the params to update a Rigel connector.
-      type: object
-      title: Update Rigel connector Request.
-      allOf:
-      - $ref: '#/components/schemas/CommonCreateOrUpdateRigelConnectorRequest'
-    CreateOrUpdateBifrostConnectorRequest:
-      description: Specify the params to create or update a Bifrost connector.
-      type: object
-      title: Create Or Update Bifrost connector Request.
-      required:
-      - connectionId
-      - tenantId
-      - name
-      properties:
-        connectionId:
-          description: Specifies the Id of the connection which this connector belongs to.
-          type:
-          - integer
-          - 'null'
-          format: int64
           x-order: 0
-        tenantId:
-          description: Specifies the id of the tenant which the connector belongs to.
-          type:
-          - string
-          - 'null'
-          x-order: 1
-        name:
-          description: Specifies the name of the connector.
-          type:
-          - string
-          - 'null'
-          x-order: 2
-    Error:
-      description: Specifies the error object with error code and a message.
-      type: object
-      title: Error.
-      properties:
-        errorCode:
-          description: Specifies the error code.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        message:
-          description: Specifies the error message.
-          type:
-          - string
-          - 'null'
-          x-order: 1
     RigelConnector:
       description: Specify a Rigel connector.
       type: object
@@ -462,19 +356,58 @@ components:
           - 'null'
           x-order: 4
           $ref: '#/components/schemas/ConnectorConnectionInfo'
-    BifrostConnectors:
-      description: Specify a list of Bifrost connectors.
+    CreateOrUpdateBifrostConnectorRequest:
+      description: Specify the params to create or update a Bifrost connector.
       type: object
-      title: Bifrost Connectors.
+      title: Create Or Update Bifrost connector Request.
+      required:
+      - connectionId
+      - tenantId
+      - name
       properties:
-        BifrostConnectors:
-          description: Specifies a list of Bifrost Connectors.
+        connectionId:
+          description: Specifies the Id of the connection which this connector belongs to.
           type:
-          - array
+          - integer
           - 'null'
-          items:
-            $ref: '#/components/schemas/BifrostConnector'
+          format: int64
           x-order: 0
+        tenantId:
+          description: Specifies the id of the tenant which the connector belongs to.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        name:
+          description: Specifies the name of the connector.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+    ConnectorConnectionInfo:
+      description: Specifies the connection info of a connector.
+      type: object
+      title: Connection Info.
+      properties:
+        isActive:
+          description: Specifies whether the connector is currently connected to cohesity server.
+          type:
+          - boolean
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies possible error message when the connector is not able to connect.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        lastConnectedTimestampMsecs:
+          description: Specifies last timestamp for which connection status was known.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
     CreateRigelConnectorRequest:
       description: Specify the params to create a Rigel connector.
       type: object
@@ -492,32 +425,65 @@ components:
             - 'null'
             format: int64
             x-order: 0
-    RigelConnectors:
-      description: Specify a list of Rigel connectors.
+    UpdateRigelConnectorRequest:
+      description: Specify the params to update a Rigel connector.
       type: object
-      title: Rigel Connectors.
+      title: Update Rigel connector Request.
+      allOf:
+      - $ref: '#/components/schemas/CommonCreateOrUpdateRigelConnectorRequest'
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
       properties:
-        RigelConnectors:
-          description: Specifies a list of Rigel Connectors.
+        errorCode:
+          description: Specifies the error code.
           type:
-          - array
+          - string
           - 'null'
-          items:
-            $ref: '#/components/schemas/RigelConnector'
           x-order: 0
-    DeleteRigelConnectorRequest:
-      description: Specify the params to delete a Rigel connector.
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    CommonCreateOrUpdateRigelConnectorRequest:
+      description: Specify the common params to create or update a Rigel connector.
       type: object
-      title: Delete Rigel Connector Request.
+      title: Common Create Or Update Rigel connector Request.
       required:
+      - connectionId
       - tenantId
+      - name
+      - certificateVersion
       properties:
+        connectionId:
+          description: Specifies the Id of the connection which this connector belongs to.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
         tenantId:
           description: Specifies the id of the tenant which the connector belongs to.
           type:
           - string
           - 'null'
-          x-order: 0
+          x-order: 1
+        name:
+          description: Specifies the name of the connector.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        certificateVersion:
+          description: Specifies the version of the connector's certificate. The version is used to revoke/renew connector's certificates.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 3
     BifrostConnector:
       description: Specify a Bifrost connector.
       type: object
@@ -571,30 +537,64 @@ components:
           - 'null'
           x-order: 6
           readOnly: true
-    ConnectorConnectionInfo:
-      description: Specifies the connection info of a connector.
+    BifrostConnectors:
+      description: Specify a list of Bifrost connectors.
       type: object
-      title: Connection Info.
+      title: Bifrost Connectors.
       properties:
-        isActive:
-          description: Specifies whether the connector is currently connected to cohesity server.
+        BifrostConnectors:
+          description: Specifies a list of Bifrost Connectors.
           type:
-          - boolean
+          - array
           - 'null'
+          items:
+            $ref: '#/components/schemas/BifrostConnector'
           x-order: 0
-        message:
-          description: Specifies possible error message when the connector is not able to connect.
-          type:
-          - string
-          - 'null'
-          x-order: 1
-        lastConnectedTimestampMsecs:
-          description: Specifies last timestamp for which connection status was known.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-order: 2
+  responses:
+    NoContentResponse:
+      description: No Content
+    GetBifrostConnectorByIdResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BifrostConnector'
+    CreateOrUpdateBifrostConnectorResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BifrostConnector'
+    GetBifrostConnectorResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BifrostConnectors'
+    GetRigelConnectorResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RigelConnectors'
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    GetRigelConnectorByIdResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RigelConnector'
+    CreateOrUpdateRigelConnectorResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RigelConnector'
   securitySchemes:
     APIKeyHeader:
       in: header

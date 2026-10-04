@@ -2438,8 +2438,6 @@ apis:
   humanURL: https://developer.cohesity.com/helios-api.html
   baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
   tags:
-  - Audit Logs
-  tags_raw:
   - Audit Log
   properties:
   - type: OpenAPI

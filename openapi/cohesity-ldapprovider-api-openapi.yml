@@ -126,6 +126,35 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 components:
+  responses:
+    CreateLdapProviderResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LdapProviderResponse'
+    GetLdapProviderResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/LdapProviderResponse'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    UpdateLdapProviderResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LdapProviderResponse'
+    NoContentResponse:
+      description: No Content
   schemas:
     LdapProvider:
       description: Specifies the configuration settings for an LDAP provider.
@@ -448,32 +477,3 @@ components:
           - 'null'
           x-go-name: UserPassword
       x-go-package: cohesity/iris/server/data/public
-  responses:
-    UpdateLdapProviderResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/LdapProviderResponse'
-    GetLdapProviderResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/LdapProviderResponse'
-    NoContentResponse:
-      description: No Content
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
-    CreateLdapProviderResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/LdapProviderResponse'

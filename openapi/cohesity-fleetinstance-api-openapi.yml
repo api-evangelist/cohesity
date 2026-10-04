@@ -31,23 +31,6 @@ paths:
         required: true
 components:
   schemas:
-    Error:
-      description: Specifies the error object with error code and a message.
-      type: object
-      title: Error.
-      properties:
-        errorCode:
-          description: Specifies the error code.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        message:
-          description: Specifies the error message.
-          type:
-          - string
-          - 'null'
-          x-order: 1
     UpdateFleetEnvInfoRequest:
       description: Specifies the params to add fleet env info.
       type: object
@@ -89,6 +72,23 @@ components:
           - string
           - 'null'
           x-order: 4
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
   responses:
     UpdateFleetEnvInfoResponse:
       description: Success

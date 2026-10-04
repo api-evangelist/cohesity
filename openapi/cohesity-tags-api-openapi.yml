@@ -212,18 +212,41 @@ paths:
     - url: /v2
 components:
   schemas:
-    TagsOperationResult:
+    DocError:
       type: object
-      title: TagsOperationResult specifies the result of tagging operation.
+      title: DocError are document error incurred in yoda service while tagging.
       properties:
-        docErrors:
-          description: DocErrors are document errors incurred in yoda service while tagging.
+        documentId:
+          description: DocumentId is document which caused the error.
           type:
-          - array
+          - string
           - 'null'
-          items:
-            $ref: '#/components/schemas/DocError'
-          x-go-name: DocErrors
+          x-go-name: DocumentId
+        errorString:
+          description: ErrorString is the error converted to string.
+          type:
+          - string
+          - 'null'
+          x-go-name: ErrorString
+      x-go-package: cohesity/iris/server/data/public
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
       x-go-package: cohesity/iris/server/data/public
     TagsOperationParameters:
       type: object
@@ -285,59 +308,25 @@ components:
             type: string
           x-go-name: Tags
       x-go-package: cohesity/iris/server/data/public
-    DocError:
+    TagsOperationResult:
       type: object
-      title: DocError are document error incurred in yoda service while tagging.
+      title: TagsOperationResult specifies the result of tagging operation.
       properties:
-        documentId:
-          description: DocumentId is document which caused the error.
+        docErrors:
+          description: DocErrors are document errors incurred in yoda service while tagging.
           type:
-          - string
+          - array
           - 'null'
-          x-go-name: DocumentId
-        errorString:
-          description: ErrorString is the error converted to string.
-          type:
-          - string
-          - 'null'
-          x-go-name: ErrorString
+          items:
+            $ref: '#/components/schemas/DocError'
+          x-go-name: DocErrors
       x-go-package: cohesity/iris/server/data/public
-    RequestError:
-      description: Details about the Error.
-      type: object
-      title: Error
-      properties:
-        errorCode:
-          description: Operation response error code.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ErrorCode
-        message:
-          description: Description of the error.
-          type:
-          - string
-          - 'null'
-          x-go-name: Message
-      x-go-package: cohesity/iris/server/data/public
-    Error:
-      description: Specifies the error object with error code and a message.
-      type: object
-      title: Error.
-      properties:
-        errorCode:
-          description: Specifies the error code.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        message:
-          description: Specifies the error message.
-          type:
-          - string
-          - 'null'
-          x-order: 1
+    GetTagsResult:
+      description: List tags result
+      type: array
+      title: List tags result.
+      items:
+        $ref: '#/components/schemas/Tag'
     Tag:
       description: Tag details
       type: object
@@ -427,45 +416,56 @@ components:
             type: string
           x-omitempty: true
           x-order: 9
-    GetTagsResult:
-      description: List tags result
-      type: array
-      title: List tags result.
-      items:
-        $ref: '#/components/schemas/Tag'
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
   responses:
-    TagsOperationResponse:
-      description: Tags Operation Response.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/TagsOperationResult'
     Error:
       description: Error
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/RequestError'
-    ErrorResponse:
-      description: Error
+    TagsOperationResponse:
+      description: Tags Operation Response.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
-    TagResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Tag'
+            $ref: '#/components/schemas/TagsOperationResult'
     GetTagsResponse:
       description: Success
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/GetTagsResult'
+    TagResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Tag'
     NoContentResponse:
       description: No Content
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     APIKeyHeader:
       in: header

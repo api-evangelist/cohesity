@@ -69,9 +69,10 @@ components:
             type: string
           x-go-name: NotificationIds
       x-go-package: cohesity/iris/server/data/public
-    BasicTaskInfo:
+    CloneTaskInfo:
+      description: Parameters for a clone op.
       type: object
-      title: BasicTaskInfo handles the basic elements of the notification task.
+      title: Clone Task Information.
       properties:
         name:
           description: Name of the recovery task.
@@ -201,24 +202,6 @@ components:
           format: int64
           x-go-name: VisitedTimeSecs
       x-go-package: cohesity/iris/server/data/public
-    CloneTaskInfo:
-      description: Parameters for a clone op.
-      type: object
-      title: Clone Task Information.
-      properties:
-        name:
-          description: Name of the recovery task.
-          type:
-          - string
-          - 'null'
-          x-go-name: Name
-        taskId:
-          description: Id of the recovery task.
-          type:
-          - string
-          - 'null'
-          x-go-name: TaskId
-      x-go-package: cohesity/iris/server/data/public
     BulkInstallAppTaskInfo:
       description: Parameters for a bulk install app task.
       type: object
@@ -287,41 +270,6 @@ components:
           - completed
           x-go-name: State
       x-go-package: cohesity/iris/server/data/public
-    RecoveryTaskInfo:
-      description: Parameters for a recovery op.
-      type: object
-      title: Recovery Task Information.
-      properties:
-        name:
-          description: Name of the recovery task.
-          type:
-          - string
-          - 'null'
-          x-go-name: Name
-        taskId:
-          description: Id of the recovery task.
-          type:
-          - string
-          - 'null'
-          x-go-name: TaskId
-        type:
-          description: 'Denotes if the recovery task has an archival target.
-
-            This param is used to reflect if the recovery op has an archival
-
-            target to work with.
-
-            ''local'' indicates no archival target.
-
-            ''archive'' indicates that objects restored using an archival target.'
-          type:
-          - string
-          - 'null'
-          enum:
-          - local
-          - archive
-          x-go-name: Type
-      x-go-package: cohesity/iris/server/data/public
     Notifications:
       description: 'All the Notification events generated for a given user. This is used for
 
@@ -371,6 +319,58 @@ components:
           - 'null'
           x-go-name: Message
       x-go-package: cohesity/iris/server/data/public
+    BasicTaskInfo:
+      type: object
+      title: BasicTaskInfo handles the basic elements of the notification task.
+      properties:
+        name:
+          description: Name of the recovery task.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        taskId:
+          description: Id of the recovery task.
+          type:
+          - string
+          - 'null'
+          x-go-name: TaskId
+      x-go-package: cohesity/iris/server/data/public
+    RecoveryTaskInfo:
+      description: Parameters for a recovery op.
+      type: object
+      title: Recovery Task Information.
+      properties:
+        name:
+          description: Name of the recovery task.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        taskId:
+          description: Id of the recovery task.
+          type:
+          - string
+          - 'null'
+          x-go-name: TaskId
+        type:
+          description: 'Denotes if the recovery task has an archival target.
+
+            This param is used to reflect if the recovery op has an archival
+
+            target to work with.
+
+            ''local'' indicates no archival target.
+
+            ''archive'' indicates that objects restored using an archival target.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - local
+          - archive
+          x-go-name: Type
+      x-go-package: cohesity/iris/server/data/public
     BackupTaskInfo:
       type: object
       title: Parameters for a backup op.
@@ -401,6 +401,12 @@ components:
           x-go-name: TaskId
       x-go-package: cohesity/iris/server/data/public
   responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
     GetNotificationsResponse:
       description: Success
       content:
@@ -409,9 +415,3 @@ components:
             $ref: '#/components/schemas/Notifications'
     NoContentResponse:
       description: No Content
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'

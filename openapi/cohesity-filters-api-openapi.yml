@@ -34,6 +34,30 @@ paths:
         required: true
 components:
   schemas:
+    Tenant:
+      description: Specifies the Tenant resource.
+      type: object
+      properties:
+        id:
+          description: Specifies the id of the Tenant.
+          type:
+          - string
+          - 'null'
+        name:
+          description: Specifies the name of the Tenant.
+          type:
+          - string
+          - 'null'
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type: integer
+        errorMessage:
+          description: Specifies the error message.
+          type: string
     ExternalTarget:
       description: Specifies an External target.
       type: object
@@ -63,51 +87,31 @@ components:
           type:
           - string
           - 'null'
-    Tenant:
-      description: Specifies the Tenant resource.
+    GetResourcesRequest:
+      description: Specifies the request parameters to fetch resources.
+      type: object
+      required:
+      - resourceType
+      properties:
+        resourceType:
+          description: Specifies the type of the resource.
+          type: string
+          enum:
+          - Policies
+          - ProtectionGroups
+          - RegisteredSources
+          - MessageCodeMappings
+          - Tenants
+          - ExternalTargets
+    MessageCodeMapping:
+      description: Specifies an error code and GUID.
       type: object
       properties:
-        id:
-          description: Specifies the id of the Tenant.
-          type:
-          - string
-          - 'null'
-        name:
-          description: Specifies the name of the Tenant.
-          type:
-          - string
-          - 'null'
-    RegisteredSource:
-      description: Specifies the Registered Source resource.
-      type: object
-      properties:
-        uuid:
-          description: Specifies the unique identifier of registered source.
-          type:
-          - string
-          - 'null'
-        name:
-          description: Specifies the name of the registered source.
-          type:
-          - string
-          - 'null'
-        environments:
-          description: Specifies list of all environments discovered as part of this source.
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-go-custom-tag: pg:",array"
-    Error:
-      description: Specifies the error object with error code and a message.
-      type: object
-      properties:
-        errorCode:
-          description: Specifies the error code.
-          type: integer
-        errorMessage:
-          description: Specifies the error message.
+        messageCode:
+          description: Specifies the message code.
+          type: string
+        messageGuid:
+          description: Specifies the message GUID.
           type: string
     Resources:
       description: Specifies the resources response.
@@ -179,22 +183,28 @@ components:
           type:
           - string
           - 'null'
-    GetResourcesRequest:
-      description: Specifies the request parameters to fetch resources.
+    RegisteredSource:
+      description: Specifies the Registered Source resource.
       type: object
-      required:
-      - resourceType
       properties:
-        resourceType:
-          description: Specifies the type of the resource.
-          type: string
-          enum:
-          - Policies
-          - ProtectionGroups
-          - RegisteredSources
-          - MessageCodeMappings
-          - Tenants
-          - ExternalTargets
+        uuid:
+          description: Specifies the unique identifier of registered source.
+          type:
+          - string
+          - 'null'
+        name:
+          description: Specifies the name of the registered source.
+          type:
+          - string
+          - 'null'
+        environments:
+          description: Specifies list of all environments discovered as part of this source.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-custom-tag: pg:",array"
     Policy:
       description: Specifies the Protection Policy resource.
       type: object
@@ -224,29 +234,19 @@ components:
           type:
           - string
           - 'null'
-    MessageCodeMapping:
-      description: Specifies an error code and GUID.
-      type: object
-      properties:
-        messageCode:
-          description: Specifies the message code.
-          type: string
-        messageGuid:
-          description: Specifies the message GUID.
-          type: string
   responses:
-    ErrorResponse:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     GetResourcesResponse:
       description: Success
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Resources'
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

@@ -457,41 +457,32 @@ paths:
           $ref: '#/components/responses/Error'
 components:
   schemas:
-    AlertProperty:
-      description: Specifies a key-value pair associated with an Alert.
-      type: object
-      title: Alert Key-Value Pair
-      properties:
-        key:
-          description: Specifies name of the property.
-          type:
-          - string
-          - 'null'
-          x-go-name: Key
-        value:
-          description: Specifies value of the property.
-          type:
-          - string
-          - 'null'
-          x-go-name: Value
-      x-go-package: cohesity/iris/server/data/public
-    WebHookDeliveryTarget:
-      description: 'WebHookDeliveryTarget
+    EmailDeliveryTarget:
+      description: 'EmailDeliveryTarget
 
-        Specifies the external api url to hit along with the related options for it.'
+        Specifies the email address and the locale setting for it.'
       type: object
       properties:
-        curlOptions:
-          description: Specifies curl options used to invoke external api url defined above.
+        emailAddress:
           type:
           - string
           - 'null'
-          x-go-name: CurlOptions
-        externalApiUrl:
+          x-go-name: EmailAddress
+        locale:
+          description: 'Specifies the language in which the emails sent to the above defined
+
+            mail address should be in.'
           type:
           - string
           - 'null'
-          x-go-name: ExternalApiUrl
+          x-go-name: Locale
+        recipientType:
+          description: Specifies the recipient type on how the emails are to received.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: RecipientType
       x-go-package: cohesity/iris/server/data/public
     AlertResolutionInfo:
       description: Short description and detailed notes about the Resolution.
@@ -510,372 +501,6 @@ components:
           - string
           - 'null'
           x-go-name: ResolutionSummary
-      x-go-package: cohesity/iris/server/data/public
-    RequestError:
-      description: Details about the Error.
-      type: object
-      title: Error
-      properties:
-        errorCode:
-          description: Operation response error code.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ErrorCode
-        message:
-          description: Description of the error.
-          type:
-          - string
-          - 'null'
-          x-go-name: Message
-      x-go-package: cohesity/iris/server/data/public
-    NotificationRule:
-      description: 'Specifies a rule to notify delivery targets such as sending emails,
-
-        invoking an external api etc based on the alert type, category and
-
-        severity of the generated alert.'
-      type: object
-      title: Notification Rule
-      properties:
-        alertTypeList:
-          description: Specifies alert types this rule is applicable to.
-          type:
-          - array
-          - 'null'
-          items:
-            type: integer
-            format: int32
-          x-go-name: AlertTypeList
-        categories:
-          description: 'Specifies alert categories this rule is applicable to.
-
-            Specifies the category of an Alert.
-
-            kDisk - Alerts that are related to Disk.
-
-            kNode - Alerts that are related to Node.
-
-            kCluster - Alerts that are related to Cluster.
-
-            kNodeHealth - Alerts that are related to Node Health.
-
-            kClusterHealth - Alerts that are related to Cluster Health.
-
-            kBackupRestore - Alerts that are related to Backup/Restore.
-
-            kEncryption - Alerts that are related to Encryption.
-
-            kArchivalRestore - Alerts that are related to Archival/Restore.
-
-            kRemoteReplication - Alerts that are related to Remote Replication.
-
-            kQuota - Alerts that are related to Quota.
-
-            kLicense - Alerts that are related to License.
-
-            kHeliosProActiveWellness - Alerts that are related to Helios ProActive Wellness.
-
-            kHeliosAnalyticsJobs - Alerts that are related to Helios Analytics Jobs.
-
-            kHeliosSignatureJobs - Alerts that are related to Helios Signature Jobs.
-
-            kSecurity - Alerts that are related to Security.
-
-            kAppsInfra - Alerts that are related to applications infra.
-
-            kAntivirus - Alerts that are related to antivirus.
-
-            kArchivalCopy - Alerts that are related to archival copies.'
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-            enum:
-            - kDisk
-            - kNode
-            - kCluster
-            - kNodeHealth
-            - kClusterHealth
-            - kBackupRestore
-            - kEncryption
-            - kArchivalRestore
-            - kRemoteReplication
-            - kQuota
-            - kLicense
-            - kHeliosProActiveWellness
-            - kHeliosAnalyticsJobs
-            - kHeliosSignatureJobs
-            - kSecurity
-            - kAppsInfra
-            - kAntivirus
-            - kArchivalCopy
-          x-go-name: Categories
-        emailDeliveryTargets:
-          description: 'Specifies email addresses to be notified when an alert matching this
-
-            rule is generated.'
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/EmailDeliveryTarget'
-          x-go-name: EmailDeliveryTargets
-        ruleId:
-          description: Specifies id of the alert delivery rule.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: RuleId
-        ruleName:
-          description: Specifies name of the alert delivery rule.
-          type:
-          - string
-          - 'null'
-          x-go-name: RuleName
-        severities:
-          description: 'Specifies alert severity types this rule is applicable to.
-
-            Specifies the severity level of an Alert.
-
-            kCritical - Alerts whose severity type is Critical.
-
-            kWarning - Alerts whose severity type is Warning.
-
-            kInfo - Alerts whose severity type is Info.'
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-            enum:
-            - kCritical
-            - kWarning
-            - kInfo
-          x-go-name: Severities
-        snmpEnabled:
-          description: 'Specifies whether SNMP notification to be invoked when an alert matching
-
-            this rule is generated.'
-          type:
-          - boolean
-          - 'null'
-          x-go-name: SnmpEnabled
-        syslogEnabled:
-          description: 'Specifies whether syslog notification to be invoked when an alert matching
-
-            this rule is generated.'
-          type:
-          - boolean
-          - 'null'
-          x-go-name: SyslogEnabled
-        tenantId:
-          description: Specifies tenant id this rule is applicable to.
-          type:
-          - string
-          - 'null'
-          x-go-name: TenantId
-        webHookDeliveryTargets:
-          description: 'Specifies external api urls to be invoked when an alert matching this
-
-            rule is generated.'
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/WebHookDeliveryTarget'
-          x-go-name: WebHookDeliveryTargets
-      x-go-package: cohesity/iris/server/data/public
-    AlertCategoryName:
-      description: AlertCategoryName returns alert category and its public facing string.
-      type: object
-      title: Alert Category Name
-      properties:
-        category:
-          description: 'Specifies alert category.
-
-            Specifies the category of an Alert.
-
-            kDisk - Alerts that are related to Disk.
-
-            kNode - Alerts that are related to Node.
-
-            kCluster - Alerts that are related to Cluster.
-
-            kNodeHealth - Alerts that are related to Node Health.
-
-            kClusterHealth - Alerts that are related to Cluster Health.
-
-            kBackupRestore - Alerts that are related to Backup/Restore.
-
-            kEncryption - Alerts that are related to Encryption.
-
-            kArchivalRestore - Alerts that are related to Archival/Restore.
-
-            kRemoteReplication - Alerts that are related to Remote Replication.
-
-            kQuota - Alerts that are related to Quota.
-
-            kLicense - Alerts that are related to License.
-
-            kHeliosProActiveWellness - Alerts that are related to Helios ProActive Wellness.
-
-            kHeliosAnalyticsJobs - Alerts that are related to Helios Analytics Jobs.
-
-            kHeliosSignatureJobs - Alerts that are related to Helios Signature Jobs.
-
-            kSecurity - Alerts that are related to Security.
-
-            kAppsInfra - Alerts that are related to applications infra.
-
-            kAntivirus - Alerts that are related to antivirus.
-
-            kArchivalCopy - Alerts that are related to archival copies.'
-          type:
-          - string
-          - 'null'
-          enum:
-          - kDisk
-          - kNode
-          - kCluster
-          - kNodeHealth
-          - kClusterHealth
-          - kBackupRestore
-          - kEncryption
-          - kArchivalRestore
-          - kRemoteReplication
-          - kQuota
-          - kLicense
-          - kHeliosProActiveWellness
-          - kHeliosAnalyticsJobs
-          - kHeliosSignatureJobs
-          - kSecurity
-          - kAppsInfra
-          - kAntivirus
-          - kArchivalCopy
-          x-go-name: Category
-        name:
-          description: Specifies public facing string for alert enums.
-          type:
-          - string
-          - 'null'
-          x-go-name: Name
-      x-go-package: cohesity/iris/server/data/public
-    GetAlertTypesParams:
-      description: Specifies params to get alert types.
-      type: object
-      title: Get Alert Types Params.
-      properties:
-        alertCategoryList:
-          description: 'Specifies a list of Alert Categories to filter alert types by.
-
-            Specifies the category of an Alert.
-
-            kDisk - Alerts that are related to Disk.
-
-            kNode - Alerts that are related to Node.
-
-            kCluster - Alerts that are related to Cluster.
-
-            kNodeHealth - Alerts that are related to Node Health.
-
-            kClusterHealth - Alerts that are related to Cluster Health.
-
-            kBackupRestore - Alerts that are related to Backup/Restore.
-
-            kEncryption - Alerts that are related to Encryption.
-
-            kArchivalRestore - Alerts that are related to Archival/Restore.
-
-            kRemoteReplication - Alerts that are related to Remote Replication.
-
-            kQuota - Alerts that are related to Quota.
-
-            kLicense - Alerts that are related to License.
-
-            kHeliosProActiveWellness - Alerts that are related to Helios ProActive Wellness.
-
-            kHeliosAnalyticsJobs - Alerts that are related to Helios Analytics Jobs.
-
-            kHeliosSignatureJobs - Alerts that are related to Helios Signature Jobs.
-
-            kSecurity - Alerts that are related to Security.
-
-            kAppsInfra - Alerts that are related to applications infra.
-
-            kAntivirus - Alerts that are related to antivirus.
-
-            kArchivalCopy - Alerts that are related to archival copies.'
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-            enum:
-            - kDisk
-            - kNode
-            - kCluster
-            - kNodeHealth
-            - kClusterHealth
-            - kBackupRestore
-            - kEncryption
-            - kArchivalRestore
-            - kRemoteReplication
-            - kQuota
-            - kLicense
-            - kHeliosProActiveWellness
-            - kHeliosAnalyticsJobs
-            - kHeliosSignatureJobs
-            - kSecurity
-            - kAppsInfra
-            - kAntivirus
-            - kArchivalCopy
-          x-go-name: AlertCategoryList
-      x-go-package: cohesity/iris/server/data/public
-    AlertResolutionDetails:
-      description: 'Specifies information about the Alert Resolution such as a summary,
-
-        id assigned by the Cohesity Cluster, user who resolved the Alerts, etc.'
-      type: object
-      title: Alert Resolution.
-      properties:
-        resolutionDetails:
-          description: Specifies detailed notes about the Resolution.
-          type:
-          - string
-          - 'null'
-          x-go-name: ResolutionDetails
-        resolutionId:
-          description: Specifies Unique id assigned by the Cohesity Cluster for this Resolution.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ResolutionId
-        resolutionSummary:
-          description: Specifies short description about the Resolution.
-          type:
-          - string
-          - 'null'
-          x-go-name: ResolutionSummary
-        timestampUsecs:
-          description: 'Specifies unix epoch timestamp (in microseconds) when the Alerts were
-
-            resolved.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: TimestampUsecs
-        userName:
-          description: Specifies name of the Cohesity Cluster user who resolved the Alerts.
-          type:
-          - string
-          - 'null'
-          x-go-name: UserName
       x-go-package: cohesity/iris/server/data/public
     AlertMetadata:
       description: 'AlertMetadata specifies metadata for a given alert type. All the alerts of a
@@ -1056,6 +681,69 @@ components:
           format: int32
           x-go-name: Version
       x-go-package: cohesity/iris/server/data/public
+    AlertResolutionRequest:
+      description: 'Request that provides the details of a resolution and the list of
+
+        Alert Ids to be marked resolved.'
+      type: object
+      title: Create Alert Resolution Request.
+      properties:
+        alertIdList:
+          description: 'Specifies list of alerts resolved by a Resolution, which are specified by
+
+            Alert Ids.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: AlertIdList
+        resolutionDetails:
+          description: Specifies short description and detailed notes about the Resolution.
+          $ref: '#/components/schemas/AlertResolutionInfo'
+      x-go-package: cohesity/iris/server/data/public
+    AlertResolutionDetails:
+      description: 'Specifies information about the Alert Resolution such as a summary,
+
+        id assigned by the Cohesity Cluster, user who resolved the Alerts, etc.'
+      type: object
+      title: Alert Resolution.
+      properties:
+        resolutionDetails:
+          description: Specifies detailed notes about the Resolution.
+          type:
+          - string
+          - 'null'
+          x-go-name: ResolutionDetails
+        resolutionId:
+          description: Specifies Unique id assigned by the Cohesity Cluster for this Resolution.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ResolutionId
+        resolutionSummary:
+          description: Specifies short description about the Resolution.
+          type:
+          - string
+          - 'null'
+          x-go-name: ResolutionSummary
+        timestampUsecs:
+          description: 'Specifies unix epoch timestamp (in microseconds) when the Alerts were
+
+            resolved.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: TimestampUsecs
+        userName:
+          description: Specifies name of the Cohesity Cluster user who resolved the Alerts.
+          type:
+          - string
+          - 'null'
+          x-go-name: UserName
+      x-go-package: cohesity/iris/server/data/public
     AlertDocument:
       description: 'Specifies documentation about the Alert such as name, description, cause
 
@@ -1095,6 +783,161 @@ components:
           - string
           - 'null'
           x-go-name: AlertName
+      x-go-package: cohesity/iris/server/data/public
+    AlertResolution:
+      description: 'Provides Resolution details and the list of Alerts resolved by a Resolution,
+
+        which are specified by Alert Ids.'
+      type: object
+      title: Alert Resolution.
+      properties:
+        alertIdList:
+          description: 'Specifies list of Alerts resolved by a Resolution, which are specified by
+
+            Alert Ids.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: AlertIdList
+        resolutionDetails:
+          description: 'Specifies information about the Alert Resolution such as a summary,
+
+            id assigned by the Cohesity Cluster, user who resolved the Alerts, etc.'
+          $ref: '#/components/schemas/AlertResolutionDetails'
+        tenantIds:
+          description: Specifies unique tenantIds of the alert contained in this resolution.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: TenantIds
+      x-go-package: cohesity/iris/server/data/public
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    AlertProperty:
+      description: Specifies a key-value pair associated with an Alert.
+      type: object
+      title: Alert Key-Value Pair
+      properties:
+        key:
+          description: Specifies name of the property.
+          type:
+          - string
+          - 'null'
+          x-go-name: Key
+        value:
+          description: Specifies value of the property.
+          type:
+          - string
+          - 'null'
+          x-go-name: Value
+      x-go-package: cohesity/iris/server/data/public
+    GetAlertTypesParams:
+      description: Specifies params to get alert types.
+      type: object
+      title: Get Alert Types Params.
+      properties:
+        alertCategoryList:
+          description: 'Specifies a list of Alert Categories to filter alert types by.
+
+            Specifies the category of an Alert.
+
+            kDisk - Alerts that are related to Disk.
+
+            kNode - Alerts that are related to Node.
+
+            kCluster - Alerts that are related to Cluster.
+
+            kNodeHealth - Alerts that are related to Node Health.
+
+            kClusterHealth - Alerts that are related to Cluster Health.
+
+            kBackupRestore - Alerts that are related to Backup/Restore.
+
+            kEncryption - Alerts that are related to Encryption.
+
+            kArchivalRestore - Alerts that are related to Archival/Restore.
+
+            kRemoteReplication - Alerts that are related to Remote Replication.
+
+            kQuota - Alerts that are related to Quota.
+
+            kLicense - Alerts that are related to License.
+
+            kHeliosProActiveWellness - Alerts that are related to Helios ProActive Wellness.
+
+            kHeliosAnalyticsJobs - Alerts that are related to Helios Analytics Jobs.
+
+            kHeliosSignatureJobs - Alerts that are related to Helios Signature Jobs.
+
+            kSecurity - Alerts that are related to Security.
+
+            kAppsInfra - Alerts that are related to applications infra.
+
+            kAntivirus - Alerts that are related to antivirus.
+
+            kArchivalCopy - Alerts that are related to archival copies.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            enum:
+            - kDisk
+            - kNode
+            - kCluster
+            - kNodeHealth
+            - kClusterHealth
+            - kBackupRestore
+            - kEncryption
+            - kArchivalRestore
+            - kRemoteReplication
+            - kQuota
+            - kLicense
+            - kHeliosProActiveWellness
+            - kHeliosAnalyticsJobs
+            - kHeliosSignatureJobs
+            - kSecurity
+            - kAppsInfra
+            - kAntivirus
+            - kArchivalCopy
+          x-go-name: AlertCategoryList
+      x-go-package: cohesity/iris/server/data/public
+    UpdateResolutionParams:
+      description: 'Apply an existing Resolution to a new list of Alerts, which are specified by
+
+        Alert Ids.'
+      type: object
+      title: Update Alert Resolution Request.
+      properties:
+        alertIdList:
+          description: Specifies the Alerts to resolve, which are specified by Alert Ids.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: AlertIdList
       x-go-package: cohesity/iris/server/data/public
     Alert:
       description: 'Specifies information about an Alert such as the type, id assigned by
@@ -1362,108 +1205,282 @@ components:
             type: string
           x-go-name: TenantIds
       x-go-package: cohesity/iris/server/data/public
-    EmailDeliveryTarget:
-      description: 'EmailDeliveryTarget
-
-        Specifies the email address and the locale setting for it.'
+    AlertCategoryName:
+      description: AlertCategoryName returns alert category and its public facing string.
       type: object
+      title: Alert Category Name
       properties:
-        emailAddress:
-          type:
-          - string
-          - 'null'
-          x-go-name: EmailAddress
-        locale:
-          description: 'Specifies the language in which the emails sent to the above defined
+        category:
+          description: 'Specifies alert category.
 
-            mail address should be in.'
+            Specifies the category of an Alert.
+
+            kDisk - Alerts that are related to Disk.
+
+            kNode - Alerts that are related to Node.
+
+            kCluster - Alerts that are related to Cluster.
+
+            kNodeHealth - Alerts that are related to Node Health.
+
+            kClusterHealth - Alerts that are related to Cluster Health.
+
+            kBackupRestore - Alerts that are related to Backup/Restore.
+
+            kEncryption - Alerts that are related to Encryption.
+
+            kArchivalRestore - Alerts that are related to Archival/Restore.
+
+            kRemoteReplication - Alerts that are related to Remote Replication.
+
+            kQuota - Alerts that are related to Quota.
+
+            kLicense - Alerts that are related to License.
+
+            kHeliosProActiveWellness - Alerts that are related to Helios ProActive Wellness.
+
+            kHeliosAnalyticsJobs - Alerts that are related to Helios Analytics Jobs.
+
+            kHeliosSignatureJobs - Alerts that are related to Helios Signature Jobs.
+
+            kSecurity - Alerts that are related to Security.
+
+            kAppsInfra - Alerts that are related to applications infra.
+
+            kAntivirus - Alerts that are related to antivirus.
+
+            kArchivalCopy - Alerts that are related to archival copies.'
           type:
           - string
           - 'null'
-          x-go-name: Locale
-        recipientType:
-          description: Specifies the recipient type on how the emails are to received.
+          enum:
+          - kDisk
+          - kNode
+          - kCluster
+          - kNodeHealth
+          - kClusterHealth
+          - kBackupRestore
+          - kEncryption
+          - kArchivalRestore
+          - kRemoteReplication
+          - kQuota
+          - kLicense
+          - kHeliosProActiveWellness
+          - kHeliosAnalyticsJobs
+          - kHeliosSignatureJobs
+          - kSecurity
+          - kAppsInfra
+          - kAntivirus
+          - kArchivalCopy
+          x-go-name: Category
+        name:
+          description: Specifies public facing string for alert enums.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+      x-go-package: cohesity/iris/server/data/public
+    NotificationRule:
+      description: 'Specifies a rule to notify delivery targets such as sending emails,
+
+        invoking an external api etc based on the alert type, category and
+
+        severity of the generated alert.'
+      type: object
+      title: Notification Rule
+      properties:
+        alertTypeList:
+          description: Specifies alert types this rule is applicable to.
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int32
+          x-go-name: AlertTypeList
+        categories:
+          description: 'Specifies alert categories this rule is applicable to.
+
+            Specifies the category of an Alert.
+
+            kDisk - Alerts that are related to Disk.
+
+            kNode - Alerts that are related to Node.
+
+            kCluster - Alerts that are related to Cluster.
+
+            kNodeHealth - Alerts that are related to Node Health.
+
+            kClusterHealth - Alerts that are related to Cluster Health.
+
+            kBackupRestore - Alerts that are related to Backup/Restore.
+
+            kEncryption - Alerts that are related to Encryption.
+
+            kArchivalRestore - Alerts that are related to Archival/Restore.
+
+            kRemoteReplication - Alerts that are related to Remote Replication.
+
+            kQuota - Alerts that are related to Quota.
+
+            kLicense - Alerts that are related to License.
+
+            kHeliosProActiveWellness - Alerts that are related to Helios ProActive Wellness.
+
+            kHeliosAnalyticsJobs - Alerts that are related to Helios Analytics Jobs.
+
+            kHeliosSignatureJobs - Alerts that are related to Helios Signature Jobs.
+
+            kSecurity - Alerts that are related to Security.
+
+            kAppsInfra - Alerts that are related to applications infra.
+
+            kAntivirus - Alerts that are related to antivirus.
+
+            kArchivalCopy - Alerts that are related to archival copies.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            enum:
+            - kDisk
+            - kNode
+            - kCluster
+            - kNodeHealth
+            - kClusterHealth
+            - kBackupRestore
+            - kEncryption
+            - kArchivalRestore
+            - kRemoteReplication
+            - kQuota
+            - kLicense
+            - kHeliosProActiveWellness
+            - kHeliosAnalyticsJobs
+            - kHeliosSignatureJobs
+            - kSecurity
+            - kAppsInfra
+            - kAntivirus
+            - kArchivalCopy
+          x-go-name: Categories
+        emailDeliveryTargets:
+          description: 'Specifies email addresses to be notified when an alert matching this
+
+            rule is generated.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EmailDeliveryTarget'
+          x-go-name: EmailDeliveryTargets
+        ruleId:
+          description: Specifies id of the alert delivery rule.
           type:
           - integer
           - 'null'
-          format: int32
-          x-go-name: RecipientType
+          format: int64
+          x-go-name: RuleId
+        ruleName:
+          description: Specifies name of the alert delivery rule.
+          type:
+          - string
+          - 'null'
+          x-go-name: RuleName
+        severities:
+          description: 'Specifies alert severity types this rule is applicable to.
+
+            Specifies the severity level of an Alert.
+
+            kCritical - Alerts whose severity type is Critical.
+
+            kWarning - Alerts whose severity type is Warning.
+
+            kInfo - Alerts whose severity type is Info.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            enum:
+            - kCritical
+            - kWarning
+            - kInfo
+          x-go-name: Severities
+        snmpEnabled:
+          description: 'Specifies whether SNMP notification to be invoked when an alert matching
+
+            this rule is generated.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: SnmpEnabled
+        syslogEnabled:
+          description: 'Specifies whether syslog notification to be invoked when an alert matching
+
+            this rule is generated.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: SyslogEnabled
+        tenantId:
+          description: Specifies tenant id this rule is applicable to.
+          type:
+          - string
+          - 'null'
+          x-go-name: TenantId
+        webHookDeliveryTargets:
+          description: 'Specifies external api urls to be invoked when an alert matching this
+
+            rule is generated.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/WebHookDeliveryTarget'
+          x-go-name: WebHookDeliveryTargets
       x-go-package: cohesity/iris/server/data/public
-    AlertResolutionRequest:
-      description: 'Request that provides the details of a resolution and the list of
+    WebHookDeliveryTarget:
+      description: 'WebHookDeliveryTarget
 
-        Alert Ids to be marked resolved.'
+        Specifies the external api url to hit along with the related options for it.'
       type: object
-      title: Create Alert Resolution Request.
       properties:
-        alertIdList:
-          description: 'Specifies list of alerts resolved by a Resolution, which are specified by
-
-            Alert Ids.'
+        curlOptions:
+          description: Specifies curl options used to invoke external api url defined above.
           type:
-          - array
+          - string
           - 'null'
-          items:
-            type: string
-          x-go-name: AlertIdList
-        resolutionDetails:
-          description: Specifies short description and detailed notes about the Resolution.
-          $ref: '#/components/schemas/AlertResolutionInfo'
-      x-go-package: cohesity/iris/server/data/public
-    UpdateResolutionParams:
-      description: 'Apply an existing Resolution to a new list of Alerts, which are specified by
-
-        Alert Ids.'
-      type: object
-      title: Update Alert Resolution Request.
-      properties:
-        alertIdList:
-          description: Specifies the Alerts to resolve, which are specified by Alert Ids.
+          x-go-name: CurlOptions
+        externalApiUrl:
           type:
-          - array
+          - string
           - 'null'
-          items:
-            type: string
-          x-go-name: AlertIdList
-      x-go-package: cohesity/iris/server/data/public
-    AlertResolution:
-      description: 'Provides Resolution details and the list of Alerts resolved by a Resolution,
-
-        which are specified by Alert Ids.'
-      type: object
-      title: Alert Resolution.
-      properties:
-        alertIdList:
-          description: 'Specifies list of Alerts resolved by a Resolution, which are specified by
-
-            Alert Ids.'
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-go-name: AlertIdList
-        resolutionDetails:
-          description: 'Specifies information about the Alert Resolution such as a summary,
-
-            id assigned by the Cohesity Cluster, user who resolved the Alerts, etc.'
-          $ref: '#/components/schemas/AlertResolutionDetails'
-        tenantIds:
-          description: Specifies unique tenantIds of the alert contained in this resolution.
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-go-name: TenantIds
+          x-go-name: ExternalApiUrl
       x-go-package: cohesity/iris/server/data/public
   responses:
-    CreateNotificationRulesResponse:
+    GetResolutionByIdResponse:
       description: Success
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/NotificationRule'
+            $ref: '#/components/schemas/AlertResolution'
+    NoContentResponse:
+      description: No Content
+    UpdateResolutionResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AlertResolution'
+    GetResolutionsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            title: List of Alert Resolutions that match the specified filter criteria.
+            items:
+              $ref: '#/components/schemas/AlertResolution'
     GetNotificationRulesResponse:
       description: Success
       content:
@@ -1473,36 +1490,13 @@ components:
             title: Array of Notification Rules.
             items:
               $ref: '#/components/schemas/NotificationRule'
-    NoContentResponse:
-      description: No Content
-    GetAlertsResponse:
+    UpdateNotificationRulesResponse:
       description: Success
       content:
         application/json:
           schema:
-            type: array
-            title: List of Alerts that match the specified filter criteria.
-            items:
-              $ref: '#/components/schemas/Alert'
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
-    UpdateResolutionResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AlertResolution'
-    GetAlertByIdResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Alert'
-    GetResolutionByIdResponse:
+            $ref: '#/components/schemas/NotificationRule'
+    CreateResolutionResponse:
       description: Success
       content:
         application/json:
@@ -1516,12 +1510,33 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/AlertCategoryName'
-    UpdateNotificationRulesResponse:
+    CreateNotificationRulesResponse:
       description: Success
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/NotificationRule'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    GetAlertByIdResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Alert'
+    GetAlertsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            title: List of Alerts that match the specified filter criteria.
+            items:
+              $ref: '#/components/schemas/Alert'
     GetAlertTypesResponse:
       description: Success
       content:
@@ -1530,18 +1545,3 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/AlertMetadata'
-    GetResolutionsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            title: List of Alert Resolutions that match the specified filter criteria.
-            items:
-              $ref: '#/components/schemas/AlertResolution'
-    CreateResolutionResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AlertResolution'

@@ -216,149 +216,7 @@ paths:
         description: Request to delete the list of infected files.
         required: true
 components:
-  responses:
-    DeleteInfectedFilesResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/DeleteInfectedFileResponse'
-    UpdateAntivirusServiceGroupResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AntivirusServiceGroup'
-    GetInfectedFilesResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InfectedFiles'
-    GetIcapConnectionStatusResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/IcapConnectionStatusResponse'
-    GetAntivirusServiceGroupResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/AntivirusServiceGroup'
-    NoContentResponse:
-      description: No Content
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
-    CreateAntivirusServiceGroupResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AntivirusServiceGroup'
-    UpdateInfectedFilesResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/UpdateInfectedFileResponse'
-    AntivirusServiceGroupStateResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AntivirusServiceGroupStateParams'
   schemas:
-    UpdateInfectedFileResponse:
-      type: object
-      title: Specifies update infected files response.
-      properties:
-        updateFailedInfectedFiles:
-          description: Specifies the failed update infected files.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/InfectedFileId'
-          x-go-name: UpdateFailedInfectedFiles
-        updateSucceededInfectedFiles:
-          description: Specifies the successfully updated infected files.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/InfectedFileId'
-          x-go-name: UpdateSucceededInfectedFiles
-      x-go-package: cohesity/iris/server/data/public
-    RequestError:
-      description: Details about the Error.
-      type: object
-      title: Error
-      properties:
-        errorCode:
-          description: Operation response error code.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ErrorCode
-        message:
-          description: Description of the error.
-          type:
-          - string
-          - 'null'
-          x-go-name: Message
-      x-go-package: cohesity/iris/server/data/public
-    DeleteInfectedFileResponse:
-      type: object
-      title: Specifies delete infected files response.
-      properties:
-        deleteFailedInfectedFiles:
-          description: Specifies the failed delete infected files.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/InfectedFileId'
-          x-go-name: DeleteFailedInfectedFiles
-        deleteSucceededInfectedFiles:
-          description: Specifies the successfully deleted infected files.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/InfectedFileId'
-          x-go-name: DeleteSucceededInfectedFiles
-      x-go-package: cohesity/iris/server/data/public
-    IcapConnectionStatusResponse:
-      description: Specifies Icap server connection status response.
-      type: object
-      title: ICAP Connection Status Response.
-      properties:
-        failedConnectionStatus:
-          description: Specifies the failed connection status of Icap servers.
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-go-name: FailedConnectionStatus
-        succeededConnectionStatus:
-          description: Specifies the success connection status of Icap servers.
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-go-name: SucceededConnectionStatus
-      x-go-package: cohesity/iris/server/data/public
     InfectedFile:
       description: Specifies the Result parameters for all infected files.
       type: object
@@ -474,19 +332,6 @@ components:
           - 'null'
           x-go-name: ViewName
       x-go-package: cohesity/iris/server/data/public
-    DeleteInfectedFileParams:
-      type: object
-      title: Specifies the parameters to delete the infected files.
-      properties:
-        infectedFileIds:
-          description: Specifies the list of infected file path.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/InfectedFileParam'
-          x-go-name: InfectedFileIds
-      x-go-package: cohesity/iris/server/data/public
     AntivirusServiceGroup:
       description: Specifies the configuration settings for an Antivirus service group.
       type: object
@@ -529,12 +374,11 @@ components:
           - 'null'
           x-go-name: Name
       x-go-package: cohesity/iris/server/data/public
-    UpdateAntivirusServiceGroupParams:
+    AntivirusServiceGroupParams:
       type: object
-      title: Specifies the configuration settings for update an Antivirus service group.
+      title: Specifies the configuration settings for an Antivirus service group.
       required:
       - name
-      - id
       properties:
         antivirusServices:
           description: Specifies the Antivirus services for this provider.
@@ -550,25 +394,58 @@ components:
           - string
           - 'null'
           x-go-name: Description
-        id:
-          description: Specifies the Id of the Antivirus service group.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: Id
-        isEnabled:
-          description: Specifies whether the antivirus service group is enabled or not.
-          type:
-          - boolean
-          - 'null'
-          x-go-name: IsEnabled
         name:
           description: Specifies the name of the Antivirus service group.
           type:
           - string
           - 'null'
           x-go-name: Name
+      x-go-package: cohesity/iris/server/data/public
+    AntivirusServiceConfigParams:
+      description: Specifies the parameters for an Antivirus service provider.
+      type: object
+      title: Antivirus Service Config parameters.
+      required:
+      - icapUri
+      properties:
+        description:
+          description: 'Specifies the description of the Antivirus service. This could be any
+
+            additional information admin might associate with the Antivirus service.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+        icapUri:
+          description: 'Specifies the ICAP uri for this Antivirus service. It is of the form
+
+            icap://<ip-address>[:<port>]/<service>'
+          type:
+          - string
+          - 'null'
+          x-go-name: IcapUri
+      x-go-package: cohesity/iris/server/data/public
+    IcapConnectionStatusResponse:
+      description: Specifies Icap server connection status response.
+      type: object
+      title: ICAP Connection Status Response.
+      properties:
+        failedConnectionStatus:
+          description: Specifies the failed connection status of Icap servers.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: FailedConnectionStatus
+        succeededConnectionStatus:
+          description: Specifies the success connection status of Icap servers.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: SucceededConnectionStatus
       x-go-package: cohesity/iris/server/data/public
     AntivirusServiceConfig:
       description: Specifies configuration settings for antivirus service provider.
@@ -619,52 +496,24 @@ components:
           format: int64
           x-go-name: TagId
       x-go-package: cohesity/iris/server/data/public
-    AntivirusServiceConfigParams:
-      description: Specifies the parameters for an Antivirus service provider.
+    RequestError:
+      description: Details about the Error.
       type: object
-      title: Antivirus Service Config parameters.
-      required:
-      - icapUri
+      title: Error
       properties:
-        description:
-          description: 'Specifies the description of the Antivirus service. This could be any
-
-            additional information admin might associate with the Antivirus service.'
-          type:
-          - string
-          - 'null'
-          x-go-name: Description
-        icapUri:
-          description: 'Specifies the ICAP uri for this Antivirus service. It is of the form
-
-            icap://<ip-address>[:<port>]/<service>'
-          type:
-          - string
-          - 'null'
-          x-go-name: IcapUri
-      x-go-package: cohesity/iris/server/data/public
-    AntivirusServiceGroupStateParams:
-      description: 'Specifies the configuration settings to change the state of an Antivirus
-
-        service group.'
-      type: object
-      required:
-      - enable
-      - id
-      properties:
-        enable:
-          description: Specifies the enable flag to enable the Antivirus service group.
-          type:
-          - boolean
-          - 'null'
-          x-go-name: Enable
-        id:
-          description: Specifies the Id of the Antivirus service group.
+        errorCode:
+          description: Operation response error code.
           type:
           - integer
           - 'null'
           format: int64
-          x-go-name: Id
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
       x-go-package: cohesity/iris/server/data/public
     InfectedFileId:
       description: 'Specifies the infected file Identifier. A file is identified with three Ids
@@ -696,72 +545,26 @@ components:
           format: int64
           x-go-name: ViewId
       x-go-package: cohesity/iris/server/data/public
-    UpdateInfectedFileParams:
+    UpdateInfectedFileResponse:
       type: object
-      title: Specifies the parameters to update the infected files.
+      title: Specifies update infected files response.
       properties:
-        infectedFileIds:
-          description: Specifies the list of infected file identifiers.
+        updateFailedInfectedFiles:
+          description: Specifies the failed update infected files.
           type:
           - array
           - 'null'
           items:
-            $ref: '#/components/schemas/InfectedFileParam'
-          x-go-name: InfectedFileIds
-        remediationState:
-          description: 'Specifies the remediation state of the file. Not setting any value to
-
-            remediation state will reset the infected file.
-
-            Remediation State.
-
-            ''kQuarantine'' indicates ''Quarantine'' state of the file. This state blocks
-
-            the client access. The administrator will have to manually delete, rescan or
-
-            unquarantine the file.
-
-            ''kUnquarantine'' indicates ''Unquarantine'' state of the file.
-
-            The administrator has manually moved files from quarantined to the
-
-            unquarantined state to allow client access. Unquarantined files are
-
-            not scanned for virus until manually reset.'
-          type:
-          - string
-          - 'null'
-          enum:
-          - kQuarantine
-          - kUnquarantine
-          x-go-name: RemediationState
-      x-go-package: cohesity/iris/server/data/public
-    AntivirusServiceGroupParams:
-      type: object
-      title: Specifies the configuration settings for an Antivirus service group.
-      required:
-      - name
-      properties:
-        antivirusServices:
-          description: Specifies the Antivirus services for this provider.
+            $ref: '#/components/schemas/InfectedFileId'
+          x-go-name: UpdateFailedInfectedFiles
+        updateSucceededInfectedFiles:
+          description: Specifies the successfully updated infected files.
           type:
           - array
           - 'null'
           items:
-            $ref: '#/components/schemas/AntivirusServiceConfigParams'
-          x-go-name: AntivirusServices
-        description:
-          description: Specifies the description of the Antivirus service group.
-          type:
-          - string
-          - 'null'
-          x-go-name: Description
-        name:
-          description: Specifies the name of the Antivirus service group.
-          type:
-          - string
-          - 'null'
-          x-go-name: Name
+            $ref: '#/components/schemas/InfectedFileId'
+          x-go-name: UpdateSucceededInfectedFiles
       x-go-package: cohesity/iris/server/data/public
     InfectedFileParam:
       type: object
@@ -816,6 +619,47 @@ components:
           format: int64
           x-go-name: ViewId
       x-go-package: cohesity/iris/server/data/public
+    UpdateAntivirusServiceGroupParams:
+      type: object
+      title: Specifies the configuration settings for update an Antivirus service group.
+      required:
+      - name
+      - id
+      properties:
+        antivirusServices:
+          description: Specifies the Antivirus services for this provider.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AntivirusServiceConfigParams'
+          x-go-name: AntivirusServices
+        description:
+          description: Specifies the description of the Antivirus service group.
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+        id:
+          description: Specifies the Id of the Antivirus service group.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Id
+        isEnabled:
+          description: Specifies whether the antivirus service group is enabled or not.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IsEnabled
+        name:
+          description: Specifies the name of the Antivirus service group.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+      x-go-package: cohesity/iris/server/data/public
     InfectedFiles:
       description: Specifies the Result parameters for all infected files.
       type: object
@@ -840,3 +684,159 @@ components:
           - 'null'
           x-go-name: PaginationCookie
       x-go-package: cohesity/iris/server/data/public
+    AntivirusServiceGroupStateParams:
+      description: 'Specifies the configuration settings to change the state of an Antivirus
+
+        service group.'
+      type: object
+      required:
+      - enable
+      - id
+      properties:
+        enable:
+          description: Specifies the enable flag to enable the Antivirus service group.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: Enable
+        id:
+          description: Specifies the Id of the Antivirus service group.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Id
+      x-go-package: cohesity/iris/server/data/public
+    DeleteInfectedFileParams:
+      type: object
+      title: Specifies the parameters to delete the infected files.
+      properties:
+        infectedFileIds:
+          description: Specifies the list of infected file path.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/InfectedFileParam'
+          x-go-name: InfectedFileIds
+      x-go-package: cohesity/iris/server/data/public
+    DeleteInfectedFileResponse:
+      type: object
+      title: Specifies delete infected files response.
+      properties:
+        deleteFailedInfectedFiles:
+          description: Specifies the failed delete infected files.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/InfectedFileId'
+          x-go-name: DeleteFailedInfectedFiles
+        deleteSucceededInfectedFiles:
+          description: Specifies the successfully deleted infected files.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/InfectedFileId'
+          x-go-name: DeleteSucceededInfectedFiles
+      x-go-package: cohesity/iris/server/data/public
+    UpdateInfectedFileParams:
+      type: object
+      title: Specifies the parameters to update the infected files.
+      properties:
+        infectedFileIds:
+          description: Specifies the list of infected file identifiers.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/InfectedFileParam'
+          x-go-name: InfectedFileIds
+        remediationState:
+          description: 'Specifies the remediation state of the file. Not setting any value to
+
+            remediation state will reset the infected file.
+
+            Remediation State.
+
+            ''kQuarantine'' indicates ''Quarantine'' state of the file. This state blocks
+
+            the client access. The administrator will have to manually delete, rescan or
+
+            unquarantine the file.
+
+            ''kUnquarantine'' indicates ''Unquarantine'' state of the file.
+
+            The administrator has manually moved files from quarantined to the
+
+            unquarantined state to allow client access. Unquarantined files are
+
+            not scanned for virus until manually reset.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kQuarantine
+          - kUnquarantine
+          x-go-name: RemediationState
+      x-go-package: cohesity/iris/server/data/public
+  responses:
+    NoContentResponse:
+      description: No Content
+    GetInfectedFilesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InfectedFiles'
+    UpdateAntivirusServiceGroupResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AntivirusServiceGroup'
+    GetAntivirusServiceGroupResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/AntivirusServiceGroup'
+    DeleteInfectedFilesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DeleteInfectedFileResponse'
+    GetIcapConnectionStatusResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/IcapConnectionStatusResponse'
+    AntivirusServiceGroupStateResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AntivirusServiceGroupStateParams'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    UpdateInfectedFilesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateInfectedFileResponse'
+    CreateAntivirusServiceGroupResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AntivirusServiceGroup'

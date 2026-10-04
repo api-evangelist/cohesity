@@ -30,20 +30,53 @@ paths:
         description: Specifies the parameters to filter objects.
         required: true
 components:
-  responses:
-    FilterObjectsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/FilteredObjectsResponseBody'
-    ErrorResponse:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    FilteredObjectsResponseBody:
+      description: Specifies the filter details.
+      type: object
+      properties:
+        filteredObjects:
+          description: Specifies the list of filtered Objects.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FilteredObject'
+          x-order: 0
+    Filter:
+      description: Specifies the filter details.
+      type: object
+      properties:
+        filterString:
+          description: Specifies the filter string using wildcard supported strings or regular expressions.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        isRegularExpression:
+          description: Specifies whether the provided filter string is a regular expression or not. This need to be explicitly set to true if user is trying to filter by regular expressions. Not providing this value in case of regular expression can result in unintended results. The default value is assumed to be false.
+          type:
+          - boolean
+          - 'null'
+          default: false
+          x-order: 1
     FilterObjectsRequest:
       description: Specifies the filter details.
       type: object
@@ -103,52 +136,6 @@ components:
           - 'null'
           default: false
           x-order: 5
-    Error:
-      description: Specifies the error object with error code and a message.
-      type: object
-      title: Error.
-      properties:
-        errorCode:
-          description: Specifies the error code.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        message:
-          description: Specifies the error message.
-          type:
-          - string
-          - 'null'
-          x-order: 1
-    FilteredObjectsResponseBody:
-      description: Specifies the filter details.
-      type: object
-      properties:
-        filteredObjects:
-          description: Specifies the list of filtered Objects.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/FilteredObject'
-          x-order: 0
-    Filter:
-      description: Specifies the filter details.
-      type: object
-      properties:
-        filterString:
-          description: Specifies the filter string using wildcard supported strings or regular expressions.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        isRegularExpression:
-          description: Specifies whether the provided filter string is a regular expression or not. This need to be explicitly set to true if user is trying to filter by regular expressions. Not providing this value in case of regular expression can result in unintended results. The default value is assumed to be false.
-          type:
-          - boolean
-          - 'null'
-          default: false
-          x-order: 1
     FilteredObject:
       description: Specifies the filter details.
       type: object
@@ -167,6 +154,19 @@ components:
           - 'null'
           format: int64
           x-order: 1
+  responses:
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    FilterObjectsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FilteredObjectsResponseBody'
   securitySchemes:
     APIKeyHeader:
       in: header

@@ -92,35 +92,23 @@ paths:
         required: true
 components:
   schemas:
-    KeystoneScopeParams:
-      description: Specifies scope paramteres of a Keystone.
+    Error:
+      description: Specifies the error object with error code and a message.
       type: object
-      required:
-      - type
+      title: Error.
       properties:
-        type:
-          description: Specifies the scope type.
+        errorCode:
+          description: Specifies the error code.
           type:
           - string
           - 'null'
-          enum:
-          - Project
-          - Domain
           x-order: 0
-        projectScopeParams:
-          description: Specifies the parameter for project type scope.
-          type: object
-          allOf:
-          - $ref: '#/components/schemas/ProjectScopeParams'
-          - {}
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
           x-order: 1
-        domainScopeParams:
-          description: Specifies the parameters for domain type scope.
-          type: object
-          allOf:
-          - $ref: '#/components/schemas/DomainScopeParams'
-          - {}
-          x-order: 2
     DomainScopeParams:
       description: Specifies the parameters for domain type scope
       type: object
@@ -133,6 +121,27 @@ components:
           - string
           - 'null'
           x-order: 0
+    KeystoneCredentials:
+      description: Specifies user credentials of a Keystone server.
+      type: object
+      required:
+      - adminCreds
+      - scope
+      properties:
+        adminCreds:
+          description: Specifies parameters related to Keystone administrator.
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/KeystoneAdminParams'
+          - {}
+          x-order: 0
+        scope:
+          description: Specifies parameters related to Keystone scope.
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/KeystoneScopeParams'
+          - {}
+          x-order: 1
     SwiftParams:
       description: Specifies the parameters to update a Swift configuration.
       type: object
@@ -160,42 +169,6 @@ components:
           items:
             type: string
           x-order: 2
-    UnregisterSwiftParams:
-      description: Specifies the parameters to unregister a Swift service from Keystone server.
-      type: object
-      required:
-      - tenantId
-      properties:
-        tenantId:
-          description: Specifies the tenant Id who's Swift service will be unregistered.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        keystoneCredentials:
-          description: Specifies the credentials of the Keystone server. Keystone configuration associated to the tenant will be used if this field is not specified.
-          type:
-          - object
-          - 'null'
-          x-order: 1
-          $ref: '#/components/schemas/KeystoneCredentials'
-    Error:
-      description: Specifies the error object with error code and a message.
-      type: object
-      title: Error.
-      properties:
-        errorCode:
-          description: Specifies the error code.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        message:
-          description: Specifies the error message.
-          type:
-          - string
-          - 'null'
-          x-order: 1
     RegisterSwiftParams:
       description: Specifies the parameters to register a Swift service on Keystone server.
       type: object
@@ -259,35 +232,62 @@ components:
           - string
           - 'null'
           x-order: 2
-    KeystoneCredentials:
-      description: Specifies user credentials of a Keystone server.
+    UnregisterSwiftParams:
+      description: Specifies the parameters to unregister a Swift service from Keystone server.
       type: object
       required:
-      - adminCreds
-      - scope
+      - tenantId
       properties:
-        adminCreds:
-          description: Specifies parameters related to Keystone administrator.
-          type: object
-          allOf:
-          - $ref: '#/components/schemas/KeystoneAdminParams'
-          - {}
+        tenantId:
+          description: Specifies the tenant Id who's Swift service will be unregistered.
+          type:
+          - string
+          - 'null'
           x-order: 0
-        scope:
-          description: Specifies parameters related to Keystone scope.
+        keystoneCredentials:
+          description: Specifies the credentials of the Keystone server. Keystone configuration associated to the tenant will be used if this field is not specified.
+          type:
+          - object
+          - 'null'
+          x-order: 1
+          $ref: '#/components/schemas/KeystoneCredentials'
+    KeystoneScopeParams:
+      description: Specifies scope paramteres of a Keystone.
+      type: object
+      required:
+      - type
+      properties:
+        type:
+          description: Specifies the scope type.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Project
+          - Domain
+          x-order: 0
+        projectScopeParams:
+          description: Specifies the parameter for project type scope.
           type: object
           allOf:
-          - $ref: '#/components/schemas/KeystoneScopeParams'
+          - $ref: '#/components/schemas/ProjectScopeParams'
           - {}
           x-order: 1
+        domainScopeParams:
+          description: Specifies the parameters for domain type scope.
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/DomainScopeParams'
+          - {}
+          x-order: 2
   responses:
-    ErrorResponse:
-      description: Error
+    GetSwiftResponse:
+      description: Success
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
-    GetSwiftResponse:
+            $ref: '#/components/schemas/SwiftParams'
+    UpdateSwiftResponse:
       description: Success
       content:
         application/json:
@@ -295,12 +295,12 @@ components:
             $ref: '#/components/schemas/SwiftParams'
     NoContentResponse:
       description: No Content
-    UpdateSwiftResponse:
-      description: Success
+    ErrorResponse:
+      description: Error
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/SwiftParams'
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     APIKeyHeader:
       in: header

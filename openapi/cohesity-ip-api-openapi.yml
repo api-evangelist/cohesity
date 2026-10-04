@@ -44,41 +44,7 @@ paths:
             schema:
               $ref: '#/components/schemas/IpUnconfig'
 components:
-  responses:
-    IpConfigResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/IpConfig'
-    NoContentResponse:
-      description: No Content
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
   schemas:
-    RequestError:
-      description: Details about the Error.
-      type: object
-      title: Error
-      properties:
-        errorCode:
-          description: Operation response error code.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ErrorCode
-        message:
-          description: Description of the error.
-          type:
-          - string
-          - 'null'
-          x-go-name: Message
-      x-go-package: cohesity/iris/server/data/public
     IpUnconfig:
       description: Specifies the unconfiguration of an IP.
       type: object
@@ -105,6 +71,25 @@ components:
             type: integer
             format: int64
           x-go-name: NodeIds
+      x-go-package: cohesity/iris/server/data/public
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
       x-go-package: cohesity/iris/server/data/public
     IpConfig:
       description: Specifies the configuration of an IP.
@@ -164,3 +149,18 @@ components:
           format: int32
           x-go-name: SubnetMaskBits
       x-go-package: cohesity/iris/server/data/public
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    IpConfigResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/IpConfig'
+    NoContentResponse:
+      description: No Content

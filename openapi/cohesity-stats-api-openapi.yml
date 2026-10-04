@@ -773,13 +773,1450 @@ paths:
     servers:
     - url: https://helios.cohesity.com/v2/mcm/site-continuity/v2
 components:
+  responses:
+    GetProtectedObjectsSummaryResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProtectedObjectsSummary'
+    GetFileDistributionStatsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FileDistributionStatsList'
+    GetRestoreStatsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RestoreStats'
+    GetActiveAlertsStatsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ActiveAlertsStats'
+    GetStorageStatsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StorageStats'
+    GetViewProtocolStatsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ViewProtocolStatsList'
+    GetVaultRunStatsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/VaultRunStatsSummary'
+    GetVaultProviderStatsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/VaultProviderStatsList'
+    GetVaultStatsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/VaultStats'
+    GetViewStatsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ViewStatsSnapshot'
+    GetTenantStatsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetTenantStatsResult'
+    GetProtectionRunsStatsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProtectionRunsStats'
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    GetViewBoxStatsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetViewBoxStatsResult'
+    GetConsumerStatsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetConsumerStatsResult'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    GetLastProtectionRunStatsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LastProtectionRunStats'
+    GetProtectionRunsStatusResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetProtectionRunsStatusResponseBody'
+    SCErrorResponse:
+      description: Specifies the common error definition.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SCError'
+    SCGetStatsResponse:
+      description: Specifies the response for fetching stats.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SCGetStatsResponse'
   schemas:
+    ViewStatsSnapshot:
+      description: Specifies the list statistics for each View for a given timestamp.
+      type: object
+      title: View Statistics
+      properties:
+        timestamp:
+          description: Specifies the unix time in milliseconds when these values were generated
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Timestamp
+        viewStatsList:
+          description: Specifies the list of Views and their statistics at the given timestamp.
+          type: array
+          items:
+            $ref: '#/components/schemas/ViewStatInfo'
+          x-go-name: ViewStatsList
+    VaultProviderStatsByEnv:
+      description: Specifies the Vault stats by environments.
+      type: object
+      title: Vault Provider Stats By Env.
+      properties:
+        count:
+          description: Specifies the count of the objects of the specified environment.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Count
+        environment:
+          description: Specifies the environment type.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kVMware
+          - kHyperV
+          - kSQL
+          - kView
+          - kPuppeteer
+          - kPhysical
+          - kPure
+          - kNimble
+          - kAzure
+          - kNetapp
+          - kAgent
+          - kGenericNas
+          - kAcropolis
+          - kPhysicalFiles
+          - kIsilon
+          - kGPFS
+          - kKVM
+          - kAWS
+          - kExchange
+          - kHyperVVSS
+          - kOracle
+          - kGCP
+          - kFlashBlade
+          - kAWSNative
+          - kVCD
+          - kO365
+          - kO365Outlook
+          - kHyperFlex
+          - kGCPNative
+          - kAzureNative
+          - kAD
+          - kAWSSnapshotManager
+          x-go-name: Environment
+        size:
+          description: Specifies the size of the entities of the specified environment.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Size
+    VaultRunStatsSummary:
+      description: Specifies the stats by run type for each vault run.
+      type: object
+      title: Vault Run Stats Summary.
+      properties:
+        failureTimeSeries:
+          description: Specifies the time series for the failed runs that ended in the given time frame.
+          type: array
+          items:
+            $ref: '#/components/schemas/VaultRunInfo'
+          x-go-name: FailureTimeSeries
+        numFailedRuns:
+          description: Specifies the number of runs that ended in failure during the given time frame.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumFailedRuns
+        numInProgressRuns:
+          description: Specifies the number of runs that were currently in progress at the time that the API call was made.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumInProgressRuns
+        numQueuedRuns:
+          description: Specifies the number of runs that were currently queued at the time that the API call was made.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumQueuedRuns
+        numSuccessfulRuns:
+          description: Specifies the number of runs that ended in success during the given time frame.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumSuccessfulRuns
+        successTimeSeries:
+          description: Specifies the time series for the successful runs that ended in the given time frame.
+          type: array
+          items:
+            $ref: '#/components/schemas/VaultRunInfo'
+          x-go-name: SuccessTimeSeries
+    ProtectedObjectsSummary:
+      description: Specifies the statistics of the protected objects on the cluster.
+      type: object
+      title: Protected Objects Summary.
+      properties:
+        numObjectsProtected:
+          description: Specifies the total number of protected objects.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumObjectsProtected
+        numObjectsUnprotected:
+          description: Specifies the total number of unprotected objects.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumObjectsUnprotected
+        protectedSizeBytes:
+          description: Specifies the total size of protected objects in bytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: protectedSizeBytes
+        statsByEnv:
+          description: Specifies the stats of Protected objects by environment.
+          type: array
+          items:
+            $ref: '#/components/schemas/ProtectedObjectsSummaryByEnv'
+          x-go-name: StatsByEnv
+        unprotectedSizeBytes:
+          description: Specifies the total size of unprotected objects in bytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: unprotectedSizeBytes
+    UsageSchemaInfo:
+      description: UsageSchemaInfo describes the schema info of the usage.
+      type: object
+      title: UsageSchemaInfo
+      properties:
+        schemaInfoList:
+          description: Specifies the list of the schema info for an entity.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SchemaInfo'
+          x-go-name: SchemaInfoList
+      x-go-package: cohesity/iris/server/data/public
+    VaultStats:
+      description: Specifies the storage usage on vaults.
+      type: object
+      title: Vault Stats.
+      properties:
+        awsUsageBytes:
+          description: Specifies the usage on AWS vaults.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: AWSUsageBytes
+        azureUsageBytes:
+          description: Specifies the usage on Azure vaults.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: AzureUsageBytes
+        gcpUsageBytes:
+          description: Specifies the usage on GCP vaults.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: GCPUsageBytes
+        nasUsageBytes:
+          description: Specifies the usage on NAS vaults.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NASUsageBytes
+        oracleUsageBytes:
+          description: Specifies the usage on Oracle vaults.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: OracleUsageBytes
+        qstarUsageBytes:
+          description: Specifies the usage on QStar Tape vaults.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: QStarUsageBytes
+        s3cUsageBytes:
+          description: Specifies the usage on S3 Compatible vaults.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: S3cUsageBytes
+        vaultStatsList:
+          description: Specifies the stats of all vaults on the cluster.
+          type: array
+          items:
+            $ref: '#/components/schemas/VaultStatsInfo'
+          x-go-name: VaultStatsList
+    ActiveAlertsStats:
+      description: Specifies the active alert statistics details.
+      type: object
+      title: Active Alert Statistics.
+      properties:
+        numCriticalAlerts:
+          description: Specifies the count of active critical Alerts excluding alerts that belong to other bucket.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumCriticalAlerts
+        numCriticalAlertsCategories:
+          description: Specifies the count of active critical alerts categories.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumCriticalAlertsCategories
+        numHardwareAlerts:
+          description: Specifies the count of active hardware Alerts.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumHardwareAlerts
+        numHardwareCriticalAlerts:
+          description: Specifies the count of active hardware critical Alerts.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumHardwareCriticalAlerts
+        numHardwareInfoAlerts:
+          description: Specifies the count of active hardware info Alerts.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumHardwareInfoAlerts
+        numHardwareWarningAlerts:
+          description: Specifies the count of active hardware warning Alerts.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumHardwareWarningAlerts
+        numInfoAlerts:
+          description: Specifies the count of active info Alerts excluding alerts that belong to other bucket.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumInfoAlerts
+        numInfoAlertsCategories:
+          description: Specifies the count of active info alerts categories.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumInfoAlertsCategories
+        numOtherAlerts:
+          description: Specifies the count of active Alerts of other bucket
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumOtherAlerts
+        numOtherCriticalAlerts:
+          description: Specifies the count of active other critical Alerts.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumOtherCriticalAlerts
+        numOtherInfoAlerts:
+          description: Specifies the count of active other info Alerts.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumOtherInfoAlerts
+        numOtherWarningAlerts:
+          description: Specifies the count of active other warning Alerts.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumOtherWarningAlerts
+        numServiceAlerts:
+          description: Specifies the count of active service Alerts.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumServiceAlerts
+        numServiceCriticalAlerts:
+          description: Specifies the count of active service critical Alerts.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumServiceCriticalAlerts
+        numServiceInfoAlerts:
+          description: Specifies the count of active service info Alerts.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumServiceInfoAlerts
+        numServiceWarningAlerts:
+          description: Specifies the count of active service warning Alerts.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumServiceWarningAlerts
+        numSoftwareAlerts:
+          description: Specifies the count of active software Alerts.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumSoftwareAlerts
+        numSoftwareCriticalAlerts:
+          description: Specifies the count of active software critical Alerts.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumSoftwareCriticalAlerts
+        numSoftwareInfoAlerts:
+          description: Specifies the count of active software info Alerts.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumSoftwareInfoAlerts
+        numSoftwareWarningAlerts:
+          description: Specifies the count of active software warning Alerts.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumSoftwareWarningAlerts
+        numWarningAlerts:
+          description: Specifies the count of active warning Alerts excluding alerts that belong to other bucket.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumWarningAlerts
+        numWarningAlertsCategories:
+          description: Specifies the count of active warning alerts categories.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumWarningAlertsCategories
+    GetViewBoxStatsResult:
+      description: GetViewBoxStatsResult is the result of get viewBoxStats api.
+      type: object
+      title: GetViewBoxStatsResult
+      properties:
+        statsList:
+          description: Specifies a list of view box stats.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/StorageDomainStats'
+          x-go-name: StatsList
+      x-go-package: cohesity/iris/server/data/public
+    LastProtectionRunStatsByEnv:
+      description: Specifies the last Protection Run stats by env.
+      type: object
+      title: Last Protection Run stats by env.
+      properties:
+        environment:
+          description: Specifies the environment.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kVMware
+          - kHyperV
+          - kSQL
+          - kView
+          - kPuppeteer
+          - kPhysical
+          - kPure
+          - kNimble
+          - kAzure
+          - kNetapp
+          - kAgent
+          - kGenericNas
+          - kAcropolis
+          - kPhysicalFiles
+          - kIsilon
+          - kGPFS
+          - kKVM
+          - kAWS
+          - kExchange
+          - kHyperVVSS
+          - kOracle
+          - kGCP
+          - kFlashBlade
+          - kAWSNative
+          - kVCD
+          - kO365
+          - kO365Outlook
+          - kHyperFlex
+          - kGCPNative
+          - kAzureNative
+          - kAD
+          - kAWSSnapshotManager
+          x-go-name: Environment
+        numObjectsFailed:
+          description: Specifies the count of objects that failed last Protection Run.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumObjectsFailed
+        numObjectsFailedSla:
+          description: Specifies the count of objects that failed sla in the last Run.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumObjectsFailedSla
+        numObjectsMetSla:
+          description: Specifies the count of objects that met sla in the last Run.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumObjectsMetSla
+    Consumer:
+      description: Consumer is the storage consumer of a group.
+      type: object
+      title: Consumer.
+      properties:
+        id:
+          description: Specifies the id of the consumer.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Id
+        name:
+          description: Specifies the name of the consumer.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        type:
+          description: 'Specifies the type of the consumer.
+
+            Type of the consumer can be one of the following three,
+
+
+            ''kViews'', indicates the stats info of Views used per organization (tenant)
+
+            per view box (storage domain).
+
+            ''kProtectionRuns'', indicates the stats info of Protection Runs used per
+
+            organization (tenant) per view box (storage domain).
+
+            ''kReplicationRuns'', indicates the stats info of Replication In used per
+
+            organization (tenant) per view box (storage domain).
+
+            ''kViewProtectionRuns'', indicates the stats info of View Protection Runs used
+
+            per organization (tenant) per view box (storage domain).'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kViews
+          - kProtectionRuns
+          - kReplicationRuns
+          - kViewProtectionRuns
+          x-go-name: Type
+      x-go-package: cohesity/iris/server/data/public
+    VaultRunInfo:
+      description: Specifies the information about a specific vault run.
+      type: object
+      title: VaultRunInfo
+      properties:
+        count:
+          description: Specifies the count of runs that ended in the specified state between the start time passed in and the current timestamp.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Count
+        timestamp:
+          description: Specifies the Unix timestamp at which the run entered the specified state.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Timestamp
+    FileDistributionMetrics:
+      description: Specifies the File distribution metrics.
+      type: object
+      title: File distribution Metrics.
+      properties:
+        metricName:
+          description: Specifies the name of the metric.
+          type:
+          - string
+          - 'null'
+          x-go-name: MetricName
+        value:
+          description: Specifies the value of specified metric name.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Value
+    LastProtectionRunStats:
+      description: Specifies the stats of last Protection Run.
+      type: object
+      title: Last Protection Run stats.
+      properties:
+        numRunsFailed:
+          description: Specifies the number of Protection Jobs for which specified Protection Run failed.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumRunsFailed
+        numRunsFailedSla:
+          description: Specifies the number of Protection Jobs for which specified Protection Run failed SLA.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumRunsFailedSla
+        numRunsMetSla:
+          description: Specifies the number of Protection Jobs for which specified Protection Run met SLA.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumRunsMetSla
+        statsByEnv:
+          description: Specifies the last Protection Run stats by environment.
+          type: array
+          items:
+            $ref: '#/components/schemas/LastProtectionRunStatsByEnv'
+          x-go-name: StatsByEnv
+    ViewProtocolStats:
+      description: Specifies the View Protocol stats.
+      type: object
+      title: View Protocol Statistics.
+      properties:
+        protocols:
+          description: Specifies the protocols supported on these Views.
+          type: array
+          items:
+            type:
+            - string
+            - 'null'
+            enum:
+            - kNfs
+            - kSmb
+            - kS3
+            - kIscsi
+          x-go-name: Protocols
+        sizeBytes:
+          description: Specifies the size of all the Views in bytes which are using the specified protocol.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: SizeBytes
+        viewCount:
+          description: Specifies the number of Views which are using the specified protocol.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ViewCount
+    TenantStats:
+      type: object
+      title: TenantStats is the stats of a single tenant.
+      properties:
+        groupList:
+          description: Specifies a list of groups associated to this tenant (organization).
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/StatsGroup'
+          x-go-name: GroupList
+        id:
+          description: Specifies the id of the tenant (organization).
+          type:
+          - string
+          - 'null'
+          x-go-name: Id
+        name:
+          description: Specifies the name of the tenant (organization).
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        schemaInfoList:
+          description: Specifies a list of schemaInfos of the tenant (organization).
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UsageSchemaInfo'
+          x-go-name: SchemaInfoList
+        stats:
+          description: Specifies details of statistics of the tenant (organization).
+          $ref: '#/components/schemas/DataUsageStats'
+      x-go-package: cohesity/iris/server/data/public
+    ViewStatInfo:
+      description: Specifies the View stats per view.
+      type: object
+      title: View Statistics per View.
+      properties:
+        clusterId:
+          description: Specifies the cluster Id.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ClusterId
+        clusterIncarnationId:
+          description: Specifies the cluster Incarnation Id.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ClusterIncarnationId
+        dataReadBytes:
+          description: Specifies the data read in bytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: DataReadBytes
+        dataWrittenBytes:
+          description: Specifies the data written in bytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: DataWrittenBytes
+        logicalUsedBytes:
+          description: Specifies the logical size used in bytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: LogicalUsedBytes
+        peakReadThroughput:
+          description: Specifies the peak data read in bytes per second in the last day.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: PeakReadThroughput
+        peakWriteThroughput:
+          description: Specifies the peak data written in bytes per second in the last day.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: PeakWriteThroughput
+        physicalUsedBytes:
+          description: Specifies the physical size used in bytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: PhysicalUsedBytes
+        protocols:
+          description: Specifies the protocols of this view.
+          type: array
+          items:
+            type:
+            - string
+            - 'null'
+            enum:
+            - kNfs
+            - kSmb
+            - kS3
+            - kIscsi
+        storageReductionRatio:
+          description: Specifies the storage reduction ratio.
+          type:
+          - number
+          - 'null'
+          format: float
+          x-go-name: StorageReductionRatio
+        viewId:
+          description: Specifies the view Id.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ViewId
+        viewName:
+          description: Specifies the view name.
+          type:
+          - string
+          - 'null'
+          x-go-name: ViewName
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    ProtectedObjectsSummaryByEnv:
+      description: Specifies the protection summary of given environment type.
+      type: object
+      title: Protected Object Summary by Environment.
+      properties:
+        environment:
+          description: Specifies the environment.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kVMware
+          - kHyperV
+          - kSQL
+          - kView
+          - kPuppeteer
+          - kPhysical
+          - kPure
+          - kNimble
+          - kAzure
+          - kNetapp
+          - kAgent
+          - kGenericNas
+          - kAcropolis
+          - kPhysicalFiles
+          - kIsilon
+          - kGPFS
+          - kKVM
+          - kAWS
+          - kExchange
+          - kHyperVVSS
+          - kOracle
+          - kGCP
+          - kFlashBlade
+          - kAWSNative
+          - kVCD
+          - kO365
+          - kO365Outlook
+          - kHyperFlex
+          - kGCPNative
+          - kAzureNative
+          - kAD
+          - kAWSSnapshotManager
+          x-go-name: Environment
+        numObjectsProtected:
+          description: Specifies the total number of protected objects.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumObjectsProtected
+        numObjectsUnprotected:
+          description: Specifies the total number of unprotected objects.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumObjectsUnprotected
+        protectedSizeBytes:
+          description: Specifies the total size of protected objects in bytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: protectedSizeBytes
+        unprotectedSizeBytes:
+          description: Specifies the total size of unprotected objects in bytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: unprotectedSizeBytes
+    ViewProtocolStatsList:
+      description: Specifies the View Protocol stats List.
+      type: array
+      title: View Protocol Statistics List.
+      items:
+        $ref: '#/components/schemas/ViewProtocolStats'
+    FileDistributionStats:
+      description: Specifies the File distribution stats.
+      type: object
+      title: File distribution Statistics.
+      properties:
+        clusterId:
+          description: Specifies the cluster Id.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ClusterId
+        clusterIncarnationId:
+          description: Specifies the cluster Incarnation Id.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ClusterIncarnationId
+        entityId:
+          description: Specifies the id of the entity for which file distribution stats are computed.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: EntityId
+        entityName:
+          description: Specifies the name of the entity for which file distribution stats are computed.
+          type:
+          - string
+          - 'null'
+          x-go-name: EntityName
+        metricsList:
+          description: Specifies the list of file stats for different file extensions.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FileDistributionMetrics'
+          x-go-name: MetricsList
+    VaultStatsInfo:
+      description: Specifies the stats for each vault.
+      type: object
+      title: Vault Stats.
+      properties:
+        id:
+          description: Specifies the Vault Id.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Id
+        name:
+          description: Specifies the Vault name.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        type:
+          description: Specifies the Vault type.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kNearline
+          - kGlacier
+          - kS3
+          - kAzureStandard
+          - kS3Compatible
+          - kQStarTape
+          - kGoogleStandard
+          - kGoogleDRA
+          - kAmazonS3StandardIA
+          - kAWSGovCloud
+          - kNAS
+          - kColdline
+          - kAzureGovCloud
+          - kAzureArchive
+          - kAzure
+          - kGoogle
+          - kAmazon
+          - kOracle
+          - kOracleTierStandard
+          - kOracleTierArchive
+          - kAmazonC2S
+          x-go-name: Type
+        usageBytes:
+          description: Specifies the bytes used by the Vault.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: UsageBytes
     VaultProviderStatsList:
       description: Specifies the stats by provider for each vault.
       type: array
       title: Vault Provider Stats List.
       items:
         $ref: '#/components/schemas/VaultProviderStatsInfo'
+    GetConsumerStatsResult:
+      description: GetConsumerStatsResult is the result of get consumerStats api.
+      type: object
+      title: GetConsumerStatsResult
+      properties:
+        cookie:
+          description: 'Specifies an opaque string to pass to get the next set of active opens.
+
+            If null is returned, this response is the last set of active opens.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Cookie
+        statsList:
+          description: Specifies a list of consumer stats.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ConsumerStats'
+          x-go-name: StatsList
+      x-go-package: cohesity/iris/server/data/public
+    ProtectionRunsStats:
+      description: Specifies the Protection Runs statistics response.
+      type: object
+      title: Protection Runs Statistics.
+      properties:
+        numArchivalRuns:
+          description: Specifies the count of archival Runs.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumArchivalRuns
+        numBackupRuns:
+          description: Specifies the count of backup Runs.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumBackupRuns
+        numReplicationRuns:
+          description: Specifies the count of replication Runs.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumReplicationRuns
+    StorageDomainStats:
+      type: object
+      title: StorageDomainStats is the stats of a single view box.
+      properties:
+        cloudSpillVaultId:
+          description: Specifies the cloud spill vault id of the view box (storage domain).
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: CloudSpillVaultId
+        groupList:
+          description: Specifies a list of groups associated to this view box (storage domain).
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/StatsGroup'
+          x-go-name: GroupList
+        id:
+          description: Specifies the id of the view box (storage domain).
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Id
+        name:
+          description: Specifies the name of the view box (storage domain).
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        quotaHardLimitBytes:
+          description: 'Specifies the hard limit of physical quota of the view box
+
+            (storage domain).'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: QuotaHardLimitBytes
+        schemaInfoList:
+          description: Specifies a list of schemaInfos of the view box (storage domain).
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UsageSchemaInfo'
+          x-go-name: SchemaInfoList
+        stats:
+          description: Specifies details of statistics of the view box (storage domain).
+          $ref: '#/components/schemas/DataUsageStats'
+      x-go-package: cohesity/iris/server/data/public
+    StatsGroup:
+      description: 'StatsGroup describes the details of a stats group. A stats group is a basic
+
+        group of usage stats, it is the usage of a tenant within a storage domain
+
+        may also for a specific consumer type.'
+      type: object
+      title: StatsGroup.
+      properties:
+        consumer:
+          description: Specifies the consumer information of this group.
+          $ref: '#/components/schemas/Consumer'
+        entityId:
+          description: Specifies the entity id of the group.
+          type:
+          - string
+          - 'null'
+          x-go-name: EntityId
+        id:
+          description: Specifies the id of the group.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Id
+        name:
+          description: Specifies the name of the group.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        tenantId:
+          description: Specifies the id of the organization (tenant) with respect to this group.
+          type:
+          - string
+          - 'null'
+          x-go-name: TenantId
+        tenantName:
+          description: 'Specifies the name of the organization (tenant) with respect to this
+
+            group.'
+          type:
+          - string
+          - 'null'
+          x-go-name: TenantName
+        viewBoxId:
+          description: 'Specifies the id of the view box (storage domain) with respect to this
+
+            group.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ViewBoxId
+        viewBoxName:
+          description: 'Specifies the name of the view box (storage domain) with respect to this
+
+            group.'
+          type:
+          - string
+          - 'null'
+          x-go-name: ViewBoxName
+      x-go-package: cohesity/iris/server/data/public
+    SchemaInfo:
+      description: 'Specifies the metric data point where public data metric name as key and the
+
+        schema defined metric name as a value.'
+      type: object
+      title: Schema Info.
+      properties:
+        entityId:
+          description: Specifies the id of the entity represented as a string.
+          type:
+          - string
+          - 'null'
+          x-go-name: EntityId
+        key:
+          description: Specifies the key which is public facing name for metric name.
+          type:
+          - string
+          - 'null'
+          x-go-name: Key
+        metricName:
+          description: Specifies the Apollo schema metric name.
+          type:
+          - string
+          - 'null'
+          x-go-name: MetricName
+        schemaName:
+          description: Specifies the name of entity schema such as 'ApolloViewBoxStats'.
+          type:
+          - string
+          - 'null'
+          x-go-name: SchemaName
+      x-go-package: cohesity/iris/server/data/public
+    FileDistributionStatsList:
+      description: Specifies the File distribution stats list.
+      type: array
+      title: File distribution Statistics List.
+      items:
+        $ref: '#/components/schemas/FileDistributionStats'
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - integer
+          - 'null'
+          x-go-name: ErrorCode
+        errorMessage:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-go-name: ErrorMessage
+    StorageStats:
+      description: Specifies the storage statistics of the cluster.
+      type: object
+      title: Storage Statistics
+      properties:
+        dataProtectionLogicalUsageBytes:
+          description: Specifies the logical size of protected objects in bytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: DataProtectionLogicalUsageBytes
+        dataProtectionPhysicalUsageBytes:
+          description: Specifies the physical size of protected objects in bytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: DataProtectionPhysicalUsageBytes
+        fileServicesLogicalUsageBytes:
+          description: Specifies the logical size consumed by file services in bytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: FileServicesLogicalUsageBytes
+        fileServicesPhysicalUsageBytes:
+          description: Specifies the physical size consumed by file services in bytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: FileServicesPhysicalUsageBytes
+        localAvailableBytes:
+          description: Specifies the local storage currently available on the cluster in bytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: LocalAvailableBytes
+        localUsageBytes:
+          description: Specifies the local storage currently in use on the cluster in bytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: LocalUsageBytes
+        totalCapacityBytes:
+          description: Specifies the total capacity of the cluster in bytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: TotalCapacityBytes
+    GetTenantStatsResult:
+      description: GetTenantStatsResult is the result of get tenantStats api.
+      type: object
+      title: GetTenantStatsResult
+      properties:
+        cookie:
+          description: 'Specifies an opaque string to pass to get the next set of active opens.
+
+            If null is returned, this response is the last set of active opens.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Cookie
+        statsList:
+          description: Specifies a list of tenant stats.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TenantStats'
+          x-go-name: StatsList
+      x-go-package: cohesity/iris/server/data/public
+    RestoreEnvStats:
+      description: Specifies the aggregated statistics for restores of a specific environment type.
+      type: object
+      properties:
+        environment:
+          description: Specifies the environment.
+          type:
+          - string
+          - 'null'
+          enum:
+          - kVMware
+          - kHyperV
+          - kSQL
+          - kView
+          - kPuppeteer
+          - kPhysical
+          - kPure
+          - kNimble
+          - kAzure
+          - kNetapp
+          - kAgent
+          - kGenericNas
+          - kAcropolis
+          - kPhysicalFiles
+          - kIsilon
+          - kGPFS
+          - kKVM
+          - kAWS
+          - kExchange
+          - kHyperVVSS
+          - kOracle
+          - kGCP
+          - kFlashBlade
+          - kAWSNative
+          - kVCD
+          - kO365
+          - kO365Outlook
+          - kHyperFlex
+          - kGCPNative
+          - kAzureNative
+          - kAD
+          - kAWSSnapshotManager
+          x-go-name: Environment
+        objectCount:
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ObjectCount
+        totalBytes:
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: TotalBytes
+    RestoreStats:
+      description: Specifies the restore statistics details.
+      type: object
+      title: Restore Statistics.
+      properties:
+        numClonedObjects:
+          description: Specifies the count of cloned objects in the given time frame.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumClonedObjects
+        numRecoveredObjects:
+          description: Specifies the count of recovered objects in the given time frame.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: NumRecoveredObjects
+        statsByEnvironment:
+          description: Specifies the stats of recovery jobs aggregated by the environment type.
+          type: array
+          items:
+            $ref: '#/components/schemas/RestoreEnvStats'
+          x-go-name: StatsByEnvironment
     DataUsageStats:
       description: 'Specifies the data usage metric of the data stored on the Cohesity
 
@@ -1138,91 +2575,6 @@ components:
           - 'null'
           format: int64
           x-go-name: WriteBandwidth
-    GetConsumerStatsResult:
-      description: GetConsumerStatsResult is the result of get consumerStats api.
-      type: object
-      title: GetConsumerStatsResult
-      properties:
-        cookie:
-          description: 'Specifies an opaque string to pass to get the next set of active opens.
-
-            If null is returned, this response is the last set of active opens.'
-          type:
-          - string
-          - 'null'
-          x-go-name: Cookie
-        statsList:
-          description: Specifies a list of consumer stats.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ConsumerStats'
-          x-go-name: StatsList
-      x-go-package: cohesity/iris/server/data/public
-    StatsGroup:
-      description: 'StatsGroup describes the details of a stats group. A stats group is a basic
-
-        group of usage stats, it is the usage of a tenant within a storage domain
-
-        may also for a specific consumer type.'
-      type: object
-      title: StatsGroup.
-      properties:
-        consumer:
-          description: Specifies the consumer information of this group.
-          $ref: '#/components/schemas/Consumer'
-        entityId:
-          description: Specifies the entity id of the group.
-          type:
-          - string
-          - 'null'
-          x-go-name: EntityId
-        id:
-          description: Specifies the id of the group.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: Id
-        name:
-          description: Specifies the name of the group.
-          type:
-          - string
-          - 'null'
-          x-go-name: Name
-        tenantId:
-          description: Specifies the id of the organization (tenant) with respect to this group.
-          type:
-          - string
-          - 'null'
-          x-go-name: TenantId
-        tenantName:
-          description: 'Specifies the name of the organization (tenant) with respect to this
-
-            group.'
-          type:
-          - string
-          - 'null'
-          x-go-name: TenantName
-        viewBoxId:
-          description: 'Specifies the id of the view box (storage domain) with respect to this
-
-            group.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ViewBoxId
-        viewBoxName:
-          description: 'Specifies the name of the view box (storage domain) with respect to this
-
-            group.'
-          type:
-          - string
-          - 'null'
-          x-go-name: ViewBoxName
-      x-go-package: cohesity/iris/server/data/public
     ConsumerStats:
       description: 'ConsumerStats is the stats of a single consumer. A consumer is a entity
 
@@ -1443,1255 +2795,6 @@ components:
           description: Specifies details of statistics of the consumer.
           $ref: '#/components/schemas/DataUsageStats'
       x-go-package: cohesity/iris/server/data/public
-    RequestError:
-      description: Details about the Error.
-      type: object
-      title: Error
-      properties:
-        errorCode:
-          description: Operation response error code.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ErrorCode
-        message:
-          description: Description of the error.
-          type:
-          - string
-          - 'null'
-          x-go-name: Message
-      x-go-package: cohesity/iris/server/data/public
-    GetTenantStatsResult:
-      description: GetTenantStatsResult is the result of get tenantStats api.
-      type: object
-      title: GetTenantStatsResult
-      properties:
-        cookie:
-          description: 'Specifies an opaque string to pass to get the next set of active opens.
-
-            If null is returned, this response is the last set of active opens.'
-          type:
-          - string
-          - 'null'
-          x-go-name: Cookie
-        statsList:
-          description: Specifies a list of tenant stats.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/TenantStats'
-          x-go-name: StatsList
-      x-go-package: cohesity/iris/server/data/public
-    ViewProtocolStats:
-      description: Specifies the View Protocol stats.
-      type: object
-      title: View Protocol Statistics.
-      properties:
-        protocols:
-          description: Specifies the protocols supported on these Views.
-          type: array
-          items:
-            type:
-            - string
-            - 'null'
-            enum:
-            - kNfs
-            - kSmb
-            - kS3
-            - kIscsi
-          x-go-name: Protocols
-        sizeBytes:
-          description: Specifies the size of all the Views in bytes which are using the specified protocol.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: SizeBytes
-        viewCount:
-          description: Specifies the number of Views which are using the specified protocol.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ViewCount
-    LastProtectionRunStats:
-      description: Specifies the stats of last Protection Run.
-      type: object
-      title: Last Protection Run stats.
-      properties:
-        numRunsFailed:
-          description: Specifies the number of Protection Jobs for which specified Protection Run failed.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumRunsFailed
-        numRunsFailedSla:
-          description: Specifies the number of Protection Jobs for which specified Protection Run failed SLA.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumRunsFailedSla
-        numRunsMetSla:
-          description: Specifies the number of Protection Jobs for which specified Protection Run met SLA.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumRunsMetSla
-        statsByEnv:
-          description: Specifies the last Protection Run stats by environment.
-          type: array
-          items:
-            $ref: '#/components/schemas/LastProtectionRunStatsByEnv'
-          x-go-name: StatsByEnv
-    ViewStatsSnapshot:
-      description: Specifies the list statistics for each View for a given timestamp.
-      type: object
-      title: View Statistics
-      properties:
-        timestamp:
-          description: Specifies the unix time in milliseconds when these values were generated
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: Timestamp
-        viewStatsList:
-          description: Specifies the list of Views and their statistics at the given timestamp.
-          type: array
-          items:
-            $ref: '#/components/schemas/ViewStatInfo'
-          x-go-name: ViewStatsList
-    ViewProtocolStatsList:
-      description: Specifies the View Protocol stats List.
-      type: array
-      title: View Protocol Statistics List.
-      items:
-        $ref: '#/components/schemas/ViewProtocolStats'
-    ViewStatInfo:
-      description: Specifies the View stats per view.
-      type: object
-      title: View Statistics per View.
-      properties:
-        clusterId:
-          description: Specifies the cluster Id.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ClusterId
-        clusterIncarnationId:
-          description: Specifies the cluster Incarnation Id.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ClusterIncarnationId
-        dataReadBytes:
-          description: Specifies the data read in bytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: DataReadBytes
-        dataWrittenBytes:
-          description: Specifies the data written in bytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: DataWrittenBytes
-        logicalUsedBytes:
-          description: Specifies the logical size used in bytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: LogicalUsedBytes
-        peakReadThroughput:
-          description: Specifies the peak data read in bytes per second in the last day.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: PeakReadThroughput
-        peakWriteThroughput:
-          description: Specifies the peak data written in bytes per second in the last day.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: PeakWriteThroughput
-        physicalUsedBytes:
-          description: Specifies the physical size used in bytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: PhysicalUsedBytes
-        protocols:
-          description: Specifies the protocols of this view.
-          type: array
-          items:
-            type:
-            - string
-            - 'null'
-            enum:
-            - kNfs
-            - kSmb
-            - kS3
-            - kIscsi
-        storageReductionRatio:
-          description: Specifies the storage reduction ratio.
-          type:
-          - number
-          - 'null'
-          format: float
-          x-go-name: StorageReductionRatio
-        viewId:
-          description: Specifies the view Id.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ViewId
-        viewName:
-          description: Specifies the view name.
-          type:
-          - string
-          - 'null'
-          x-go-name: ViewName
-    VaultRunInfo:
-      description: Specifies the information about a specific vault run.
-      type: object
-      title: VaultRunInfo
-      properties:
-        count:
-          description: Specifies the count of runs that ended in the specified state between the start time passed in and the current timestamp.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: Count
-        timestamp:
-          description: Specifies the Unix timestamp at which the run entered the specified state.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: Timestamp
-    StorageDomainStats:
-      type: object
-      title: StorageDomainStats is the stats of a single view box.
-      properties:
-        cloudSpillVaultId:
-          description: Specifies the cloud spill vault id of the view box (storage domain).
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: CloudSpillVaultId
-        groupList:
-          description: Specifies a list of groups associated to this view box (storage domain).
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/StatsGroup'
-          x-go-name: GroupList
-        id:
-          description: Specifies the id of the view box (storage domain).
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: Id
-        name:
-          description: Specifies the name of the view box (storage domain).
-          type:
-          - string
-          - 'null'
-          x-go-name: Name
-        quotaHardLimitBytes:
-          description: 'Specifies the hard limit of physical quota of the view box
-
-            (storage domain).'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: QuotaHardLimitBytes
-        schemaInfoList:
-          description: Specifies a list of schemaInfos of the view box (storage domain).
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/UsageSchemaInfo'
-          x-go-name: SchemaInfoList
-        stats:
-          description: Specifies details of statistics of the view box (storage domain).
-          $ref: '#/components/schemas/DataUsageStats'
-      x-go-package: cohesity/iris/server/data/public
-    VaultStats:
-      description: Specifies the storage usage on vaults.
-      type: object
-      title: Vault Stats.
-      properties:
-        awsUsageBytes:
-          description: Specifies the usage on AWS vaults.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: AWSUsageBytes
-        azureUsageBytes:
-          description: Specifies the usage on Azure vaults.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: AzureUsageBytes
-        gcpUsageBytes:
-          description: Specifies the usage on GCP vaults.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: GCPUsageBytes
-        nasUsageBytes:
-          description: Specifies the usage on NAS vaults.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NASUsageBytes
-        oracleUsageBytes:
-          description: Specifies the usage on Oracle vaults.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: OracleUsageBytes
-        qstarUsageBytes:
-          description: Specifies the usage on QStar Tape vaults.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: QStarUsageBytes
-        s3cUsageBytes:
-          description: Specifies the usage on S3 Compatible vaults.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: S3cUsageBytes
-        vaultStatsList:
-          description: Specifies the stats of all vaults on the cluster.
-          type: array
-          items:
-            $ref: '#/components/schemas/VaultStatsInfo'
-          x-go-name: VaultStatsList
-    VaultRunStatsSummary:
-      description: Specifies the stats by run type for each vault run.
-      type: object
-      title: Vault Run Stats Summary.
-      properties:
-        failureTimeSeries:
-          description: Specifies the time series for the failed runs that ended in the given time frame.
-          type: array
-          items:
-            $ref: '#/components/schemas/VaultRunInfo'
-          x-go-name: FailureTimeSeries
-        numFailedRuns:
-          description: Specifies the number of runs that ended in failure during the given time frame.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumFailedRuns
-        numInProgressRuns:
-          description: Specifies the number of runs that were currently in progress at the time that the API call was made.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumInProgressRuns
-        numQueuedRuns:
-          description: Specifies the number of runs that were currently queued at the time that the API call was made.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumQueuedRuns
-        numSuccessfulRuns:
-          description: Specifies the number of runs that ended in success during the given time frame.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumSuccessfulRuns
-        successTimeSeries:
-          description: Specifies the time series for the successful runs that ended in the given time frame.
-          type: array
-          items:
-            $ref: '#/components/schemas/VaultRunInfo'
-          x-go-name: SuccessTimeSeries
-    Error:
-      description: Specifies the error object with error code and a message.
-      type: object
-      title: Error.
-      properties:
-        errorCode:
-          description: Specifies the error code.
-          type:
-          - integer
-          - 'null'
-          x-go-name: ErrorCode
-        errorMessage:
-          description: Specifies the error message.
-          type:
-          - string
-          - 'null'
-          x-go-name: ErrorMessage
-    RestoreEnvStats:
-      description: Specifies the aggregated statistics for restores of a specific environment type.
-      type: object
-      properties:
-        environment:
-          description: Specifies the environment.
-          type:
-          - string
-          - 'null'
-          enum:
-          - kVMware
-          - kHyperV
-          - kSQL
-          - kView
-          - kPuppeteer
-          - kPhysical
-          - kPure
-          - kNimble
-          - kAzure
-          - kNetapp
-          - kAgent
-          - kGenericNas
-          - kAcropolis
-          - kPhysicalFiles
-          - kIsilon
-          - kGPFS
-          - kKVM
-          - kAWS
-          - kExchange
-          - kHyperVVSS
-          - kOracle
-          - kGCP
-          - kFlashBlade
-          - kAWSNative
-          - kVCD
-          - kO365
-          - kO365Outlook
-          - kHyperFlex
-          - kGCPNative
-          - kAzureNative
-          - kAD
-          - kAWSSnapshotManager
-          x-go-name: Environment
-        objectCount:
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ObjectCount
-        totalBytes:
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: TotalBytes
-    ProtectionRunsStats:
-      description: Specifies the Protection Runs statistics response.
-      type: object
-      title: Protection Runs Statistics.
-      properties:
-        numArchivalRuns:
-          description: Specifies the count of archival Runs.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumArchivalRuns
-        numBackupRuns:
-          description: Specifies the count of backup Runs.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumBackupRuns
-        numReplicationRuns:
-          description: Specifies the count of replication Runs.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumReplicationRuns
-    Consumer:
-      description: Consumer is the storage consumer of a group.
-      type: object
-      title: Consumer.
-      properties:
-        id:
-          description: Specifies the id of the consumer.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: Id
-        name:
-          description: Specifies the name of the consumer.
-          type:
-          - string
-          - 'null'
-          x-go-name: Name
-        type:
-          description: 'Specifies the type of the consumer.
-
-            Type of the consumer can be one of the following three,
-
-
-            ''kViews'', indicates the stats info of Views used per organization (tenant)
-
-            per view box (storage domain).
-
-            ''kProtectionRuns'', indicates the stats info of Protection Runs used per
-
-            organization (tenant) per view box (storage domain).
-
-            ''kReplicationRuns'', indicates the stats info of Replication In used per
-
-            organization (tenant) per view box (storage domain).
-
-            ''kViewProtectionRuns'', indicates the stats info of View Protection Runs used
-
-            per organization (tenant) per view box (storage domain).'
-          type:
-          - string
-          - 'null'
-          enum:
-          - kViews
-          - kProtectionRuns
-          - kReplicationRuns
-          - kViewProtectionRuns
-          x-go-name: Type
-      x-go-package: cohesity/iris/server/data/public
-    TenantStats:
-      type: object
-      title: TenantStats is the stats of a single tenant.
-      properties:
-        groupList:
-          description: Specifies a list of groups associated to this tenant (organization).
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/StatsGroup'
-          x-go-name: GroupList
-        id:
-          description: Specifies the id of the tenant (organization).
-          type:
-          - string
-          - 'null'
-          x-go-name: Id
-        name:
-          description: Specifies the name of the tenant (organization).
-          type:
-          - string
-          - 'null'
-          x-go-name: Name
-        schemaInfoList:
-          description: Specifies a list of schemaInfos of the tenant (organization).
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/UsageSchemaInfo'
-          x-go-name: SchemaInfoList
-        stats:
-          description: Specifies details of statistics of the tenant (organization).
-          $ref: '#/components/schemas/DataUsageStats'
-      x-go-package: cohesity/iris/server/data/public
-    UsageSchemaInfo:
-      description: UsageSchemaInfo describes the schema info of the usage.
-      type: object
-      title: UsageSchemaInfo
-      properties:
-        schemaInfoList:
-          description: Specifies the list of the schema info for an entity.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/SchemaInfo'
-          x-go-name: SchemaInfoList
-      x-go-package: cohesity/iris/server/data/public
-    ActiveAlertsStats:
-      description: Specifies the active alert statistics details.
-      type: object
-      title: Active Alert Statistics.
-      properties:
-        numCriticalAlerts:
-          description: Specifies the count of active critical Alerts excluding alerts that belong to other bucket.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumCriticalAlerts
-        numCriticalAlertsCategories:
-          description: Specifies the count of active critical alerts categories.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumCriticalAlertsCategories
-        numHardwareAlerts:
-          description: Specifies the count of active hardware Alerts.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumHardwareAlerts
-        numHardwareCriticalAlerts:
-          description: Specifies the count of active hardware critical Alerts.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumHardwareCriticalAlerts
-        numHardwareInfoAlerts:
-          description: Specifies the count of active hardware info Alerts.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumHardwareInfoAlerts
-        numHardwareWarningAlerts:
-          description: Specifies the count of active hardware warning Alerts.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumHardwareWarningAlerts
-        numInfoAlerts:
-          description: Specifies the count of active info Alerts excluding alerts that belong to other bucket.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumInfoAlerts
-        numInfoAlertsCategories:
-          description: Specifies the count of active info alerts categories.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumInfoAlertsCategories
-        numOtherAlerts:
-          description: Specifies the count of active Alerts of other bucket
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumOtherAlerts
-        numOtherCriticalAlerts:
-          description: Specifies the count of active other critical Alerts.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumOtherCriticalAlerts
-        numOtherInfoAlerts:
-          description: Specifies the count of active other info Alerts.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumOtherInfoAlerts
-        numOtherWarningAlerts:
-          description: Specifies the count of active other warning Alerts.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumOtherWarningAlerts
-        numServiceAlerts:
-          description: Specifies the count of active service Alerts.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumServiceAlerts
-        numServiceCriticalAlerts:
-          description: Specifies the count of active service critical Alerts.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumServiceCriticalAlerts
-        numServiceInfoAlerts:
-          description: Specifies the count of active service info Alerts.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumServiceInfoAlerts
-        numServiceWarningAlerts:
-          description: Specifies the count of active service warning Alerts.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumServiceWarningAlerts
-        numSoftwareAlerts:
-          description: Specifies the count of active software Alerts.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumSoftwareAlerts
-        numSoftwareCriticalAlerts:
-          description: Specifies the count of active software critical Alerts.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumSoftwareCriticalAlerts
-        numSoftwareInfoAlerts:
-          description: Specifies the count of active software info Alerts.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumSoftwareInfoAlerts
-        numSoftwareWarningAlerts:
-          description: Specifies the count of active software warning Alerts.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumSoftwareWarningAlerts
-        numWarningAlerts:
-          description: Specifies the count of active warning Alerts excluding alerts that belong to other bucket.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumWarningAlerts
-        numWarningAlertsCategories:
-          description: Specifies the count of active warning alerts categories.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumWarningAlertsCategories
-    VaultStatsInfo:
-      description: Specifies the stats for each vault.
-      type: object
-      title: Vault Stats.
-      properties:
-        id:
-          description: Specifies the Vault Id.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: Id
-        name:
-          description: Specifies the Vault name.
-          type:
-          - string
-          - 'null'
-          x-go-name: Name
-        type:
-          description: Specifies the Vault type.
-          type:
-          - string
-          - 'null'
-          enum:
-          - kNearline
-          - kGlacier
-          - kS3
-          - kAzureStandard
-          - kS3Compatible
-          - kQStarTape
-          - kGoogleStandard
-          - kGoogleDRA
-          - kAmazonS3StandardIA
-          - kAWSGovCloud
-          - kNAS
-          - kColdline
-          - kAzureGovCloud
-          - kAzureArchive
-          - kAzure
-          - kGoogle
-          - kAmazon
-          - kOracle
-          - kOracleTierStandard
-          - kOracleTierArchive
-          - kAmazonC2S
-          x-go-name: Type
-        usageBytes:
-          description: Specifies the bytes used by the Vault.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: UsageBytes
-    ProtectedObjectsSummaryByEnv:
-      description: Specifies the protection summary of given environment type.
-      type: object
-      title: Protected Object Summary by Environment.
-      properties:
-        environment:
-          description: Specifies the environment.
-          type:
-          - string
-          - 'null'
-          enum:
-          - kVMware
-          - kHyperV
-          - kSQL
-          - kView
-          - kPuppeteer
-          - kPhysical
-          - kPure
-          - kNimble
-          - kAzure
-          - kNetapp
-          - kAgent
-          - kGenericNas
-          - kAcropolis
-          - kPhysicalFiles
-          - kIsilon
-          - kGPFS
-          - kKVM
-          - kAWS
-          - kExchange
-          - kHyperVVSS
-          - kOracle
-          - kGCP
-          - kFlashBlade
-          - kAWSNative
-          - kVCD
-          - kO365
-          - kO365Outlook
-          - kHyperFlex
-          - kGCPNative
-          - kAzureNative
-          - kAD
-          - kAWSSnapshotManager
-          x-go-name: Environment
-        numObjectsProtected:
-          description: Specifies the total number of protected objects.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumObjectsProtected
-        numObjectsUnprotected:
-          description: Specifies the total number of unprotected objects.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumObjectsUnprotected
-        protectedSizeBytes:
-          description: Specifies the total size of protected objects in bytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: protectedSizeBytes
-        unprotectedSizeBytes:
-          description: Specifies the total size of unprotected objects in bytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: unprotectedSizeBytes
-    LastProtectionRunStatsByEnv:
-      description: Specifies the last Protection Run stats by env.
-      type: object
-      title: Last Protection Run stats by env.
-      properties:
-        environment:
-          description: Specifies the environment.
-          type:
-          - string
-          - 'null'
-          enum:
-          - kVMware
-          - kHyperV
-          - kSQL
-          - kView
-          - kPuppeteer
-          - kPhysical
-          - kPure
-          - kNimble
-          - kAzure
-          - kNetapp
-          - kAgent
-          - kGenericNas
-          - kAcropolis
-          - kPhysicalFiles
-          - kIsilon
-          - kGPFS
-          - kKVM
-          - kAWS
-          - kExchange
-          - kHyperVVSS
-          - kOracle
-          - kGCP
-          - kFlashBlade
-          - kAWSNative
-          - kVCD
-          - kO365
-          - kO365Outlook
-          - kHyperFlex
-          - kGCPNative
-          - kAzureNative
-          - kAD
-          - kAWSSnapshotManager
-          x-go-name: Environment
-        numObjectsFailed:
-          description: Specifies the count of objects that failed last Protection Run.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumObjectsFailed
-        numObjectsFailedSla:
-          description: Specifies the count of objects that failed sla in the last Run.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumObjectsFailedSla
-        numObjectsMetSla:
-          description: Specifies the count of objects that met sla in the last Run.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumObjectsMetSla
-    ProtectedObjectsSummary:
-      description: Specifies the statistics of the protected objects on the cluster.
-      type: object
-      title: Protected Objects Summary.
-      properties:
-        numObjectsProtected:
-          description: Specifies the total number of protected objects.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumObjectsProtected
-        numObjectsUnprotected:
-          description: Specifies the total number of unprotected objects.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumObjectsUnprotected
-        protectedSizeBytes:
-          description: Specifies the total size of protected objects in bytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: protectedSizeBytes
-        statsByEnv:
-          description: Specifies the stats of Protected objects by environment.
-          type: array
-          items:
-            $ref: '#/components/schemas/ProtectedObjectsSummaryByEnv'
-          x-go-name: StatsByEnv
-        unprotectedSizeBytes:
-          description: Specifies the total size of unprotected objects in bytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: unprotectedSizeBytes
-    FileDistributionStatsList:
-      description: Specifies the File distribution stats list.
-      type: array
-      title: File distribution Statistics List.
-      items:
-        $ref: '#/components/schemas/FileDistributionStats'
-    GetViewBoxStatsResult:
-      description: GetViewBoxStatsResult is the result of get viewBoxStats api.
-      type: object
-      title: GetViewBoxStatsResult
-      properties:
-        statsList:
-          description: Specifies a list of view box stats.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/StorageDomainStats'
-          x-go-name: StatsList
-      x-go-package: cohesity/iris/server/data/public
-    RestoreStats:
-      description: Specifies the restore statistics details.
-      type: object
-      title: Restore Statistics.
-      properties:
-        numClonedObjects:
-          description: Specifies the count of cloned objects in the given time frame.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumClonedObjects
-        numRecoveredObjects:
-          description: Specifies the count of recovered objects in the given time frame.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: NumRecoveredObjects
-        statsByEnvironment:
-          description: Specifies the stats of recovery jobs aggregated by the environment type.
-          type: array
-          items:
-            $ref: '#/components/schemas/RestoreEnvStats'
-          x-go-name: StatsByEnvironment
-    FileDistributionStats:
-      description: Specifies the File distribution stats.
-      type: object
-      title: File distribution Statistics.
-      properties:
-        clusterId:
-          description: Specifies the cluster Id.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ClusterId
-        clusterIncarnationId:
-          description: Specifies the cluster Incarnation Id.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ClusterIncarnationId
-        entityId:
-          description: Specifies the id of the entity for which file distribution stats are computed.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: EntityId
-        entityName:
-          description: Specifies the name of the entity for which file distribution stats are computed.
-          type:
-          - string
-          - 'null'
-          x-go-name: EntityName
-        metricsList:
-          description: Specifies the list of file stats for different file extensions.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/FileDistributionMetrics'
-          x-go-name: MetricsList
-    SchemaInfo:
-      description: 'Specifies the metric data point where public data metric name as key and the
-
-        schema defined metric name as a value.'
-      type: object
-      title: Schema Info.
-      properties:
-        entityId:
-          description: Specifies the id of the entity represented as a string.
-          type:
-          - string
-          - 'null'
-          x-go-name: EntityId
-        key:
-          description: Specifies the key which is public facing name for metric name.
-          type:
-          - string
-          - 'null'
-          x-go-name: Key
-        metricName:
-          description: Specifies the Apollo schema metric name.
-          type:
-          - string
-          - 'null'
-          x-go-name: MetricName
-        schemaName:
-          description: Specifies the name of entity schema such as 'ApolloViewBoxStats'.
-          type:
-          - string
-          - 'null'
-          x-go-name: SchemaName
-      x-go-package: cohesity/iris/server/data/public
-    FileDistributionMetrics:
-      description: Specifies the File distribution metrics.
-      type: object
-      title: File distribution Metrics.
-      properties:
-        metricName:
-          description: Specifies the name of the metric.
-          type:
-          - string
-          - 'null'
-          x-go-name: MetricName
-        value:
-          description: Specifies the value of specified metric name.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: Value
-    StorageStats:
-      description: Specifies the storage statistics of the cluster.
-      type: object
-      title: Storage Statistics
-      properties:
-        dataProtectionLogicalUsageBytes:
-          description: Specifies the logical size of protected objects in bytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: DataProtectionLogicalUsageBytes
-        dataProtectionPhysicalUsageBytes:
-          description: Specifies the physical size of protected objects in bytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: DataProtectionPhysicalUsageBytes
-        fileServicesLogicalUsageBytes:
-          description: Specifies the logical size consumed by file services in bytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: FileServicesLogicalUsageBytes
-        fileServicesPhysicalUsageBytes:
-          description: Specifies the physical size consumed by file services in bytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: FileServicesPhysicalUsageBytes
-        localAvailableBytes:
-          description: Specifies the local storage currently available on the cluster in bytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: LocalAvailableBytes
-        localUsageBytes:
-          description: Specifies the local storage currently in use on the cluster in bytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: LocalUsageBytes
-        totalCapacityBytes:
-          description: Specifies the total capacity of the cluster in bytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: TotalCapacityBytes
-    VaultProviderStatsByEnv:
-      description: Specifies the Vault stats by environments.
-      type: object
-      title: Vault Provider Stats By Env.
-      properties:
-        count:
-          description: Specifies the count of the objects of the specified environment.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: Count
-        environment:
-          description: Specifies the environment type.
-          type:
-          - string
-          - 'null'
-          enum:
-          - kVMware
-          - kHyperV
-          - kSQL
-          - kView
-          - kPuppeteer
-          - kPhysical
-          - kPure
-          - kNimble
-          - kAzure
-          - kNetapp
-          - kAgent
-          - kGenericNas
-          - kAcropolis
-          - kPhysicalFiles
-          - kIsilon
-          - kGPFS
-          - kKVM
-          - kAWS
-          - kExchange
-          - kHyperVVSS
-          - kOracle
-          - kGCP
-          - kFlashBlade
-          - kAWSNative
-          - kVCD
-          - kO365
-          - kO365Outlook
-          - kHyperFlex
-          - kGCPNative
-          - kAzureNative
-          - kAD
-          - kAWSSnapshotManager
-          x-go-name: Environment
-        size:
-          description: Specifies the size of the entities of the specified environment.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: Size
-    ProtectionRunsStatsList:
-      description: Specifies the statistics of protection runs at the specific time.
-      properties:
-        timestamp:
-          description: Specifies a Unix epoch Timestamp (in microseconds) of this statistics.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-order: 0
-        stats:
-          description: Specifies the protection runs stats.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ProtectionRunsStats_2'
-          x-order: 1
     Error_2:
       description: Specifies the error object with error code and a message.
       type: object
@@ -2731,6 +2834,24 @@ components:
           - 'null'
           format: int64
           x-order: 1
+    ProtectionRunsStatsList:
+      description: Specifies the statistics of protection runs at the specific time.
+      properties:
+        timestamp:
+          description: Specifies a Unix epoch Timestamp (in microseconds) of this statistics.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        stats:
+          description: Specifies the protection runs stats.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ProtectionRunsStats_2'
+          x-order: 1
     GetProtectionRunsStatusResponseBody:
       description: Specifies a list of protection runs stats taken at different time.
       properties:
@@ -2742,56 +2863,33 @@ components:
           items:
             $ref: '#/components/schemas/ProtectionRunsStatsList'
           x-order: 0
-    SCSiteConnectivityStatsParams:
-      description: Specifies the parameters to fetch the site connectivity stats.
+    SCConnectedSitePair:
+      description: Specifies the connectivity stats for a site that is connected to at least one other site via DR plan.
       type: object
       properties:
-        returnInactiveSites:
-          description: Specifying this to true will return the list of sites that are not used in any of the DR plans currently. If not specified or specified as false then stats wont be returned for inactive sites.
+        primarySiteId:
+          description: Specifies the unique identifier of the source site in the connection pair.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        drSiteId:
+          description: Specifies the unique identifier of the destination site in the connection pair.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        drPlanIds:
+          description: Specifies the list of DR plan ids that are connecting primary and DR sites.
+          type: array
+          items:
+            type: integer
+            format: int64
+        isReachable:
+          description: Specifies true if the primary site and DR site are reachable from each other.
           type:
           - boolean
           - 'null'
-    SCDisconnectedSite:
-      description: Specifies the details of a disconnected site.
-      type: object
-      properties:
-        siteDetails:
-          description: Specifies the site details.
-          type:
-          - object
-          - 'null'
-          $ref: '#/components/schemas/SCSite'
-    SCCommonSite:
-      description: Specifies the common site parameters.
-      type: object
-      required:
-      - name
-      - type
-      properties:
-        name:
-          description: Specifies the name of the site.
-          type:
-          - string
-          - 'null'
-        type:
-          description: Specifies type of the site.
-          type:
-          - string
-          - 'null'
-          enum:
-          - OnPrem
-        location:
-          description: Specifies location details of the site.
-          type:
-          - object
-          - 'null'
-          $ref: '#/components/schemas/SCSiteLocationDetails'
-        onPremParams:
-          description: Specifies the parameters required to create an on premises site.
-          type:
-          - object
-          - 'null'
-          $ref: '#/components/schemas/SCOnPremSite'
     SCActivityStatsResponse:
       description: Specifies the activity stats for the specific time interval.
       type: object
@@ -2826,25 +2924,6 @@ components:
           - integer
           - 'null'
           format: int32
-    SCOnPremSite:
-      description: Specifies the details of an on prem site.
-      type: object
-      required:
-      - clusterId
-      - incarnationId
-      properties:
-        clusterId:
-          description: Specifies the ID of the on prem cluster.
-          type:
-          - integer
-          - 'null'
-          format: int64
-        incarnationId:
-          description: Specifies the incarnation ID of the on prem cluster.
-          type:
-          - integer
-          - 'null'
-          format: int64
     SCGetStatsParams:
       description: Specifies the parameters to get stats. Based on the passed statTypes, appropriate stats data will be returned in the response. If statTypes is not specified then basic stats about DR plans will be returned.
       type: object
@@ -2866,28 +2945,126 @@ components:
           description: Specifies the parameters to fetch the site connectivity stats.
           type: object
           $ref: '#/components/schemas/SCSiteConnectivityStatsParams'
-    SCSite:
-      description: Specifies the site details.
+    SCCommonSite:
+      description: Specifies the common site parameters.
       type: object
-      allOf:
-      - type: object
-        properties:
-          id:
-            description: Specifies the unique identifier of the site.
-            type:
-            - integer
-            - 'null'
-            format: int64
-          healthStatus:
-            description: Specifies the health status of the site.
-            type:
-            - string
-            - 'null'
-            enum:
-            - NotReachable
-            - Healthy
-            - Unhealthy
-      - $ref: '#/components/schemas/SCCommonSite'
+      required:
+      - name
+      - type
+      properties:
+        name:
+          description: Specifies the name of the site.
+          type:
+          - string
+          - 'null'
+        type:
+          description: Specifies type of the site.
+          type:
+          - string
+          - 'null'
+          enum:
+          - OnPrem
+        location:
+          description: Specifies location details of the site.
+          type:
+          - object
+          - 'null'
+          $ref: '#/components/schemas/SCSiteLocationDetails'
+        onPremParams:
+          description: Specifies the parameters required to create an on premises site.
+          type:
+          - object
+          - 'null'
+          $ref: '#/components/schemas/SCOnPremSite'
+    SCDisconnectedSite:
+      description: Specifies the details of a disconnected site.
+      type: object
+      properties:
+        siteDetails:
+          description: Specifies the site details.
+          type:
+          - object
+          - 'null'
+          $ref: '#/components/schemas/SCSite'
+    SCReadyPlanStats:
+      description: Specifies the stats for all the DR plans that are ready for either failover or failback.
+      type: object
+      properties:
+        numFailoverReadyPlans:
+          description: Specifies the total number of DR plans ready for failover.
+          type:
+          - integer
+          - 'null'
+          format: int32
+        numFailbackReadyPlans:
+          description: Specifies the total number of DR plans ready for failback.
+          type:
+          - integer
+          - 'null'
+          format: int32
+    SCActivityStatsParams:
+      description: Specifies the parameters to fetch the activity stats.
+      type: object
+      properties:
+        timePeriodInMonths:
+          description: Specifies the time period in months for which the activity stats will be returned. If timePeriodInMonths is not specified then stats for the last month will be returned.
+          type: integer
+          format: int32
+          minimum: 1
+    SCOnPremSite:
+      description: Specifies the details of an on prem site.
+      type: object
+      required:
+      - clusterId
+      - incarnationId
+      properties:
+        clusterId:
+          description: Specifies the ID of the on prem cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        incarnationId:
+          description: Specifies the incarnation ID of the on prem cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+    SCSiteLocationDetails:
+      description: Specifies details related to the location of a site.
+      properties:
+        city:
+          description: Specifies the city where this site is located.
+          type:
+          - string
+          - 'null'
+        country:
+          description: Specifies the country name for this site.
+          type:
+          - string
+          - 'null'
+        iso:
+          description: Specifies 2 Character ISO Name for country.
+          type:
+          - string
+          - 'null'
+        latitude:
+          description: Specifies the latitude for this site.
+          type:
+          - number
+          - 'null'
+          format: float64
+        longitude:
+          description: Specifies the longitude for this site.
+          type:
+          - number
+          - 'null'
+          format: float64
+        state:
+          description: Specifies name of the region or state to which the site belongs to.
+          type:
+          - string
+          - 'null'
     SCDRPlanConnectionStats:
       description: Specifies the DR plan related details mainly used to represent the connection details between a pair of sites.
       type: object
@@ -2972,41 +3149,30 @@ components:
           - integer
           - 'null'
           format: int64
-    SCConnectedSites:
-      description: Specifies the connectivity stats for a site where each source site is connected to one or more sites by DR plans.
+    SCSiteConnectivityStatsResponse:
+      description: Specifies the activity stats for the specific time interval.
       type: object
       properties:
-        siteDetails:
-          description: Specifies the site details of a source site.
-          type:
-          - object
-          - 'null'
-          $ref: '#/components/schemas/SCSite'
-    SCSLAStatsResponse:
-      description: Specifies the SLA stats for active DR plans.
-      type: object
-      properties:
-        numSLASatisfiedPlans:
-          description: Specifies the total number of active DR plans where SLA is satisfied.
-          type:
-          - integer
-          - 'null'
-          format: int32
-        numSLANotSatisfiedPlans:
-          description: Specifies the total number of active DR plans where SLA is not satisfied.
-          type:
-          - integer
-          - 'null'
-          format: int32
-    SCActivityStatsParams:
-      description: Specifies the parameters to fetch the activity stats.
-      type: object
-      properties:
-        timePeriodInMonths:
-          description: Specifies the time period in months for which the activity stats will be returned. If timePeriodInMonths is not specified then stats for the last month will be returned.
-          type: integer
-          format: int32
-          minimum: 1
+        connectedSites:
+          description: Specifies the site details for all the active sites. This does not contain the linking information between sites. Refer 'connectionGraph' property for inferring the connections between sites.
+          type: array
+          items:
+            $ref: '#/components/schemas/SCConnectedSites'
+        drPlanStats:
+          description: Specifies the DR plan related stats. This contains the list of all DR plans that are used for making connection between any pair of sites. Clients should use the following list to map the relevant DR plans using the drPlanIds added in the 'connectedSites' property.
+          type: array
+          items:
+            $ref: '#/components/schemas/SCDRPlanConnectionStats'
+        disconnectedSites:
+          description: Specifies the list of inactive sites that are currently not included in any of the DR plans. This is only populated if 'returnOnlyInactiveSites' is set to true in the request body.
+          type: array
+          items:
+            $ref: '#/components/schemas/SCDisconnectedSite'
+        connectionGraph:
+          description: Specifies the connection details between multiple sites. Each entry in the graph specifies the primary site, DR site and all plans connecting these plans.
+          type: array
+          items:
+            $ref: '#/components/schemas/SCConnectedSitePair'
     SCGetStatsResponse:
       description: Specifies the various stats about DR Plans, sites and applications. Based on the passed statTypes, appropriate stats data will be returned in the response.
       type: object
@@ -3071,46 +3237,6 @@ components:
           - object
           - 'null'
           $ref: '#/components/schemas/SCSiteConnectivityStatsResponse'
-    SCReadyPlanStats:
-      description: Specifies the stats for all the DR plans that are ready for either failover or failback.
-      type: object
-      properties:
-        numFailoverReadyPlans:
-          description: Specifies the total number of DR plans ready for failover.
-          type:
-          - integer
-          - 'null'
-          format: int32
-        numFailbackReadyPlans:
-          description: Specifies the total number of DR plans ready for failback.
-          type:
-          - integer
-          - 'null'
-          format: int32
-    SCSiteConnectivityStatsResponse:
-      description: Specifies the activity stats for the specific time interval.
-      type: object
-      properties:
-        connectedSites:
-          description: Specifies the site details for all the active sites. This does not contain the linking information between sites. Refer 'connectionGraph' property for inferring the connections between sites.
-          type: array
-          items:
-            $ref: '#/components/schemas/SCConnectedSites'
-        drPlanStats:
-          description: Specifies the DR plan related stats. This contains the list of all DR plans that are used for making connection between any pair of sites. Clients should use the following list to map the relevant DR plans using the drPlanIds added in the 'connectedSites' property.
-          type: array
-          items:
-            $ref: '#/components/schemas/SCDRPlanConnectionStats'
-        disconnectedSites:
-          description: Specifies the list of inactive sites that are currently not included in any of the DR plans. This is only populated if 'returnOnlyInactiveSites' is set to true in the request body.
-          type: array
-          items:
-            $ref: '#/components/schemas/SCDisconnectedSite'
-        connectionGraph:
-          description: Specifies the connection details between multiple sites. Each entry in the graph specifies the primary site, DR site and all plans connecting these plans.
-          type: array
-          items:
-            $ref: '#/components/schemas/SCConnectedSitePair'
     SCErrorCode:
       description: Specifies all the error codes that are returned by API server
       type: string
@@ -3118,6 +3244,63 @@ components:
       - kNoError
       - kValidationError
       - kInternalError
+    SCConnectedSites:
+      description: Specifies the connectivity stats for a site where each source site is connected to one or more sites by DR plans.
+      type: object
+      properties:
+        siteDetails:
+          description: Specifies the site details of a source site.
+          type:
+          - object
+          - 'null'
+          $ref: '#/components/schemas/SCSite'
+    SCSite:
+      description: Specifies the site details.
+      type: object
+      allOf:
+      - type: object
+        properties:
+          id:
+            description: Specifies the unique identifier of the site.
+            type:
+            - integer
+            - 'null'
+            format: int64
+          healthStatus:
+            description: Specifies the health status of the site.
+            type:
+            - string
+            - 'null'
+            enum:
+            - NotReachable
+            - Healthy
+            - Unhealthy
+      - $ref: '#/components/schemas/SCCommonSite'
+    SCSiteConnectivityStatsParams:
+      description: Specifies the parameters to fetch the site connectivity stats.
+      type: object
+      properties:
+        returnInactiveSites:
+          description: Specifying this to true will return the list of sites that are not used in any of the DR plans currently. If not specified or specified as false then stats wont be returned for inactive sites.
+          type:
+          - boolean
+          - 'null'
+    SCSLAStatsResponse:
+      description: Specifies the SLA stats for active DR plans.
+      type: object
+      properties:
+        numSLASatisfiedPlans:
+          description: Specifies the total number of active DR plans where SLA is satisfied.
+          type:
+          - integer
+          - 'null'
+          format: int32
+        numSLANotSatisfiedPlans:
+          description: Specifies the total number of active DR plans where SLA is not satisfied.
+          type:
+          - integer
+          - 'null'
+          format: int32
     SCError:
       description: Specifies the error object with error code and a message.
       type: object
@@ -3130,189 +3313,6 @@ components:
           type:
           - string
           - 'null'
-    SCConnectedSitePair:
-      description: Specifies the connectivity stats for a site that is connected to at least one other site via DR plan.
-      type: object
-      properties:
-        primarySiteId:
-          description: Specifies the unique identifier of the source site in the connection pair.
-          type:
-          - integer
-          - 'null'
-          format: int64
-        drSiteId:
-          description: Specifies the unique identifier of the destination site in the connection pair.
-          type:
-          - integer
-          - 'null'
-          format: int64
-        drPlanIds:
-          description: Specifies the list of DR plan ids that are connecting primary and DR sites.
-          type: array
-          items:
-            type: integer
-            format: int64
-        isReachable:
-          description: Specifies true if the primary site and DR site are reachable from each other.
-          type:
-          - boolean
-          - 'null'
-    SCSiteLocationDetails:
-      description: Specifies details related to the location of a site.
-      properties:
-        city:
-          description: Specifies the city where this site is located.
-          type:
-          - string
-          - 'null'
-        country:
-          description: Specifies the country name for this site.
-          type:
-          - string
-          - 'null'
-        iso:
-          description: Specifies 2 Character ISO Name for country.
-          type:
-          - string
-          - 'null'
-        latitude:
-          description: Specifies the latitude for this site.
-          type:
-          - number
-          - 'null'
-          format: float64
-        longitude:
-          description: Specifies the longitude for this site.
-          type:
-          - number
-          - 'null'
-          format: float64
-        state:
-          description: Specifies name of the region or state to which the site belongs to.
-          type:
-          - string
-          - 'null'
-  responses:
-    GetProtectedObjectsSummaryResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ProtectedObjectsSummary'
-    ErrorResponse:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    GetFileDistributionStatsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/FileDistributionStatsList'
-    GetLastProtectionRunStatsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/LastProtectionRunStats'
-    GetActiveAlertsStatsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ActiveAlertsStats'
-    GetTenantStatsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GetTenantStatsResult'
-    GetConsumerStatsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GetConsumerStatsResult'
-    GetProtectionRunsStatsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ProtectionRunsStats'
-    GetStorageStatsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StorageStats'
-    GetViewBoxStatsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GetViewBoxStatsResult'
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
-    GetViewStatsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ViewStatsSnapshot'
-    GetVaultStatsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/VaultStats'
-    GetVaultRunStatsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/VaultRunStatsSummary'
-    GetViewProtocolStatsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ViewProtocolStatsList'
-    GetRestoreStatsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RestoreStats'
-    GetVaultProviderStatsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/VaultProviderStatsList'
-    GetProtectionRunsStatusResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GetProtectionRunsStatusResponseBody'
-    SCErrorResponse:
-      description: Specifies the common error definition.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SCError'
-    SCGetStatsResponse:
-      description: Specifies the response for fetching stats.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SCGetStatsResponse'
   securitySchemes:
     APIKeyHeader:
       in: header

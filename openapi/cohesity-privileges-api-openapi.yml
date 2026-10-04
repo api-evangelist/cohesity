@@ -41,6 +41,12 @@ paths:
           $ref: '#/components/responses/Error'
 components:
   responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
     GetPrivilegesResponse:
       description: Success
       content:
@@ -51,12 +57,6 @@ components:
             title: Array of Privileges.
             items:
               $ref: '#/components/schemas/PrivilegeInfo'
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
   schemas:
     RequestError:
       description: Details about the Error.

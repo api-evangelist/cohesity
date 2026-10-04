@@ -253,24 +253,77 @@ paths:
         default:
           $ref: '#/components/responses/SCErrorResponse'
 components:
+  responses:
+    SCGetAppVersionsResponse:
+      description: Specifies the response of a successful get application versions operation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SCApplicationVersionsResponse'
+    SCCreateAppResponse:
+      description: Specifies the response of a successful application creation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SCApplication'
+    SCGetAppByIdResponse:
+      description: Specifies the response of a successful get application operation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SCApplication'
+    SCErrorResponse:
+      description: Specifies the common error definition.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SCError'
+    SCGetLatestSnapshotByAppIdResponse:
+      description: Specifies the response of a successful get snapshots operation on an app Id.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SCGetSnapshotsByAppIdResponse'
+    SCGetAppsResponse:
+      description: Specifies the response of a successful get applications operation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SCApplicationsResponse'
+    SCUpdateApplicationResponse:
+      description: Specifies the response of a successful application update.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SCApplication'
   schemas:
-    SCAppSourceVMwareParams:
-      description: Specifies the source details for adding VMware objects.
+    SCGetSnapshotsByAppIdResponse:
+      description: Specifies the response for fetching snapshots for all the objects belonging to an application.
       type: object
-      required:
-      - sourceType
       properties:
-        sourceType:
-          description: Specifies the type of the VMware source.
+        appId:
+          description: Specifies the unique identifier for the application.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        objectSnapshots:
+          description: Specifies the latest snapshot for all entities belonging to the latest version of the application.
+          type: array
+          items:
+            $ref: '#/components/schemas/SCObjectSnapshot'
+    SCError:
+      description: Specifies the error object with error code and a message.
+      type: object
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          $ref: '#/components/schemas/SCErrorCode'
+        errorMessage:
+          description: Specifies the error message.
           type:
           - string
           - 'null'
-          enum:
-          - vCenter
-        vCenterParams:
-          description: Specifies the parameters to configure vCenter as a DR target.
-          type: object
-          $ref: '#/components/schemas/SCAppSourceVCenterParams'
     SCAppSpec:
       description: Specifies the application configuration.
       type: object
@@ -289,6 +342,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SCAppComponentsConfig'
+    SCVMDetails:
+      description: Specifies the details specific to the virtualMachine object type.
+      type: object
+      properties:
+        isCdpProtected:
+          description: Specifies true if the VM is protected using Continuous Data Protection (CDP).
+          type:
+          - boolean
+          - 'null'
     SCApplicationVersionsResponse:
       description: Specifies the list of application versions.
       type: object
@@ -308,6 +370,139 @@ components:
         paginationInfo:
           description: Specifies the information needed in order to support pagination. This will not be included for the last page of results.
           $ref: '#/components/schemas/SCPaginationInfo'
+    SCTimeRange:
+      description: Specifies the time range for the objects protected typically protected via CDP.
+      type: object
+      properties:
+        startTimeUsecs:
+          description: Specifies the start time of the time range specified as unix epoch timestamp.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        endTimeUsecs:
+          description: Specifies the end time of the time range specified as unix epoch timestamp.
+          type:
+          - integer
+          - 'null'
+          format: int64
+    SCSnapshotDetails:
+      description: Specifies the specific details of the snapshot.
+      type: object
+      properties:
+        snapshotId:
+          description: Specifies the unique identifier for the snapshot.
+          type:
+          - string
+          - 'null'
+        snapshotTimeUsecs:
+          description: Specifies the Unix time epoch in microseconds when the snapshot was taken.
+          type:
+          - integer
+          - 'null'
+          format: int64
+    SCAppComponentScriptConfig:
+      description: Specifies the parameters required for adding a script.
+      required:
+      - name
+      - content
+      properties:
+        name:
+          description: Specifies name of the script.
+          type:
+          - string
+          - 'null'
+        content:
+          description: Specifies contents/code of the script. Contents should be base64 encoded to avoid issues associated with special characters.
+          type:
+          - string
+          - 'null'
+        arguments:
+          description: Specifies the list of arguments to the script.
+          type: array
+          items:
+            type: string
+    SCObjectDetails:
+      description: Specifies the object level details.
+      type: object
+      properties:
+        objectId:
+          description: Specifies the ID of the object.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        objectName:
+          description: Specifies the name of the object.
+          type:
+          - string
+          - 'null'
+        objectType:
+          description: Specifies the type of the object.
+          type:
+          - string
+          - 'null'
+          enum:
+          - virtualMachine
+        virtualMachineInfo:
+          description: Specifies the details specific to the virtualMachine object type.
+          type: object
+          $ref: '#/components/schemas/SCVMDetails'
+    SCAppComponentsConfig:
+      description: Specifies the configuration for app components such as objects (VMs, Views, DBs, etc), scripts and time delays in ordered list.
+      type: object
+      required:
+      - type
+      properties:
+        type:
+          description: Specifies the type of the component.
+          type:
+          - string
+          - 'null'
+          enum:
+          - objects
+          - script
+          - delay
+        objectParams:
+          description: Specifies the configuration to add data objects such as VMs, Views, DBs, etc. When multiple objects are specified in this field then they will be processed and recovered in parallel at the time of failover or failback.
+          type: array
+          items:
+            $ref: '#/components/schemas/SCAppComponentObjectConfig'
+        scriptParams:
+          description: Specifies the parameters to add a script component.
+          type:
+          - object
+          - 'null'
+          $ref: '#/components/schemas/SCAppComponentScriptConfig'
+        delayParams:
+          description: Specifies the parameters to configure a time delay.
+          type:
+          - object
+          - 'null'
+          $ref: '#/components/schemas/SCAppComponentTimeDelayConfig'
+    SCAppComponentObjectConfig:
+      description: Specifies configuration required for adding an object component.
+      required:
+      - id
+      - type
+      properties:
+        id:
+          description: Specifies the unique ID of the data object. This identifier uniquely locates a data object along with the source added to Cohesity.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        type:
+          description: Specifies the type of the object.
+          type:
+          - string
+          - 'null'
+          enum:
+          - virtualMachine
+        virtualMachineParams:
+          description: Specifies the virtual machine object selection parameters.
+          type: object
+          $ref: '#/components/schemas/SCAppComponentVMParams'
     SCApplicationsSummary:
       description: Specifies the summary information of existing applications.
       type: object
@@ -330,42 +525,86 @@ components:
           - integer
           - 'null'
           format: int64
-    SCAppComponentTimeDelayConfig:
-      description: Specifies the time delay config.
-      required:
-      - unit
-      - delay
+    SCPaginationInfo:
+      description: Specifies information needed to support pagination.
+      type: object
       properties:
-        unit:
-          description: Specifies the unit for the time delay.
+        cookie:
+          description: Specifies a cookie which can be passed in by the user in order to retrieve the next page of results.
           type:
           - string
           - 'null'
-          enum:
-          - Seconds
-          - Minutes
-          - Hours
-        delay:
-          description: Specifies the delay to be added.
+    SCAppSourceVCenterParams:
+      description: Specifies the vCenter parameters required to be included as DR target.
+      type: object
+      required:
+      - objectId
+      properties:
+        objectId:
+          description: Specifies the object ID of the vCenter. This object identifier uniquely locates the vCenter object within Cohesity.
           type:
           - integer
           - 'null'
           format: int64
-    SCAppSourceConfig:
-      description: Specifies the source details for managing data objects such as VMs, Views, etc.
+        uuid:
+          description: Specifies the UUID of the VMWare source.
+          type:
+          - string
+          - 'null'
+          readOnly: true
+    SCApplicationsResponse:
+      description: Specifies the list of applications.
       type: object
-      required:
-      - environment
       properties:
-        environment:
-          description: Specifies the environment required for adding data objects.
-          type: string
-          enum:
-          - vmware
-        vmwareParams:
-          description: Specifies the source for adding VMware data object parameters. Only vCenter is supported at this time.
-          type: object
-          $ref: '#/components/schemas/SCAppSourceVMwareParams'
+        applications:
+          description: Specifies the list of applications.
+          type: array
+          items:
+            $ref: '#/components/schemas/SCApplication'
+        summary:
+          description: Specifies the summary information of existing applications.
+          $ref: '#/components/schemas/SCApplicationsSummary'
+        paginationInfo:
+          description: Specifies the information needed in order to support pagination. This will not be included for the last page of results.
+          $ref: '#/components/schemas/SCPaginationInfo'
+    SCAppObjectLinkage:
+      description: Specifies the map for linking data objects from previous version to current version.
+      type: object
+      properties:
+        previousObjectId:
+          description: Specifies the unique ID of the data object from the previous version. This ID along with the registered source uniquely locates the object on the primary site in the context of most recent failover or failback operation.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        currentObjectId:
+          description: Specifies the unique ID of the data object in the current version. This ID will be uniquely associated with the DR site after most recent successful failover or failback operation.
+          type:
+          - integer
+          - 'null'
+          format: int64
+    SCAppCreateOrUpdateParams:
+      description: Specifies the parameters required to create or update application.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/SCCommonAppParams'
+      - type: object
+        required:
+        - siteId
+        - spec
+        properties:
+          siteId:
+            description: Specifies the unique identifier of the site.
+            type:
+            - integer
+            - 'null'
+            format: int64
+          spec:
+            description: Specifies the application configuration consisting source information, object details, scripts and time delays.
+            type:
+            - object
+            - 'null'
+            $ref: '#/components/schemas/SCAppSpec'
     SCAppVersionMapping:
       description: Specifies the map for linking data objects from previous version to current version. This map will help identifying the recovered objects on DR cluster after successful failover or failback operation.
       type: object
@@ -405,111 +644,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SCAppObjectLinkage'
-    SCAppSourceVCenterParams:
-      description: Specifies the vCenter parameters required to be included as DR target.
-      type: object
-      required:
-      - objectId
-      properties:
-        objectId:
-          description: Specifies the object ID of the vCenter. This object identifier uniquely locates the vCenter object within Cohesity.
-          type:
-          - integer
-          - 'null'
-          format: int64
-        uuid:
-          description: Specifies the UUID of the VMWare source.
-          type:
-          - string
-          - 'null'
-          readOnly: true
-    SCTimeRange:
-      description: Specifies the time range for the objects protected typically protected via CDP.
-      type: object
-      properties:
-        startTimeUsecs:
-          description: Specifies the start time of the time range specified as unix epoch timestamp.
-          type:
-          - integer
-          - 'null'
-          format: int64
-        endTimeUsecs:
-          description: Specifies the end time of the time range specified as unix epoch timestamp.
-          type:
-          - integer
-          - 'null'
-          format: int64
-    SCCommonAppParams:
-      description: Specifies the common parameters required to create or update application.
-      type: object
-      required:
-      - name
-      properties:
-        name:
-          description: Specifies the name of the application.
-          type:
-          - string
-          - 'null'
-    SCAppComponentVMParams:
-      description: Specifies the configuration parameters for virtual machine object.
-      type: object
-      properties:
-        protectionGroupId:
-          description: Specifies the Protection Group Id associated with the object.
-          type:
-          - string
-          - 'null'
-        username:
-          description: Specifies the username associated with the VM.
-          type:
-          - string
-          - 'null'
-        password:
-          description: Specifies the password associated with the VM.
-          type:
-          - string
-          - 'null'
-        scriptExecutionPath:
-          description: Specifies the directory path in guest OS where user scripts will be placed for execution.
-          type:
-          - string
-          - 'null'
-        scriptParams:
-          description: Specifies the parameters to add a script component inside a virtual machine.
-          type:
-          - object
-          - 'null'
-          $ref: '#/components/schemas/SCAppComponentScriptConfig'
-    SCGetSnapshotsByAppIdResponse:
-      description: Specifies the response for fetching snapshots for all the objects belonging to an application.
-      type: object
-      properties:
-        appId:
-          description: Specifies the unique identifier for the application.
-          type:
-          - integer
-          - 'null'
-          format: int64
-        objectSnapshots:
-          description: Specifies the latest snapshot for all entities belonging to the latest version of the application.
-          type: array
-          items:
-            $ref: '#/components/schemas/SCObjectSnapshot'
-    SCApplicationsResponse:
-      description: Specifies the list of applications.
-      type: object
-      properties:
-        applications:
-          description: Specifies the list of applications.
-          type: array
-          items:
-            $ref: '#/components/schemas/SCApplication'
-        summary:
-          description: Specifies the summary information of existing applications.
-          $ref: '#/components/schemas/SCApplicationsSummary'
-        paginationInfo:
-          description: Specifies the information needed in order to support pagination. This will not be included for the last page of results.
-          $ref: '#/components/schemas/SCPaginationInfo'
+    SCErrorCode:
+      description: Specifies all the error codes that are returned by API server
+      type: string
+      enum:
+      - kNoError
+      - kValidationError
+      - kInternalError
     SCObjectSnapshot:
       description: Specifies the snapshot details for an object. The details include object details, snapshot details and point in time recovery timestamps. If object is protected by CDP (Continuous Data Protection) then refer point in time recovery timestamps for fetching replicated snapshot information.
       type: object
@@ -532,6 +673,91 @@ components:
           description: Specifies the details about the backup information from the source site which initiated the backup for the object.
           type: object
           $ref: '#/components/schemas/SCBackupDetails'
+    SCCommonAppParams:
+      description: Specifies the common parameters required to create or update application.
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          description: Specifies the name of the application.
+          type:
+          - string
+          - 'null'
+    SCAppSourceVMwareParams:
+      description: Specifies the source details for adding VMware objects.
+      type: object
+      required:
+      - sourceType
+      properties:
+        sourceType:
+          description: Specifies the type of the VMware source.
+          type:
+          - string
+          - 'null'
+          enum:
+          - vCenter
+        vCenterParams:
+          description: Specifies the parameters to configure vCenter as a DR target.
+          type: object
+          $ref: '#/components/schemas/SCAppSourceVCenterParams'
+    SCAppSourceConfig:
+      description: Specifies the source details for managing data objects such as VMs, Views, etc.
+      type: object
+      required:
+      - environment
+      properties:
+        environment:
+          description: Specifies the environment required for adding data objects.
+          type: string
+          enum:
+          - vmware
+        vmwareParams:
+          description: Specifies the source for adding VMware data object parameters. Only vCenter is supported at this time.
+          type: object
+          $ref: '#/components/schemas/SCAppSourceVMwareParams'
+    SCApplicationVersion:
+      description: Specifies the application details for a given version.
+      type: object
+      properties:
+        siteId:
+          description: Specifies the unique site identifier to which current application version belongs to.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        version:
+          description: Specifies the version number of the application.
+          type:
+          - integer
+          - 'null'
+          format: int64
+        spec:
+          description: Specifies the application configuration consisting source information, object details, scripts and time delays.
+          type:
+          - object
+          - 'null'
+          $ref: '#/components/schemas/SCAppSpec'
+        previousToCurrentVersionMap:
+          description: Specifies the map for linking data objects from previous version to current version. This map will help identifying the recovered objects on DR cluster after successful failover or failback operation. This field will not be populated for very first version of the application.
+          type:
+          - object
+          - 'null'
+          $ref: '#/components/schemas/SCAppVersionMapping'
+    SCBackupDetails:
+      description: Specifies the details about the backup information.
+      type: object
+      properties:
+        protectionGroupId:
+          description: Specifies the uniques identifier of the Protection Group.
+          type:
+          - string
+          - 'null'
+        protectionGroupName:
+          description: Specifies name of the protection group.
+          type:
+          - string
+          - 'null'
     SCApplication:
       description: Specifies the information about the application.
       type: object
@@ -571,283 +797,57 @@ components:
             - integer
             - 'null'
             format: int64
-    SCAppCreateOrUpdateParams:
-      description: Specifies the parameters required to create or update application.
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/SCCommonAppParams'
-      - type: object
-        required:
-        - siteId
-        - spec
-        properties:
-          siteId:
-            description: Specifies the unique identifier of the site.
-            type:
-            - integer
-            - 'null'
-            format: int64
-          spec:
-            description: Specifies the application configuration consisting source information, object details, scripts and time delays.
-            type:
-            - object
-            - 'null'
-            $ref: '#/components/schemas/SCAppSpec'
-    SCAppObjectLinkage:
-      description: Specifies the map for linking data objects from previous version to current version.
+    SCAppComponentVMParams:
+      description: Specifies the configuration parameters for virtual machine object.
       type: object
       properties:
-        previousObjectId:
-          description: Specifies the unique ID of the data object from the previous version. This ID along with the registered source uniquely locates the object on the primary site in the context of most recent failover or failback operation.
-          type:
-          - integer
-          - 'null'
-          format: int64
-        currentObjectId:
-          description: Specifies the unique ID of the data object in the current version. This ID will be uniquely associated with the DR site after most recent successful failover or failback operation.
-          type:
-          - integer
-          - 'null'
-          format: int64
-    SCApplicationVersion:
-      description: Specifies the application details for a given version.
-      type: object
-      properties:
-        siteId:
-          description: Specifies the unique site identifier to which current application version belongs to.
-          type:
-          - integer
-          - 'null'
-          format: int64
-        version:
-          description: Specifies the version number of the application.
-          type:
-          - integer
-          - 'null'
-          format: int64
-        spec:
-          description: Specifies the application configuration consisting source information, object details, scripts and time delays.
-          type:
-          - object
-          - 'null'
-          $ref: '#/components/schemas/SCAppSpec'
-        previousToCurrentVersionMap:
-          description: Specifies the map for linking data objects from previous version to current version. This map will help identifying the recovered objects on DR cluster after successful failover or failback operation. This field will not be populated for very first version of the application.
-          type:
-          - object
-          - 'null'
-          $ref: '#/components/schemas/SCAppVersionMapping'
-    SCAppComponentsConfig:
-      description: Specifies the configuration for app components such as objects (VMs, Views, DBs, etc), scripts and time delays in ordered list.
-      type: object
-      required:
-      - type
-      properties:
-        type:
-          description: Specifies the type of the component.
+        protectionGroupId:
+          description: Specifies the Protection Group Id associated with the object.
           type:
           - string
           - 'null'
-          enum:
-          - objects
-          - script
-          - delay
-        objectParams:
-          description: Specifies the configuration to add data objects such as VMs, Views, DBs, etc. When multiple objects are specified in this field then they will be processed and recovered in parallel at the time of failover or failback.
-          type: array
-          items:
-            $ref: '#/components/schemas/SCAppComponentObjectConfig'
+        username:
+          description: Specifies the username associated with the VM.
+          type:
+          - string
+          - 'null'
+        password:
+          description: Specifies the password associated with the VM.
+          type:
+          - string
+          - 'null'
+        scriptExecutionPath:
+          description: Specifies the directory path in guest OS where user scripts will be placed for execution.
+          type:
+          - string
+          - 'null'
         scriptParams:
-          description: Specifies the parameters to add a script component.
+          description: Specifies the parameters to add a script component inside a virtual machine.
           type:
           - object
           - 'null'
           $ref: '#/components/schemas/SCAppComponentScriptConfig'
-        delayParams:
-          description: Specifies the parameters to configure a time delay.
-          type:
-          - object
-          - 'null'
-          $ref: '#/components/schemas/SCAppComponentTimeDelayConfig'
-    SCObjectDetails:
-      description: Specifies the object level details.
-      type: object
+    SCAppComponentTimeDelayConfig:
+      description: Specifies the time delay config.
+      required:
+      - unit
+      - delay
       properties:
-        objectId:
-          description: Specifies the ID of the object.
-          type:
-          - integer
-          - 'null'
-          format: int64
-        objectName:
-          description: Specifies the name of the object.
-          type:
-          - string
-          - 'null'
-        objectType:
-          description: Specifies the type of the object.
+        unit:
+          description: Specifies the unit for the time delay.
           type:
           - string
           - 'null'
           enum:
-          - virtualMachine
-        virtualMachineInfo:
-          description: Specifies the details specific to the virtualMachine object type.
-          type: object
-          $ref: '#/components/schemas/SCVMDetails'
-    SCBackupDetails:
-      description: Specifies the details about the backup information.
-      type: object
-      properties:
-        protectionGroupId:
-          description: Specifies the uniques identifier of the Protection Group.
-          type:
-          - string
-          - 'null'
-        protectionGroupName:
-          description: Specifies name of the protection group.
-          type:
-          - string
-          - 'null'
-    SCSnapshotDetails:
-      description: Specifies the specific details of the snapshot.
-      type: object
-      properties:
-        snapshotId:
-          description: Specifies the unique identifier for the snapshot.
-          type:
-          - string
-          - 'null'
-        snapshotTimeUsecs:
-          description: Specifies the Unix time epoch in microseconds when the snapshot was taken.
+          - Seconds
+          - Minutes
+          - Hours
+        delay:
+          description: Specifies the delay to be added.
           type:
           - integer
           - 'null'
           format: int64
-    SCAppComponentScriptConfig:
-      description: Specifies the parameters required for adding a script.
-      required:
-      - name
-      - content
-      properties:
-        name:
-          description: Specifies name of the script.
-          type:
-          - string
-          - 'null'
-        content:
-          description: Specifies contents/code of the script. Contents should be base64 encoded to avoid issues associated with special characters.
-          type:
-          - string
-          - 'null'
-        arguments:
-          description: Specifies the list of arguments to the script.
-          type: array
-          items:
-            type: string
-    SCAppComponentObjectConfig:
-      description: Specifies configuration required for adding an object component.
-      required:
-      - id
-      - type
-      properties:
-        id:
-          description: Specifies the unique ID of the data object. This identifier uniquely locates a data object along with the source added to Cohesity.
-          type:
-          - integer
-          - 'null'
-          format: int64
-        type:
-          description: Specifies the type of the object.
-          type:
-          - string
-          - 'null'
-          enum:
-          - virtualMachine
-        virtualMachineParams:
-          description: Specifies the virtual machine object selection parameters.
-          type: object
-          $ref: '#/components/schemas/SCAppComponentVMParams'
-    SCErrorCode:
-      description: Specifies all the error codes that are returned by API server
-      type: string
-      enum:
-      - kNoError
-      - kValidationError
-      - kInternalError
-    SCError:
-      description: Specifies the error object with error code and a message.
-      type: object
-      properties:
-        errorCode:
-          description: Specifies the error code.
-          $ref: '#/components/schemas/SCErrorCode'
-        errorMessage:
-          description: Specifies the error message.
-          type:
-          - string
-          - 'null'
-    SCVMDetails:
-      description: Specifies the details specific to the virtualMachine object type.
-      type: object
-      properties:
-        isCdpProtected:
-          description: Specifies true if the VM is protected using Continuous Data Protection (CDP).
-          type:
-          - boolean
-          - 'null'
-    SCPaginationInfo:
-      description: Specifies information needed to support pagination.
-      type: object
-      properties:
-        cookie:
-          description: Specifies a cookie which can be passed in by the user in order to retrieve the next page of results.
-          type:
-          - string
-          - 'null'
-  responses:
-    SCUpdateApplicationResponse:
-      description: Specifies the response of a successful application update.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SCApplication'
-    SCGetLatestSnapshotByAppIdResponse:
-      description: Specifies the response of a successful get snapshots operation on an app Id.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SCGetSnapshotsByAppIdResponse'
-    SCGetAppsResponse:
-      description: Specifies the response of a successful get applications operation.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SCApplicationsResponse'
-    SCErrorResponse:
-      description: Specifies the common error definition.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SCError'
-    SCGetAppVersionsResponse:
-      description: Specifies the response of a successful get application versions operation.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SCApplicationVersionsResponse'
-    SCCreateAppResponse:
-      description: Specifies the response of a successful application creation.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SCApplication'
-    SCGetAppByIdResponse:
-      description: Specifies the response of a successful get application operation.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SCApplication'
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

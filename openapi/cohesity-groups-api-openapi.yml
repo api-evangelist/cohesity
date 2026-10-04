@@ -139,6 +139,37 @@ paths:
               $ref: '#/components/schemas/GroupDeleteParameters'
         description: Request to delete one or more groups on the Cohesity Cluster.
 components:
+  responses:
+    GetGroupsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            description: Specifies the groups that match the specified filter criteria.
+            type: array
+            title: Array of Groups.
+            items:
+              $ref: '#/components/schemas/Group'
+    UpdateGroupResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Group'
+    CreateGroupResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Group'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    NoContentResponse:
+      description: No Content
   schemas:
     GroupDeleteParameters:
       description: Specifies the groups to delete on the Cohesity Cluster.
@@ -178,6 +209,37 @@ components:
           items:
             type: string
           x-go-name: Names
+      x-go-package: cohesity/iris/server/data/public
+    SmbPrincipal:
+      type: object
+      title: Specifies struct with SMB principal details.
+      properties:
+        domain:
+          description: Specifies domain name of the principal.
+          type:
+          - string
+          - 'null'
+          x-go-name: Domain
+        name:
+          description: Specifies name of the SMB principal which may be a group or user.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        sid:
+          description: 'Specifies unique Security ID (SID) of the principal that look similar to
+
+            windows domain SID.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Sid
+        type:
+          description: Specifies the type. This can be a user or a group.
+          type:
+          - string
+          - 'null'
+          x-go-name: Type
       x-go-package: cohesity/iris/server/data/public
     Group:
       description: Specifies details about the group.
@@ -288,6 +350,25 @@ components:
             type: string
           x-go-name: Users
       x-go-package: cohesity/iris/server/data/public
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
     GroupParameters:
       description: 'Specifies the settings used to add/create a new group or modify an existing
 
@@ -369,84 +450,3 @@ components:
             type: string
           x-go-name: Users
       x-go-package: cohesity/iris/server/data/public
-    RequestError:
-      description: Details about the Error.
-      type: object
-      title: Error
-      properties:
-        errorCode:
-          description: Operation response error code.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ErrorCode
-        message:
-          description: Description of the error.
-          type:
-          - string
-          - 'null'
-          x-go-name: Message
-      x-go-package: cohesity/iris/server/data/public
-    SmbPrincipal:
-      type: object
-      title: Specifies struct with SMB principal details.
-      properties:
-        domain:
-          description: Specifies domain name of the principal.
-          type:
-          - string
-          - 'null'
-          x-go-name: Domain
-        name:
-          description: Specifies name of the SMB principal which may be a group or user.
-          type:
-          - string
-          - 'null'
-          x-go-name: Name
-        sid:
-          description: 'Specifies unique Security ID (SID) of the principal that look similar to
-
-            windows domain SID.'
-          type:
-          - string
-          - 'null'
-          x-go-name: Sid
-        type:
-          description: Specifies the type. This can be a user or a group.
-          type:
-          - string
-          - 'null'
-          x-go-name: Type
-      x-go-package: cohesity/iris/server/data/public
-  responses:
-    CreateGroupResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Group'
-    UpdateGroupResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Group'
-    GetGroupsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            description: Specifies the groups that match the specified filter criteria.
-            type: array
-            title: Array of Groups.
-            items:
-              $ref: '#/components/schemas/Group'
-    NoContentResponse:
-      description: No Content
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'

@@ -59,27 +59,23 @@ paths:
       - APIKeyHeader: []
 components:
   schemas:
-    HeliosRegConfig:
-      description: Specifies the Helios Registration Config.
+    Error:
+      description: Specifies the error object with error code and a message.
       type: object
-      title: Helios Registration Config.
+      title: Error.
       properties:
-        entityType:
-          description: Specifies the type of entity that is registered on Helios.
+        errorCode:
+          description: Specifies the error code.
           type:
           - string
           - 'null'
-          enum:
-          - Rigel
-          - Cluster
           x-order: 0
-        rigelRegConfig:
-          description: Specifies the Rigel Registration Config.
+        message:
+          description: Specifies the error message.
           type:
-          - object
+          - string
           - 'null'
           x-order: 1
-          $ref: '#/components/schemas/RigelRegConfig'
     RigelRegConfig:
       description: Specifies the Rigel Registration Config.
       type: object
@@ -106,6 +102,51 @@ components:
           - 'null'
           x-order: 2
           $ref: '#/components/schemas/RigelConnectionInfo'
+    HeliosRegConfig:
+      description: Specifies the Helios Registration Config.
+      type: object
+      title: Helios Registration Config.
+      properties:
+        entityType:
+          description: Specifies the type of entity that is registered on Helios.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Rigel
+          - Cluster
+          x-order: 0
+        rigelRegConfig:
+          description: Specifies the Rigel Registration Config.
+          type:
+          - object
+          - 'null'
+          x-order: 1
+          $ref: '#/components/schemas/RigelRegConfig'
+    RigelConnectionInfo:
+      description: Specifies the Rigel connection info.
+      type: object
+      title: Rigel Connection Info.
+      properties:
+        isActive:
+          description: Specifies if the connection is active.
+          type:
+          - boolean
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies possible error message when rigel is not able to connect.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        lastConnectedTimestampMsecs:
+          description: Specifies last timestamp for which connection status was known.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
     HeliosClaimRequest:
       description: Specifies the request to register to Helios.
       type: object
@@ -119,19 +160,37 @@ components:
           - string
           - 'null'
           x-order: 0
-    Error:
-      description: Specifies the error object with error code and a message.
+    RigelClaimLogs:
+      description: Specifies the Rigel claim logs.
       type: object
-      title: Error.
+      title: Rigel Claim Logs.
       properties:
-        errorCode:
-          description: Specifies the error code.
+        rigelClaimLogs:
+          description: Specifies Rigel claim logs.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/RigelClaimLog'
+          x-order: 0
+    RigelClaimInfo:
+      description: Specifies the Rigel registration info.
+      type: object
+      title: Rigel Claim Info.
+      properties:
+        status:
+          description: Specifies the registration status.
           type:
           - string
           - 'null'
+          enum:
+          - NotDone
+          - InProgress
+          - Success
+          - Failed
           x-order: 0
         message:
-          description: Specifies the error message.
+          description: Specifies possible error message during registration.
           type:
           - string
           - 'null'
@@ -161,72 +220,13 @@ components:
           - 'null'
           x-cohesity-enum: rigel_claim_log_type
           x-order: 2
-    RigelClaimLogs:
-      description: Specifies the Rigel claim logs.
-      type: object
-      title: Rigel Claim Logs.
-      properties:
-        rigelClaimLogs:
-          description: Specifies Rigel claim logs.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/RigelClaimLog'
-          x-order: 0
-    RigelConnectionInfo:
-      description: Specifies the Rigel connection info.
-      type: object
-      title: Rigel Connection Info.
-      properties:
-        isActive:
-          description: Specifies if the connection is active.
-          type:
-          - boolean
-          - 'null'
-          x-order: 0
-        message:
-          description: Specifies possible error message when rigel is not able to connect.
-          type:
-          - string
-          - 'null'
-          x-order: 1
-        lastConnectedTimestampMsecs:
-          description: Specifies last timestamp for which connection status was known.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-order: 2
-    RigelClaimInfo:
-      description: Specifies the Rigel registration info.
-      type: object
-      title: Rigel Claim Info.
-      properties:
-        status:
-          description: Specifies the registration status.
-          type:
-          - string
-          - 'null'
-          enum:
-          - NotDone
-          - InProgress
-          - Success
-          - Failed
-          x-order: 0
-        message:
-          description: Specifies possible error message during registration.
-          type:
-          - string
-          - 'null'
-          x-order: 1
   responses:
-    ErrorResponse:
-      description: Error
+    HeliosRegConfigResponse:
+      description: Success
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: '#/components/schemas/HeliosRegConfig'
     GetRigelClaimLogsResponse:
       description: Success
       content:
@@ -235,12 +235,12 @@ components:
             $ref: '#/components/schemas/RigelClaimLogs'
     NoContentResponse:
       description: No Content
-    HeliosRegConfigResponse:
-      description: Success
+    ErrorResponse:
+      description: Error
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/HeliosRegConfig'
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     APIKeyHeader:
       in: header

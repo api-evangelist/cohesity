@@ -142,58 +142,28 @@ paths:
       security:
       - APIKeyHeader: []
 components:
-  schemas:
-    KeystoneScopeParams:
-      description: Specifies scope paramteres of a Keystone.
-      type: object
-      required:
-      - type
-      properties:
-        type:
-          description: Specifies the scope type.
-          type:
-          - string
-          - 'null'
-          enum:
-          - Project
-          - Domain
-          x-order: 0
-        projectScopeParams:
-          description: Specifies the parameter for project type scope.
-          type: object
-          allOf:
-          - $ref: '#/components/schemas/ProjectScopeParams'
-          - {}
-          x-order: 1
-        domainScopeParams:
-          description: Specifies the parameters for domain type scope.
-          type: object
-          allOf:
-          - $ref: '#/components/schemas/DomainScopeParams'
-          - {}
-          x-order: 2
-    DomainScopeParams:
-      description: Specifies the parameters for domain type scope
-      type: object
-      required:
-      - domainName
-      properties:
-        domainName:
-          description: Specifies the domain name.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-    Keystones:
-      description: Specifies a list of Keystones.
-      type: object
-      properties:
-        keystones:
-          description: Specifies a list of Keystones.
-          type: array
-          items:
+  responses:
+    GetKeystonesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Keystones'
+    GetKeystonesByIdResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
             $ref: '#/components/schemas/Keystone'
-          x-order: 0
+    NoContentResponse:
+      description: No Content
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
     Error:
       description: Specifies the error object with error code and a message.
       type: object
@@ -207,25 +177,6 @@ components:
           x-order: 0
         message:
           description: Specifies the error message.
-          type:
-          - string
-          - 'null'
-          x-order: 1
-    ProjectScopeParams:
-      description: Specifies the parameters for project type scope.
-      type: object
-      required:
-      - projectName
-      - domainName
-      properties:
-        projectName:
-          description: Specifies the project name.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        domainName:
-          description: Specifies the domain name of the project.
           type:
           - string
           - 'null'
@@ -259,6 +210,68 @@ components:
             - string
             - 'null'
             x-order: 2
+    Keystones:
+      description: Specifies a list of Keystones.
+      type: object
+      properties:
+        keystones:
+          description: Specifies a list of Keystones.
+          type: array
+          items:
+            $ref: '#/components/schemas/Keystone'
+          x-order: 0
+    DomainScopeParams:
+      description: Specifies the parameters for domain type scope
+      type: object
+      required:
+      - domainName
+      properties:
+        domainName:
+          description: Specifies the domain name.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+    KeystoneCredentials:
+      description: Specifies user credentials of a Keystone server.
+      type: object
+      required:
+      - adminCreds
+      - scope
+      properties:
+        adminCreds:
+          description: Specifies parameters related to Keystone administrator.
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/KeystoneAdminParams'
+          - {}
+          x-order: 0
+        scope:
+          description: Specifies parameters related to Keystone scope.
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/KeystoneScopeParams'
+          - {}
+          x-order: 1
+    ProjectScopeParams:
+      description: Specifies the parameters for project type scope.
+      type: object
+      required:
+      - projectName
+      - domainName
+      properties:
+        projectName:
+          description: Specifies the project name.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        domainName:
+          description: Specifies the domain name of the project.
+          type:
+          - string
+          - 'null'
+          x-order: 1
     KeystoneAdminParams:
       description: Specifies administrator credentials of a Keystone.
       type: object
@@ -294,48 +307,35 @@ components:
       type: object
       allOf:
       - $ref: '#/components/schemas/Keystone'
-    KeystoneCredentials:
-      description: Specifies user credentials of a Keystone server.
+    KeystoneScopeParams:
+      description: Specifies scope paramteres of a Keystone.
       type: object
       required:
-      - adminCreds
-      - scope
+      - type
       properties:
-        adminCreds:
-          description: Specifies parameters related to Keystone administrator.
-          type: object
-          allOf:
-          - $ref: '#/components/schemas/KeystoneAdminParams'
-          - {}
+        type:
+          description: Specifies the scope type.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Project
+          - Domain
           x-order: 0
-        scope:
-          description: Specifies parameters related to Keystone scope.
+        projectScopeParams:
+          description: Specifies the parameter for project type scope.
           type: object
           allOf:
-          - $ref: '#/components/schemas/KeystoneScopeParams'
+          - $ref: '#/components/schemas/ProjectScopeParams'
           - {}
           x-order: 1
-  responses:
-    ErrorResponse:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NoContentResponse:
-      description: No Content
-    GetKeystonesByIdResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Keystone'
-    GetKeystonesResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Keystones'
+        domainScopeParams:
+          description: Specifies the parameters for domain type scope.
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/DomainScopeParams'
+          - {}
+          x-order: 2
   securitySchemes:
     APIKeyHeader:
       in: header

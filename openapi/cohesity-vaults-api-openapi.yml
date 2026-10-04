@@ -315,6 +315,44 @@ paths:
         description: Request to delete vault.
 components:
   schemas:
+    VaultDeleteParams:
+      type: object
+      title: Delete Vault Request.
+      properties:
+        forceDelete:
+          description: 'Specifies whether to force delete the vault.
+
+            If the flag is set to true, the RemovalState of the vault is changed to
+
+            ''kMarkedForRemoval'' and Eventually vault is removed from cluster config
+
+            and archived metadata from scribe is removed without necessarily deleting
+
+            the associated archived data.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: ForceDelete
+        id:
+          description: Specifies an id that identifies the Vault.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Id
+        includeMarkedForRemoval:
+          description: Specifies if Vaults that are marked for removal should be returned.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IncludeMarkedForRemoval
+        retry:
+          description: Specifies whether to retry a request after failure.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: Retry
+      x-go-package: cohesity/iris/server/data/public
     BandwidthLimit:
       description: 'Specifies settings for limiting the data transfer rate between
 
@@ -375,39 +413,6 @@ components:
           - string
           - 'null'
           x-go-name: Timezone
-      x-go-package: cohesity/iris/server/data/public
-    BandwidthLimitOverride:
-      description: 'Specifies bandwidth limit override value to be enforced during
-
-        the specified daily time period for the specified days of the week.'
-      type: object
-      title: Bandwidth Limit Override
-      properties:
-        bytesPerSecond:
-          description: 'Specifies the value to override the regular maximum bandwidth rate
-
-            (rateLimitBytesPerSec) for the specified time period.
-
-            The value is specified in bytes per second.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: BytesPerSecond
-        ioRate:
-          description: 'Specifies the value to override the default IO rate for the specified
-
-            time period.'
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: IoRate
-        timePeriods:
-          description: 'Specifies a daily time period and days of the week when the
-
-            regular maximum bandwidth rate should be overridden.'
-          $ref: '#/components/schemas/TimeOfAWeek'
       x-go-package: cohesity/iris/server/data/public
     AzureCloudCredentials:
       description: 'Specifies the cloud credentials to connect to a Microsoft
@@ -873,165 +878,169 @@ components:
           - 'null'
           x-go-name: Message
       x-go-package: cohesity/iris/server/data/public
-    TimeOfAWeek:
-      description: 'Specifies a time period by specifying a single daily time period
+    QStarServerCredentials:
+      description: 'Specifies the server credentials to connect to a QStar service
 
-        and one or more days of the week, for example 9 AM - 5 PM
-
-        on Monday, Wednesday or Friday. If different time periods are required
-
-        on different days, then multiple instances of this Weekly Time Period
-
-        must be specified.'
+        to manage the media Vault.'
       type: object
-      title: Time Period.
+      title: QStar Server Credentials.
       properties:
-        days:
-          description: 'Array of Week Days.
+        host:
+          description: 'Specifies the IP address or DNS name of the server where QStar
+
+            service is running.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Host
+        integralVolumeNames:
+          description: 'Array of Integral Volume Names.
 
 
-            Specifies a list of days of a week (such as ''kSunday'') when the
+            Specifies a list of existing Integral Volume names available on the
 
-            time period should be applied.
-
-            If not set, the time range applies to all days of the week.
-
-            Specifies a day in a week such as ''kSunday'', ''kMonday'', etc.'
+            QStar server for storing objects.'
           type:
           - array
           - 'null'
           items:
             type: string
-            enum:
-            - kSunday
-            - kMonday
-            - kTuesday
-            - kWednesday
-            - kThursday
-            - kFriday
-            - kSaturday
-          x-go-name: Days
-        endTime:
-          description: Specifies the end time for the daily time period.
-          title: End Time.
-          allOf:
-          - $ref: '#/components/schemas/TimeOfDay'
-        isAllDay:
-          description: 'All Day.
-
-
-            Specifies that time range is applied for entire day.'
+          x-go-name: IntegralVolumeNames
+        password:
+          description: Specifies the password used to access the QStar host.
           type:
-          - boolean
+          - string
           - 'null'
-          x-go-name: IsAllDay
-        startTime:
-          description: Specifies the start time for the daily time period.
-          title: Start Time.
-          allOf:
-          - $ref: '#/components/schemas/TimeOfDay'
-      x-go-package: cohesity/iris/server/data/public
-    TimeOfDay:
-      description: Specifies a time in day with hours and minutes.
-      type: object
-      title: Time of Day.
-      properties:
-        hour:
-          description: Specifies an (0-23) hour in a day.
+          x-go-name: Password
+        port:
+          description: Specifies the listening port where QStar WEB API service is running.
           type:
           - integer
           - 'null'
           format: int32
-          x-go-name: Hour
-        minute:
-          description: Specifies a (0-59) minute in an hour.
+          x-go-name: Port
+        shareType:
+          description: 'Specifies the sharing protocol type used by QStar to mount
+
+            the integral volume.
+
+            See the Cohesity online help for the recommended protocol
+
+            for your environment.'
           type:
-          - integer
+          - string
           - 'null'
-          format: int32
-          x-go-name: Minute
+          x-go-name: ShareType
+        useHttps:
+          description: 'Specifies whether to use http or https to connect to the service.
+
+            If true, a secure connection (https) is used.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: UseHttps
+        username:
+          description: Specifies the account name used to access the QStar host.
+          type:
+          - string
+          - 'null'
+          x-go-name: Username
       x-go-package: cohesity/iris/server/data/public
-    VaultDeleteParams:
+    VaultConfig:
+      description: 'Specifies the settings required to connect to a specific Vault type.
+
+        For some Vaults, you must also specify a storage location (bucketName).'
       type: object
-      title: Delete Vault Request.
+      title: Vault Configuration.
       properties:
-        forceDelete:
-          description: 'Specifies whether to force delete the vault.
+        amazon:
+          description: 'Specifies the cloud credentials to connect to a Amazon
 
-            If the flag is set to true, the RemovalState of the vault is changed to
+            service account. Glacier, S3, and S3-compatible clouds use this
 
-            ''kMarkedForRemoval'' and Eventually vault is removed from cluster config
+            credential.'
+          title: Amazon Cloud Credentials.
+          $ref: '#/components/schemas/AmazonCloudCredentials'
+        azure:
+          description: 'Specifies the cloud credentials to connect to a Microsoft
 
-            and archived metadata from scribe is removed without necessarily deleting
+            Azure service account.'
+          title: Azure Cloud Credentials.
+          $ref: '#/components/schemas/AzureCloudCredentials'
+        bucketName:
+          description: 'Specifies the name of a storage location of the Vault,
 
-            the associated archived data.'
+            where objects are stored. For Google and AMS, this
+
+            storage location is called a bucket. For Microsoft Azure, this
+
+            storage location is called a container. For QStar and NAS, you
+
+            do not specify a storage location.'
           type:
-          - boolean
+          - string
           - 'null'
-          x-go-name: ForceDelete
-        id:
-          description: Specifies an id that identifies the Vault.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: Id
-        includeMarkedForRemoval:
-          description: Specifies if Vaults that are marked for removal should be returned.
-          type:
-          - boolean
-          - 'null'
-          x-go-name: IncludeMarkedForRemoval
-        retry:
-          description: Specifies whether to retry a request after failure.
-          type:
-          - boolean
-          - 'null'
-          x-go-name: Retry
+          x-go-name: BucketName
+        google:
+          description: 'Specifies the cloud credentials to connect to a Google
+
+            service account.'
+          title: Google Cloud Credentials.
+          $ref: '#/components/schemas/GoogleCloudCredentials'
+        nas:
+          description: Specifies the server credentials to connect to a NetApp server.
+          title: NAS Server Credentials.
+          $ref: '#/components/schemas/NasCredentials'
+        oracle:
+          description: 'Specifies the Oracle cloud credentials to connect to a Amazon
+
+            service account.'
+          title: Oracle Cloud Credentials.
+          $ref: '#/components/schemas/OracleCloudCredentials'
+        qstar:
+          description: 'Specifies the server credentials to connect to a QStar service
+
+            to manage the media Vault.'
+          title: QStar Media Credentials.
+          $ref: '#/components/schemas/QStarServerCredentials'
       x-go-package: cohesity/iris/server/data/public
-    VaultEncryptionKey:
-      description: Specifies the encryption information needed to restore data.
+    C2SAccessPortal:
+      description: 'Specifies information required to connect to CAP to get AWS credentials.
+
+        C2SAccessPortal(CAP) is AWS commercial cloud service access portal.'
       type: object
-      title: Vault Encryption Key.
+      title: C2S Access Portal (CAP).
       properties:
-        clusterName:
-          description: 'Specifies the name of the source Cohesity Cluster
-
-            that archived the data on the Vault.'
+        agency:
+          description: Name of the agency.
           type:
           - string
           - 'null'
-          x-go-name: ClusterName
-        encryptionKeyData:
-          description: 'Specifies the encryption key data corresponding to the specified keyUid.
-
-            It contains a Key Encryption Key (KEK) or a
-
-            Encrypted Data Encryption Key (eDEK).'
+          x-go-name: Agency
+        baseUrl:
+          description: The base url of C2S CAP server.
           type:
           - string
           - 'null'
-          x-go-name: EncryptionKeyData
-        keyUid:
-          description: Specifies the universal id of the Data Encryption Key.
-          title: Universal Id.
-          allOf:
-          - $ref: '#/components/schemas/UniversalId'
-        vaultId:
-          description: 'Specifies the id of the Vault whose data is encrypted by
-
-            this key.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: VaultId
-        vaultName:
-          description: Specifies the name of the Vault whose data is encrypted by this key.
+          x-go-name: BaseUrl
+        clientCertificatePassword:
+          description: Encrypted password of the client private key.
           type:
           - string
           - 'null'
-          x-go-name: VaultName
+          x-go-name: EncryptedPassword
+        mission:
+          description: Name of the mission.
+          type:
+          - string
+          - 'null'
+          x-go-name: Mission
+        role:
+          description: Role type.
+          type:
+          - string
+          - 'null'
+          x-go-name: Role
       x-go-package: cohesity/iris/server/data/public
     OracleCloudCredentials:
       description: 'Specifies the Oracle Cloud Credentials to connect to an Oracle S3 Compatible
@@ -1091,52 +1100,49 @@ components:
           - kOracleTierArchive
           x-go-name: TierType
       x-go-package: cohesity/iris/server/data/public
-    UniversalId:
-      description: 'Specifies an id for an object that is unique across Cohesity Clusters.
-
-        The id is composite of all the ids listed below.'
+    VaultEncryptionKey:
+      description: Specifies the encryption information needed to restore data.
       type: object
-      title: Unique Global Id.
+      title: Vault Encryption Key.
       properties:
-        clusterId:
-          description: Specifies the Cohesity Cluster id where the object was created.
+        clusterName:
+          description: 'Specifies the name of the source Cohesity Cluster
+
+            that archived the data on the Vault.'
+          type:
+          - string
+          - 'null'
+          x-go-name: ClusterName
+        encryptionKeyData:
+          description: 'Specifies the encryption key data corresponding to the specified keyUid.
+
+            It contains a Key Encryption Key (KEK) or a
+
+            Encrypted Data Encryption Key (eDEK).'
+          type:
+          - string
+          - 'null'
+          x-go-name: EncryptionKeyData
+        keyUid:
+          description: Specifies the universal id of the Data Encryption Key.
+          title: Universal Id.
+          allOf:
+          - $ref: '#/components/schemas/UniversalId'
+        vaultId:
+          description: 'Specifies the id of the Vault whose data is encrypted by
+
+            this key.'
           type:
           - integer
           - 'null'
           format: int64
-          x-go-name: ClusterId
-        clusterIncarnationId:
-          description: 'Specifies an id for the Cohesity Cluster that is generated when
-
-            a Cohesity Cluster is initially created.'
+          x-go-name: VaultId
+        vaultName:
+          description: Specifies the name of the Vault whose data is encrypted by this key.
           type:
-          - integer
+          - string
           - 'null'
-          format: int64
-          x-go-name: ClusterIncarnationId
-        id:
-          description: 'Specifies a unique id assigned to an object (such as a Job)
-
-            by the Cohesity Cluster.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: Id
-      x-go-package: cohesity/iris/server/data/public
-    VaultBandwidthLimits:
-      description: 'VaultBandwidthLimits represents the network bandwidth limits
-
-        while uploading/downloading data to/from the external media.'
-      type: object
-      title: Vault Bandwidth Limits.
-      properties:
-        download:
-          description: Specifies the max rate limit at which we download the data.
-          $ref: '#/components/schemas/BandwidthLimit'
-        upload:
-          description: Specifies the max rate limit at which we upload the data.
-          $ref: '#/components/schemas/BandwidthLimit'
+          x-go-name: VaultName
       x-go-package: cohesity/iris/server/data/public
     GoogleCloudCredentials:
       description: Specifies the cloud credentials to connect to a Google service account.
@@ -1199,6 +1205,72 @@ components:
           - kGoogleRegional
           - kGoogleMultiRegional
           x-go-name: TierType
+      x-go-package: cohesity/iris/server/data/public
+    BandwidthLimitOverride:
+      description: 'Specifies bandwidth limit override value to be enforced during
+
+        the specified daily time period for the specified days of the week.'
+      type: object
+      title: Bandwidth Limit Override
+      properties:
+        bytesPerSecond:
+          description: 'Specifies the value to override the regular maximum bandwidth rate
+
+            (rateLimitBytesPerSec) for the specified time period.
+
+            The value is specified in bytes per second.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: BytesPerSecond
+        ioRate:
+          description: 'Specifies the value to override the default IO rate for the specified
+
+            time period.'
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: IoRate
+        timePeriods:
+          description: 'Specifies a daily time period and days of the week when the
+
+            regular maximum bandwidth rate should be overridden.'
+          $ref: '#/components/schemas/TimeOfAWeek'
+      x-go-package: cohesity/iris/server/data/public
+    UniversalId:
+      description: 'Specifies an id for an object that is unique across Cohesity Clusters.
+
+        The id is composite of all the ids listed below.'
+      type: object
+      title: Unique Global Id.
+      properties:
+        clusterId:
+          description: Specifies the Cohesity Cluster id where the object was created.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ClusterId
+        clusterIncarnationId:
+          description: 'Specifies an id for the Cohesity Cluster that is generated when
+
+            a Cohesity Cluster is initially created.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ClusterIncarnationId
+        id:
+          description: 'Specifies a unique id assigned to an object (such as a Job)
+
+            by the Cohesity Cluster.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Id
       x-go-package: cohesity/iris/server/data/public
     NasCredentials:
       description: Specifies the server credentials to connect to a NetApp server.
@@ -1278,64 +1350,6 @@ components:
           - boolean
           - 'null'
           x-go-name: Online
-      x-go-package: cohesity/iris/server/data/public
-    VaultConfig:
-      description: 'Specifies the settings required to connect to a specific Vault type.
-
-        For some Vaults, you must also specify a storage location (bucketName).'
-      type: object
-      title: Vault Configuration.
-      properties:
-        amazon:
-          description: 'Specifies the cloud credentials to connect to a Amazon
-
-            service account. Glacier, S3, and S3-compatible clouds use this
-
-            credential.'
-          title: Amazon Cloud Credentials.
-          $ref: '#/components/schemas/AmazonCloudCredentials'
-        azure:
-          description: 'Specifies the cloud credentials to connect to a Microsoft
-
-            Azure service account.'
-          title: Azure Cloud Credentials.
-          $ref: '#/components/schemas/AzureCloudCredentials'
-        bucketName:
-          description: 'Specifies the name of a storage location of the Vault,
-
-            where objects are stored. For Google and AMS, this
-
-            storage location is called a bucket. For Microsoft Azure, this
-
-            storage location is called a container. For QStar and NAS, you
-
-            do not specify a storage location.'
-          type:
-          - string
-          - 'null'
-          x-go-name: BucketName
-        google:
-          description: 'Specifies the cloud credentials to connect to a Google
-
-            service account.'
-          title: Google Cloud Credentials.
-          $ref: '#/components/schemas/GoogleCloudCredentials'
-        nas:
-          description: Specifies the server credentials to connect to a NetApp server.
-          title: NAS Server Credentials.
-          $ref: '#/components/schemas/NasCredentials'
-        oracle:
-          description: 'Specifies the Oracle cloud credentials to connect to a Amazon
-
-            service account.'
-          title: Oracle Cloud Credentials.
-          $ref: '#/components/schemas/OracleCloudCredentials'
-        qstar:
-          description: 'Specifies the server credentials to connect to a QStar service
-
-            to manage the media Vault.'
-          title: QStar Media Credentials.
-          $ref: '#/components/schemas/QStarServerCredentials'
       x-go-package: cohesity/iris/server/data/public
     AmazonCloudCredentials:
       description: 'Specifies the cloud credentials to connect to a Amazon
@@ -1498,125 +1512,101 @@ components:
           - 'null'
           x-go-name: UseHttps
       x-go-package: cohesity/iris/server/data/public
-    QStarServerCredentials:
-      description: 'Specifies the server credentials to connect to a QStar service
-
-        to manage the media Vault.'
+    TimeOfDay:
+      description: Specifies a time in day with hours and minutes.
       type: object
-      title: QStar Server Credentials.
+      title: Time of Day.
       properties:
-        host:
-          description: 'Specifies the IP address or DNS name of the server where QStar
-
-            service is running.'
+        hour:
+          description: Specifies an (0-23) hour in a day.
           type:
-          - string
+          - integer
           - 'null'
-          x-go-name: Host
-        integralVolumeNames:
-          description: 'Array of Integral Volume Names.
+          format: int32
+          x-go-name: Hour
+        minute:
+          description: Specifies a (0-59) minute in an hour.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Minute
+      x-go-package: cohesity/iris/server/data/public
+    TimeOfAWeek:
+      description: 'Specifies a time period by specifying a single daily time period
+
+        and one or more days of the week, for example 9 AM - 5 PM
+
+        on Monday, Wednesday or Friday. If different time periods are required
+
+        on different days, then multiple instances of this Weekly Time Period
+
+        must be specified.'
+      type: object
+      title: Time Period.
+      properties:
+        days:
+          description: 'Array of Week Days.
 
 
-            Specifies a list of existing Integral Volume names available on the
+            Specifies a list of days of a week (such as ''kSunday'') when the
 
-            QStar server for storing objects.'
+            time period should be applied.
+
+            If not set, the time range applies to all days of the week.
+
+            Specifies a day in a week such as ''kSunday'', ''kMonday'', etc.'
           type:
           - array
           - 'null'
           items:
             type: string
-          x-go-name: IntegralVolumeNames
-        password:
-          description: Specifies the password used to access the QStar host.
-          type:
-          - string
-          - 'null'
-          x-go-name: Password
-        port:
-          description: Specifies the listening port where QStar WEB API service is running.
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: Port
-        shareType:
-          description: 'Specifies the sharing protocol type used by QStar to mount
+            enum:
+            - kSunday
+            - kMonday
+            - kTuesday
+            - kWednesday
+            - kThursday
+            - kFriday
+            - kSaturday
+          x-go-name: Days
+        endTime:
+          description: Specifies the end time for the daily time period.
+          title: End Time.
+          allOf:
+          - $ref: '#/components/schemas/TimeOfDay'
+        isAllDay:
+          description: 'All Day.
 
-            the integral volume.
 
-            See the Cohesity online help for the recommended protocol
-
-            for your environment.'
-          type:
-          - string
-          - 'null'
-          x-go-name: ShareType
-        useHttps:
-          description: 'Specifies whether to use http or https to connect to the service.
-
-            If true, a secure connection (https) is used.'
+            Specifies that time range is applied for entire day.'
           type:
           - boolean
           - 'null'
-          x-go-name: UseHttps
-        username:
-          description: Specifies the account name used to access the QStar host.
-          type:
-          - string
-          - 'null'
-          x-go-name: Username
+          x-go-name: IsAllDay
+        startTime:
+          description: Specifies the start time for the daily time period.
+          title: Start Time.
+          allOf:
+          - $ref: '#/components/schemas/TimeOfDay'
       x-go-package: cohesity/iris/server/data/public
-    C2SAccessPortal:
-      description: 'Specifies information required to connect to CAP to get AWS credentials.
+    VaultBandwidthLimits:
+      description: 'VaultBandwidthLimits represents the network bandwidth limits
 
-        C2SAccessPortal(CAP) is AWS commercial cloud service access portal.'
+        while uploading/downloading data to/from the external media.'
       type: object
-      title: C2S Access Portal (CAP).
+      title: Vault Bandwidth Limits.
       properties:
-        agency:
-          description: Name of the agency.
-          type:
-          - string
-          - 'null'
-          x-go-name: Agency
-        baseUrl:
-          description: The base url of C2S CAP server.
-          type:
-          - string
-          - 'null'
-          x-go-name: BaseUrl
-        clientCertificatePassword:
-          description: Encrypted password of the client private key.
-          type:
-          - string
-          - 'null'
-          x-go-name: EncryptedPassword
-        mission:
-          description: Name of the mission.
-          type:
-          - string
-          - 'null'
-          x-go-name: Mission
-        role:
-          description: Role type.
-          type:
-          - string
-          - 'null'
-          x-go-name: Role
+        download:
+          description: Specifies the max rate limit at which we download the data.
+          $ref: '#/components/schemas/BandwidthLimit'
+        upload:
+          description: Specifies the max rate limit at which we upload the data.
+          $ref: '#/components/schemas/BandwidthLimit'
       x-go-package: cohesity/iris/server/data/public
   responses:
-    UpdateVaultResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Vault'
-    GetVaultEncryptionKeyResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/VaultEncryptionKey'
+    NoContentResponse:
+      description: No Content
     GetArchiveMediaInfoResponse:
       description: Success
       content:
@@ -1629,21 +1619,23 @@ components:
             title: Array of Tape Media.
             items:
               $ref: '#/components/schemas/TapeMediaInformation'
-    GetVaultByIdResponse:
+    GetVaultsResponse:
       description: Success
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Vault'
-    NoContentResponse:
-      description: No Content
-    Error:
-      description: Error
+            description: List of Vaults that match the specified filter criteria.
+            type: array
+            title: Array of Vaults.
+            items:
+              $ref: '#/components/schemas/Vault'
+    GetVaultEncryptionKeyResponse:
+      description: Success
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/RequestError'
-    CreateVaultResponse:
+            $ref: '#/components/schemas/VaultEncryptionKey'
+    GetVaultByIdResponse:
       description: Success
       content:
         application/json:
@@ -1655,13 +1647,21 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/VaultBandwidthLimits'
-    GetVaultsResponse:
+    CreateVaultResponse:
       description: Success
       content:
         application/json:
           schema:
-            description: List of Vaults that match the specified filter criteria.
-            type: array
-            title: Array of Vaults.
-            items:
-              $ref: '#/components/schemas/Vault'
+            $ref: '#/components/schemas/Vault'
+    UpdateVaultResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Vault'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'

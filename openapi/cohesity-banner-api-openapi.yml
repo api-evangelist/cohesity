@@ -46,25 +46,6 @@ paths:
               $ref: '#/components/schemas/BannerUpdateParameters'
         description: Request to update existing banner.
 components:
-  responses:
-    UpdateBannerResponse:
-      description: UpdateBannerResponse response.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Banner'
-    GetBannerResponse:
-      description: GetBannerResponse response.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Banner'
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
   schemas:
     BannerUpdateParameters:
       description: Specifies the settings used to update a new banner.
@@ -156,3 +137,22 @@ components:
           format: int64
           x-go-name: LastUpdatedTimeMsecs
       x-go-package: cohesity/iris/server/data/public
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    UpdateBannerResponse:
+      description: UpdateBannerResponse response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Banner'
+    GetBannerResponse:
+      description: GetBannerResponse response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Banner'

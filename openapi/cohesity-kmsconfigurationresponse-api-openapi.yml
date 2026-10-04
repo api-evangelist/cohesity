@@ -30,72 +30,7 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 components:
-  responses:
-    GetKmsConfigResponse:
-      description: Specifies a list of KMS configurations.
-      content:
-        application/json:
-          schema:
-            description: 'KMS Configuration corresponding to the server name
-
-              specified in the list KMS request.'
-            type: array
-            items:
-              $ref: '#/components/schemas/KmsConfigurationResponse'
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
   schemas:
-    KmsConfigurationResponse:
-      description: Specifies response parameters to a KMS request.
-      type: object
-      title: Get KMS Configuration Response Parameters.
-      properties:
-        awsKms:
-          description: AWS KMS conifg response.
-          $ref: '#/components/schemas/AwsKmsConfiguration'
-        connectionStatus:
-          description: Specifies if connection to this KMS exists.
-          type:
-          - boolean
-          - 'null'
-          x-go-name: ConnectionStatus
-        cryptsoftKms:
-          description: Specifies the config response for cryptsoftKMS.
-          $ref: '#/components/schemas/CryptsoftKmsConfigResponse'
-        id:
-          description: The Id of a KMS server.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ID
-        serverName:
-          description: Specifies the name given to the KMS Server.
-          type:
-          - string
-          - 'null'
-          x-go-name: ServerName
-        serverType:
-          description: 'Specifies the type of key mangement system.
-
-            ''kInternalKms'' indicates an internal KMS object.
-
-            ''kAwsKms'' indicates an Aws KMS object.
-
-            ''kCryptsoftKms'' indicates a Cryptsoft KMS object.'
-          type:
-          - string
-          - 'null'
-          enum:
-          - kInternalKms
-          - kAwsKms
-          - kCryptsoftKms
-          x-go-name: ServerType
-      x-go-package: cohesity/iris/server/data/public
     RequestError:
       description: Details about the Error.
       type: object
@@ -217,3 +152,68 @@ components:
           format: int32
           x-go-name: ServerPort
       x-go-package: cohesity/iris/server/data/public
+    KmsConfigurationResponse:
+      description: Specifies response parameters to a KMS request.
+      type: object
+      title: Get KMS Configuration Response Parameters.
+      properties:
+        awsKms:
+          description: AWS KMS conifg response.
+          $ref: '#/components/schemas/AwsKmsConfiguration'
+        connectionStatus:
+          description: Specifies if connection to this KMS exists.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: ConnectionStatus
+        cryptsoftKms:
+          description: Specifies the config response for cryptsoftKMS.
+          $ref: '#/components/schemas/CryptsoftKmsConfigResponse'
+        id:
+          description: The Id of a KMS server.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ID
+        serverName:
+          description: Specifies the name given to the KMS Server.
+          type:
+          - string
+          - 'null'
+          x-go-name: ServerName
+        serverType:
+          description: 'Specifies the type of key mangement system.
+
+            ''kInternalKms'' indicates an internal KMS object.
+
+            ''kAwsKms'' indicates an Aws KMS object.
+
+            ''kCryptsoftKms'' indicates a Cryptsoft KMS object.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kInternalKms
+          - kAwsKms
+          - kCryptsoftKms
+          x-go-name: ServerType
+      x-go-package: cohesity/iris/server/data/public
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    GetKmsConfigResponse:
+      description: Specifies a list of KMS configurations.
+      content:
+        application/json:
+          schema:
+            description: 'KMS Configuration corresponding to the server name
+
+              specified in the list KMS request.'
+            type: array
+            items:
+              $ref: '#/components/schemas/KmsConfigurationResponse'

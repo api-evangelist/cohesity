@@ -271,57 +271,182 @@ paths:
         description: Specifies the filer audit log config to update.
         required: true
 components:
-  responses:
-    GetAuditLogsEntityTypesResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AuditLogsEntityTypes'
-    ErrorResponse:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    GetAuditLogsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AuditLogs'
-    GetAuditLogsActionsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AuditLogsActions'
-    GetFilerAuditLogConfigsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/FilerAuditLogConfigs'
   schemas:
-    AuditLogs:
-      description: Sepcifies the audit logs.
+    AuditLogsEntityTypes:
+      description: Specifies entity types of audit logs.
       type: object
       properties:
-        auditLogs:
-          description: Specifies a list of audit logs.
+        entityTypes:
+          description: Specifies a list of audit logs entity types.
           type:
           - array
           - 'null'
           items:
-            $ref: '#/components/schemas/AuditLog'
+            type: string
           x-order: 0
-        count:
-          description: Specifies the total number of audit logs that match the filter and search criteria. Use this value to determine how many additional requests are required to get the full result.
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    FilerAuditLogConfigs:
+      description: Specifies the filer audit log configs.
+      type: object
+      properties:
+        sharePermissions:
+          description: Specifies a list of share level permissions.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SmbPermission'
+          x-order: 0
+        subnetWhitelist:
+          description: Specifies a list of Subnets with IP addresses that have permissions to access a Cohesity View containing filer audit logs.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Subnet'
+          x-order: 1
+        overrideGlobalSubnetWhitelist:
+          description: Specifies whether view level client subnet whitelist overrides cluster and global setting.
+          type:
+          - boolean
+          - 'null'
+          x-order: 2
+        smbMountPaths:
+          description: Specifies a list of SMB mount paths of a Cohesity View containing filer audit logs.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 3
+          readOnly: true
+        nfsMountPath:
+          description: This field is currently deprecated. Please use NFS MountPaths which would be an array of strings.
+          type:
+          - string
+          - 'null'
+          x-order: 4
+          readOnly: true
+        nfsMountPaths:
+          description: Specifies a list of NFS mount paths of a Cohesity View containing filer audit logs.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 5
+          readOnly: true
+    AuditLog:
+      description: Specifies an audit log message.
+      type: object
+      properties:
+        details:
+          description: Specifies the change details of this audit log.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        username:
+          description: Specifies the username who made this audit log.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        domain:
+          description: Specifies the domain of user who made this audit log.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        entityName:
+          description: Specifies the entity name.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+        entityType:
+          description: Specifies the entity type.
+          type:
+          - string
+          - 'null'
+          x-order: 4
+        action:
+          description: Specifies the action type of this audit log.
+          type:
+          - string
+          - 'null'
+          x-order: 5
+        timestampUsecs:
+          description: Specifies a unix timestamp in micro seconds when the audit log was taken.
           type:
           - integer
           - 'null'
           format: int64
-          x-order: 1
+          x-order: 6
+        ip:
+          description: Specifies the ip of user who made this audit log.
+          type:
+          - string
+          - 'null'
+          x-order: 7
+        isImpersonation:
+          description: Specifies if the action is made through impersonation.
+          type:
+          - boolean
+          - 'null'
+          x-order: 8
+        tenantId:
+          description: Specifies the tenant id who made this audit log.
+          type:
+          - string
+          - 'null'
+          x-order: 9
+        tenantName:
+          description: Specifies the tenant name who made this audit log.
+          type:
+          - string
+          - 'null'
+          x-order: 10
+        originalTenantId:
+          description: Specifies the original tenant id who made this audit log.
+          type:
+          - string
+          - 'null'
+          x-order: 11
+        originalTenantName:
+          description: Specifies the original tenant name who made this audit log.
+          type:
+          - string
+          - 'null'
+          x-order: 12
+        previousRecord:
+          description: 'Specifies the record before the action is invoked. This will be returned only if verbose audit is enabled. '
+          type:
+          - string
+          - 'null'
+          x-order: 13
+        newRecord:
+          description: 'Specifies the record after the action is invoked. This will be returned only if verbose audit is enabled. '
+          type:
+          - string
+          - 'null'
+          x-order: 14
     SmbPermission:
       description: Specifies information about a single SMB permission.
       type: object
@@ -429,86 +554,6 @@ components:
           - 'null'
           format: uint32
           x-order: 5
-    Error:
-      description: Specifies the error object with error code and a message.
-      type: object
-      title: Error.
-      properties:
-        errorCode:
-          description: Specifies the error code.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        message:
-          description: Specifies the error message.
-          type:
-          - string
-          - 'null'
-          x-order: 1
-    FilerAuditLogConfigs:
-      description: Specifies the filer audit log configs.
-      type: object
-      properties:
-        sharePermissions:
-          description: Specifies a list of share level permissions.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/SmbPermission'
-          x-order: 0
-        subnetWhitelist:
-          description: Specifies a list of Subnets with IP addresses that have permissions to access a Cohesity View containing filer audit logs.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/Subnet'
-          x-order: 1
-        overrideGlobalSubnetWhitelist:
-          description: Specifies whether view level client subnet whitelist overrides cluster and global setting.
-          type:
-          - boolean
-          - 'null'
-          x-order: 2
-        smbMountPaths:
-          description: Specifies a list of SMB mount paths of a Cohesity View containing filer audit logs.
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-order: 3
-          readOnly: true
-        nfsMountPath:
-          description: This field is currently deprecated. Please use NFS MountPaths which would be an array of strings.
-          type:
-          - string
-          - 'null'
-          x-order: 4
-          readOnly: true
-        nfsMountPaths:
-          description: Specifies a list of NFS mount paths of a Cohesity View containing filer audit logs.
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-order: 5
-          readOnly: true
-    AuditLogsActions:
-      description: Specifies actions of audit logs.
-      type: object
-      properties:
-        actions:
-          description: Specifies a list of audit logs actions.
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-order: 0
     Subnet:
       description: 'Defines a Subnet (Subnetwork).
 
@@ -644,113 +689,68 @@ components:
           - kReadOnly
           - kReadWrite
           x-order: 10
-    AuditLogsEntityTypes:
-      description: Specifies entity types of audit logs.
+    AuditLogs:
+      description: Sepcifies the audit logs.
       type: object
       properties:
-        entityTypes:
-          description: Specifies a list of audit logs entity types.
+        auditLogs:
+          description: Specifies a list of audit logs.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AuditLog'
+          x-order: 0
+        count:
+          description: Specifies the total number of audit logs that match the filter and search criteria. Use this value to determine how many additional requests are required to get the full result.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+    AuditLogsActions:
+      description: Specifies actions of audit logs.
+      type: object
+      properties:
+        actions:
+          description: Specifies a list of audit logs actions.
           type:
           - array
           - 'null'
           items:
             type: string
           x-order: 0
-    AuditLog:
-      description: Specifies an audit log message.
-      type: object
-      properties:
-        details:
-          description: Specifies the change details of this audit log.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        username:
-          description: Specifies the username who made this audit log.
-          type:
-          - string
-          - 'null'
-          x-order: 1
-        domain:
-          description: Specifies the domain of user who made this audit log.
-          type:
-          - string
-          - 'null'
-          x-order: 2
-        entityName:
-          description: Specifies the entity name.
-          type:
-          - string
-          - 'null'
-          x-order: 3
-        entityType:
-          description: Specifies the entity type.
-          type:
-          - string
-          - 'null'
-          x-order: 4
-        action:
-          description: Specifies the action type of this audit log.
-          type:
-          - string
-          - 'null'
-          x-order: 5
-        timestampUsecs:
-          description: Specifies a unix timestamp in micro seconds when the audit log was taken.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-order: 6
-        ip:
-          description: Specifies the ip of user who made this audit log.
-          type:
-          - string
-          - 'null'
-          x-order: 7
-        isImpersonation:
-          description: Specifies if the action is made through impersonation.
-          type:
-          - boolean
-          - 'null'
-          x-order: 8
-        tenantId:
-          description: Specifies the tenant id who made this audit log.
-          type:
-          - string
-          - 'null'
-          x-order: 9
-        tenantName:
-          description: Specifies the tenant name who made this audit log.
-          type:
-          - string
-          - 'null'
-          x-order: 10
-        originalTenantId:
-          description: Specifies the original tenant id who made this audit log.
-          type:
-          - string
-          - 'null'
-          x-order: 11
-        originalTenantName:
-          description: Specifies the original tenant name who made this audit log.
-          type:
-          - string
-          - 'null'
-          x-order: 12
-        previousRecord:
-          description: 'Specifies the record before the action is invoked. This will be returned only if verbose audit is enabled. '
-          type:
-          - string
-          - 'null'
-          x-order: 13
-        newRecord:
-          description: 'Specifies the record after the action is invoked. This will be returned only if verbose audit is enabled. '
-          type:
-          - string
-          - 'null'
-          x-order: 14
+  responses:
+    GetAuditLogsEntityTypesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuditLogsEntityTypes'
+    GetAuditLogsActionsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuditLogsActions'
+    GetFilerAuditLogConfigsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FilerAuditLogConfigs'
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    GetAuditLogsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuditLogs'
   securitySchemes:
     APIKeyHeader:
       in: header

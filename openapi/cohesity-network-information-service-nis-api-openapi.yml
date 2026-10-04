@@ -236,52 +236,24 @@ paths:
       security:
       - APIKeyHeader: []
 components:
-  responses:
-    NisNetgroupResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NisNetgroup'
-    GetNisNetgroupByNameResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NisNetgroup'
-    ErrorResponse:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    GetNisNetgroupsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NisNetgroups'
-    GetNisProviderByDomainNameResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NisProvider'
-    NoContentResponse:
-      description: No Content
-    NisProviderResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NisProvider'
-    GetNisProvidersResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NisProviders'
   schemas:
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
     NisNetgroups:
       description: Response of NIS Netgroups.
       type: object
@@ -293,6 +265,18 @@ components:
           - 'null'
           items:
             $ref: '#/components/schemas/NisNetgroup'
+          x-order: 0
+    NisProviders:
+      description: Response of NIS Providers.
+      type: object
+      properties:
+        nisProviders:
+          description: A list of NIS Providers.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/NisProvider'
           x-order: 0
     NisNetgroup:
       description: Specifies an NIS netgroup.
@@ -345,35 +329,6 @@ components:
           - kRootSquash
           - kAllSquash
           x-order: 3
-    Error:
-      description: Specifies the error object with error code and a message.
-      type: object
-      title: Error.
-      properties:
-        errorCode:
-          description: Specifies the error code.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        message:
-          description: Specifies the error message.
-          type:
-          - string
-          - 'null'
-          x-order: 1
-    NisProviders:
-      description: Response of NIS Providers.
-      type: object
-      properties:
-        nisProviders:
-          description: A list of NIS Providers.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/NisProvider'
-          x-order: 0
     NisProvider:
       description: Specifies an NIS Provider.
       type: object
@@ -409,6 +364,51 @@ components:
           items:
             type: string
           x-order: 3
+  responses:
+    GetNisProvidersResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NisProviders'
+    GetNisProviderByDomainNameResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NisProvider'
+    GetNisNetgroupByNameResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NisNetgroup'
+    NisProviderResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NisProvider'
+    GetNisNetgroupsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NisNetgroups'
+    NoContentResponse:
+      description: No Content
+    NisNetgroupResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NisNetgroup'
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     APIKeyHeader:
       in: header

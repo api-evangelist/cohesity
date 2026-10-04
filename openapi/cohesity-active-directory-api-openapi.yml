@@ -672,474 +672,6 @@ paths:
     - url: /v2
 components:
   schemas:
-    ListCentrifyZone:
-      type: object
-      properties:
-        centrifySchema:
-          description: 'Specifies the schema of this Centrify zone.
-
-            The below list of schemas and their values are taken from the document
-
-            Centrify Server Suite 2016 Windows API Programmer''s Guide
-
-            https://docs.centrify.com/en/css/suite2016/centrify-win-progguide.pdf
-
-            ''kCentrifyDynamicSchema_1_0'' specifies dynamic schema, version 1.0.
-
-            ''kCentrifyDynamicSchema_2_0'' specifies dynamic schema, version 2.0.
-
-            ''kCentrifyDynamicSchema_3_0'' specifies dynamic schema, version 3.0.
-
-            ''kCentrifyDynamicSchema_5_0'' specifies dynamic schema, version 5.0.
-
-            ''kCentrifySfu_3_0'' specifies sfu schema, version 3.0.
-
-            ''kCentrifySfu_3_0_V5'' specifies sfu schema, 3.0.5.
-
-            ''kCentrifySfu_4_0'' specifies sfu schema, version 4.0.
-
-            ''kCentrifyCdcRfc2307'' specifies cdcrfc2307 schema.
-
-            ''kCentrifyCdcRfc2307_2'' specifies cdcrfc2307, version 2.
-
-            ''kCentrifyCdcRfc2307_3'' specifies cdcrfc2307, version 3.'
-          type:
-          - string
-          - 'null'
-          enum:
-          - kCentrifyDynamicSchema_1_0
-          - kCentrifyDynamicSchema_2_0
-          - kCentrifySfu_3_0
-          - kCentrifySfu_4_0
-          - kCentrifyCdcRfc2307
-          - kCentrifyDynamicSchema_3_0
-          - kCentrifyCdcRfc2307_2
-          - kCentrifyDynamicSchema_5_0
-          - kCentrifyCdcRfc2307_3
-          - kCentrifySfu_3_0_V5
-          x-go-name: CentrifySchema
-        description:
-          description: Specifies a description of the Centrify zone.
-          type:
-          - string
-          - 'null'
-          x-go-name: Description
-        distinguishedName:
-          description: Specifies the distinguished name of the Centrify zone.
-          type:
-          - string
-          - 'null'
-          x-go-name: DistinguishedName
-        zoneName:
-          description: Specifies the zone name.
-          type:
-          - string
-          - 'null'
-          x-go-name: ZoneName
-      x-go-package: cohesity/iris/server/data/public
-    RequestError:
-      description: Details about the Error.
-      type: object
-      title: Error
-      properties:
-        errorCode:
-          description: Operation response error code.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ErrorCode
-        message:
-          description: Description of the error.
-          type:
-          - string
-          - 'null'
-          x-go-name: Message
-      x-go-package: cohesity/iris/server/data/public
-    ActiveDirectoryPrincipalsAddParameters:
-      description: 'Specifies the settings for adding new users and groups
-
-        for Active Directory principals.
-
-        These users and groups are added to the Cohesity Cluster.
-
-        You cannot create users and groups in the default Cohesity domain
-
-        called ''LOCAL'' using this operation.'
-      type: object
-      title: Add Groups or Users Request.
-      properties:
-        description:
-          description: Specifies a description about the user or group.
-          type:
-          - string
-          - 'null'
-          x-go-name: Description
-        domain:
-          description: 'Specifies the domain of the Active Directory where the
-
-            referenced principal is stored.'
-          type:
-          - string
-          - 'null'
-          x-go-name: Domain
-        objectClass:
-          description: 'Specifies the type of the referenced Active Directory principal.
-
-            If ''kGroup'', the referenced Active Directory principal is a group.
-
-            If ''kUser'', the referenced Active Directory principal is a user.
-
-            ''kUser'' specifies a user object class.
-
-            ''kGroup'' specifies a group object class.
-
-            ''kComputer'' specifies a computer object class.
-
-            ''kWellKnownPrincipal'' specifies a well known principal.'
-          type:
-          - string
-          - 'null'
-          enum:
-          - kUser
-          - kGroup
-          - kComputer
-          - kWellKnownPrincipal
-          x-go-name: ObjectClass
-        principalName:
-          description: 'Specifies the name of the Active Directory principal,
-
-            that will be referenced by the group or user.
-
-            The name of the Active Directory principal is used for naming
-
-            the new group or user on the Cohesity Cluster.'
-          type:
-          - string
-          - 'null'
-          x-go-name: PrincipalName
-        restricted:
-          description: 'Whether the principal is a restricted principal. A restricted principal
-
-            can only view the objects he has permissions to.'
-          type:
-          - boolean
-          - 'null'
-          x-go-name: Restricted
-        roles:
-          description: 'Array of Roles.
-
-
-            Specifies the Cohesity roles to associate with this user or group
-
-            such as ''Admin'', ''Ops'' or ''View''.
-
-            The Cohesity roles determine privileges on the Cohesity Cluster
-
-            for this group or user.
-
-            For example if the ''joe'' user is added for the Active Directory
-
-            ''joe'' user principal and is associated with the Cohesity
-
-            ''View'' role, ''joe'' can log in to the Cohesity Dashboard
-
-            and has a read-only view of the data on the Cohesity Cluster.'
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-go-name: Roles
-      x-go-package: cohesity/iris/server/data/public
-    ActiveDirectoryEntry:
-      description: Specifies the join settings for a Microsoft Active Directory domain.
-      type: object
-      title: Active Directory.
-      properties:
-        domainName:
-          description: Specifies the fully qualified domain name (FQDN) of an Active Directory.
-          type:
-          - string
-          - 'null'
-          x-go-name: DomainName
-        fallbackUserIdMappingInfo:
-          description: 'Specifies the fallback id mapping info which is used when an ID mapping
-
-            for a user is not found via the above IdMappingInfo. Only supported for
-
-            two types of fallback mapping types - ''kRid'' and ''kFixed''.'
-          $ref: '#/components/schemas/UserIdMapping'
-        ignoredTrustedDomains:
-          description: 'Specifies the list of trusted domains that were set by the user to be
-
-            ignored during trusted domain discovery.'
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-go-name: IgnoredTrustedDomains
-        ldapProviderId:
-          description: Specifies the LDAP provider id which is map to this Active Directory
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: LdapProviderId
-        machineAccounts:
-          description: 'Array of Machine Accounts.
-
-
-            Specifies an array of computer names used to identify the Cohesity
-
-            Cluster on the domain.'
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-go-name: MachineAccounts
-        ouName:
-          description: Specifies an optional Organizational Unit name.
-          type:
-          - string
-          - 'null'
-          x-go-name: OuName
-        password:
-          description: Specifies the password for the specified userName.
-          type:
-          - string
-          - 'null'
-          x-go-name: Password
-        preferredDomainControllers:
-          description: 'Specifies Map of Active Directory domain names to its preferred domain
-
-            controllers.'
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/PreferredDomainController'
-          x-go-name: PreferredDomainControllers
-        taskPath:
-          description: Specifies the task path for AD joining task.
-          type:
-          - string
-          - 'null'
-          x-go-name: TaskPath
-        tenantId:
-          description: Specifies the unique id of the tenant.
-          type:
-          - string
-          - 'null'
-          x-go-name: TenantId
-        trustedDomains:
-          description: Specifies the trusted domains of the Active Directory domain.
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-go-name: TrustedDomains
-          readOnly: true
-        trustedDomainsEnabled:
-          description: Specifies whether Trusted Domain discovery is disabled.
-          type:
-          - boolean
-          - 'null'
-          x-go-name: TrustedDomainsEnabled
-        unixRootSid:
-          description: 'Specifies the SID of the Active Directory domain user to be mapped to
-
-            Unix root user.'
-          type:
-          - string
-          - 'null'
-          x-go-name: UnixRootSid
-        userIdMappingInfo:
-          description: 'Specifies the information about how the Unix and Windows users are mapped
-
-            for this domain.'
-          $ref: '#/components/schemas/UserIdMapping'
-        userName:
-          description: Specifies a userName that has administrative privileges in the domain.
-          type:
-          - string
-          - 'null'
-          x-go-name: UserName
-        workgroup:
-          description: Specifies an optional Workgroup name.
-          type:
-          - string
-          - 'null'
-          x-go-name: Workgroup
-      x-go-package: cohesity/iris/server/data/public
-    DomainControllers:
-      description: Domain Controllers for a domain of an Active Directory domain.
-      type: object
-      title: Domain Controllers.
-      properties:
-        domainControllers:
-          description: Domain Controllers of a domain of an Active Directory domain.
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-go-name: DomainControllers
-      x-go-package: cohesity/iris/server/data/public
-    UserIdMapping:
-      description: Specifies how the Unix and Windows users are mapped in an Active Directory.
-      type: object
-      title: User ID Mapping.
-      properties:
-        centrifyZoneMapping:
-          description: 'Specifies a centrify zone when mapping type is set to ''kCentrify''. It
-
-            defines a centrify zone from which the user id mapping info would be
-
-            derived.'
-          $ref: '#/components/schemas/CentrifyZone'
-        customAttributesMapping:
-          description: 'Specifies the custom attributes when mapping type is set to
-
-            ''kCustomAttributes''. It defines the attribute names to derive the mapping
-
-            for a user of an Active Directory domain.'
-          $ref: '#/components/schemas/CustomUnixIdAttributes'
-        fixedMapping:
-          description: 'Specifies the fields when mapping type is set to ''kFixed''. It maps all
-
-            Active Directory users of this domain to a fixed uid, and gid.'
-          $ref: '#/components/schemas/FixedUnixIdMapping'
-        type:
-          description: 'Specifies the mapping type used.
-
-            ''kRid'' indicates the kRid mapping type.
-
-            ''kRfc2307'' indicates the kRfc2307 mapping type.
-
-            ''kSfu30'' indicates the kSfu30 mapping type.
-
-            ''kCentrify'' indicates the mapping type to refer to a centrify zone.
-
-            ''kFixed'' indicates the mapping from all Active Directory users to a fixed Unix uid, and gid.
-
-            ''kCustomAttributes'' indicates the mapping to derive from custom attributes defined in an AD domain.
-
-            ''kLdapProvider'' indicates the Active Directory to LDAP provider mapping.'
-          type:
-          - string
-          - 'null'
-          enum:
-          - kRid
-          - kRfc2307
-          - kSfu30
-          - kCentrify
-          - kFixed
-          - kCustomAttributes
-          - kLdapProvider
-          x-go-name: Type
-      x-go-package: cohesity/iris/server/data/public
-    ActiveDirectoryPrincipal:
-      description: Specifies information about a single principal in an Active Directory.
-      type: object
-      title: Active Directory Principal.
-      properties:
-        domain:
-          description: 'Specifies the domain name of the where the principal'' account is
-
-            maintained.'
-          type:
-          - string
-          - 'null'
-          x-go-name: Domain
-        fullName:
-          description: Specifies the full name (first and last names) of the principal.
-          type:
-          - string
-          - 'null'
-          x-go-name: FullName
-        objectClass:
-          description: 'Specifies the object class of the principal (either ''kGroup'' or ''kUser'').
-
-            ''kUser'' specifies a user object class.
-
-            ''kGroup'' specifies a group object class.
-
-            ''kComputer'' specifies a computer object class.
-
-            ''kWellKnownPrincipal'' specifies a well known principal.'
-          type:
-          - string
-          - 'null'
-          enum:
-          - kUser
-          - kGroup
-          - kComputer
-          - kWellKnownPrincipal
-          x-go-name: ObjectClass
-        principalName:
-          description: Specifies the name of the principal.
-          type:
-          - string
-          - 'null'
-          x-go-name: PrincipalName
-        sid:
-          description: Specifies the unique Security id (SID) of the principal.
-          type:
-          - string
-          - 'null'
-          x-go-name: Sid
-      x-go-package: cohesity/iris/server/data/public
-    UpdateTrustedDomainEnableParams:
-      description: Specifies the params to update trusted domain enable flag.
-      type: object
-      title: Update trusted domain enable flag request.
-      properties:
-        trustedDomainsEnabled:
-          description: Request to update enable trusted domains state of an Active Directory.
-          type:
-          - boolean
-          - 'null'
-          x-go-name: TrustedDomainsEnabled
-      x-go-package: cohesity/iris/server/data/public
-    FixedUnixIdMapping:
-      description: 'Specifies the fields when mapping type is set to ''kFixed''. It maps all
-
-        Active Directory users of a domain to a fixed Unix uid, and gid.'
-      type: object
-      title: Fixed Unix ID Mapping.
-      properties:
-        gid:
-          description: Specifies the fixed Unix GID, when mapping type is set to kFixed.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: Gid
-        uid:
-          description: Specifies the fixed Unix UID, when mapping type is set to kFixed.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: Uid
-      x-go-package: cohesity/iris/server/data/public
-    UpdateLdapProviderParams:
-      description: Specifies the params to update the LDAP provider info.
-      type: object
-      title: Update LDAP Provider Request.
-      properties:
-        ldapProviderId:
-          description: Specifies the LDAP provider id which is mapped to an Active Directory
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: LdapProviderId
-      x-go-package: cohesity/iris/server/data/public
     CreateActiveDirectoryEntryParams:
       type: object
       title: Specifies the params to join a Microsoft Active Directory domain.
@@ -1286,27 +818,318 @@ components:
             type: string
           x-go-name: IgnoredTrustedDomains
       x-go-package: cohesity/iris/server/data/public
-    PreferredDomainController:
-      description: Specifies Preferred domain controllers (DCs) for an Active Directory domain.
-      type: object
-      title: Update Preferred Domain Controller Request.
-      properties:
-        domainControllers:
-          description: 'List of Domain controllers DCs in FQDN format that are mapped to an Active
+    CentrifyZone:
+      description: 'Specifies the properties associated to a Centrify zone of an Active
 
-            Directory Domain name.'
+        Directory domain.'
+      type: object
+      title: Centrify Zone.
+      properties:
+        centrifySchema:
+          description: 'Specifies the schema of this Centrify zone.
+
+            The below list of schemas and their values are taken from the document
+
+            Centrify Server Suite 2016 Windows API Programmer''s Guide
+
+            https://docs.centrify.com/en/css/suite2016/centrify-win-progguide.pdf
+
+            ''kCentrifyDynamicSchema_1_0'' specifies dynamic schema, version 1.0.
+
+            ''kCentrifyDynamicSchema_2_0'' specifies dynamic schema, version 2.0.
+
+            ''kCentrifyDynamicSchema_3_0'' specifies dynamic schema, version 3.0.
+
+            ''kCentrifyDynamicSchema_5_0'' specifies dynamic schema, version 5.0.
+
+            ''kCentrifySfu_3_0'' specifies sfu schema, version 3.0.
+
+            ''kCentrifySfu_3_0_V5'' specifies sfu schema, 3.0.5.
+
+            ''kCentrifySfu_4_0'' specifies sfu schema, version 4.0.
+
+            ''kCentrifyCdcRfc2307'' specifies cdcrfc2307 schema.
+
+            ''kCentrifyCdcRfc2307_2'' specifies cdcrfc2307, version 2.
+
+            ''kCentrifyCdcRfc2307_3'' specifies cdcrfc2307, version 3.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kCentrifyDynamicSchema_1_0
+          - kCentrifyDynamicSchema_2_0
+          - kCentrifySfu_3_0
+          - kCentrifySfu_4_0
+          - kCentrifyCdcRfc2307
+          - kCentrifyDynamicSchema_3_0
+          - kCentrifyCdcRfc2307_2
+          - kCentrifyDynamicSchema_5_0
+          - kCentrifyCdcRfc2307_3
+          - kCentrifySfu_3_0_V5
+          x-go-name: CentrifySchema
+        description:
+          description: Specifies a description of the Centrify zone.
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+        distinguishedName:
+          description: Specifies the distinguished name of the Centrify zone.
+          type:
+          - string
+          - 'null'
+          x-go-name: DistinguishedName
+      x-go-package: cohesity/iris/server/data/public
+    ActiveDirectoryEntry:
+      description: Specifies the join settings for a Microsoft Active Directory domain.
+      type: object
+      title: Active Directory.
+      properties:
+        domainName:
+          description: Specifies the fully qualified domain name (FQDN) of an Active Directory.
+          type:
+          - string
+          - 'null'
+          x-go-name: DomainName
+        fallbackUserIdMappingInfo:
+          description: 'Specifies the fallback id mapping info which is used when an ID mapping
+
+            for a user is not found via the above IdMappingInfo. Only supported for
+
+            two types of fallback mapping types - ''kRid'' and ''kFixed''.'
+          $ref: '#/components/schemas/UserIdMapping'
+        ignoredTrustedDomains:
+          description: 'Specifies the list of trusted domains that were set by the user to be
+
+            ignored during trusted domain discovery.'
           type:
           - array
           - 'null'
           items:
             type: string
-          x-go-name: DomainControllers
-        domainName:
-          description: Specifies the Domain name or the trusted domain of an Active Directory.
+          x-go-name: IgnoredTrustedDomains
+        ldapProviderId:
+          description: Specifies the LDAP provider id which is map to this Active Directory
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: LdapProviderId
+        machineAccounts:
+          description: 'Array of Machine Accounts.
+
+
+            Specifies an array of computer names used to identify the Cohesity
+
+            Cluster on the domain.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: MachineAccounts
+        ouName:
+          description: Specifies an optional Organizational Unit name.
           type:
           - string
           - 'null'
-          x-go-name: DomainName
+          x-go-name: OuName
+        password:
+          description: Specifies the password for the specified userName.
+          type:
+          - string
+          - 'null'
+          x-go-name: Password
+        preferredDomainControllers:
+          description: 'Specifies Map of Active Directory domain names to its preferred domain
+
+            controllers.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PreferredDomainController'
+          x-go-name: PreferredDomainControllers
+        taskPath:
+          description: Specifies the task path for AD joining task.
+          type:
+          - string
+          - 'null'
+          x-go-name: TaskPath
+        tenantId:
+          description: Specifies the unique id of the tenant.
+          type:
+          - string
+          - 'null'
+          x-go-name: TenantId
+        trustedDomains:
+          description: Specifies the trusted domains of the Active Directory domain.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: TrustedDomains
+          readOnly: true
+        trustedDomainsEnabled:
+          description: Specifies whether Trusted Domain discovery is disabled.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: TrustedDomainsEnabled
+        unixRootSid:
+          description: 'Specifies the SID of the Active Directory domain user to be mapped to
+
+            Unix root user.'
+          type:
+          - string
+          - 'null'
+          x-go-name: UnixRootSid
+        userIdMappingInfo:
+          description: 'Specifies the information about how the Unix and Windows users are mapped
+
+            for this domain.'
+          $ref: '#/components/schemas/UserIdMapping'
+        userName:
+          description: Specifies a userName that has administrative privileges in the domain.
+          type:
+          - string
+          - 'null'
+          x-go-name: UserName
+        workgroup:
+          description: Specifies an optional Workgroup name.
+          type:
+          - string
+          - 'null'
+          x-go-name: Workgroup
+      x-go-package: cohesity/iris/server/data/public
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    ActiveDirectoryPrincipalsAddParameters:
+      description: 'Specifies the settings for adding new users and groups
+
+        for Active Directory principals.
+
+        These users and groups are added to the Cohesity Cluster.
+
+        You cannot create users and groups in the default Cohesity domain
+
+        called ''LOCAL'' using this operation.'
+      type: object
+      title: Add Groups or Users Request.
+      properties:
+        description:
+          description: Specifies a description about the user or group.
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+        domain:
+          description: 'Specifies the domain of the Active Directory where the
+
+            referenced principal is stored.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Domain
+        objectClass:
+          description: 'Specifies the type of the referenced Active Directory principal.
+
+            If ''kGroup'', the referenced Active Directory principal is a group.
+
+            If ''kUser'', the referenced Active Directory principal is a user.
+
+            ''kUser'' specifies a user object class.
+
+            ''kGroup'' specifies a group object class.
+
+            ''kComputer'' specifies a computer object class.
+
+            ''kWellKnownPrincipal'' specifies a well known principal.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kUser
+          - kGroup
+          - kComputer
+          - kWellKnownPrincipal
+          x-go-name: ObjectClass
+        principalName:
+          description: 'Specifies the name of the Active Directory principal,
+
+            that will be referenced by the group or user.
+
+            The name of the Active Directory principal is used for naming
+
+            the new group or user on the Cohesity Cluster.'
+          type:
+          - string
+          - 'null'
+          x-go-name: PrincipalName
+        restricted:
+          description: 'Whether the principal is a restricted principal. A restricted principal
+
+            can only view the objects he has permissions to.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: Restricted
+        roles:
+          description: 'Array of Roles.
+
+
+            Specifies the Cohesity roles to associate with this user or group
+
+            such as ''Admin'', ''Ops'' or ''View''.
+
+            The Cohesity roles determine privileges on the Cohesity Cluster
+
+            for this group or user.
+
+            For example if the ''joe'' user is added for the Active Directory
+
+            ''joe'' user principal and is associated with the Cohesity
+
+            ''View'' role, ''joe'' can log in to the Cohesity Dashboard
+
+            and has a read-only view of the data on the Cohesity Cluster.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Roles
+      x-go-package: cohesity/iris/server/data/public
+    UpdateTrustedDomainEnableParams:
+      description: Specifies the params to update trusted domain enable flag.
+      type: object
+      title: Update trusted domain enable flag request.
+      properties:
+        trustedDomainsEnabled:
+          description: Request to update enable trusted domains state of an Active Directory.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: TrustedDomainsEnabled
       x-go-package: cohesity/iris/server/data/public
     IdMappingInfo:
       description: 'Specifies the params required to update the user id mapping info of an
@@ -1336,72 +1159,178 @@ components:
             for this domain.'
           $ref: '#/components/schemas/UserIdMapping'
       x-go-package: cohesity/iris/server/data/public
-    CustomUnixIdAttributes:
-      description: 'Specifies the custom attributes when mapping type is set to
-
-        ''kCustomAttributes''. It defines the attribute names to derive the mapping
-
-        for a user of an Active Directory domain.'
+    UpdateLdapProviderParams:
+      description: Specifies the params to update the LDAP provider info.
       type: object
-      title: Custom Unix ID Attributes.
+      title: Update LDAP Provider Request.
       properties:
-        gidAttrName:
-          description: 'Specifies the custom field name in Active Directory user properties to get
-
-            the GID.'
+        ldapProviderId:
+          description: Specifies the LDAP provider id which is mapped to an Active Directory
           type:
-          - string
+          - integer
           - 'null'
-          x-go-name: GidAttrName
-        uidAttrName:
-          description: 'Specifies the custom field name in Active Directory user properties to get
-
-            the UID.'
-          type:
-          - string
-          - 'null'
-          x-go-name: UidAttrName
+          format: int64
+          x-go-name: LdapProviderId
       x-go-package: cohesity/iris/server/data/public
-    UpdateMachineAccountsParams:
-      description: 'Specifies the parameters required to update the machine accounts of an
-
-        active directory.'
+    ListCentrifyZone:
       type: object
-      title: Update Machine Accounts Request.
       properties:
-        machineAccounts:
-          description: 'Array of Machine Accounts.
+        centrifySchema:
+          description: 'Specifies the schema of this Centrify zone.
 
+            The below list of schemas and their values are taken from the document
 
-            Specifies an array of computer names used to identify the Cohesity
+            Centrify Server Suite 2016 Windows API Programmer''s Guide
 
-            Cluster on the domain.'
+            https://docs.centrify.com/en/css/suite2016/centrify-win-progguide.pdf
+
+            ''kCentrifyDynamicSchema_1_0'' specifies dynamic schema, version 1.0.
+
+            ''kCentrifyDynamicSchema_2_0'' specifies dynamic schema, version 2.0.
+
+            ''kCentrifyDynamicSchema_3_0'' specifies dynamic schema, version 3.0.
+
+            ''kCentrifyDynamicSchema_5_0'' specifies dynamic schema, version 5.0.
+
+            ''kCentrifySfu_3_0'' specifies sfu schema, version 3.0.
+
+            ''kCentrifySfu_3_0_V5'' specifies sfu schema, 3.0.5.
+
+            ''kCentrifySfu_4_0'' specifies sfu schema, version 4.0.
+
+            ''kCentrifyCdcRfc2307'' specifies cdcrfc2307 schema.
+
+            ''kCentrifyCdcRfc2307_2'' specifies cdcrfc2307, version 2.
+
+            ''kCentrifyCdcRfc2307_3'' specifies cdcrfc2307, version 3.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kCentrifyDynamicSchema_1_0
+          - kCentrifyDynamicSchema_2_0
+          - kCentrifySfu_3_0
+          - kCentrifySfu_4_0
+          - kCentrifyCdcRfc2307
+          - kCentrifyDynamicSchema_3_0
+          - kCentrifyCdcRfc2307_2
+          - kCentrifyDynamicSchema_5_0
+          - kCentrifyCdcRfc2307_3
+          - kCentrifySfu_3_0_V5
+          x-go-name: CentrifySchema
+        description:
+          description: Specifies a description of the Centrify zone.
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+        distinguishedName:
+          description: Specifies the distinguished name of the Centrify zone.
+          type:
+          - string
+          - 'null'
+          x-go-name: DistinguishedName
+        zoneName:
+          description: Specifies the zone name.
+          type:
+          - string
+          - 'null'
+          x-go-name: ZoneName
+      x-go-package: cohesity/iris/server/data/public
+    PreferredDomainController:
+      description: Specifies Preferred domain controllers (DCs) for an Active Directory domain.
+      type: object
+      title: Update Preferred Domain Controller Request.
+      properties:
+        domainControllers:
+          description: 'List of Domain controllers DCs in FQDN format that are mapped to an Active
+
+            Directory Domain name.'
           type:
           - array
           - 'null'
           items:
             type: string
-          x-go-name: MachineAccounts
-        overwriteExistingAccounts:
-          description: 'Specifies whether the specified machine accounts should overwrite the
+          x-go-name: DomainControllers
+        domainName:
+          description: Specifies the Domain name or the trusted domain of an Active Directory.
+          type:
+          - string
+          - 'null'
+          x-go-name: DomainName
+      x-go-package: cohesity/iris/server/data/public
+    ActiveDirectoryPrincipal:
+      description: Specifies information about a single principal in an Active Directory.
+      type: object
+      title: Active Directory Principal.
+      properties:
+        domain:
+          description: 'Specifies the domain name of the where the principal'' account is
 
-            existing machine accounts in this domain.'
-          type:
-          - boolean
-          - 'null'
-          x-go-name: OverwriteExistingAccounts
-        password:
-          description: Specifies the password for the specified userName.
+            maintained.'
           type:
           - string
           - 'null'
-          x-go-name: Password
-        userName:
-          description: Specifies a userName that has administrative privileges in the domain.
+          x-go-name: Domain
+        fullName:
+          description: Specifies the full name (first and last names) of the principal.
           type:
           - string
           - 'null'
-          x-go-name: UserName
+          x-go-name: FullName
+        objectClass:
+          description: 'Specifies the object class of the principal (either ''kGroup'' or ''kUser'').
+
+            ''kUser'' specifies a user object class.
+
+            ''kGroup'' specifies a group object class.
+
+            ''kComputer'' specifies a computer object class.
+
+            ''kWellKnownPrincipal'' specifies a well known principal.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kUser
+          - kGroup
+          - kComputer
+          - kWellKnownPrincipal
+          x-go-name: ObjectClass
+        principalName:
+          description: Specifies the name of the principal.
+          type:
+          - string
+          - 'null'
+          x-go-name: PrincipalName
+        sid:
+          description: Specifies the unique Security id (SID) of the principal.
+          type:
+          - string
+          - 'null'
+          x-go-name: Sid
+      x-go-package: cohesity/iris/server/data/public
+    FixedUnixIdMapping:
+      description: 'Specifies the fields when mapping type is set to ''kFixed''. It maps all
+
+        Active Directory users of a domain to a fixed Unix uid, and gid.'
+      type: object
+      title: Fixed Unix ID Mapping.
+      properties:
+        gid:
+          description: Specifies the fixed Unix GID, when mapping type is set to kFixed.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Gid
+        uid:
+          description: Specifies the fixed Unix UID, when mapping type is set to kFixed.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Uid
       x-go-package: cohesity/iris/server/data/public
     AddedActiveDirectoryPrincipal:
       description: 'Specifies a group or user added to the Cohesity Cluster for an Active
@@ -1519,68 +1448,139 @@ components:
           - 'null'
           x-go-name: Sid
       x-go-package: cohesity/iris/server/data/public
-    CentrifyZone:
-      description: 'Specifies the properties associated to a Centrify zone of an Active
+    UpdateMachineAccountsParams:
+      description: 'Specifies the parameters required to update the machine accounts of an
 
-        Directory domain.'
+        active directory.'
       type: object
-      title: Centrify Zone.
+      title: Update Machine Accounts Request.
       properties:
-        centrifySchema:
-          description: 'Specifies the schema of this Centrify zone.
+        machineAccounts:
+          description: 'Array of Machine Accounts.
 
-            The below list of schemas and their values are taken from the document
 
-            Centrify Server Suite 2016 Windows API Programmer''s Guide
+            Specifies an array of computer names used to identify the Cohesity
 
-            https://docs.centrify.com/en/css/suite2016/centrify-win-progguide.pdf
+            Cluster on the domain.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: MachineAccounts
+        overwriteExistingAccounts:
+          description: 'Specifies whether the specified machine accounts should overwrite the
 
-            ''kCentrifyDynamicSchema_1_0'' specifies dynamic schema, version 1.0.
+            existing machine accounts in this domain.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: OverwriteExistingAccounts
+        password:
+          description: Specifies the password for the specified userName.
+          type:
+          - string
+          - 'null'
+          x-go-name: Password
+        userName:
+          description: Specifies a userName that has administrative privileges in the domain.
+          type:
+          - string
+          - 'null'
+          x-go-name: UserName
+      x-go-package: cohesity/iris/server/data/public
+    CustomUnixIdAttributes:
+      description: 'Specifies the custom attributes when mapping type is set to
 
-            ''kCentrifyDynamicSchema_2_0'' specifies dynamic schema, version 2.0.
+        ''kCustomAttributes''. It defines the attribute names to derive the mapping
 
-            ''kCentrifyDynamicSchema_3_0'' specifies dynamic schema, version 3.0.
+        for a user of an Active Directory domain.'
+      type: object
+      title: Custom Unix ID Attributes.
+      properties:
+        gidAttrName:
+          description: 'Specifies the custom field name in Active Directory user properties to get
 
-            ''kCentrifyDynamicSchema_5_0'' specifies dynamic schema, version 5.0.
+            the GID.'
+          type:
+          - string
+          - 'null'
+          x-go-name: GidAttrName
+        uidAttrName:
+          description: 'Specifies the custom field name in Active Directory user properties to get
 
-            ''kCentrifySfu_3_0'' specifies sfu schema, version 3.0.
+            the UID.'
+          type:
+          - string
+          - 'null'
+          x-go-name: UidAttrName
+      x-go-package: cohesity/iris/server/data/public
+    UserIdMapping:
+      description: Specifies how the Unix and Windows users are mapped in an Active Directory.
+      type: object
+      title: User ID Mapping.
+      properties:
+        centrifyZoneMapping:
+          description: 'Specifies a centrify zone when mapping type is set to ''kCentrify''. It
 
-            ''kCentrifySfu_3_0_V5'' specifies sfu schema, 3.0.5.
+            defines a centrify zone from which the user id mapping info would be
 
-            ''kCentrifySfu_4_0'' specifies sfu schema, version 4.0.
+            derived.'
+          $ref: '#/components/schemas/CentrifyZone'
+        customAttributesMapping:
+          description: 'Specifies the custom attributes when mapping type is set to
 
-            ''kCentrifyCdcRfc2307'' specifies cdcrfc2307 schema.
+            ''kCustomAttributes''. It defines the attribute names to derive the mapping
 
-            ''kCentrifyCdcRfc2307_2'' specifies cdcrfc2307, version 2.
+            for a user of an Active Directory domain.'
+          $ref: '#/components/schemas/CustomUnixIdAttributes'
+        fixedMapping:
+          description: 'Specifies the fields when mapping type is set to ''kFixed''. It maps all
 
-            ''kCentrifyCdcRfc2307_3'' specifies cdcrfc2307, version 3.'
+            Active Directory users of this domain to a fixed uid, and gid.'
+          $ref: '#/components/schemas/FixedUnixIdMapping'
+        type:
+          description: 'Specifies the mapping type used.
+
+            ''kRid'' indicates the kRid mapping type.
+
+            ''kRfc2307'' indicates the kRfc2307 mapping type.
+
+            ''kSfu30'' indicates the kSfu30 mapping type.
+
+            ''kCentrify'' indicates the mapping type to refer to a centrify zone.
+
+            ''kFixed'' indicates the mapping from all Active Directory users to a fixed Unix uid, and gid.
+
+            ''kCustomAttributes'' indicates the mapping to derive from custom attributes defined in an AD domain.
+
+            ''kLdapProvider'' indicates the Active Directory to LDAP provider mapping.'
           type:
           - string
           - 'null'
           enum:
-          - kCentrifyDynamicSchema_1_0
-          - kCentrifyDynamicSchema_2_0
-          - kCentrifySfu_3_0
-          - kCentrifySfu_4_0
-          - kCentrifyCdcRfc2307
-          - kCentrifyDynamicSchema_3_0
-          - kCentrifyCdcRfc2307_2
-          - kCentrifyDynamicSchema_5_0
-          - kCentrifyCdcRfc2307_3
-          - kCentrifySfu_3_0_V5
-          x-go-name: CentrifySchema
-        description:
-          description: Specifies a description of the Centrify zone.
+          - kRid
+          - kRfc2307
+          - kSfu30
+          - kCentrify
+          - kFixed
+          - kCustomAttributes
+          - kLdapProvider
+          x-go-name: Type
+      x-go-package: cohesity/iris/server/data/public
+    DomainControllers:
+      description: Domain Controllers for a domain of an Active Directory domain.
+      type: object
+      title: Domain Controllers.
+      properties:
+        domainControllers:
+          description: Domain Controllers of a domain of an Active Directory domain.
           type:
-          - string
+          - array
           - 'null'
-          x-go-name: Description
-        distinguishedName:
-          description: Specifies the distinguished name of the Centrify zone.
-          type:
-          - string
-          - 'null'
-          x-go-name: DistinguishedName
+          items:
+            type: string
+          x-go-name: DomainControllers
       x-go-package: cohesity/iris/server/data/public
     AdFixedTypeParams:
       description: Specifies the properties accociated to a Fixed type user id mapping.
@@ -1603,96 +1603,45 @@ components:
           - 'null'
           format: int64
           x-order: 1
-    AdCustomAttributesTypeParams:
-      description: Specifies the properties accociated to a CustomAttributes type user id mapping.
+    Tenant:
+      description: Specifies a tenant object.
+      type: object
+      title: Tenant
+      properties:
+        id:
+          description: Specifies the id of the tenant.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        name:
+          description: Specifies the name of the tenant.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    FallbackUserIdMappingParams:
+      description: Specifies a fallback param for Unix and Windows users mapping.
       type: object
       required:
-      - uidAttrName
-      - gidAttrName
-      - fallbackOption
+      - type
       properties:
-        uidAttrName:
-          description: Specifies the custom field name in Active Directory user properties to get the UID.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        gidAttrName:
-          description: Specifies the custom field name in Active Directory user properties to get the GID.
-          type:
-          - string
-          - 'null'
-          x-order: 1
-        fallbackOption:
-          description: Specifies a fallback user id mapping param in case the primary config does not work.
-          type:
-          - object
-          - 'null'
-          allOf:
-          - $ref: '#/components/schemas/FallbackUserIdMappingParams'
-          - {}
-          x-order: 2
-    IdMappingParams:
-      description: Specifies the params of the user id mapping info of an Active Directory.
-      type: object
-      required:
-      - sidMappedToUnixRootUser
-      - userIdMappingParams
-      properties:
-        sidMappedToUnixRootUser:
-          description: Specifies the sid of an Active Directory domain user mapping to unix root user.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        userIdMappingParams:
-          description: Specifies the information about how the Unix and Windows users are mapped for this domain.
-          type:
-          - object
-          - 'null'
-          allOf:
-          - $ref: '#/components/schemas/UserIdMappingParams'
-          - {}
-          x-order: 1
-    SecurityPrincipal:
-      description: Specifies a security principal.
-      type: object
-      properties:
-        domainName:
-          description: Specifies the domain name where the security principal account is maintained.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        fullName:
-          description: Specifies the full name (first and last name) of the security principal.
-          type:
-          - string
-          - 'null'
-          x-order: 1
-        principalName:
-          description: Specifies the name of the security principal.
-          type:
-          - string
-          - 'null'
-          x-order: 2
-        objectClass:
-          description: Specifies the object class of the security principal.
-          type:
-          - string
-          - 'null'
+        type:
+          description: Specifies the type of the mapping.
+          type: string
           enum:
-          - User
-          - Group
-          - Computer
-          - WellKnownPrincipal
-          x-order: 3
-        sid:
-          description: Specifies the SID of the security principal.
+          - Rid
+          - Fixed
+          x-order: 0
+        fixedTypeParams:
+          description: Specifies the params for Fixed mapping type mapping.
           type:
-          - string
+          - object
           - 'null'
-          x-order: 4
+          allOf:
+          - $ref: '#/components/schemas/AdFixedTypeParams'
+          - {}
+          x-order: 1
     CreateActiveDirectoryRequest:
       description: Specifies the request to create an Active Directory.
       type: object
@@ -1725,249 +1674,6 @@ components:
             - boolean
             - 'null'
             x-order: 2
-    DomainController:
-      description: Specifies a domain controller.
-      type: object
-      required:
-      - name
-      properties:
-        name:
-          description: Specifies the domain controller name.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        status:
-          description: Specifies the connection status.
-          type:
-          - string
-          - 'null'
-          enum:
-          - Reachable
-          - Unreachable
-          - Incompatible
-          x-order: 1
-          readOnly: true
-    ActiveDirectories:
-      description: Response of Active Directories.
-      type: object
-      properties:
-        activeDirectories:
-          description: A list of Active Directories.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ActiveDirectory'
-          x-order: 0
-    DomainControllersResponse:
-      description: Specifies the response of get domain controllers request.
-      type: object
-      properties:
-        domainControllers:
-          description: A list of domain names with a list of it's domain controllers.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/DomainControllers_2'
-          x-order: 0
-    UpdateActiveDirectoryRequest:
-      description: Specifies the request to create an Active Directory.
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/CommonActiveDirectoryParams'
-      - type: object
-        required:
-        - workGroupName
-        properties:
-          activeDirectoryAdminParams:
-            description: Specifies the params of a user with administrative privilege of this Active Directory. This field is mandatory if machine accounts are updated.
-            type:
-            - object
-            - 'null'
-            allOf:
-            - $ref: '#/components/schemas/ActiveDirectoryAdminParams'
-            - {}
-            x-order: 0
-          overwriteMachineAccounts:
-            description: Specifies if specified machine accounts should overwrite existing machine accounts.
-            type:
-            - boolean
-            - 'null'
-            x-order: 1
-          idMappingParams:
-            description: Specifies the params of the user id mapping info of an Active Directory.
-            type:
-            - object
-            - 'null'
-            allOf:
-            - $ref: '#/components/schemas/IdMappingParams'
-            - {}
-            x-order: 2
-          transitiveAdTrustLevelLimit:
-            description: Specifies level of transitive Active Directory trust domains to be used.
-            type:
-            - integer
-            - 'null'
-            format: int32
-            x-order: 3
-    TrustedDomainParams:
-      description: Specifies the params related to trusted domains.
-      type: object
-      required:
-      - enabled
-      properties:
-        enabled:
-          description: Specifies if trusted domain discovery is enabled.
-          type:
-          - boolean
-          - 'null'
-          x-order: 0
-        trustedDomains:
-          description: Specifies a list of trusted domains.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/TrustedDomain'
-          x-order: 1
-        blacklistedDomains:
-          description: Specifies a list of domains to add to blacklist. These domains will be blacklisted in trusted domain discorvery.
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-order: 2
-    DomainControllers_2:
-      description: Specifies the domain controllers of a domain.
-      type: object
-      properties:
-        domainName:
-          description: Specifies the domain name.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        controllers:
-          description: Specifies a list of domain controllers of the domain.
-          type:
-          - array
-          - 'null'
-          items:
-            type: object
-            $ref: '#/components/schemas/DomainController'
-          x-order: 1
-    Tenant:
-      description: Specifies a tenant object.
-      type: object
-      title: Tenant
-      properties:
-        id:
-          description: Specifies the id of the tenant.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        name:
-          description: Specifies the name of the tenant.
-          type:
-          - string
-          - 'null'
-          x-order: 1
-    Error:
-      description: Specifies the error object with error code and a message.
-      type: object
-      title: Error.
-      properties:
-        errorCode:
-          description: Specifies the error code.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        message:
-          description: Specifies the error message.
-          type:
-          - string
-          - 'null'
-          x-order: 1
-    FallbackUserIdMappingParams:
-      description: Specifies a fallback param for Unix and Windows users mapping.
-      type: object
-      required:
-      - type
-      properties:
-        type:
-          description: Specifies the type of the mapping.
-          type: string
-          enum:
-          - Rid
-          - Fixed
-          x-order: 0
-        fixedTypeParams:
-          description: Specifies the params for Fixed mapping type mapping.
-          type:
-          - object
-          - 'null'
-          allOf:
-          - $ref: '#/components/schemas/AdFixedTypeParams'
-          - {}
-          x-order: 1
-    TrustedDomain:
-      description: Specifies the details of a trusted domain.
-      type: object
-      properties:
-        domainName:
-          description: Specifies a domain name.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        preferredDomainControllers:
-          description: Specifies a list of preferred domain controllers for this domain.
-          type: array
-          items:
-            type:
-            - object
-            - 'null'
-            $ref: '#/components/schemas/DomainController'
-          x-order: 1
-    AdRfc2307TypeParams:
-      description: Specifies the properties associated to a Rfc2307 type user id mapping.
-      type: object
-      required:
-      - fallbackOption
-      properties:
-        fallbackOption:
-          description: Specifies a fallback user id mapping param in case the primary config does not work.
-          type:
-          - object
-          - 'null'
-          allOf:
-          - $ref: '#/components/schemas/FallbackUserIdMappingParams'
-          - {}
-          x-order: 0
-    ActiveDirectoryAdminParams:
-      description: Specifies the params of a user with administrative privilege of an Active Directory.
-      type: object
-      required:
-      - username
-      - password
-      properties:
-        username:
-          description: Specifies the user name.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        password:
-          description: Specifies the password of the user.
-          type:
-          - string
-          - 'null'
-          x-order: 1
     AdCentrifyTypeParams:
       description: Specifies the properties associated to a Centrify type user id mapping.
       type: object
@@ -1986,36 +1692,6 @@ components:
             - $ref: '#/components/schemas/FallbackUserIdMappingParams'
             - {}
             x-order: 0
-    AdNisProviderTypeParams:
-      description: Specifies the properties associated to a NisProvider type user id mapping.
-      type: object
-      required:
-      - fallbackOption
-      properties:
-        fallbackOption:
-          description: Specifies a fallback user id mapping param in case the primary config does not work.
-          type:
-          - object
-          - 'null'
-          allOf:
-          - $ref: '#/components/schemas/FallbackUserIdMappingParams'
-          - {}
-          x-order: 0
-    AdSfu30TypeParams:
-      description: Specifies the properties associated to a Sfu30 type user id mapping.
-      type: object
-      required:
-      - fallbackOption
-      properties:
-        fallbackOption:
-          description: Specifies a fallback user id mapping param in case the primary config does not work.
-          type:
-          - object
-          - 'null'
-          allOf:
-          - $ref: '#/components/schemas/FallbackUserIdMappingParams'
-          - {}
-          x-order: 0
     UserIdMappingParams:
       description: Specifies how the Unix and Windows users are mapped in an Active Directory.
       type: object
@@ -2098,6 +1774,123 @@ components:
           - $ref: '#/components/schemas/AdCustomAttributesTypeParams'
           - {}
           x-order: 7
+    CentrifyZone_2:
+      description: Specifies a centrify zone.
+      type: object
+      required:
+      - description
+      - distinguishedName
+      - schema
+      properties:
+        description:
+          description: Specifies a description of the Centrify zone.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        distinguishedName:
+          description: Specifies the distinguished name of the Centrify zone.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        schema:
+          description: Specifies the schema of this Centrify zone.
+          type:
+          - string
+          - 'null'
+          enum:
+          - CentrifyDynamicSchema_1_0
+          - CentrifyDynamicSchema_2_0
+          - CentrifySfu_3_0
+          - CentrifySfu_4_0
+          - CentrifyCdcRfc2307
+          - CentrifyDynamicSchema_3_0
+          - CentrifyCdcRfc2307_2
+          - CentrifyDynamicSchema_5_0
+          - CentrifyCdcRfc2307_3
+          - CentrifySfu_3_0_V5
+          x-order: 2
+        zoneName:
+          description: Specifies the zone name of the Centrify zone.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+          readOnly: true
+        zoneDomain:
+          description: Specifies the zone domain of the Centrify zone.
+          type:
+          - string
+          - 'null'
+          x-order: 4
+          readOnly: true
+    SecurityPrincipal:
+      description: Specifies a security principal.
+      type: object
+      properties:
+        domainName:
+          description: Specifies the domain name where the security principal account is maintained.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        fullName:
+          description: Specifies the full name (first and last name) of the security principal.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        principalName:
+          description: Specifies the name of the security principal.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        objectClass:
+          description: Specifies the object class of the security principal.
+          type:
+          - string
+          - 'null'
+          enum:
+          - User
+          - Group
+          - Computer
+          - WellKnownPrincipal
+          x-order: 3
+        sid:
+          description: Specifies the SID of the security principal.
+          type:
+          - string
+          - 'null'
+          x-order: 4
+    AdLdapProviderTypeParams:
+      description: Specifies the properties associated to a LdapProvider type user id mapping.
+      type: object
+      required:
+      - fallbackOption
+      properties:
+        fallbackOption:
+          description: Specifies a fallback user id mapping param in case the primary config does not work.
+          type:
+          - object
+          - 'null'
+          allOf:
+          - $ref: '#/components/schemas/FallbackUserIdMappingParams'
+          - {}
+          x-order: 0
+    DomainControllersResponse:
+      description: Specifies the response of get domain controllers request.
+      type: object
+      properties:
+        domainControllers:
+          description: A list of domain names with a list of it's domain controllers.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DomainControllers_2'
+          x-order: 0
     ActiveDirectory:
       description: Specifies an Active Directory.
       type: object
@@ -2159,6 +1952,157 @@ components:
             - 'null'
             format: int32
             x-order: 6
+    AdSfu30TypeParams:
+      description: Specifies the properties associated to a Sfu30 type user id mapping.
+      type: object
+      required:
+      - fallbackOption
+      properties:
+        fallbackOption:
+          description: Specifies a fallback user id mapping param in case the primary config does not work.
+          type:
+          - object
+          - 'null'
+          allOf:
+          - $ref: '#/components/schemas/FallbackUserIdMappingParams'
+          - {}
+          x-order: 0
+    DomainController:
+      description: Specifies a domain controller.
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          description: Specifies the domain controller name.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        status:
+          description: Specifies the connection status.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Reachable
+          - Unreachable
+          - Incompatible
+          x-order: 1
+          readOnly: true
+    IdMappingParams:
+      description: Specifies the params of the user id mapping info of an Active Directory.
+      type: object
+      required:
+      - sidMappedToUnixRootUser
+      - userIdMappingParams
+      properties:
+        sidMappedToUnixRootUser:
+          description: Specifies the sid of an Active Directory domain user mapping to unix root user.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        userIdMappingParams:
+          description: Specifies the information about how the Unix and Windows users are mapped for this domain.
+          type:
+          - object
+          - 'null'
+          allOf:
+          - $ref: '#/components/schemas/UserIdMappingParams'
+          - {}
+          x-order: 1
+    AdCustomAttributesTypeParams:
+      description: Specifies the properties accociated to a CustomAttributes type user id mapping.
+      type: object
+      required:
+      - uidAttrName
+      - gidAttrName
+      - fallbackOption
+      properties:
+        uidAttrName:
+          description: Specifies the custom field name in Active Directory user properties to get the UID.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        gidAttrName:
+          description: Specifies the custom field name in Active Directory user properties to get the GID.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        fallbackOption:
+          description: Specifies a fallback user id mapping param in case the primary config does not work.
+          type:
+          - object
+          - 'null'
+          allOf:
+          - $ref: '#/components/schemas/FallbackUserIdMappingParams'
+          - {}
+          x-order: 2
+    AdNisProviderTypeParams:
+      description: Specifies the properties associated to a NisProvider type user id mapping.
+      type: object
+      required:
+      - fallbackOption
+      properties:
+        fallbackOption:
+          description: Specifies a fallback user id mapping param in case the primary config does not work.
+          type:
+          - object
+          - 'null'
+          allOf:
+          - $ref: '#/components/schemas/FallbackUserIdMappingParams'
+          - {}
+          x-order: 0
+    TrustedDomainParams:
+      description: Specifies the params related to trusted domains.
+      type: object
+      required:
+      - enabled
+      properties:
+        enabled:
+          description: Specifies if trusted domain discovery is enabled.
+          type:
+          - boolean
+          - 'null'
+          x-order: 0
+        trustedDomains:
+          description: Specifies a list of trusted domains.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TrustedDomain'
+          x-order: 1
+        blacklistedDomains:
+          description: Specifies a list of domains to add to blacklist. These domains will be blacklisted in trusted domain discorvery.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-order: 2
+    TrustedDomain:
+      description: Specifies the details of a trusted domain.
+      type: object
+      properties:
+        domainName:
+          description: Specifies a domain name.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        preferredDomainControllers:
+          description: Specifies a list of preferred domain controllers for this domain.
+          type: array
+          items:
+            type:
+            - object
+            - 'null'
+            $ref: '#/components/schemas/DomainController'
+          x-order: 1
     CommonActiveDirectoryParams:
       description: Specifies the params of Active Directory which are used across creating and updating.
       type: object
@@ -2270,6 +2214,94 @@ components:
             - AES128-CTS-HMAC-SHA1-96
             - AES256-CTS-HMAC-SHA1-96
           x-order: 2
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    ActiveDirectories:
+      description: Response of Active Directories.
+      type: object
+      properties:
+        activeDirectories:
+          description: A list of Active Directories.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ActiveDirectory'
+          x-order: 0
+    UpdateActiveDirectoryRequest:
+      description: Specifies the request to create an Active Directory.
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/CommonActiveDirectoryParams'
+      - type: object
+        required:
+        - workGroupName
+        properties:
+          activeDirectoryAdminParams:
+            description: Specifies the params of a user with administrative privilege of this Active Directory. This field is mandatory if machine accounts are updated.
+            type:
+            - object
+            - 'null'
+            allOf:
+            - $ref: '#/components/schemas/ActiveDirectoryAdminParams'
+            - {}
+            x-order: 0
+          overwriteMachineAccounts:
+            description: Specifies if specified machine accounts should overwrite existing machine accounts.
+            type:
+            - boolean
+            - 'null'
+            x-order: 1
+          idMappingParams:
+            description: Specifies the params of the user id mapping info of an Active Directory.
+            type:
+            - object
+            - 'null'
+            allOf:
+            - $ref: '#/components/schemas/IdMappingParams'
+            - {}
+            x-order: 2
+          transitiveAdTrustLevelLimit:
+            description: Specifies level of transitive Active Directory trust domains to be used.
+            type:
+            - integer
+            - 'null'
+            format: int32
+            x-order: 3
+    ActiveDirectoryAdminParams:
+      description: Specifies the params of a user with administrative privilege of an Active Directory.
+      type: object
+      required:
+      - username
+      - password
+      properties:
+        username:
+          description: Specifies the user name.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        password:
+          description: Specifies the password of the user.
+          type:
+          - string
+          - 'null'
+          x-order: 1
     CentrifyZones:
       description: Specifies a list of centrify zones for a domain.
       type: object
@@ -2288,8 +2320,8 @@ components:
           items:
             $ref: '#/components/schemas/CentrifyZone_2'
           x-order: 1
-    AdLdapProviderTypeParams:
-      description: Specifies the properties associated to a LdapProvider type user id mapping.
+    AdRfc2307TypeParams:
+      description: Specifies the properties associated to a Rfc2307 type user id mapping.
       type: object
       required:
       - fallbackOption
@@ -2303,94 +2335,32 @@ components:
           - $ref: '#/components/schemas/FallbackUserIdMappingParams'
           - {}
           x-order: 0
-    CentrifyZone_2:
-      description: Specifies a centrify zone.
+    DomainControllers_2:
+      description: Specifies the domain controllers of a domain.
       type: object
-      required:
-      - description
-      - distinguishedName
-      - schema
       properties:
-        description:
-          description: Specifies a description of the Centrify zone.
+        domainName:
+          description: Specifies the domain name.
           type:
           - string
           - 'null'
           x-order: 0
-        distinguishedName:
-          description: Specifies the distinguished name of the Centrify zone.
+        controllers:
+          description: Specifies a list of domain controllers of the domain.
           type:
-          - string
+          - array
           - 'null'
+          items:
+            type: object
+            $ref: '#/components/schemas/DomainController'
           x-order: 1
-        schema:
-          description: Specifies the schema of this Centrify zone.
-          type:
-          - string
-          - 'null'
-          enum:
-          - CentrifyDynamicSchema_1_0
-          - CentrifyDynamicSchema_2_0
-          - CentrifySfu_3_0
-          - CentrifySfu_4_0
-          - CentrifyCdcRfc2307
-          - CentrifyDynamicSchema_3_0
-          - CentrifyCdcRfc2307_2
-          - CentrifyDynamicSchema_5_0
-          - CentrifyCdcRfc2307_3
-          - CentrifySfu_3_0_V5
-          x-order: 2
-        zoneName:
-          description: Specifies the zone name of the Centrify zone.
-          type:
-          - string
-          - 'null'
-          x-order: 3
-          readOnly: true
-        zoneDomain:
-          description: Specifies the zone domain of the Centrify zone.
-          type:
-          - string
-          - 'null'
-          x-order: 4
-          readOnly: true
   responses:
-    GetActiveDirectoryResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            description: List of Active Directory domains that the Cohesity Cluster has joined.
-            type: array
-            title: Array of Active Directories.
-            items:
-              $ref: '#/components/schemas/ActiveDirectoryEntry'
-    CreateActiveDirectoryResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ActiveDirectoryEntry'
-    ListDomainControllersResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/DomainControllers'
-    NoContentResponse:
-      description: No Content
     UpdateActiveDirectoryResponse:
       description: Success
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ActiveDirectoryEntry'
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
     AddActiveDirectoryPrincipalsResponse:
       description: Success
       content:
@@ -2403,15 +2373,30 @@ components:
             title: Array of Added Users and Groups.
             items:
               $ref: '#/components/schemas/AddedActiveDirectoryPrincipal'
-    ListCentrifyZonesResponse:
+    CreateActiveDirectoryResponse:
       description: Success
       content:
         application/json:
           schema:
+            $ref: '#/components/schemas/ActiveDirectoryEntry'
+    NoContentResponse:
+      description: No Content
+    UpdateActiveDirectoryMachineAccountsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ActiveDirectoryEntry'
+    GetActiveDirectoryResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            description: List of Active Directory domains that the Cohesity Cluster has joined.
             type: array
-            title: Array of Centrify zones.
+            title: Array of Active Directories.
             items:
-              $ref: '#/components/schemas/ListCentrifyZone'
+              $ref: '#/components/schemas/ActiveDirectoryEntry'
     SearchActiveDirectoryPrincipalsResponse:
       description: Success
       content:
@@ -2422,19 +2407,40 @@ components:
             title: Array of Active Directory Principals.
             items:
               $ref: '#/components/schemas/ActiveDirectoryPrincipal'
-    UpdateActiveDirectoryMachineAccountsResponse:
+    ListDomainControllersResponse:
       description: Success
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ActiveDirectoryEntry'
-    ErrorResponse:
+            $ref: '#/components/schemas/DomainControllers'
+    ListCentrifyZonesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            title: Array of Centrify zones.
+            items:
+              $ref: '#/components/schemas/ListCentrifyZone'
+    Error:
       description: Error
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: '#/components/schemas/RequestError'
+    UpdateActiveDirectoryResponse_2:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ActiveDirectory'
     CreateOrUpdateActiveDirectoryResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ActiveDirectory'
+    GetActiveDirectoryByIdResponse:
       description: Success
       content:
         application/json:
@@ -2446,24 +2452,18 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/DomainControllersResponse'
-    UpdateActiveDirectoryResponse_2:
-      description: Success
+    ErrorResponse:
+      description: Error
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ActiveDirectory'
+            $ref: '#/components/schemas/Error'
     GetActiveDirectoriesResponse:
       description: Success
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ActiveDirectories'
-    GetActiveDirectoryByIdResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ActiveDirectory'
   securitySchemes:
     APIKeyHeader:
       in: header

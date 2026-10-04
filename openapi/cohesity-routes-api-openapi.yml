@@ -72,60 +72,15 @@ components:
             title: Array of Static Routes.
             items:
               $ref: '#/components/schemas/Route'
-    NoContentResponse:
-      description: No Content
     Error:
       description: Error
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/RequestError'
+    NoContentResponse:
+      description: No Content
   schemas:
-    Route:
-      description: Specifies the settings of a Static Route.
-      type: object
-      title: Route.
-      properties:
-        description:
-          description: Specifies a description of the Static Route.
-          type:
-          - string
-          - 'null'
-          x-go-name: Description
-        destNetwork:
-          description: 'Destination network.
-
-
-            Specifies the destination network of the Static Route.
-
-            overrideDescription: true'
-          type:
-          - string
-          - 'null'
-          x-go-name: DestNetwork
-        ifName:
-          description: 'Specifies the network interfaces name to use for communicating with the
-
-            destination network.'
-          type:
-          - string
-          - 'null'
-          x-go-name: IfName
-        ifaceGroupName:
-          description: 'Specifies the network interfaces group or interface group with vlan id to
-
-            use for communicating with the destination network.'
-          type:
-          - string
-          - 'null'
-          x-go-name: IfaceGroupName
-        nextHop:
-          description: Specifies the next hop to the destination network.
-          type:
-          - string
-          - 'null'
-          x-go-name: NextHop
-      x-go-package: cohesity/iris/server/data/public
     DeleteRouteParam:
       description: Specifies the delete param of a Static Route.
       type: object
@@ -177,4 +132,49 @@ components:
           - string
           - 'null'
           x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    Route:
+      description: Specifies the settings of a Static Route.
+      type: object
+      title: Route.
+      properties:
+        description:
+          description: Specifies a description of the Static Route.
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+        destNetwork:
+          description: 'Destination network.
+
+
+            Specifies the destination network of the Static Route.
+
+            overrideDescription: true'
+          type:
+          - string
+          - 'null'
+          x-go-name: DestNetwork
+        ifName:
+          description: 'Specifies the network interfaces name to use for communicating with the
+
+            destination network.'
+          type:
+          - string
+          - 'null'
+          x-go-name: IfName
+        ifaceGroupName:
+          description: 'Specifies the network interfaces group or interface group with vlan id to
+
+            use for communicating with the destination network.'
+          type:
+          - string
+          - 'null'
+          x-go-name: IfaceGroupName
+        nextHop:
+          description: Specifies the next hop to the destination network.
+          type:
+          - string
+          - 'null'
+          x-go-name: NextHop
       x-go-package: cohesity/iris/server/data/public

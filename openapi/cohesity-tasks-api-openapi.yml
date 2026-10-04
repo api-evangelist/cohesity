@@ -131,36 +131,19 @@ paths:
     - url: https://helios.cohesity.com/heliosreporting/api/v1
 components:
   schemas:
-    ProgressTaskEvent:
-      description: Specifies the details about the various events which are created during the execution of Progress Task.
+    ProgressTasks:
+      description: List of Progress Tasks.
       type: object
+      title: Progress Tasks
       properties:
-        message:
-          description: Specifies the log message describing the current event.
+        progressTasks:
+          description: Specifies the list of Progress Task.
           type:
-          - string
+          - array
           - 'null'
+          items:
+            $ref: '#/components/schemas/ProgressTask'
           x-order: 0
-        occuredAtUsecs:
-          description: Specifies the time of the event occurance in Unix epoch Timestamp(in microseconds).
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-order: 1
-    ProgressTask:
-      description: This specifies the details about the Progress Task.
-      title: Progress Task
-      allOf:
-      - type: object
-        properties:
-          id:
-            description: Specifies the task id of the Progress task.
-            type:
-            - string
-            - 'null'
-            x-order: 0
-      - $ref: '#/components/schemas/ProgressTaskInfo'
     Error:
       description: Specifies the error object with error code and a message.
       type: object
@@ -178,19 +161,60 @@ components:
           - string
           - 'null'
           x-order: 1
-    ProgressTasks:
-      description: List of Progress Tasks.
+    ProgressTaskEvent:
+      description: Specifies the details about the various events which are created during the execution of Progress Task.
       type: object
-      title: Progress Tasks
       properties:
-        progressTasks:
-          description: Specifies the list of Progress Task.
+        message:
+          description: Specifies the log message describing the current event.
           type:
-          - array
+          - string
           - 'null'
-          items:
-            $ref: '#/components/schemas/ProgressTask'
           x-order: 0
+        occuredAtUsecs:
+          description: Specifies the time of the event occurance in Unix epoch Timestamp(in microseconds).
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+    ProgressStats:
+      description: Specifies the stats within progress.
+      type: object
+      properties:
+        fileWalkDone:
+          description: Specifies whether the file system walk is done. Only applicable to file based backups.
+          type:
+          - boolean
+          - 'null'
+          x-order: 0
+        totalFileCount:
+          description: Specifies the total number of file and directory entities visited in this backup. Only applicable to file based backups.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
+        backupFileCount:
+          description: Specifies the total number of file and directory entities that are backed up in this run. Only applicable to file based backups.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 2
+    ProgressTask:
+      description: This specifies the details about the Progress Task.
+      title: Progress Task
+      allOf:
+      - type: object
+        properties:
+          id:
+            description: Specifies the task id of the Progress task.
+            type:
+            - string
+            - 'null'
+            x-order: 0
+      - $ref: '#/components/schemas/ProgressTaskInfo'
     ProgressTaskInfo:
       description: Specifies the details about a Progress Task.
       type: object
@@ -249,30 +273,16 @@ components:
           - 'null'
           x-order: 6
           $ref: '#/components/schemas/ProgressStats'
-    ProgressStats:
-      description: Specifies the stats within progress.
+    Error_2:
+      description: Specifies the error object with error code and a message.
       type: object
       properties:
-        fileWalkDone:
-          description: Specifies whether the file system walk is done. Only applicable to file based backups.
-          type:
-          - boolean
-          - 'null'
-          x-order: 0
-        totalFileCount:
-          description: Specifies the total number of file and directory entities visited in this backup. Only applicable to file based backups.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-order: 1
-        backupFileCount:
-          description: Specifies the total number of file and directory entities that are backed up in this run. Only applicable to file based backups.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-order: 2
+        errorCode:
+          description: Specifies the error code.
+          type: integer
+        errorMessage:
+          description: Specifies the error message.
+          type: string
     SystemsFilterParams:
       description: Specifies the systems filter. Specifying this will pre filter all the results provided list of system identifier before applying aggregations.
       type: object
@@ -292,189 +302,6 @@ components:
             type: string
           minItems: 1
           x-go-custom-tag: bson:"systemIds,omitempty"
-    InFilterParams:
-      description: Specifies the in filter that are applied on attributes.
-      type: object
-      required:
-      - attributeDataType
-      properties:
-        attributeDataType:
-          description: Specifies the data type of the attribute.
-          type:
-          - string
-          - 'null'
-          enum:
-          - Bool
-          - String
-          - Int64
-          - Int32
-          - StringArray
-          - Int64Array
-          - Float64
-          x-go-custom-tag: bson:"attributeDataType,omitempty"
-        attributeLabels:
-          description: Specifies the optional label values for the attribute.
-          type: array
-          items:
-            type: string
-          x-go-custom-tag: bson:"attributeLabels,omitempty"
-        int64FilterValues:
-          description: Specifies list of int64 values to filter results on.
-          type: array
-          items:
-            type: integer
-            format: int64
-          x-go-custom-tag: bson:"int64FilterValues,omitempty"
-        boolFilterValues:
-          description: Specifies list of boolean values to filter results on.
-          type: array
-          items:
-            type: boolean
-          x-go-custom-tag: bson:"boolFilterValues,omitempty"
-        stringFilterValues:
-          description: Specifies list of string values to filter results on.
-          type: array
-          items:
-            type: string
-          x-go-custom-tag: bson:"stringFilterValues,omitempty"
-        int32FilterValues:
-          description: Specifies list of int32 values to filter results on.
-          type: array
-          items:
-            type: integer
-            format: int32
-          x-go-custom-tag: bson:"int32FilterValues,omitempty"
-    AttributeFilter:
-      description: Specifies the filters that are applied on attributes.
-      type: object
-      required:
-      - attribute
-      - filterType
-      properties:
-        attribute:
-          description: Specifies the attribute.
-          type:
-          - string
-          - 'null'
-          x-go-custom-tag: bson:"attribute,omitempty"
-        filterType:
-          description: Specifies the type of the filter that needs to be applied.
-          type:
-          - string
-          - 'null'
-          enum:
-          - In
-          - Range
-          - TimeRange
-          - Systems
-          - Tenants
-          x-go-custom-tag: bson:"filterType,omitempty"
-        inFilterParams:
-          description: Specifies the params for applying IN filter. This will filter the results for the specified values for the specified attribute
-          $ref: '#/components/schemas/InFilterParams'
-          x-go-custom-tag: bson:"inFilterParams,omitempty"
-        rangeFilterParams:
-          description: Specifies the params for applying range filter. This will filter the results for the specified range for the specified attribute.
-          $ref: '#/components/schemas/RangeFilterParams'
-          x-go-custom-tag: bson:"rangeFilterParams,omitempty"
-        timeRangeFilterParams:
-          description: Specifies the params for applying timerange filter. This basically applies the time bound on which resources are pre filtered.
-          $ref: '#/components/schemas/TimeRangeFilterParams'
-          x-go-custom-tag: bson:"timeRangeFilterParams,omitempty"
-        systemsFilterParams:
-          description: Specifies the params for applying filter on system identifiers.
-          $ref: '#/components/schemas/SystemsFilterParams'
-          x-go-custom-tag: bson:"systemsFilterParams,omitempty"
-        tenantsFilterParams:
-          description: Specifies the params for applying filter on system identifiers.
-          $ref: '#/components/schemas/TenantsFilterParams'
-          x-go-custom-tag: bson:"tenantsFilterParams,omitempty"
-    TimeRangeFilterParams:
-      description: Specifies the time range filter. Specifying this will pre filter all the results on necessary resources like Protection Runs etc before applying aggregations. Currently, maximum allowed time range is 60 days.
-      type: object
-      properties:
-        lowerBound:
-          description: Specifies the lower bound value. If specified, all the results which are greater than this value will be returned.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-custom-tag: bson:"lowerBound,omitempty"
-        upperBound:
-          description: Specifies the upper bound value. If specified, all the results which are lesser than this value will be returned.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-custom-tag: bson:"upperBound,omitempty"
-        durationHours:
-          description: Specifies the duration preceding the current time for which the data must be fetch i.e fetch data between currentTime and currentTime - durationHours. This filter is only considered if neither upperBound, lowerBound or dateRange is specified.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-custom-tag: bson:"durationHours,omitempty"
-        dateRange:
-          description: Enum value for specifying the date range for a time filter. Considered only if lowerBound and upperBound are empty.
-          type:
-          - string
-          - 'null'
-          enum:
-          - Last1Hour
-          - Last24Hours
-          - Last7Days
-          - CurrentMonth
-          - Last30Days
-          - LastMonth
-          - Last90Days
-          - Last3Months
-          - Last180Days
-          - Last6Months
-          - CurrentYear
-          - Last365Days
-          - LastYear
-          x-go-custom-tag: bson:"dateRange,omitempty"
-    Error_2:
-      description: Specifies the error object with error code and a message.
-      type: object
-      properties:
-        errorCode:
-          description: Specifies the error code.
-          type: integer
-        errorMessage:
-          description: Specifies the error message.
-          type: string
-    TenantsFilterParams:
-      description: 'Specifies the tenants filter. Specifying this will pre filter all the
-
-        results with provided list of tenants before applying aggregations.'
-      type: object
-      properties:
-        includeTenants:
-          description: 'Specifies whether to include tenants. Defaults to true. If false, it
-
-            will not consider below filters. False will result in no data for
-
-            helios tenant or dmaas user.'
-          type:
-          - boolean
-          - 'null'
-          x-go-custom-tag: bson:"includeTenants,omitempty"
-        tenantNames:
-          description: Specifies the optional tenant names labels.
-          type: array
-          items:
-            type: string
-          x-go-custom-tag: bson:"tenantNames,omitempty"
-        tenantIds:
-          description: 'Specifies an array of tenant identifiers. Provide local tenant
-
-            identifiers.'
-          type: array
-          items:
-            type: string
-          minItems: 1
-          x-go-custom-tag: bson:"tenantIds,omitempty"
     Task:
       description: Definition of a task.
       type: object
@@ -596,6 +423,145 @@ components:
             - XLS
             - CSV
           x-go-custom-tag: bson:"reportFormat,omitempty"
+    Tasks:
+      description: Specifies a list of tasks.
+      type: object
+      properties:
+        tasks:
+          description: Specifies list of tasks.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Task'
+    TenantsFilterParams:
+      description: 'Specifies the tenants filter. Specifying this will pre filter all the
+
+        results with provided list of tenants before applying aggregations.'
+      type: object
+      properties:
+        includeTenants:
+          description: 'Specifies whether to include tenants. Defaults to true. If false, it
+
+            will not consider below filters. False will result in no data for
+
+            helios tenant or dmaas user.'
+          type:
+          - boolean
+          - 'null'
+          x-go-custom-tag: bson:"includeTenants,omitempty"
+        tenantNames:
+          description: Specifies the optional tenant names labels.
+          type: array
+          items:
+            type: string
+          x-go-custom-tag: bson:"tenantNames,omitempty"
+        tenantIds:
+          description: 'Specifies an array of tenant identifiers. Provide local tenant
+
+            identifiers.'
+          type: array
+          items:
+            type: string
+          minItems: 1
+          x-go-custom-tag: bson:"tenantIds,omitempty"
+    AttributeFilter:
+      description: Specifies the filters that are applied on attributes.
+      type: object
+      required:
+      - attribute
+      - filterType
+      properties:
+        attribute:
+          description: Specifies the attribute.
+          type:
+          - string
+          - 'null'
+          x-go-custom-tag: bson:"attribute,omitempty"
+        filterType:
+          description: Specifies the type of the filter that needs to be applied.
+          type:
+          - string
+          - 'null'
+          enum:
+          - In
+          - Range
+          - TimeRange
+          - Systems
+          - Tenants
+          x-go-custom-tag: bson:"filterType,omitempty"
+        inFilterParams:
+          description: Specifies the params for applying IN filter. This will filter the results for the specified values for the specified attribute
+          $ref: '#/components/schemas/InFilterParams'
+          x-go-custom-tag: bson:"inFilterParams,omitempty"
+        rangeFilterParams:
+          description: Specifies the params for applying range filter. This will filter the results for the specified range for the specified attribute.
+          $ref: '#/components/schemas/RangeFilterParams'
+          x-go-custom-tag: bson:"rangeFilterParams,omitempty"
+        timeRangeFilterParams:
+          description: Specifies the params for applying timerange filter. This basically applies the time bound on which resources are pre filtered.
+          $ref: '#/components/schemas/TimeRangeFilterParams'
+          x-go-custom-tag: bson:"timeRangeFilterParams,omitempty"
+        systemsFilterParams:
+          description: Specifies the params for applying filter on system identifiers.
+          $ref: '#/components/schemas/SystemsFilterParams'
+          x-go-custom-tag: bson:"systemsFilterParams,omitempty"
+        tenantsFilterParams:
+          description: Specifies the params for applying filter on system identifiers.
+          $ref: '#/components/schemas/TenantsFilterParams'
+          x-go-custom-tag: bson:"tenantsFilterParams,omitempty"
+    InFilterParams:
+      description: Specifies the in filter that are applied on attributes.
+      type: object
+      required:
+      - attributeDataType
+      properties:
+        attributeDataType:
+          description: Specifies the data type of the attribute.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Bool
+          - String
+          - Int64
+          - Int32
+          - StringArray
+          - Int64Array
+          - Float64
+          x-go-custom-tag: bson:"attributeDataType,omitempty"
+        attributeLabels:
+          description: Specifies the optional label values for the attribute.
+          type: array
+          items:
+            type: string
+          x-go-custom-tag: bson:"attributeLabels,omitempty"
+        int64FilterValues:
+          description: Specifies list of int64 values to filter results on.
+          type: array
+          items:
+            type: integer
+            format: int64
+          x-go-custom-tag: bson:"int64FilterValues,omitempty"
+        boolFilterValues:
+          description: Specifies list of boolean values to filter results on.
+          type: array
+          items:
+            type: boolean
+          x-go-custom-tag: bson:"boolFilterValues,omitempty"
+        stringFilterValues:
+          description: Specifies list of string values to filter results on.
+          type: array
+          items:
+            type: string
+          x-go-custom-tag: bson:"stringFilterValues,omitempty"
+        int32FilterValues:
+          description: Specifies list of int32 values to filter results on.
+          type: array
+          items:
+            type: integer
+            format: int32
+          x-go-custom-tag: bson:"int32FilterValues,omitempty"
     RangeFilterParams:
       description: Specifies the filters that are applied on attributes.
       type: object
@@ -614,42 +580,76 @@ components:
           - 'null'
           format: int64
           x-go-custom-tag: bson:"upperBound,omitempty"
-    Tasks:
-      description: Specifies a list of tasks.
+    TimeRangeFilterParams:
+      description: Specifies the time range filter. Specifying this will pre filter all the results on necessary resources like Protection Runs etc before applying aggregations. Currently, maximum allowed time range is 60 days.
       type: object
       properties:
-        tasks:
-          description: Specifies list of tasks.
+        lowerBound:
+          description: Specifies the lower bound value. If specified, all the results which are greater than this value will be returned.
           type:
-          - array
+          - integer
           - 'null'
-          items:
-            $ref: '#/components/schemas/Task'
+          format: int64
+          x-go-custom-tag: bson:"lowerBound,omitempty"
+        upperBound:
+          description: Specifies the upper bound value. If specified, all the results which are lesser than this value will be returned.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-custom-tag: bson:"upperBound,omitempty"
+        durationHours:
+          description: Specifies the duration preceding the current time for which the data must be fetch i.e fetch data between currentTime and currentTime - durationHours. This filter is only considered if neither upperBound, lowerBound or dateRange is specified.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-custom-tag: bson:"durationHours,omitempty"
+        dateRange:
+          description: Enum value for specifying the date range for a time filter. Considered only if lowerBound and upperBound are empty.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Last1Hour
+          - Last24Hours
+          - Last7Days
+          - CurrentMonth
+          - Last30Days
+          - LastMonth
+          - Last90Days
+          - Last3Months
+          - Last180Days
+          - Last6Months
+          - CurrentYear
+          - Last365Days
+          - LastYear
+          x-go-custom-tag: bson:"dateRange,omitempty"
   responses:
-    ErrorResponse:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     ProgressTasksResponse:
       description: Success
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ProgressTasks'
-    GetTaskByIdResponse:
-      description: Success
+    ErrorResponse:
+      description: Error
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Task'
+            $ref: '#/components/schemas/Error'
     GetTasksResponse:
       description: Success
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Tasks'
+    GetTaskByIdResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Task'
   securitySchemes:
     APIKeyHeader:
       in: header

@@ -44,20 +44,6 @@ paths:
         default:
           $ref: '#/components/responses/ErrorResponse'
 components:
-  responses:
-    ErrorResponse:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    GetArtifactForTaskResponse:
-      description: The file pased on the artifact type.
-      content:
-        application/json:
-          schema:
-            type: string
-            format: binary
   schemas:
     Error:
       description: Specifies the error object with error code and a message.
@@ -69,6 +55,20 @@ components:
         errorMessage:
           description: Specifies the error message.
           type: string
+  responses:
+    GetArtifactForTaskResponse:
+      description: The file pased on the artifact type.
+      content:
+        application/json:
+          schema:
+            type: string
+            format: binary
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

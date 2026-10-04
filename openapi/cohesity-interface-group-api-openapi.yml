@@ -75,37 +75,27 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 components:
-  responses:
-    CreateInterfaceGroupResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InterfaceGroup'
-    GetInterfaceGroupsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            title: Specifies a list of the interface groups.
-            items:
-              $ref: '#/components/schemas/InterfaceGroup'
-    UpdateInterfaceGroupResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InterfaceGroup'
-    NoContentResponse:
-      description: No Content
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
   schemas:
+    BondingOpts:
+      description: Bonding Opts
+      type: object
+      properties:
+        lacpRate:
+          type:
+          - string
+          - 'null'
+          x-go-name: LacpRate
+        mode:
+          type:
+          - string
+          - 'null'
+          x-go-name: Mode
+        xmitHashPolicy:
+          type:
+          - string
+          - 'null'
+          x-go-name: XmitHashPolicy
+      x-go-package: cohesity/iris/server/data/public
     InterfaceGroup:
       description: Specifies the settings of an interface group.
       type: object
@@ -138,38 +128,6 @@ components:
         networkParams:
           $ref: '#/components/schemas/NetworkParams'
       x-go-package: cohesity/iris/server/data/public
-    BondingOpts:
-      description: Bonding Opts
-      type: object
-      properties:
-        lacpRate:
-          type:
-          - string
-          - 'null'
-          x-go-name: LacpRate
-        mode:
-          type:
-          - string
-          - 'null'
-          x-go-name: Mode
-        xmitHashPolicy:
-          type:
-          - string
-          - 'null'
-          x-go-name: XmitHashPolicy
-      x-go-package: cohesity/iris/server/data/public
-    NetworkParams:
-      type: object
-      properties:
-        bondingOpts:
-          $ref: '#/components/schemas/BondingOpts'
-        mtu:
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: Mtu
-      x-go-package: cohesity/iris/server/data/public
     RequestError:
       description: Details about the Error.
       type: object
@@ -189,6 +147,18 @@ components:
           - 'null'
           x-go-name: Message
       x-go-package: cohesity/iris/server/data/public
+    NetworkParams:
+      type: object
+      properties:
+        bondingOpts:
+          $ref: '#/components/schemas/BondingOpts'
+        mtu:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Mtu
+      x-go-package: cohesity/iris/server/data/public
     ProductModelInterfaceTuple:
       description: Specifies a group of product model and interface set.
       type: object
@@ -207,3 +177,33 @@ components:
           - 'null'
           x-go-name: ProductModelName
       x-go-package: cohesity/iris/server/data/public
+  responses:
+    CreateInterfaceGroupResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InterfaceGroup'
+    UpdateInterfaceGroupResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InterfaceGroup'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    GetInterfaceGroupsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            title: Specifies a list of the interface groups.
+            items:
+              $ref: '#/components/schemas/InterfaceGroup'
+    NoContentResponse:
+      description: No Content

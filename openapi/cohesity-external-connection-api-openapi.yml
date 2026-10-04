@@ -261,52 +261,53 @@ paths:
       security:
       - APIKeyHeader: []
 components:
-  responses:
-    GetRigelConnectionResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RigelConnections'
-    ErrorResponse:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    GetRigelConnectionByIdResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RigelConnection'
-    GetBifrostConnectionByIdResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BifrostConnection'
-    NoContentResponse:
-      description: No Content
-    CreateOrUpdateBifrostConnectionResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BifrostConnection'
-    CreateOrUpdateRigelConnectionResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RigelConnection'
-    GetBifrostConnectionResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BifrostConnections'
   schemas:
+    RigelConnections:
+      description: Specify a list of connection of Rigel.
+      type: object
+      title: Rigel connections.
+      properties:
+        RigelConnections:
+          description: Specifies a list of connection of Rigel.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/RigelConnection'
+          x-order: 0
+    CommonCreateOrUpdateRigelConnectionRequest:
+      description: Specify the common params to create or update a connection of Rigel.
+      type: object
+      title: Common Create Or Update Rigel Connection Request.
+      required:
+      - tenantId
+      - name
+      properties:
+        tenantId:
+          description: Specifies the id of the tenant which the connection belongs to.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        name:
+          description: Specifies the name of the connection.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    BifrostConnections:
+      description: Specify a list of connection of Bifrost.
+      type: object
+      title: Bifrost connections.
+      properties:
+        BifrostConnections:
+          description: Specifies a list of connection of Bifrost.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BifrostConnection'
+          x-order: 0
     CreateRigelConnectionRequest:
       description: Specify the params to create a connection of Rigel.
       type: object
@@ -324,38 +325,88 @@ components:
             - 'null'
             format: int64
             x-order: 0
-    RigelConnections:
-      description: Specify a list of connection of Rigel.
+    NetworkConnectionInfo:
+      description: Specify the network connection information.
       type: object
-      title: Rigel connections.
+      title: Network Connection.
       properties:
-        RigelConnections:
-          description: Specifies a list of connection of Rigel.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/RigelConnection'
-          x-order: 0
-    UpdateRigelConnectionRequest:
-      description: Specify the params to update a connection of Rigel.
-      type: object
-      title: Update Rigel Connection Request.
-      allOf:
-      - $ref: '#/components/schemas/CommonCreateOrUpdateRigelConnectionRequest'
-    Error:
-      description: Specifies the error object with error code and a message.
-      type: object
-      title: Error.
-      properties:
-        errorCode:
-          description: Specifies the error code.
+        domainName:
+          description: Specifies the domain name of the network connection.
           type:
           - string
           - 'null'
           x-order: 0
-        message:
-          description: Specifies the error message.
+        networkGateway:
+          description: Specifies the network Gateway of the network connection.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        dns:
+          description: Specifies the DNS Server of the network connection.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        ntp:
+          description: Specifies the NTP Server of the network connection.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+    BifrostConnection:
+      description: Specify a connection of Bifrost.
+      type: object
+      title: Bifrost connection.
+      properties:
+        id:
+          description: Specifies the id of the connection.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        name:
+          description: Specifies the name of the connection.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        subnet:
+          description: Specifies the connection subnet.
+          type:
+          - object
+          - 'null'
+          x-order: 2
+          $ref: '#/components/schemas/ConnectionSubnet'
+        certificateVersion:
+          description: Specifies the version of the connection's certificate. The version is used to revoke/renew connection's certificates.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 3
+        networkConnectionInfo:
+          description: Specifies the network connection information.
+          type:
+          - object
+          - 'null'
+          x-order: 4
+          $ref: '#/components/schemas/NetworkConnectionInfo'
+    RigelConnection:
+      description: Specify a connection of Rigel.
+      type: object
+      title: Rigel connection.
+      properties:
+        id:
+          description: Specifies the id of the connection.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 0
+        name:
+          description: Specifies the name of the connection.
           type:
           - string
           - 'null'
@@ -412,125 +463,74 @@ components:
           - 'null'
           format: int64
           x-order: 3
-    RigelConnection:
-      description: Specify a connection of Rigel.
+    Error:
+      description: Specifies the error object with error code and a message.
       type: object
-      title: Rigel connection.
+      title: Error.
       properties:
-        id:
-          description: Specifies the id of the connection.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-order: 0
-        name:
-          description: Specifies the name of the connection.
-          type:
-          - string
-          - 'null'
-          x-order: 1
-    CommonCreateOrUpdateRigelConnectionRequest:
-      description: Specify the common params to create or update a connection of Rigel.
-      type: object
-      title: Common Create Or Update Rigel Connection Request.
-      required:
-      - tenantId
-      - name
-      properties:
-        tenantId:
-          description: Specifies the id of the tenant which the connection belongs to.
+        errorCode:
+          description: Specifies the error code.
           type:
           - string
           - 'null'
           x-order: 0
-        name:
-          description: Specifies the name of the connection.
+        message:
+          description: Specifies the error message.
           type:
           - string
           - 'null'
           x-order: 1
-    BifrostConnection:
-      description: Specify a connection of Bifrost.
+    UpdateRigelConnectionRequest:
+      description: Specify the params to update a connection of Rigel.
       type: object
-      title: Bifrost connection.
-      properties:
-        id:
-          description: Specifies the id of the connection.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-order: 0
-        name:
-          description: Specifies the name of the connection.
-          type:
-          - string
-          - 'null'
-          x-order: 1
-        subnet:
-          description: Specifies the connection subnet.
-          type:
-          - object
-          - 'null'
-          x-order: 2
-          $ref: '#/components/schemas/ConnectionSubnet'
-        certificateVersion:
-          description: Specifies the version of the connection's certificate. The version is used to revoke/renew connection's certificates.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-order: 3
-        networkConnectionInfo:
-          description: Specifies the network connection information.
-          type:
-          - object
-          - 'null'
-          x-order: 4
-          $ref: '#/components/schemas/NetworkConnectionInfo'
-    BifrostConnections:
-      description: Specify a list of connection of Bifrost.
-      type: object
-      title: Bifrost connections.
-      properties:
-        BifrostConnections:
-          description: Specifies a list of connection of Bifrost.
-          type:
-          - array
-          - 'null'
-          items:
+      title: Update Rigel Connection Request.
+      allOf:
+      - $ref: '#/components/schemas/CommonCreateOrUpdateRigelConnectionRequest'
+  responses:
+    GetBifrostConnectionResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BifrostConnections'
+    NoContentResponse:
+      description: No Content
+    GetBifrostConnectionByIdResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
             $ref: '#/components/schemas/BifrostConnection'
-          x-order: 0
-    NetworkConnectionInfo:
-      description: Specify the network connection information.
-      type: object
-      title: Network Connection.
-      properties:
-        domainName:
-          description: Specifies the domain name of the network connection.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        networkGateway:
-          description: Specifies the network Gateway of the network connection.
-          type:
-          - string
-          - 'null'
-          x-order: 1
-        dns:
-          description: Specifies the DNS Server of the network connection.
-          type:
-          - string
-          - 'null'
-          x-order: 2
-        ntp:
-          description: Specifies the NTP Server of the network connection.
-          type:
-          - string
-          - 'null'
-          x-order: 3
+    CreateOrUpdateRigelConnectionResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RigelConnection'
+    GetRigelConnectionResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RigelConnections'
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    GetRigelConnectionByIdResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RigelConnection'
+    CreateOrUpdateBifrostConnectionResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BifrostConnection'
   securitySchemes:
     APIKeyHeader:
       in: header

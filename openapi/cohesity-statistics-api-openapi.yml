@@ -418,64 +418,77 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 components:
-  responses:
-    GetTimeSeriesSchemaResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/TimeSeriesSchemaResponse'
-    GetEntitySchemaByNameResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            description: Specifies a list of entity schemas.
-            type: array
-            title: Array of Entity Schemas.
-            items:
-              $ref: '#/components/schemas/EntitySchemaProto'
-    GetTasksResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/Task'
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
-    GetTimeSeriesStatsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/MetricDataBlock'
-    GetEntitiesSchemaResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            description: Specifies a list of entity schemas.
-            type: array
-            title: Array of Entity Schemas.
-            items:
-              $ref: '#/components/schemas/EntitySchemaProto'
-    GetEntitiesResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            description: Specifies a list of entities.
-            type: array
-            title: Array of Entities.
-            items:
-              $ref: '#/components/schemas/EntityProto'
   schemas:
+    EntitySchemaProto_Granularity:
+      description: 'Rolling up or Down sampling is performed on timeseries data to reduce
+
+        space usage by timeseries. Rollup Granularity is defined per entity
+
+        schema but rollup function is not defined. Instead we create rolledup
+
+        values for all the rollup functions.'
+      type: object
+      properties:
+        rollupIntervalSecs:
+          description: 'Defines the rollup interval or a bucket size. All data points within
+
+            one time bucket are rolled up to one summary data point using the
+
+            defined rollup function. For example, say, raw metric is published
+
+            at ~30 secs granularity. To generate a hourly or a daily summary
+
+            time series, client can define rolled up metrics having interval
+
+            3600 secs and 86400 secs respectively.'
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: RollupIntervalSecs
+        timeToLiveSecs:
+          description: 'Defines the duration for which the rolled up data is to be stored.
+
+            Once the lifespan has elapsed, expired data is garbage collected.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: TimeToLiveSecs
+      x-go-package: stats/base/entity_schema.pb
+    TaskEvent:
+      description: Specifies events that clients can attach to a task.
+      type: object
+      title: Task Event.
+      properties:
+        eventMessage:
+          description: Specifies the message associated with an event.
+          type:
+          - string
+          - 'null'
+          x-go-name: EventMessage
+        percentFinished:
+          description: Specifies the completion percentage of the task attached to this event.
+          type:
+          - number
+          - 'null'
+          format: float
+          x-go-name: PercentFinished
+        remainingWorkCount:
+          description: Specifies the amount of work remaining for the task attached to this event.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: RemainingWorkCount
+        timestampSeconds:
+          description: Specifies the Unix timestamp that the event occurred.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: TimestampSeconds
+      x-go-package: cohesity/iris/server/data/public
     MetricDataBlock:
       description: Specifies a series of metric data points for a time series.
       type: object
@@ -514,461 +527,6 @@ components:
           format: int32
           x-go-name: Type
       x-go-package: stats/base/stats.pb
-    Value_Data:
-      description: 'Specifies the fields to store data of a given type.
-
-        Specify data in the appropriate field for the current data type.'
-      type: object
-      title: Data.
-      properties:
-        bytesValue:
-          description: 'Specifies the field to store an array of bytes if the current
-
-            data type is bytes. Specify a value for this field when type
-
-            is equal to 4.'
-          type:
-          - array
-          - 'null'
-          items:
-            type: integer
-            format: uint8
-          x-go-name: BytesValue
-        doubleValue:
-          description: 'Specifies the field to store data if the current data type is a
-
-            double value. Specify a value for this field when type is equal to 2.'
-          type:
-          - number
-          - 'null'
-          format: double
-          x-go-name: DoubleValue
-        int64Value:
-          description: 'Specifies the field to store data if the current data type is a
-
-            int64 value. Specify a value for this field when type is equal to 1.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: Int64Value
-        stringValue:
-          description: 'Specifies the field to store data if the current data type is a
-
-            string value. Specify a value for this field when type is equal to 3.'
-          type:
-          - string
-          - 'null'
-          x-go-name: StringValue
-      x-go-package: stats/base/stats_types.pb
-    RequestError:
-      description: Details about the Error.
-      type: object
-      title: Error
-      properties:
-        errorCode:
-          description: Operation response error code.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ErrorCode
-        message:
-          description: Description of the error.
-          type:
-          - string
-          - 'null'
-          x-go-name: Message
-      x-go-package: cohesity/iris/server/data/public
-    EntityIdentifier:
-      description: Specifies a unique identifier for the entity.
-      type: object
-      title: Entity Identifier.
-      properties:
-        entityId:
-          description: Specifies the unique identifier for the entity in the source Cluster.
-          $ref: '#/components/schemas/Value'
-      x-go-package: stats/base/stats.pb
-    KeyValuePair:
-      description: Specifies a key/value pair.
-      type: object
-      title: Key Value Pair.
-      properties:
-        key:
-          description: Specifies the name of the key.
-          type:
-          - string
-          - 'null'
-          x-go-name: Key
-        value:
-          description: Specifies a value for the key.
-          $ref: '#/components/schemas/Value'
-      x-go-package: stats/base/stats_types.pb
-    MetricValue:
-      description: Specifies one data point of a metric.
-      type: object
-      title: Metric Value.
-      properties:
-        metricName:
-          description: Specifies the metric name.
-          type:
-          - string
-          - 'null'
-          x-go-name: MetricName
-        timestampMsecs:
-          description: 'Specifies the creation time of a data point as a Unix epoch Timestamp
-
-            (in milliseconds).'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: TimestampMsecs
-        value:
-          description: Specifies the value of the data point.
-          $ref: '#/components/schemas/Value'
-      x-go-package: stats/base/stats.pb
-    EntitySchemaProto_AttributesDescriptor:
-      description: Specifies a list of attributes about an entity.
-      type: object
-      title: Attributes Descriptor.
-      properties:
-        attributeVec:
-          description: 'Array of Attributes.
-
-
-            List of attributes about an entity.'
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/EntitySchemaProto_KeyValueDescriptor'
-          x-go-name: AttributeVec
-        keyAttributeNameIndex:
-          description: 'Specifies the attribute to use as a unique identifier for the entity.
-
-            This value is returned in entityId when the GET
-
-            public/statistics/entities operation is run.'
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: KeyAttributeNameIndex
-      x-go-package: stats/base/entity_schema.pb
-    EntitySchemaProto_KeyValueDescriptor:
-      description: Specifies a key/value pair.
-      type: object
-      title: Key/Value Pair.
-      properties:
-        keyName:
-          description: Specifies the name of a key.
-          type:
-          - string
-          - 'null'
-          x-go-name: KeyName
-        valueType:
-          description: 'Specifies the type of the value that is associated with the key.
-
-            0 specifies a value type of Int64.
-
-            1 specifies a value type of Double.
-
-            2 specifies a value type of String.
-
-            3 specifies a value type of Bytes.'
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: ValueType
-      x-go-package: stats/base/entity_schema.pb
-    TaskEvent:
-      description: Specifies events that clients can attach to a task.
-      type: object
-      title: Task Event.
-      properties:
-        eventMessage:
-          description: Specifies the message associated with an event.
-          type:
-          - string
-          - 'null'
-          x-go-name: EventMessage
-        percentFinished:
-          description: Specifies the completion percentage of the task attached to this event.
-          type:
-          - number
-          - 'null'
-          format: float
-          x-go-name: PercentFinished
-        remainingWorkCount:
-          description: Specifies the amount of work remaining for the task attached to this event.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: RemainingWorkCount
-        timestampSeconds:
-          description: Specifies the Unix timestamp that the event occurred.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: TimestampSeconds
-      x-go-package: cohesity/iris/server/data/public
-    TimeSeriesSchemaResponse:
-      description: Specifies the Apollo schema to list the data point.
-      type: object
-      title: Time series schema response.
-      properties:
-        schemaInfoList:
-          description: Specifies the list of the schema info for an entity.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/SchemaInfo'
-          x-go-name: SchemaInfoList
-      x-go-package: cohesity/iris/server/data/public
-    EntitySchemaProto_TimeSeriesDescriptor_MetricUnit:
-      description: 'Specifies the unit of measure for the metric.
-
-        O specifies a unit of space used such as free disk space.
-
-        1 specifies a Unix epoch Timestamp (in microseconds).
-
-        2 specifies a Unix epoch Timestamp (in milliseconds).
-
-        3 specifies a Unix epoch Timestamp (in seconds).
-
-        4 specifies a Unix epoch Timestamp (in minutes).
-
-        5 specifies a counter such as the read IO metric.
-
-        6 specifies the temperature in Centigrade.
-
-        7 specifies the temperature in Fahrenheit.
-
-        8 specifies revolutions per minute such as a CPU fan speed.
-
-        9 specifies a percentage such as CPU or memory usage.'
-      type: object
-      title: Metric Unit.
-      properties:
-        type:
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: Type
-      x-go-package: stats/base/entity_schema.pb
-    MetricDataPoint:
-      description: Specifies information about a single data point in a time series.
-      type: object
-      title: Metric Data Point.
-      properties:
-        data:
-          description: 'Corresponding value of a metric at the given timestamp. When client
-
-            adds or pushes the stats, this field must be specified. When Stats module,
-
-            returns the time series data, this field could be empty if data point is
-
-            not available for the given timestamp.'
-          $ref: '#/components/schemas/Value_Data'
-        rollupFunction:
-          description: 'If this is a rolled up data point, following enum denotes the rollup
-
-            function used for rolling up. For a raw point this enum is not set.'
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: RollupFunction
-        timestampMsecs:
-          description: Specifies a timestamp when the metric data point was captured.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: TimestampMsecs
-      x-go-package: stats/base/stats.pb
-    EntitySchemaProto_Granularity:
-      description: 'Rolling up or Down sampling is performed on timeseries data to reduce
-
-        space usage by timeseries. Rollup Granularity is defined per entity
-
-        schema but rollup function is not defined. Instead we create rolledup
-
-        values for all the rollup functions.'
-      type: object
-      properties:
-        rollupIntervalSecs:
-          description: 'Defines the rollup interval or a bucket size. All data points within
-
-            one time bucket are rolled up to one summary data point using the
-
-            defined rollup function. For example, say, raw metric is published
-
-            at ~30 secs granularity. To generate a hourly or a daily summary
-
-            time series, client can define rolled up metrics having interval
-
-            3600 secs and 86400 secs respectively.'
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: RollupIntervalSecs
-        timeToLiveSecs:
-          description: 'Defines the duration for which the rolled up data is to be stored.
-
-            Once the lifespan has elapsed, expired data is garbage collected.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: TimeToLiveSecs
-      x-go-package: stats/base/entity_schema.pb
-    Value:
-      description: Specifies a data type and data field used to store data.
-      type: object
-      title: Value.
-      properties:
-        data:
-          $ref: '#/components/schemas/Value_Data'
-        type:
-          description: 'Specifies the type of value.
-
-            0 specifies a data point of type Int64.
-
-            1 specifies a data point of type Double.
-
-            2 specifies a data point of type String.
-
-            3 specifies a data point of type Bytes.'
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: Type
-      x-go-package: stats/base/stats_types.pb
-    EntityProto:
-      description: Specifies the attributes and the latest statistics about an entity.
-      type: object
-      title: Entity.
-      properties:
-        attributeVec:
-          description: 'Array of Attributes.
-
-
-            List of attributes of an entity.'
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/KeyValuePair'
-          x-go-name: AttributeVec
-        entityId:
-          description: Specifies a globally unique identifier of an entity.
-          $ref: '#/components/schemas/EntityIdentifier'
-        latestMetricVec:
-          description: 'Array of Metric Statistics.
-
-
-            List of the latest statistics for all metrics defined in the schema
-
-            that this entity belongs to.
-
-            If statistics for a metric is not available, then that data point is not
-
-            returned.'
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/MetricValue'
-          x-go-name: LatestMetricVec
-      x-go-package: stats/base/stats.pb
-    SchemaInfo:
-      description: 'Specifies the metric data point where public data metric name as key and the
-
-        schema defined metric name as a value.'
-      type: object
-      title: Schema Info.
-      properties:
-        entityId:
-          description: Specifies the id of the entity represented as a string.
-          type:
-          - string
-          - 'null'
-          x-go-name: EntityId
-        key:
-          description: Specifies the key which is public facing name for metric name.
-          type:
-          - string
-          - 'null'
-          x-go-name: Key
-        metricName:
-          description: Specifies the Apollo schema metric name.
-          type:
-          - string
-          - 'null'
-          x-go-name: MetricName
-        schemaName:
-          description: Specifies the name of entity schema such as 'ApolloViewBoxStats'.
-          type:
-          - string
-          - 'null'
-          x-go-name: SchemaName
-      x-go-package: cohesity/iris/server/data/public
-    TaskAttribute:
-      description: This contains a string name, a value, and a type for the value.
-      type: object
-      title: Task Attribute.
-      properties:
-        name:
-          description: Specifies the name of this Task Attribute.
-          type:
-          - string
-          - 'null'
-          x-go-name: Name
-        value:
-          description: Specifies the value of this Task Attribute.
-          type:
-          - string
-          - 'null'
-          x-go-name: Value
-        valueType:
-          description: 'Specifies the type of the value contained here. All values are returned as
-
-            pointers to strings, but they can be casted to the type indicated here.
-
-            ''kInt64'' indicates that the value stored in the Task Attribute is
-
-            a 64-bit integer.
-
-            ''kDouble'' indicates that the value stored in the Task Attribute is
-
-            a 64 bit floating point number.
-
-            ''kString'' indicates that the value stored in the Task Attribute is
-
-            a string.
-
-            ''kBytes'' indicates that the value stored in the Task Attribute is
-
-            an array of bytes.'
-          type:
-          - string
-          - 'null'
-          enum:
-          - kInt64
-          - kDouble
-          - kString
-          - kBytes
-          x-go-name: ValueType
-      x-go-package: cohesity/iris/server/data/public
     EntitySchemaProto_TimeSeriesDescriptor:
       description: 'Specifies the meta-data required to define a time series of data
 
@@ -1156,6 +714,363 @@ components:
           format: int64
           x-go-name: Version
       x-go-package: stats/base/entity_schema.pb
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    TaskAttribute:
+      description: This contains a string name, a value, and a type for the value.
+      type: object
+      title: Task Attribute.
+      properties:
+        name:
+          description: Specifies the name of this Task Attribute.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        value:
+          description: Specifies the value of this Task Attribute.
+          type:
+          - string
+          - 'null'
+          x-go-name: Value
+        valueType:
+          description: 'Specifies the type of the value contained here. All values are returned as
+
+            pointers to strings, but they can be casted to the type indicated here.
+
+            ''kInt64'' indicates that the value stored in the Task Attribute is
+
+            a 64-bit integer.
+
+            ''kDouble'' indicates that the value stored in the Task Attribute is
+
+            a 64 bit floating point number.
+
+            ''kString'' indicates that the value stored in the Task Attribute is
+
+            a string.
+
+            ''kBytes'' indicates that the value stored in the Task Attribute is
+
+            an array of bytes.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - kInt64
+          - kDouble
+          - kString
+          - kBytes
+          x-go-name: ValueType
+      x-go-package: cohesity/iris/server/data/public
+    EntityProto:
+      description: Specifies the attributes and the latest statistics about an entity.
+      type: object
+      title: Entity.
+      properties:
+        attributeVec:
+          description: 'Array of Attributes.
+
+
+            List of attributes of an entity.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/KeyValuePair'
+          x-go-name: AttributeVec
+        entityId:
+          description: Specifies a globally unique identifier of an entity.
+          $ref: '#/components/schemas/EntityIdentifier'
+        latestMetricVec:
+          description: 'Array of Metric Statistics.
+
+
+            List of the latest statistics for all metrics defined in the schema
+
+            that this entity belongs to.
+
+            If statistics for a metric is not available, then that data point is not
+
+            returned.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/MetricValue'
+          x-go-name: LatestMetricVec
+      x-go-package: stats/base/stats.pb
+    EntitySchemaProto_KeyValueDescriptor:
+      description: Specifies a key/value pair.
+      type: object
+      title: Key/Value Pair.
+      properties:
+        keyName:
+          description: Specifies the name of a key.
+          type:
+          - string
+          - 'null'
+          x-go-name: KeyName
+        valueType:
+          description: 'Specifies the type of the value that is associated with the key.
+
+            0 specifies a value type of Int64.
+
+            1 specifies a value type of Double.
+
+            2 specifies a value type of String.
+
+            3 specifies a value type of Bytes.'
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: ValueType
+      x-go-package: stats/base/entity_schema.pb
+    MetricDataPoint:
+      description: Specifies information about a single data point in a time series.
+      type: object
+      title: Metric Data Point.
+      properties:
+        data:
+          description: 'Corresponding value of a metric at the given timestamp. When client
+
+            adds or pushes the stats, this field must be specified. When Stats module,
+
+            returns the time series data, this field could be empty if data point is
+
+            not available for the given timestamp.'
+          $ref: '#/components/schemas/Value_Data'
+        rollupFunction:
+          description: 'If this is a rolled up data point, following enum denotes the rollup
+
+            function used for rolling up. For a raw point this enum is not set.'
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: RollupFunction
+        timestampMsecs:
+          description: Specifies a timestamp when the metric data point was captured.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: TimestampMsecs
+      x-go-package: stats/base/stats.pb
+    KeyValuePair:
+      description: Specifies a key/value pair.
+      type: object
+      title: Key Value Pair.
+      properties:
+        key:
+          description: Specifies the name of the key.
+          type:
+          - string
+          - 'null'
+          x-go-name: Key
+        value:
+          description: Specifies a value for the key.
+          $ref: '#/components/schemas/Value'
+      x-go-package: stats/base/stats_types.pb
+    MetricValue:
+      description: Specifies one data point of a metric.
+      type: object
+      title: Metric Value.
+      properties:
+        metricName:
+          description: Specifies the metric name.
+          type:
+          - string
+          - 'null'
+          x-go-name: MetricName
+        timestampMsecs:
+          description: 'Specifies the creation time of a data point as a Unix epoch Timestamp
+
+            (in milliseconds).'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: TimestampMsecs
+        value:
+          description: Specifies the value of the data point.
+          $ref: '#/components/schemas/Value'
+      x-go-package: stats/base/stats.pb
+    EntityIdentifier:
+      description: Specifies a unique identifier for the entity.
+      type: object
+      title: Entity Identifier.
+      properties:
+        entityId:
+          description: Specifies the unique identifier for the entity in the source Cluster.
+          $ref: '#/components/schemas/Value'
+      x-go-package: stats/base/stats.pb
+    Value:
+      description: Specifies a data type and data field used to store data.
+      type: object
+      title: Value.
+      properties:
+        data:
+          $ref: '#/components/schemas/Value_Data'
+        type:
+          description: 'Specifies the type of value.
+
+            0 specifies a data point of type Int64.
+
+            1 specifies a data point of type Double.
+
+            2 specifies a data point of type String.
+
+            3 specifies a data point of type Bytes.'
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Type
+      x-go-package: stats/base/stats_types.pb
+    Value_Data:
+      description: 'Specifies the fields to store data of a given type.
+
+        Specify data in the appropriate field for the current data type.'
+      type: object
+      title: Data.
+      properties:
+        bytesValue:
+          description: 'Specifies the field to store an array of bytes if the current
+
+            data type is bytes. Specify a value for this field when type
+
+            is equal to 4.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: uint8
+          x-go-name: BytesValue
+        doubleValue:
+          description: 'Specifies the field to store data if the current data type is a
+
+            double value. Specify a value for this field when type is equal to 2.'
+          type:
+          - number
+          - 'null'
+          format: double
+          x-go-name: DoubleValue
+        int64Value:
+          description: 'Specifies the field to store data if the current data type is a
+
+            int64 value. Specify a value for this field when type is equal to 1.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: Int64Value
+        stringValue:
+          description: 'Specifies the field to store data if the current data type is a
+
+            string value. Specify a value for this field when type is equal to 3.'
+          type:
+          - string
+          - 'null'
+          x-go-name: StringValue
+      x-go-package: stats/base/stats_types.pb
+    TimeSeriesSchemaResponse:
+      description: Specifies the Apollo schema to list the data point.
+      type: object
+      title: Time series schema response.
+      properties:
+        schemaInfoList:
+          description: Specifies the list of the schema info for an entity.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SchemaInfo'
+          x-go-name: SchemaInfoList
+      x-go-package: cohesity/iris/server/data/public
+    EntitySchemaProto_TimeSeriesDescriptor_MetricUnit:
+      description: 'Specifies the unit of measure for the metric.
+
+        O specifies a unit of space used such as free disk space.
+
+        1 specifies a Unix epoch Timestamp (in microseconds).
+
+        2 specifies a Unix epoch Timestamp (in milliseconds).
+
+        3 specifies a Unix epoch Timestamp (in seconds).
+
+        4 specifies a Unix epoch Timestamp (in minutes).
+
+        5 specifies a counter such as the read IO metric.
+
+        6 specifies the temperature in Centigrade.
+
+        7 specifies the temperature in Fahrenheit.
+
+        8 specifies revolutions per minute such as a CPU fan speed.
+
+        9 specifies a percentage such as CPU or memory usage.'
+      type: object
+      title: Metric Unit.
+      properties:
+        type:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Type
+      x-go-package: stats/base/entity_schema.pb
+    SchemaInfo:
+      description: 'Specifies the metric data point where public data metric name as key and the
+
+        schema defined metric name as a value.'
+      type: object
+      title: Schema Info.
+      properties:
+        entityId:
+          description: Specifies the id of the entity represented as a string.
+          type:
+          - string
+          - 'null'
+          x-go-name: EntityId
+        key:
+          description: Specifies the key which is public facing name for metric name.
+          type:
+          - string
+          - 'null'
+          x-go-name: Key
+        metricName:
+          description: Specifies the Apollo schema metric name.
+          type:
+          - string
+          - 'null'
+          x-go-name: MetricName
+        schemaName:
+          description: Specifies the name of entity schema such as 'ApolloViewBoxStats'.
+          type:
+          - string
+          - 'null'
+          x-go-name: SchemaName
+      x-go-package: cohesity/iris/server/data/public
     Task:
       description: Specifies one task.
       type: object
@@ -1281,3 +1196,88 @@ components:
           - 'null'
           x-go-name: TaskPath
       x-go-package: cohesity/iris/server/data/public
+    EntitySchemaProto_AttributesDescriptor:
+      description: Specifies a list of attributes about an entity.
+      type: object
+      title: Attributes Descriptor.
+      properties:
+        attributeVec:
+          description: 'Array of Attributes.
+
+
+            List of attributes about an entity.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EntitySchemaProto_KeyValueDescriptor'
+          x-go-name: AttributeVec
+        keyAttributeNameIndex:
+          description: 'Specifies the attribute to use as a unique identifier for the entity.
+
+            This value is returned in entityId when the GET
+
+            public/statistics/entities operation is run.'
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: KeyAttributeNameIndex
+      x-go-package: stats/base/entity_schema.pb
+  responses:
+    GetEntitiesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            description: Specifies a list of entities.
+            type: array
+            title: Array of Entities.
+            items:
+              $ref: '#/components/schemas/EntityProto'
+    GetTasksResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Task'
+    GetEntitiesSchemaResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            description: Specifies a list of entity schemas.
+            type: array
+            title: Array of Entity Schemas.
+            items:
+              $ref: '#/components/schemas/EntitySchemaProto'
+    GetTimeSeriesStatsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MetricDataBlock'
+    GetTimeSeriesSchemaResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TimeSeriesSchemaResponse'
+    GetEntitySchemaByNameResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            description: Specifies a list of entity schemas.
+            type: array
+            title: Array of Entity Schemas.
+            items:
+              $ref: '#/components/schemas/EntitySchemaProto'
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'

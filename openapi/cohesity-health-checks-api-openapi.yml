@@ -37,6 +37,25 @@ paths:
         required: true
 components:
   schemas:
+    SCErrorCode:
+      description: Specifies all the error codes that are returned by API server
+      type: string
+      enum:
+      - kNoError
+      - kValidationError
+      - kInternalError
+    SCDRPlanHealthCheckParams:
+      description: Specifies the parameters associated with DR plan health check.
+      type: object
+      required:
+      - drPlanId
+      properties:
+        drPlanId:
+          description: Specifies the unique identifier for the DR plan.
+          type:
+          - integer
+          - 'null'
+          format: int64
     SCInitiateHealthCheckParams:
       description: Specifies the parameters required to initiate a health check.
       type: object
@@ -56,13 +75,6 @@ components:
           - object
           - 'null'
           $ref: '#/components/schemas/SCDRPlanHealthCheckParams'
-    SCErrorCode:
-      description: Specifies all the error codes that are returned by API server
-      type: string
-      enum:
-      - kNoError
-      - kValidationError
-      - kInternalError
     SCError:
       description: Specifies the error object with error code and a message.
       type: object
@@ -75,18 +87,6 @@ components:
           type:
           - string
           - 'null'
-    SCDRPlanHealthCheckParams:
-      description: Specifies the parameters associated with DR plan health check.
-      type: object
-      required:
-      - drPlanId
-      properties:
-        drPlanId:
-          description: Specifies the unique identifier for the DR plan.
-          type:
-          - integer
-          - 'null'
-          format: int64
   responses:
     SCErrorResponse:
       description: Specifies the common error definition.
