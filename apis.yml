@@ -2438,6 +2438,8 @@ apis:
   humanURL: https://developer.cohesity.com/helios-api.html
   baseURL: https://helios.cohesity.com/irisservices/api/v1/public/
   tags:
+  - Audit Logs
+  tags_raw:
   - Audit Log
   properties:
   - type: OpenAPI
@@ -2657,6 +2659,9 @@ apis:
   - type: Documentation
     url: https://developer.cohesity.com/apidocs/site-continuity
 common:
+- type: CapabilityMap
+  url: capabilities/cohesity-capability-edges.yml
+  name: Cohesity Business Capability Map
 - type: Overlay
   url: overlays/cohesity-cluster-v1-overlay.yaml
 - type: Overlay
