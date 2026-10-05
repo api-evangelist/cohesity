@@ -1,0 +1,379 @@
+slug: cohesity
+provider: Cohesity
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 37
+edges:
+- tag: DRPlan
+  spec_file: cohesity-drplan-api-openapi.yml
+  capability_id: BC-160.20
+  capability_id_l1: BC-160
+  capability_name: Disaster Recovery Management
+  confidence: 0.9
+  evidence: POST /dr-plans "Creates a DR plan"; schemas SCFailoverActionParams, SCTestFailoverActionVMwareParams,
+    SCDRSiteConfig
+  reason: Site Continuity service managing disaster-recovery plans, DR site configuration, failover and
+    test-failover actions and health checks. This is IT disaster recovery management with no competing
+    reading.
+- tag: Idps
+  spec_file: cohesity-idps-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.88
+  evidence: GET /public/idps List the IdPs configured on the Cluster; GET /public/idps/login IdpLogin
+    Login to Cohesity Cluster using an IdP
+  reason: Identity provider configuration, federated login and adding IdP principals — identity federation
+    and access management.
+- tag: Clusters
+  spec_file: cohesity-clusters-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.85
+  evidence: POST /public/clusters/physicalEdition "Create a new Physical Edition Cohesity Cluster"; DELETE
+    /public/clusters/nodes/{id} "Remove a Node from a Cohesity Cluster"
+  reason: Provisioning, expansion, node removal and destruction of physical and cloud clusters, plus IO
+    tiering and throttling schedules. Plainly compute/storage infrastructure lifecycle management.
+- tag: Principals
+  spec_file: cohesity-principals-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.85
+  evidence: SearchPrincipals  List the user and group principals that match the filter criteria; POST
+    /public/users  Create or add a new user to the Cohesity Cluster; GET /public/users/privileges
+  reason: Creates and manages user/group principals, their privileges, API keys and access to protection
+    sources — identity and access management.
+- tag: Active Directory
+  spec_file: cohesity-active-directory-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.8
+  evidence: '"Join the Cohesity Cluster to the specified Active Directory"; "SearchActiveDirectoryPrincipals  List
+    the user and group principals"; "UpdateActiveDirectoryLdapProvider"'
+  reason: Operations join the cluster to AD domains, manage domain controllers, trusted domains, LDAP
+    providers and add user/group principals — directory-based identity and access administration, not
+    any business-domain capability.
+- tag: Cluster
+  spec_file: cohesity-cluster-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.8
+  evidence: GET /public/cluster "List details about this Cohesity Cluster"; PUT /public/cluster "Update
+    the configuration of this Cohesity Cluster"; schema ClusterHardwareInfo
+  reason: Operations read and update configuration, app settings and status of a storage/compute cluster,
+    with hardware and node status schemas. This is management of compute/storage infrastructure, not a
+    line-of-business function.
+- tag: Interface
+  spec_file: cohesity-interface-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.8
+  evidence: GET /public/interface ListInterface Show network interfaces; schemas BondingOpts, NodeNetworkInterfaces
+  reason: Configuration of network interfaces on cluster nodes — IT infrastructure (network) management.
+- tag: Interface group
+  spec_file: cohesity-interface-group-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.8
+  evidence: POST /public/interfaceGroups CreateInterfaceGroup Create an interface group on the Cohesity
+    Cluster
+  reason: Network interface bonding/group configuration on cluster infrastructure — IT infrastructure
+    management.
+- tag: Network
+  spec_file: cohesity-network-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.8
+  evidence: POST /public/network/bonds  CreateBond  Create a new network bond
+  reason: Operations create network bonds and edit the cluster's /etc/hosts entries — direct configuration
+    of network infrastructure on the appliance, which is IT infrastructure management.
+- tag: Nodes
+  spec_file: cohesity-nodes-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.8
+  evidence: PUT /public/nodes/software  UpgradeNode  Upgrade the software on a Node
+  reason: Listing cluster and free nodes, node hardware/disk/capacity stats and node software upgrade
+    are management of compute and storage infrastructure, mapping to IT infrastructure management.
+- tag: Vlan
+  spec_file: cohesity-vlan-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.8
+  evidence: POST /public/vlans  CreateVlan  Creates a VLAN of the Cohesity Cluster
+  reason: CRUD over VLANs and subnets/IP ranges on the cluster is network infrastructure configuration
+    — IT Infrastructure Management.
+- tag: Groups
+  spec_file: cohesity-groups-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.78
+  evidence: POST /public/groups CreateGroup Create or add a new group to the Cohesity Cluster; schema
+    SmbPrincipal
+  reason: CRUD over security principal groups on the cluster, i.e. access-control group administration
+    — identity and access management.
+- tag: Node Groups
+  spec_file: cohesity-node-groups-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.78
+  evidence: POST /nodeGroups  CreateNodeGroup  Create a Node Group; schemas BgpPeer, SubnetInfo, DnsServersInfo
+  reason: CRUD over cluster node groups with BGP peering, subnet and DNS server settings is compute/network
+    infrastructure configuration — IT infrastructure management.
+- tag: Platform
+  spec_file: cohesity-platform-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.78
+  evidence: GET /chassis  Get list of chassis; POST /clusters  CreateCluster  Create a cluster; GET /disks/discover  Discover
+    new disks
+  reason: Operations provision and configure physical/logical infrastructure — clusters, chassis, nodes,
+    disks — which is IT infrastructure management.
+- tag: Recoveries
+  spec_file: cohesity-recoveries-api-openapi.yml
+  capability_id: BC-160.20
+  capability_id_l1: BC-160
+  capability_name: Disaster Recovery Management
+  confidence: 0.78
+  evidence: POST /data-protect/recoveries  CreateRecovery  Performs a Recovery
+  reason: Operations create, monitor, cancel and tear down data recovery operations from snapshots — squarely
+    IT/operational disaster recovery.
+- tag: RemoteRestore
+  spec_file: cohesity-remoterestore-api-openapi.yml
+  capability_id: BC-160.20
+  capability_id_l1: BC-160
+  capability_name: Disaster Recovery Management
+  confidence: 0.78
+  evidence: POST /public/remoteVaults/restoreTasks  CreateRemoteVaultRestoreTask  Create a remote Vault
+    restore task. (CloudRetrieve)
+  reason: Search and restore of data from remote archival vaults, including encryption-key upload for
+    restore — explicit recovery of data from offsite copies.
+- tag: AntivirusServiceGroup
+  spec_file: cohesity-antivirusservicegroup-api-openapi.yml
+  capability_id: BC-620.30
+  capability_id_l1: BC-620
+  capability_name: Threat Detection & Response Management
+  confidence: 0.75
+  evidence: '"CreateAntivirusServiceGroup  Create an Antivirus service group"; "GetInfectedFiles  Lists
+    the infected files"; "GetIcapConnectionStatus  Check the Icap server connection status"'
+  reason: Configures antivirus/ICAP scanning services and manages detected infected files — malware detection
+    and response, a cybersecurity threat detection capability.
+- tag: Ip
+  spec_file: cohesity-ip-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.75
+  evidence: PUT /public/ip ConfigureIp Configure the specfied IP settings on the Cohesity Cluster
+  reason: IP address configuration on cluster nodes — network infrastructure configuration.
+- tag: Protected Objects
+  spec_file: cohesity-protected-objects-api-openapi.yml
+  capability_id: BC-160.20
+  capability_id_l1: BC-160
+  capability_name: Disaster Recovery Management
+  confidence: 0.75
+  evidence: POST /data-protect/protected-objects  ProtectObjectsOfAnyType  Create Object Backup
+  reason: Operations create and update backups for workloads (Office365, NetApp, Oracle etc.), i.e. IT
+    backup/disaster-recovery protection configuration.
+- tag: Protection Groups
+  spec_file: cohesity-protection-groups-api-openapi.yml
+  capability_id: BC-160.20
+  capability_id_l1: BC-160
+  capability_name: Disaster Recovery Management
+  confidence: 0.75
+  evidence: POST /data-protect/protection-groups/{id}/runs  CreateProtectionGroupRun  Create a new protection
+    run
+  reason: Lifecycle and execution of backup protection groups and their runs — IT backup and recovery
+    operations within disaster recovery management.
+- tag: ProtectionJobs
+  spec_file: cohesity-protectionjobs-api-openapi.yml
+  capability_id: BC-160.20
+  capability_id_l1: BC-160
+  capability_name: Disaster Recovery Management
+  confidence: 0.75
+  evidence: POST /public/protectionJobs/run/{id}  RunProtectionJob  Immediately execute a single Protection
+    Job Run
+  reason: Creates, schedules, pauses and executes backup jobs against data sources — IT backup/disaster
+    recovery execution.
+- tag: RestoreTasks
+  spec_file: cohesity-restoretasks-api-openapi.yml
+  capability_id: BC-160.20
+  capability_id_l1: BC-160
+  capability_name: Disaster Recovery Management
+  confidence: 0.75
+  evidence: POST /public/restore/applicationsRecover  CreateApplicationsRecoverTask  Create a Restore
+    Task for recovering Applications like SQL Databases
+  reason: Restore, clone and recover tasks for VMs, views, AD objects and databases from snapshots — IT
+    disaster recovery execution.
+- tag: Security
+  spec_file: cohesity-security-api-openapi.yml
+  capability_id: BC-620
+  capability_id_l1: BC-620
+  capability_name: Cybersecurity Management
+  confidence: 0.75
+  evidence: GET /security-config  GetSecurityConfig  Get cluster security settings; schemas SecurityConfigPasswordStrength,
+    SecurityConfigAccountLockout, SecurityConfigCertificateBasedAuth; GET /trusted-cas  ListTrustedCas
+  reason: Operations manage certificate signing requests, trust stores, cipher suites and cluster security
+    settings (password strength/reuse, account lockout, certificate-based auth) — security control configuration.
+    L1 cybersecurity is clear; evidence spans certificate/crypto hardening, password policy and trust,
+    so no single L2 dominates.
+- tag: Users
+  spec_file: cohesity-users-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.75
+  evidence: POST /users/sessions  CreateSession  Create a user session; GET /security-principals  GetSecurityPrincipals
+  reason: Operations create/delete user sessions and list security principals — authentication/session
+    and identity principal management on the cluster. This is identity & access plumbing; mapping to IAM
+    at L2 with moderate confidence since it is largely session authentication.
+- tag: Failover
+  spec_file: cohesity-failover-api-openapi.yml
+  capability_id: BC-4220.60
+  capability_id_l1: BC-4220
+  capability_name: Disaster Recovery & Resilience
+  confidence: 0.72
+  evidence: POST /data-protect/failover/{id} InitFailover Initiate a failover request; CreatePlannedRun
+    Create a planned run for backup and replication
+  reason: Operations orchestrate failover of protected data between source and replica clusters — disaster
+    recovery/failover orchestration. Could also map to BC-160.20 Disaster Recovery Management (cross-industry),
+    but the Software & Technology resilience/failover sub-capability covers backup, restore and failover
+    orchestration directly.
+- tag: LdapProvider
+  spec_file: cohesity-ldapprovider-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.72
+  evidence: GET /public/ldapProvider  GetLdapProvider  Lists the LDAP providers
+  reason: Create/update/delete and connection-status checks for LDAP directory providers is directory
+    integration for user authentication — identity and access management, not a business-domain capability.
+- tag: Objects
+  spec_file: cohesity-objects-api-openapi.yml
+  capability_id: BC-160.20
+  capability_id_l1: BC-160
+  capability_name: Disaster Recovery Management
+  confidence: 0.72
+  evidence: GET /data-protect/objects/{id}/snapshots  List the snapshots for a given object; GET /data-protect/objects/{id}/pit-ranges  Get
+    PIT ranges for an object
+  reason: Operations manage backup/protection runs, snapshots and point-in-time recovery ranges for protected
+    workloads, i.e. IT backup and recovery operations under disaster recovery management.
+- tag: Privileges
+  spec_file: cohesity-privileges-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.72
+  evidence: GET /public/privileges  GetPrivileges  List the privileges defined on the Cohesity Cluster
+  reason: Single read-only endpoint enumerating authorisation privileges, which is part of access management;
+    thin surface so moderate confidence.
+- tag: Protection Policies
+  spec_file: cohesity-protection-policies-api-openapi.yml
+  capability_id: BC-160.20
+  capability_id_l1: BC-160
+  capability_name: Disaster Recovery Management
+  confidence: 0.72
+  evidence: POST /public/protectionPolicies  CreateProtectionPolicy  Create a Protection Policy
+  reason: Defines backup/archival protection policies and schedules (DailySchedule, RunArchivalConfig),
+    i.e. the policy layer of IT backup and disaster recovery, not corporate policy management.
+- tag: ClusterPartitions
+  spec_file: cohesity-clusterpartitions-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.7
+  evidence: GET /public/clusterPartitions "List Cluster Partitions filtered by the specified parameters";
+    schemas IpRange, Subnet, Vlan
+  reason: Read-only listing of cluster partitions with network constructs (subnet, VLAN, IP range). Infrastructure
+    topology inventory, so IT Infrastructure Management; thin surface keeps confidence mid.
+- tag: KMS Configuration
+  spec_file: cohesity-kms-configuration-api-openapi.yml
+  capability_id: BC-620
+  capability_id_l1: BC-620
+  capability_name: Cybersecurity Management
+  confidence: 0.7
+  evidence: POST /public/kmsConfig CreateKmsConfig Create a KMS config; schemas AwsKmsConfiguration, CryptsoftKmsConfiguration
+  reason: Key management service configuration for encryption of cluster data — a cybersecurity control;
+    no sub-capability for key management is listed, so L1 only.
+- tag: Kerberos Providers
+  spec_file: cohesity-kerberos-providers-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.7
+  evidence: POST /kerberos-providers/register  RegisterKerberosProvider  Register a Kerberos Authentication
+    Provider
+  reason: Operations register, update and unregister external Kerberos authentication providers for the
+    cluster — configuration of federated authentication sources, i.e. identity and access management plumbing
+    for the platform. Mapped at the IAM sub-capability rather than any tenant-SaaS capability because
+    this is an on-premises cluster appliance surface.
+- tag: Roles
+  spec_file: cohesity-roles-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.7
+  evidence: POST /public/roles  CreateRole  Create a new custom role; schemas Role, RoleCreateParameters
+  reason: CRUD over role definitions governing access on the cluster — role-based access administration,
+    which maps to Identity & Access Management. Confidence moderated because role APIs are also common
+    product plumbing.
+- tag: Sites
+  spec_file: cohesity-sites-api-openapi.yml
+  capability_id: BC-160.20
+  capability_id_l1: BC-160
+  capability_name: Disaster Recovery Management
+  confidence: 0.7
+  evidence: 'openapi description: "Public APIs for Site Continuity v2 service"; SCCreateSite  Creates
+    a new site; schemas SCOnPremSite, SCSiteLocationDetails'
+  reason: Sites here are the primary/recovery locations registered with Cohesity's Site Continuity service,
+    i.e. the site topology underpinning failover and disaster recovery. Mapped to IT disaster recovery;
+    kept at 0.7 because the operations are plain site registration CRUD.
+- tag: Vaults
+  spec_file: cohesity-vaults-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.7
+  evidence: POST /public/vaults  CreateVault  Create a new Vault (External Target)
+  reason: Vaults are external archive storage targets (cloud credentials, bandwidth limits, encryption
+    keys) registered on the cluster — storage/cloud infrastructure configuration, i.e. IT Infrastructure
+    Management. Could also be seen as backup/DR but the operations are target registration, not recovery.
+- tag: ViewBoxes
+  spec_file: cohesity-viewboxes-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.7
+  evidence: POST /public/viewBoxes  CreateViewBox  Create a Domain (View Box)
+  reason: View Boxes are storage domains with quota and storage policies (QuotaPolicy, StoragePolicy,
+    DataUsageStats) — configuration of storage infrastructure on the cluster.
+- tag: Views
+  spec_file: cohesity-views-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.7
+  evidence: GET /public/shares  GetViewsByShareName  List shares filtered by name; GET /public/viewDirectoryQuotas  GetViewDirQuotaInfo
+  reason: Views are NFS/SMB file shares with quotas, QoS policies, NLM locks and SMB connections — storage/file-service
+    infrastructure management.
