@@ -2657,6 +2657,8 @@ apis:
   - type: Documentation
     url: https://developer.cohesity.com/apidocs/site-continuity
 common:
+- type: FinOps
+  url: finops/cohesity-finops.yml
 - type: CapabilityMap
   url: capabilities/cohesity-capability-edges.yml
   name: Cohesity Business Capability Map
