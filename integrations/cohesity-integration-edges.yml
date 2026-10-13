@@ -1,0 +1,112 @@
+generated: '2026-10-13'
+method: searched
+checked:
+- https://aws.amazon.com/marketplace/
+- https://azuremarketplace.microsoft.com/
+marketplace_apps: []
+edges:
+- partner_name: AWS Marketplace
+  partner: amazon-web-services
+  partner_match: aggregator
+  type: marketplace
+  marketplace: aws-marketplace
+  channel: distribution
+  relationship: platform-app
+  direction: provider-built
+  evidence: https://aws.amazon.com/marketplace/seller-profile?id=797a91b6-8b38-4663-ad0c-8e9b681321ce
+  listing_count: 1
+  apps:
+  - Cohesity DataProtect delivered as a service
+  seller_name: Cohesity, Inc.
+  detected_by: sweep-cloud-marketplaces.py
+  detected: '2026-10-13'
+- partner_name: AWS Marketplace
+  partner: amazon-web-services
+  partner_match: aggregator
+  type: marketplace
+  marketplace: aws-marketplace
+  channel: distribution
+  relationship: platform-app
+  direction: provider-built
+  evidence: https://aws.amazon.com/marketplace/seller-profile?id=f59ca9e2-6f8c-4f35-ad87-0b4da0387c18
+  listing_count: 4
+  apps:
+  - Cohesity Data Cloud
+  - Cohesity FortKnox
+  - Cohesity Cloud Services
+  - Cohesity Cyber Resilience Bundle
+  seller_name: Cohesity, Inc.
+  detected_by: sweep-cloud-marketplaces.py
+  detected: '2026-10-13'
+- partner_name: AWS Marketplace
+  partner: amazon-web-services
+  partner_match: aggregator
+  type: marketplace
+  marketplace: aws-marketplace
+  channel: distribution
+  relationship: platform-app
+  direction: provider-built
+  evidence: https://aws.amazon.com/marketplace/seller-profile?id=b0db89e2-726d-4912-a837-56a1bfb2c328
+  listing_count: 3
+  apps:
+  - Cohesity Data Cloud - EMEA/APJ
+  - Cohesity FortKnox - EMEA/APJ
+  - Cohesity Cloud Services
+  seller_name: Cohesity, Inc.
+  detected_by: sweep-cloud-marketplaces.py
+  detected: '2026-10-13'
+- partner_name: Microsoft Azure Marketplace
+  partner: microsoft-azure
+  partner_match: aggregator
+  type: marketplace
+  marketplace: azure-marketplace
+  channel: distribution
+  relationship: platform-app
+  direction: provider-built
+  evidence: https://azuremarketplace.microsoft.com/en-us/marketplace/apps?search=Cohesity%20Inc
+  listing_count: 8
+  apps:
+  - NetBackup - Microsoft Sentinel Integration
+  - Cohesity Customer Success Services
+  - Cohesity Data Cloud
+  - Cohesity FortKnox
+  - Cohesity Cloud Services
+  seller_name: Cohesity Inc
+  detected_by: sweep-cloud-marketplaces.py
+  detected: '2026-10-13'
+- partner_name: Microsoft Azure Marketplace
+  partner: microsoft-azure
+  partner_match: aggregator
+  type: marketplace
+  marketplace: azure-marketplace
+  channel: distribution
+  relationship: platform-app
+  direction: provider-built
+  evidence: https://azuremarketplace.microsoft.com/en-us/marketplace/apps?search=Cohesity%20Inc
+  listing_count: 5
+  apps:
+  - Cohesity Data Cloud
+  - Cohesity FortKnox
+  - Cohesity Cloud Services
+  - Cohesity Cloud Services for Microsoft 365
+  - Cohesity Customer Success Services
+  seller_name: Cohesity Inc
+  detected_by: sweep-cloud-marketplaces.py
+  detected: '2026-10-13'
+- partner_name: Microsoft Azure Marketplace
+  partner: microsoft-azure
+  partner_match: aggregator
+  type: marketplace
+  marketplace: azure-marketplace
+  channel: distribution
+  relationship: platform-app
+  direction: provider-built
+  evidence: https://azuremarketplace.microsoft.com/en-us/marketplace/apps?search=Cohesity%2C%20Inc.
+  listing_count: 3
+  apps:
+  - Cohesity Security Integration for Microsoft Sentinel
+  - Cohesity DataProtect
+  - Cohesity DataPlatform DataProtect Cloud Edition
+  seller_name: Cohesity, Inc.
+  detected_by: sweep-cloud-marketplaces.py
+  detected: '2026-10-13'
