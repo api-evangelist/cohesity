@@ -140,16 +140,12 @@ paths:
         description: Request to delete one or more groups on the Cohesity Cluster.
 components:
   responses:
-    GetGroupsResponse:
-      description: Success
+    Error:
+      description: Error
       content:
         application/json:
           schema:
-            description: Specifies the groups that match the specified filter criteria.
-            type: array
-            title: Array of Groups.
-            items:
-              $ref: '#/components/schemas/Group'
+            $ref: '#/components/schemas/RequestError'
     UpdateGroupResponse:
       description: Success
       content:
@@ -162,15 +158,38 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Group'
-    Error:
-      description: Error
+    NoContentResponse:
+      description: No Content
+    GetGroupsResponse:
+      description: Success
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/RequestError'
-    NoContentResponse:
-      description: No Content
+            description: Specifies the groups that match the specified filter criteria.
+            type: array
+            title: Array of Groups.
+            items:
+              $ref: '#/components/schemas/Group'
   schemas:
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
     GroupDeleteParameters:
       description: Specifies the groups to delete on the Cohesity Cluster.
       type: object
@@ -240,6 +259,87 @@ components:
           - string
           - 'null'
           x-go-name: Type
+      x-go-package: cohesity/iris/server/data/public
+    GroupParameters:
+      description: 'Specifies the settings used to add/create a new group or modify an existing
+
+        group.'
+      type: object
+      title: Group Request.
+      properties:
+        description:
+          description: Specifies a description of the group.
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+        domain:
+          description: Specifies the domain of the group.
+          type:
+          - string
+          - 'null'
+          x-go-name: Domain
+        name:
+          description: Specifies the name of the group.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        restricted:
+          description: 'Whether the group is a restricted group. Users belonging to a restricted
+
+            group can only view objects they have permissions to.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: Restricted
+        roles:
+          description: 'Array of Roles.
+
+
+            Specifies the Cohesity roles to associate with the group such as
+
+            ''Admin'', ''Ops'' or ''View''.
+
+            The Cohesity roles determine privileges on the Cohesity Cluster
+
+            for all the users in this group.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Roles
+        smbPrincipals:
+          description: 'Specifies the SMB principals. Principals will be added to this group only
+
+            if IsSmbPrincipalOnly set to true.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SmbPrincipal'
+          x-go-name: SmbPrincipals
+        tenantIds:
+          description: 'Specifies the tenants to which the group belongs to. If not specified,
+
+            session user''s tenant id is assumed.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: TenantIds
+        users:
+          description: 'Specifies the SID of users who are members of the group.
+
+            This field is used only for local groups.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: Users
       x-go-package: cohesity/iris/server/data/public
     Group:
       description: Specifies details about the group.
@@ -339,106 +439,6 @@ components:
           items:
             type: string
           x-go-name: Usernames
-        users:
-          description: 'Specifies the SID of users who are members of the group.
-
-            This field is used only for local groups.'
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-go-name: Users
-      x-go-package: cohesity/iris/server/data/public
-    RequestError:
-      description: Details about the Error.
-      type: object
-      title: Error
-      properties:
-        errorCode:
-          description: Operation response error code.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ErrorCode
-        message:
-          description: Description of the error.
-          type:
-          - string
-          - 'null'
-          x-go-name: Message
-      x-go-package: cohesity/iris/server/data/public
-    GroupParameters:
-      description: 'Specifies the settings used to add/create a new group or modify an existing
-
-        group.'
-      type: object
-      title: Group Request.
-      properties:
-        description:
-          description: Specifies a description of the group.
-          type:
-          - string
-          - 'null'
-          x-go-name: Description
-        domain:
-          description: Specifies the domain of the group.
-          type:
-          - string
-          - 'null'
-          x-go-name: Domain
-        name:
-          description: Specifies the name of the group.
-          type:
-          - string
-          - 'null'
-          x-go-name: Name
-        restricted:
-          description: 'Whether the group is a restricted group. Users belonging to a restricted
-
-            group can only view objects they have permissions to.'
-          type:
-          - boolean
-          - 'null'
-          x-go-name: Restricted
-        roles:
-          description: 'Array of Roles.
-
-
-            Specifies the Cohesity roles to associate with the group such as
-
-            ''Admin'', ''Ops'' or ''View''.
-
-            The Cohesity roles determine privileges on the Cohesity Cluster
-
-            for all the users in this group.'
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-go-name: Roles
-        smbPrincipals:
-          description: 'Specifies the SMB principals. Principals will be added to this group only
-
-            if IsSmbPrincipalOnly set to true.'
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/SmbPrincipal'
-          x-go-name: SmbPrincipals
-        tenantIds:
-          description: 'Specifies the tenants to which the group belongs to. If not specified,
-
-            session user''s tenant id is assumed.'
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-go-name: TenantIds
         users:
           description: 'Specifies the SID of users who are members of the group.
 

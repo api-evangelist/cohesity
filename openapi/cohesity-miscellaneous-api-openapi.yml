@@ -48,34 +48,23 @@ components:
           - string
           - 'null'
           x-order: 1
-    FilteredObjectsResponseBody:
+    FilteredObject:
       description: Specifies the filter details.
       type: object
       properties:
-        filteredObjects:
-          description: Specifies the list of filtered Objects.
+        id:
+          description: Specifies object id.
           type:
-          - array
+          - integer
           - 'null'
-          items:
-            $ref: '#/components/schemas/FilteredObject'
+          format: int64
           x-order: 0
-    Filter:
-      description: Specifies the filter details.
-      type: object
-      properties:
-        filterString:
-          description: Specifies the filter string using wildcard supported strings or regular expressions.
+        sourceId:
+          description: Specifies the source id to which this object belongs to.
           type:
-          - string
+          - integer
           - 'null'
-          x-order: 0
-        isRegularExpression:
-          description: Specifies whether the provided filter string is a regular expression or not. This need to be explicitly set to true if user is trying to filter by regular expressions. Not providing this value in case of regular expression can result in unintended results. The default value is assumed to be false.
-          type:
-          - boolean
-          - 'null'
-          default: false
+          format: int64
           x-order: 1
     FilterObjectsRequest:
       description: Specifies the filter details.
@@ -136,37 +125,48 @@ components:
           - 'null'
           default: false
           x-order: 5
-    FilteredObject:
+    Filter:
       description: Specifies the filter details.
       type: object
       properties:
-        id:
-          description: Specifies object id.
+        filterString:
+          description: Specifies the filter string using wildcard supported strings or regular expressions.
           type:
-          - integer
+          - string
           - 'null'
-          format: int64
           x-order: 0
-        sourceId:
-          description: Specifies the source id to which this object belongs to.
+        isRegularExpression:
+          description: Specifies whether the provided filter string is a regular expression or not. This need to be explicitly set to true if user is trying to filter by regular expressions. Not providing this value in case of regular expression can result in unintended results. The default value is assumed to be false.
           type:
-          - integer
+          - boolean
           - 'null'
-          format: int64
+          default: false
           x-order: 1
+    FilteredObjectsResponseBody:
+      description: Specifies the filter details.
+      type: object
+      properties:
+        filteredObjects:
+          description: Specifies the list of filtered Objects.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FilteredObject'
+          x-order: 0
   responses:
-    ErrorResponse:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     FilterObjectsResponse:
       description: Success
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/FilteredObjectsResponseBody'
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     APIKeyHeader:
       in: header

@@ -46,28 +46,99 @@ paths:
         description: Specifies the list of notificationIds and the operation to be performed.
         required: true
 components:
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    GetNotificationsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Notifications'
+    NoContentResponse:
+      description: No Content
   schemas:
-    UpdateNotifications:
-      description: Specifies the list of notificationIds and the operation to be performed.
-      type: object
-      title: Update Notification attributes.
-      properties:
-        action:
-          description: 'Specifies the operation to be performed on the resource.
+    Notifications:
+      description: 'All the Notification events generated for a given user. This is used for
 
-            Eg. "action":"dismiss"'
+        for transferring notifications over wire.'
+      type: object
+      title: Notifications.
+      properties:
+        count:
+          description: Notification Count.
           type:
-          - string
+          - integer
           - 'null'
-          x-go-name: Action
-        notificationIds:
-          description: Specifies the list of NotificationIds to be operated upon.
+          format: int64
+          x-go-name: Count
+        notificationList:
+          description: Notification list.
           type:
           - array
           - 'null'
           items:
-            type: string
-          x-go-name: NotificationIds
+            $ref: '#/components/schemas/TaskNotification'
+          x-go-name: NotificationList
+        unreadCount:
+          description: Unread Notification Count.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: UnreadCount
+      x-go-package: cohesity/iris/server/data/public
+    BackupTaskInfo:
+      type: object
+      title: Parameters for a backup op.
+      properties:
+        instanceId:
+          description: Id of that particular instance
+          type:
+          - string
+          - 'null'
+          x-go-name: InstanceId
+        name:
+          description: Name of the recovery task.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        startTimeUsecs:
+          description: Denotes the start time of the backuptask, needed for deeplinking.
+          type:
+          - string
+          - 'null'
+          x-go-name: StartTimeUSecs
+        taskId:
+          description: Id of the recovery task.
+          type:
+          - string
+          - 'null'
+          x-go-name: TaskId
+      x-go-package: cohesity/iris/server/data/public
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
       x-go-package: cohesity/iris/server/data/public
     CloneTaskInfo:
       description: Parameters for a clone op.
@@ -202,6 +273,28 @@ components:
           format: int64
           x-go-name: VisitedTimeSecs
       x-go-package: cohesity/iris/server/data/public
+    UpdateNotifications:
+      description: Specifies the list of notificationIds and the operation to be performed.
+      type: object
+      title: Update Notification attributes.
+      properties:
+        action:
+          description: 'Specifies the operation to be performed on the resource.
+
+            Eg. "action":"dismiss"'
+          type:
+          - string
+          - 'null'
+          x-go-name: Action
+        notificationIds:
+          description: Specifies the list of NotificationIds to be operated upon.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          x-go-name: NotificationIds
+      x-go-package: cohesity/iris/server/data/public
     BulkInstallAppTaskInfo:
       description: Parameters for a bulk install app task.
       type: object
@@ -270,55 +363,6 @@ components:
           - completed
           x-go-name: State
       x-go-package: cohesity/iris/server/data/public
-    Notifications:
-      description: 'All the Notification events generated for a given user. This is used for
-
-        for transferring notifications over wire.'
-      type: object
-      title: Notifications.
-      properties:
-        count:
-          description: Notification Count.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: Count
-        notificationList:
-          description: Notification list.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/TaskNotification'
-          x-go-name: NotificationList
-        unreadCount:
-          description: Unread Notification Count.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: UnreadCount
-      x-go-package: cohesity/iris/server/data/public
-    RequestError:
-      description: Details about the Error.
-      type: object
-      title: Error
-      properties:
-        errorCode:
-          description: Operation response error code.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ErrorCode
-        message:
-          description: Description of the error.
-          type:
-          - string
-          - 'null'
-          x-go-name: Message
-      x-go-package: cohesity/iris/server/data/public
     BasicTaskInfo:
       type: object
       title: BasicTaskInfo handles the basic elements of the notification task.
@@ -371,47 +415,3 @@ components:
           - archive
           x-go-name: Type
       x-go-package: cohesity/iris/server/data/public
-    BackupTaskInfo:
-      type: object
-      title: Parameters for a backup op.
-      properties:
-        instanceId:
-          description: Id of that particular instance
-          type:
-          - string
-          - 'null'
-          x-go-name: InstanceId
-        name:
-          description: Name of the recovery task.
-          type:
-          - string
-          - 'null'
-          x-go-name: Name
-        startTimeUsecs:
-          description: Denotes the start time of the backuptask, needed for deeplinking.
-          type:
-          - string
-          - 'null'
-          x-go-name: StartTimeUSecs
-        taskId:
-          description: Id of the recovery task.
-          type:
-          - string
-          - 'null'
-          x-go-name: TaskId
-      x-go-package: cohesity/iris/server/data/public
-  responses:
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
-    GetNotificationsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Notifications'
-    NoContentResponse:
-      description: No Content

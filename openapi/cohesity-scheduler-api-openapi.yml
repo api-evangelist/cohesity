@@ -124,12 +124,6 @@ paths:
         description: Array of ids
 components:
   responses:
-    EmailReportResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SchedulerProto_SchedulerJob_ScheduleJobParameters_ReportJobParameter'
     Error:
       description: Error
       content:
@@ -142,14 +136,20 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/SchedulerProto_SchedulerJob'
-    NoContentResponse:
-      description: No Content
+    EmailReportResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SchedulerProto_SchedulerJob_ScheduleJobParameters_ReportJobParameter'
     UpdateSchedulerJobResponse:
       description: Success
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/SchedulerProto_SchedulerJob'
+    NoContentResponse:
+      description: No Content
     GetSchedulerJobsResponse:
       description: Success
       content:
@@ -157,38 +157,6 @@ components:
           schema:
             $ref: '#/components/schemas/SchedulerProto'
   schemas:
-    SchedulerProto_SchedulerJob_ScheduleJobParameters_ReportJobParameter_Report:
-      type: object
-      title: Specifies the type and parameters of a report.
-      properties:
-        name:
-          description: Specifies the report name.
-          type:
-          - string
-          - 'null'
-          x-go-name: Name
-        outputFormat:
-          description: Specifies the output format of the report.
-          type:
-          - string
-          - 'null'
-          x-go-name: OutputFormat
-        parameters:
-          $ref: '#/components/schemas/SchedulerProto_SchedulerJob_ScheduleJobParameters_ReportJobParameter_Report_Parameters'
-        subjectLine:
-          description: Specifies the subject line for report.
-          type:
-          - string
-          - 'null'
-          x-go-name: SubjectLine
-        type:
-          description: Specifies the report type.
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: Type
-      x-go-package: iris/base/scheduler.pb
     RequestError:
       description: Details about the Error.
       type: object
@@ -208,6 +176,32 @@ components:
           - 'null'
           x-go-name: Message
       x-go-package: cohesity/iris/server/data/public
+    SchedulerProto_SchedulerJob_Schedule:
+      description: A message which specifies the schedule of execution of the job.
+      type: object
+      title: Schedule.
+      properties:
+        day:
+          description: The day of the week when schedule should be executed (0-6).
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Day
+        hour:
+          description: The hour of the day when schedule should be executed (0-23).
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Hour
+        timezone:
+          description: The timezone for the execution of the schedule.
+          type:
+          - string
+          - 'null'
+          x-go-name: Timezone
+      x-go-package: iris/base/scheduler.pb
     SchedulerProto_SchedulerJob:
       description: Specifies the structure of the scheduler job along with its attributes.
       type: object
@@ -258,53 +252,6 @@ components:
           enum:
           - kSchedulerJobReport
           x-go-name: Type
-      x-go-package: iris/base/scheduler.pb
-    SchedulerProto:
-      description: Specifies the scheduler structure which holds the various schedule jobs.
-      type: object
-      title: Scheduler Proto.
-      properties:
-        schedulerJobs:
-          description: The array of the various scheduler jobs.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/SchedulerProto_SchedulerJob'
-          x-go-name: SchedulerJobs
-      x-go-package: iris/base/scheduler.pb
-    SchedulerProto_SchedulerJob_Schedule:
-      description: A message which specifies the schedule of execution of the job.
-      type: object
-      title: Schedule.
-      properties:
-        day:
-          description: The day of the week when schedule should be executed (0-6).
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: Day
-        hour:
-          description: The hour of the day when schedule should be executed (0-23).
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: Hour
-        timezone:
-          description: The timezone for the execution of the schedule.
-          type:
-          - string
-          - 'null'
-          x-go-name: Timezone
-      x-go-package: iris/base/scheduler.pb
-    SchedulerProto_SchedulerJob_ScheduleJobParameters:
-      type: object
-      title: Specifies the Scheduled Job parameters.
-      properties:
-        reportJobParameter:
-          $ref: '#/components/schemas/SchedulerProto_SchedulerJob_ScheduleJobParameters_ReportJobParameter'
       x-go-package: iris/base/scheduler.pb
     SchedulerProto_SchedulerJob_ScheduleJobParameters_ReportJobParameter_Report_Parameters:
       type: object
@@ -498,6 +445,38 @@ components:
           - 'null'
           x-go-name: VmName
       x-go-package: iris/base/scheduler.pb
+    SchedulerProto_SchedulerJob_ScheduleJobParameters_ReportJobParameter_Report:
+      type: object
+      title: Specifies the type and parameters of a report.
+      properties:
+        name:
+          description: Specifies the report name.
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        outputFormat:
+          description: Specifies the output format of the report.
+          type:
+          - string
+          - 'null'
+          x-go-name: OutputFormat
+        parameters:
+          $ref: '#/components/schemas/SchedulerProto_SchedulerJob_ScheduleJobParameters_ReportJobParameter_Report_Parameters'
+        subjectLine:
+          description: Specifies the subject line for report.
+          type:
+          - string
+          - 'null'
+          x-go-name: SubjectLine
+        type:
+          description: Specifies the report type.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Type
+      x-go-package: iris/base/scheduler.pb
     SchedulerProto_SchedulerJob_ScheduleJobParameters_ReportJobParameter:
       type: object
       title: Specifies the Report Job Parameters structure.
@@ -518,4 +497,25 @@ components:
           items:
             $ref: '#/components/schemas/SchedulerProto_SchedulerJob_ScheduleJobParameters_ReportJobParameter_Report'
           x-go-name: Reports
+      x-go-package: iris/base/scheduler.pb
+    SchedulerProto_SchedulerJob_ScheduleJobParameters:
+      type: object
+      title: Specifies the Scheduled Job parameters.
+      properties:
+        reportJobParameter:
+          $ref: '#/components/schemas/SchedulerProto_SchedulerJob_ScheduleJobParameters_ReportJobParameter'
+      x-go-package: iris/base/scheduler.pb
+    SchedulerProto:
+      description: Specifies the scheduler structure which holds the various schedule jobs.
+      type: object
+      title: Scheduler Proto.
+      properties:
+        schedulerJobs:
+          description: The array of the various scheduler jobs.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SchedulerProto_SchedulerJob'
+          x-go-name: SchedulerJobs
       x-go-package: iris/base/scheduler.pb

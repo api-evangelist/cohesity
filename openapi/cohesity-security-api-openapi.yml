@@ -341,31 +341,327 @@ paths:
       - APIKeyHeader: []
 components:
   schemas:
-    SecurityConfigPasswordLifetime:
-      description: Specifies security config for password lifetime.
+    TrustedCaRequest:
+      description: Specifies the basic info about CA Root Certificate.
+      type: object
+      required:
+      - name
+      - certificate
+      properties:
+        certificate:
+          description: 'Specifies the certificate to be imported. Certificate should be in
+
+            PEM format.'
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        name:
+          description: Descriptive name of the certificate.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        description:
+          description: Description of the certificate.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+    TrustedCa:
+      description: Specifies the basic info about CA Root Certificate.
       type: object
       properties:
-        minLifetimeDays:
-          description: Specifies the minimum password lifetime in days.
+        id:
+          description: Unique id for the certificate.
           type:
-          - integer
+          - string
           - 'null'
-          format: int32
-          minimum: 0
           x-order: 0
-        maxLifetimeDays:
-          description: Specifies the maximum password lifetime in days.
+          readOnly: true
+        name:
+          description: Unique name for the certificate.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+          readOnly: true
+        issuedBy:
+          description: Specifies the issuer.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+          readOnly: true
+        issuedTo:
+          description: Specifies whom it was issued to.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+          readOnly: true
+        issuedTimeUsecs:
+          description: 'Specifies the timestamp epoch in microseconds when this certificate
+
+            will start being valid.'
           type:
           - integer
           - 'null'
-          format: int32
-          minimum: 1
-          x-order: 1
-    UpdateSecurityConfigRequest:
-      description: Specifies the request params for updating the security config.
-      title: Update Security Config Request
+          format: int64
+          x-order: 4
+          readOnly: true
+        expirationTimeUsecs:
+          description: 'Specifies the timestamp epoch in microseconds when this certificate
+
+            will no longer be valid.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 5
+          readOnly: true
+        description:
+          description: description of the certificate.
+          type:
+          - string
+          - 'null'
+          x-order: 6
+          readOnly: true
+        registrationTimeUsecs:
+          description: 'Specifies the timestamp epoch in microseconds when this certificate
+
+            was registered on the cluster.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 7
+          readOnly: true
+        lastValidatedTimeUsecs:
+          description: 'Specifies the timestamp epoch in microseconds when this certificate
+
+            was last validated.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 8
+          readOnly: true
+        status:
+          description: Validation Status of the certificate.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Valid
+          - Expired
+          - Revoked
+          - Unknown
+          x-order: 9
+          readOnly: true
+    CreateCsrResponseBody:
+      description: Specifies the response to create a CSR.
+      title: Create CSR response
       allOf:
-      - $ref: '#/components/schemas/SecurityConfig'
+      - $ref: '#/components/schemas/CommonCsrResponseParams'
+    RegisterTrustedCas:
+      description: Specifies the parameters to register a Certificate.
+      type: object
+      required:
+      - certificates
+      properties:
+        certificates:
+          description: Specifies the certificates to be imported.
+          type:
+          - array
+          - 'null'
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/TrustedCaRequest'
+          x-order: 0
+        onlyValidate:
+          description: Specifies if the certificates are only to be validated.
+          type:
+          - boolean
+          - 'null'
+          x-order: 1
+    UpdateCertificateByCsrRequest:
+      description: Specifies the request to update a certificate.
+      type: object
+      required:
+      - certificate
+      - csrId
+      properties:
+        certificate:
+          description: Specifies the certificate to be imported.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        csrId:
+          description: Specifies the id of the csr corresponding to the certificate.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    GetCsrListResponseBody:
+      description: Specifies the list of CSRs.
+      type:
+      - array
+      - 'null'
+      title: Get CSR List response
+      items:
+        $ref: '#/components/schemas/CommonCsrResponseParams'
+    CiphersResp:
+      description: Specifies a list of enabled/disabled ciphers on the cluster.
+      type: object
+      title: 'Response with two lists: a list of enabled ciphers and a list of disabled ciphers.'
+      properties:
+        enabledCiphers:
+          description: Enabled ciphers.
+          type: array
+          items:
+            type: string
+            enum:
+            - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+            - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+            - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+            - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+            - TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA
+            - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA
+            - TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+            - TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA
+            - TLS_RSA_WITH_AES_256_GCM_SHA384
+            - TLS_RSA_WITH_AES_128_GCM_SHA256
+            - TLS_RSA_WITH_AES_256_CBC_SHA
+            - TLS_RSA_WITH_AES_128_CBC_SHA
+          x-order: 0
+        disabledCiphers:
+          description: Disabled ciphers.
+          type: array
+          items:
+            type: string
+            enum:
+            - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+            - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+            - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+            - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+            - TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA
+            - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA
+            - TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+            - TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA
+            - TLS_RSA_WITH_AES_256_GCM_SHA384
+            - TLS_RSA_WITH_AES_128_GCM_SHA256
+            - TLS_RSA_WITH_AES_256_CBC_SHA
+            - TLS_RSA_WITH_AES_128_CBC_SHA
+          x-order: 1
+    SecurityConfig:
+      description: Specifies the fields of security settings.
+      type: object
+      properties:
+        passwordStrength:
+          description: Specifies security settings related to password strength.
+          type: object
+          x-order: 0
+          $ref: '#/components/schemas/SecurityConfigPasswordStrength'
+        passwordReuse:
+          description: Specifies security settings related to password reuse.
+          type: object
+          x-order: 1
+          $ref: '#/components/schemas/SecurityConfigPasswordReuse'
+        passwordLifetime:
+          description: Specifies security settings related to password lifetime.
+          type: object
+          x-order: 2
+          $ref: '#/components/schemas/SecurityConfigPasswordLifetime'
+        accountLockout:
+          description: Specifies security settings related to account lockout.
+          type: object
+          x-order: 3
+          $ref: '#/components/schemas/SecurityConfigAccountLockout'
+        dataClassification:
+          description: Specifies security settings related to data classification.
+          type: object
+          x-order: 4
+          $ref: '#/components/schemas/SecurityConfigDataClassification'
+        sessionConfiguration:
+          description: Specifies security settings related to user sessions. Applies only when session management is enabled.
+          type: object
+          x-order: 5
+          $ref: '#/components/schemas/SecurityConfigSessionConfiguration'
+        certificateBasedAuth:
+          description: '"Specifies security settings related to certificate based
+
+            authentication."'
+          type: object
+          x-order: 6
+          $ref: '#/components/schemas/SecurityConfigCertificateBasedAuth'
+    ImportCertificateByClientcsrRequest:
+      description: Specifies the request to import a certificate.
+      type: object
+      required:
+      - certificateServer
+      - certificateClient
+      properties:
+        certificateServer:
+          description: Specifies the server certificate to be imported.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        certificateClient:
+          description: Specifies the client certificate to be imported.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+    SecurityConfigCertificateBasedAuth:
+      description: Specifies security config for certificate based authentication.
+      type: object
+      properties:
+        enableMappingBasedAuthentication:
+          description: 'If true, certfication based authentication is done via configured
+
+            mapping. Else it will proceed based on legacy serial number match.'
+          type:
+          - boolean
+          - 'null'
+          x-order: 0
+        certificateMapping:
+          description: Specifies the field to be used in certificate for authentication.
+          type:
+          - string
+          - 'null'
+          enum:
+          - CommonName
+          - EmailAddress
+          - UserPrincipalName
+          x-order: 1
+        adMapping:
+          description: Specifies the field to be used in AD user for authentication.
+          type:
+          - string
+          - 'null'
+          enum:
+          - SamAccountName
+          - UserPrincipalName
+          x-order: 2
+    ListTrustedCasResult:
+      description: Specifies the basic info about CA Root Certificate.
+      type: object
+      properties:
+        certificates:
+          description: 'Array of trusted certificates.
+
+            Specifies the list of certificates returned in this response.
+
+            List is not sorted.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TrustedCa'
+          x-order: 0
     SecurityConfigPasswordStrength:
       description: Specifies security config for password strength.
       type: object
@@ -402,6 +698,83 @@ components:
           - boolean
           - 'null'
           x-order: 4
+    SecurityConfigPasswordReuse:
+      description: Specifies security config for password reuse.
+      type: object
+      properties:
+        numDisallowedOldPasswords:
+          description: Specifies the minimum number of old passwords that are not allowed for changing the password.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          minimum: 0
+          x-order: 0
+        numDifferentChars:
+          description: Specifies the number of characters in the new password that needs to be different from the old password (only applicable when changing the user's own password).
+          type:
+          - integer
+          - 'null'
+          format: int32
+          minimum: 0
+          x-order: 1
+    CreateClientcsrResponseBody:
+      description: Specifies the response to creating the CSRs.
+      title: Create CSR response
+      properties:
+        publicKeyServer:
+          description: Specifies the public key generated for this CSR for the server.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        csrServer:
+          description: Specifies the CSR generated for the server.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        publicKeyClient:
+          description: Specifies the public key generated for this CSR for the client.
+          type:
+          - string
+          - 'null'
+          x-order: 2
+        csrClient:
+          description: Specifies the CSR generated for the client.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+        fileCsrServer:
+          description: Specifies the path to CSR generated for the server
+          type:
+          - string
+          - 'null'
+          x-order: 4
+        fileCsrClient:
+          description: Specifies the path to CSR generated for the client
+          type:
+          - string
+          - 'null'
+          x-order: 5
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      title: Error.
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        message:
+          description: Specifies the error message.
+          type:
+          - string
+          - 'null'
+          x-order: 1
     SecurityConfigAccountLockout:
       description: Specifies security config for account lockout.
       type: object
@@ -430,6 +803,84 @@ components:
           format: int32
           minimum: 1
           x-order: 2
+    ImportCertificateByClientcsrResponseBody:
+      description: Specifies the response to import a certificate.
+      type: object
+      title: Import Certificate Response
+      properties:
+        certificateServer:
+          description: Specifies the server certificate.
+          type:
+          - string
+          - 'null'
+          x-order: 0
+        privateKey:
+          description: Specifies the private key of agent.
+          type:
+          - string
+          - 'null'
+          x-order: 1
+        fileServerCert:
+          description: Specifies the path to the file to be uploaded to server. This file has the server cert, id and encrypted private key
+          type:
+          - string
+          - 'null'
+          x-order: 2
+    CommonCsrResponseParams:
+      description: Specifies the common response params for a CSR.
+      allOf:
+      - $ref: '#/components/schemas/CommonCsrRequestParams'
+      - type: object
+        properties:
+          id:
+            description: Specifies the id of the CSR.
+            type:
+            - string
+            - 'null'
+            x-order: 0
+          publicKey:
+            description: Specifies the public key generated for this CSR.
+            type:
+            - string
+            - 'null'
+            x-order: 1
+          csr:
+            description: Specifies the CSR generated for the service.
+            type:
+            - string
+            - 'null'
+            x-order: 2
+    ModifyCiphersRequestBody:
+      description: Specifies ciphers to enable/disable on the cluster.
+      type: object
+      title: Request to enable/disable a list of ciphers.
+      required:
+      - enable
+      - ciphers
+      properties:
+        enable:
+          description: If true, the ciphers passed in will be enabled on the cluster and all other ciphers will be disabled. If false, the ciphers specified will be disabled and all other ciphers on the cluster will be enabled.
+          type: boolean
+          x-order: 0
+        ciphers:
+          description: Specifies a list of ciphers to enable/disable on the cluster.
+          type: array
+          items:
+            type: string
+            enum:
+            - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+            - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+            - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+            - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+            - TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA
+            - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA
+            - TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+            - TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA
+            - TLS_RSA_WITH_AES_256_GCM_SHA384
+            - TLS_RSA_WITH_AES_128_GCM_SHA256
+            - TLS_RSA_WITH_AES_256_CBC_SHA
+            - TLS_RSA_WITH_AES_128_CBC_SHA
+          x-order: 1
     CommonCsrRequestParams:
       description: Specifies the parameters of a CSR.
       type: object
@@ -524,117 +975,26 @@ components:
           enum:
           - iris
           x-order: 11
-    ListTrustedCasResult:
-      description: Specifies the basic info about CA Root Certificate.
+    SecurityConfigPasswordLifetime:
+      description: Specifies security config for password lifetime.
       type: object
       properties:
-        certificates:
-          description: 'Array of trusted certificates.
-
-            Specifies the list of certificates returned in this response.
-
-            List is not sorted.'
+        minLifetimeDays:
+          description: Specifies the minimum password lifetime in days.
           type:
-          - array
+          - integer
           - 'null'
-          items:
-            $ref: '#/components/schemas/TrustedCa'
+          format: int32
+          minimum: 0
           x-order: 0
-    CreateClientcsrResponseBody:
-      description: Specifies the response to creating the CSRs.
-      title: Create CSR response
-      properties:
-        publicKeyServer:
-          description: Specifies the public key generated for this CSR for the server.
+        maxLifetimeDays:
+          description: Specifies the maximum password lifetime in days.
           type:
-          - string
+          - integer
           - 'null'
-          x-order: 0
-        csrServer:
-          description: Specifies the CSR generated for the server.
-          type:
-          - string
-          - 'null'
+          format: int32
+          minimum: 1
           x-order: 1
-        publicKeyClient:
-          description: Specifies the public key generated for this CSR for the client.
-          type:
-          - string
-          - 'null'
-          x-order: 2
-        csrClient:
-          description: Specifies the CSR generated for the client.
-          type:
-          - string
-          - 'null'
-          x-order: 3
-        fileCsrServer:
-          description: Specifies the path to CSR generated for the server
-          type:
-          - string
-          - 'null'
-          x-order: 4
-        fileCsrClient:
-          description: Specifies the path to CSR generated for the client
-          type:
-          - string
-          - 'null'
-          x-order: 5
-    SecurityConfigCertificateBasedAuth:
-      description: Specifies security config for certificate based authentication.
-      type: object
-      properties:
-        enableMappingBasedAuthentication:
-          description: 'If true, certfication based authentication is done via configured
-
-            mapping. Else it will proceed based on legacy serial number match.'
-          type:
-          - boolean
-          - 'null'
-          x-order: 0
-        certificateMapping:
-          description: Specifies the field to be used in certificate for authentication.
-          type:
-          - string
-          - 'null'
-          enum:
-          - CommonName
-          - EmailAddress
-          - UserPrincipalName
-          x-order: 1
-        adMapping:
-          description: Specifies the field to be used in AD user for authentication.
-          type:
-          - string
-          - 'null'
-          enum:
-          - SamAccountName
-          - UserPrincipalName
-          x-order: 2
-    CommonCsrResponseParams:
-      description: Specifies the common response params for a CSR.
-      allOf:
-      - $ref: '#/components/schemas/CommonCsrRequestParams'
-      - type: object
-        properties:
-          id:
-            description: Specifies the id of the CSR.
-            type:
-            - string
-            - 'null'
-            x-order: 0
-          publicKey:
-            description: Specifies the public key generated for this CSR.
-            type:
-            - string
-            - 'null'
-            x-order: 1
-          csr:
-            description: Specifies the CSR generated for the service.
-            type:
-            - string
-            - 'null'
-            x-order: 2
     SecurityConfigSessionConfiguration:
       description: Specifies configuration for user sessions.
       type: object
@@ -677,19 +1037,6 @@ components:
           format: int64
           minimum: 1
           x-order: 4
-    GetCsrListResponseBody:
-      description: Specifies the list of CSRs.
-      type:
-      - array
-      - 'null'
-      title: Get CSR List response
-      items:
-        $ref: '#/components/schemas/CommonCsrResponseParams'
-    SecurityConfigResponse:
-      description: Specifies the detail response the security config.
-      title: Security Config Response
-      allOf:
-      - $ref: '#/components/schemas/SecurityConfig'
     UpdateCertificateByCsrResponseBody:
       description: Specifies the response to update a certificate.
       type: object
@@ -701,175 +1048,21 @@ components:
           - string
           - 'null'
           x-order: 0
-    UpdateCertificateByCsrRequest:
-      description: Specifies the request to update a certificate.
-      type: object
-      required:
-      - certificate
-      - csrId
-      properties:
-        certificate:
-          description: Specifies the certificate to be imported.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        csrId:
-          description: Specifies the id of the csr corresponding to the certificate.
-          type:
-          - string
-          - 'null'
-          x-order: 1
-    ModifyCiphersRequestBody:
-      description: Specifies ciphers to enable/disable on the cluster.
-      type: object
-      title: Request to enable/disable a list of ciphers.
-      required:
-      - enable
-      - ciphers
-      properties:
-        enable:
-          description: If true, the ciphers passed in will be enabled on the cluster and all other ciphers will be disabled. If false, the ciphers specified will be disabled and all other ciphers on the cluster will be enabled.
-          type: boolean
-          x-order: 0
-        ciphers:
-          description: Specifies a list of ciphers to enable/disable on the cluster.
-          type: array
-          items:
-            type: string
-            enum:
-            - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
-            - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
-            - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-            - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-            - TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA
-            - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA
-            - TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
-            - TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA
-            - TLS_RSA_WITH_AES_256_GCM_SHA384
-            - TLS_RSA_WITH_AES_128_GCM_SHA256
-            - TLS_RSA_WITH_AES_256_CBC_SHA
-            - TLS_RSA_WITH_AES_128_CBC_SHA
-          x-order: 1
-    TrustedCa:
-      description: Specifies the basic info about CA Root Certificate.
-      type: object
-      properties:
-        id:
-          description: Unique id for the certificate.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-          readOnly: true
-        name:
-          description: Unique name for the certificate.
-          type:
-          - string
-          - 'null'
-          x-order: 1
-          readOnly: true
-        issuedBy:
-          description: Specifies the issuer.
-          type:
-          - string
-          - 'null'
-          x-order: 2
-          readOnly: true
-        issuedTo:
-          description: Specifies whom it was issued to.
-          type:
-          - string
-          - 'null'
-          x-order: 3
-          readOnly: true
-        issuedTimeUsecs:
-          description: 'Specifies the timestamp epoch in microseconds when this certificate
-
-            will start being valid.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-order: 4
-          readOnly: true
-        expirationTimeUsecs:
-          description: 'Specifies the timestamp epoch in microseconds when this certificate
-
-            will no longer be valid.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-order: 5
-          readOnly: true
-        description:
-          description: description of the certificate.
-          type:
-          - string
-          - 'null'
-          x-order: 6
-          readOnly: true
-        registrationTimeUsecs:
-          description: 'Specifies the timestamp epoch in microseconds when this certificate
-
-            was registered on the cluster.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-order: 7
-          readOnly: true
-        lastValidatedTimeUsecs:
-          description: 'Specifies the timestamp epoch in microseconds when this certificate
-
-            was last validated.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-order: 8
-          readOnly: true
-        status:
-          description: Validation Status of the certificate.
-          type:
-          - string
-          - 'null'
-          enum:
-          - Valid
-          - Expired
-          - Revoked
-          - Unknown
-          x-order: 9
-          readOnly: true
+    SecurityConfigResponse:
+      description: Specifies the detail response the security config.
+      title: Security Config Response
+      allOf:
+      - $ref: '#/components/schemas/SecurityConfig'
     CreateCsrRequest:
       description: Specifies the request to create a CSR.
       title: Create CSR Request.
       allOf:
       - $ref: '#/components/schemas/CommonCsrRequestParams'
-    ImportCertificateByClientcsrResponseBody:
-      description: Specifies the response to import a certificate.
-      type: object
-      title: Import Certificate Response
-      properties:
-        certificateServer:
-          description: Specifies the server certificate.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        privateKey:
-          description: Specifies the private key of agent.
-          type:
-          - string
-          - 'null'
-          x-order: 1
-        fileServerCert:
-          description: Specifies the path to the file to be uploaded to server. This file has the server cert, id and encrypted private key
-          type:
-          - string
-          - 'null'
-          x-order: 2
+    UpdateSecurityConfigRequest:
+      description: Specifies the request params for updating the security config.
+      title: Update Security Config Request
+      allOf:
+      - $ref: '#/components/schemas/SecurityConfig'
     SecurityConfigDataClassification:
       description: Specifies security config for data classification.
       type: object
@@ -892,250 +1085,27 @@ components:
           - string
           - 'null'
           x-order: 2
-    CreateCsrResponseBody:
-      description: Specifies the response to create a CSR.
-      title: Create CSR response
-      allOf:
-      - $ref: '#/components/schemas/CommonCsrResponseParams'
-    SecurityConfigPasswordReuse:
-      description: Specifies security config for password reuse.
-      type: object
-      properties:
-        numDisallowedOldPasswords:
-          description: Specifies the minimum number of old passwords that are not allowed for changing the password.
-          type:
-          - integer
-          - 'null'
-          format: int32
-          minimum: 0
-          x-order: 0
-        numDifferentChars:
-          description: Specifies the number of characters in the new password that needs to be different from the old password (only applicable when changing the user's own password).
-          type:
-          - integer
-          - 'null'
-          format: int32
-          minimum: 0
-          x-order: 1
-    Error:
-      description: Specifies the error object with error code and a message.
-      type: object
-      title: Error.
-      properties:
-        errorCode:
-          description: Specifies the error code.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        message:
-          description: Specifies the error message.
-          type:
-          - string
-          - 'null'
-          x-order: 1
-    ImportCertificateByClientcsrRequest:
-      description: Specifies the request to import a certificate.
-      type: object
-      required:
-      - certificateServer
-      - certificateClient
-      properties:
-        certificateServer:
-          description: Specifies the server certificate to be imported.
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        certificateClient:
-          description: Specifies the client certificate to be imported.
-          type:
-          - string
-          - 'null'
-          x-order: 1
-    SecurityConfig:
-      description: Specifies the fields of security settings.
-      type: object
-      properties:
-        passwordStrength:
-          description: Specifies security settings related to password strength.
-          type: object
-          x-order: 0
-          $ref: '#/components/schemas/SecurityConfigPasswordStrength'
-        passwordReuse:
-          description: Specifies security settings related to password reuse.
-          type: object
-          x-order: 1
-          $ref: '#/components/schemas/SecurityConfigPasswordReuse'
-        passwordLifetime:
-          description: Specifies security settings related to password lifetime.
-          type: object
-          x-order: 2
-          $ref: '#/components/schemas/SecurityConfigPasswordLifetime'
-        accountLockout:
-          description: Specifies security settings related to account lockout.
-          type: object
-          x-order: 3
-          $ref: '#/components/schemas/SecurityConfigAccountLockout'
-        dataClassification:
-          description: Specifies security settings related to data classification.
-          type: object
-          x-order: 4
-          $ref: '#/components/schemas/SecurityConfigDataClassification'
-        sessionConfiguration:
-          description: Specifies security settings related to user sessions. Applies only when session management is enabled.
-          type: object
-          x-order: 5
-          $ref: '#/components/schemas/SecurityConfigSessionConfiguration'
-        certificateBasedAuth:
-          description: '"Specifies security settings related to certificate based
-
-            authentication."'
-          type: object
-          x-order: 6
-          $ref: '#/components/schemas/SecurityConfigCertificateBasedAuth'
-    CiphersResp:
-      description: Specifies a list of enabled/disabled ciphers on the cluster.
-      type: object
-      title: 'Response with two lists: a list of enabled ciphers and a list of disabled ciphers.'
-      properties:
-        enabledCiphers:
-          description: Enabled ciphers.
-          type: array
-          items:
-            type: string
-            enum:
-            - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
-            - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
-            - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-            - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-            - TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA
-            - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA
-            - TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
-            - TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA
-            - TLS_RSA_WITH_AES_256_GCM_SHA384
-            - TLS_RSA_WITH_AES_128_GCM_SHA256
-            - TLS_RSA_WITH_AES_256_CBC_SHA
-            - TLS_RSA_WITH_AES_128_CBC_SHA
-          x-order: 0
-        disabledCiphers:
-          description: Disabled ciphers.
-          type: array
-          items:
-            type: string
-            enum:
-            - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
-            - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
-            - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-            - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-            - TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA
-            - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA
-            - TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
-            - TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA
-            - TLS_RSA_WITH_AES_256_GCM_SHA384
-            - TLS_RSA_WITH_AES_128_GCM_SHA256
-            - TLS_RSA_WITH_AES_256_CBC_SHA
-            - TLS_RSA_WITH_AES_128_CBC_SHA
-          x-order: 1
-    RegisterTrustedCas:
-      description: Specifies the parameters to register a Certificate.
-      type: object
-      required:
-      - certificates
-      properties:
-        certificates:
-          description: Specifies the certificates to be imported.
-          type:
-          - array
-          - 'null'
-          minItems: 1
-          items:
-            $ref: '#/components/schemas/TrustedCaRequest'
-          x-order: 0
-        onlyValidate:
-          description: Specifies if the certificates are only to be validated.
-          type:
-          - boolean
-          - 'null'
-          x-order: 1
-    TrustedCaRequest:
-      description: Specifies the basic info about CA Root Certificate.
-      type: object
-      required:
-      - name
-      - certificate
-      properties:
-        certificate:
-          description: 'Specifies the certificate to be imported. Certificate should be in
-
-            PEM format.'
-          type:
-          - string
-          - 'null'
-          x-order: 0
-        name:
-          description: Descriptive name of the certificate.
-          type:
-          - string
-          - 'null'
-          x-order: 1
-        description:
-          description: Description of the certificate.
-          type:
-          - string
-          - 'null'
-          x-order: 2
   responses:
-    CiphersResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CiphersResp'
-    CreateClientcsrResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CreateClientcsrResponseBody'
+    NoContentResponse:
+      description: No Content
     SecurityConfigResponse:
       description: Success
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/SecurityConfigResponse'
-    NoContentResponse:
-      description: No Content
-    GetCsrListResponse:
+    CreateCsrResponse:
       description: Success
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/GetCsrListResponseBody'
+            $ref: '#/components/schemas/CreateCsrResponseBody'
     ImportCertificateByClientcsrResponse:
       description: Success
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ImportCertificateByClientcsrResponseBody'
-    ListTrustedCaByIdResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/TrustedCa'
-    ListTrustedCasResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ListTrustedCasResult'
-    ErrorResponse:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     GetCsrResponse:
       description: Success
       content:
@@ -1148,12 +1118,42 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/UpdateCertificateByCsrResponseBody'
-    CreateCsrResponse:
+    CiphersResponse:
       description: Success
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/CreateCsrResponseBody'
+            $ref: '#/components/schemas/CiphersResp'
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    GetCsrListResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetCsrListResponseBody'
+    ListTrustedCaByIdResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TrustedCa'
+    ListTrustedCasResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ListTrustedCasResult'
+    CreateClientcsrResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateClientcsrResponseBody'
   securitySchemes:
     APIKeyHeader:
       in: header

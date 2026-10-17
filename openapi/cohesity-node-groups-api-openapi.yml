@@ -125,13 +125,40 @@ paths:
       security:
       - APIKeyHeader: []
 components:
+  responses:
+    UpdateNodeGroupResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NodeGroupResponse'
+    GetNodeGroupByNameResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NodeGroupResponse'
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NoContentResponse:
+      description: No Content
+    CreateNodeGroupResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NodeGroupResponse'
+    GetNodeGroupsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NodeGroupResponse'
   schemas:
-    NodeGroupRequest:
-      description: Specifies the request to create a Node Group.
-      title: Node Group Request.
-      allOf:
-      - $ref: '#/components/schemas/NodeGroup'
-      - type: object
     Error:
       description: Specifies the error object with error code and a message.
       type: object
@@ -177,30 +204,6 @@ components:
           description: Bgp timers.
           x-order: 3
           $ref: '#/components/schemas/BgpTimers'
-    BgpInstance:
-      description: BGP instance.
-      type: object
-      title: bgpInstance
-      properties:
-        localAS:
-          description: Local AS.
-          type:
-          - integer
-          - 'null'
-          format: uint32
-          x-order: 0
-        peers:
-          description: List of bgp peer groups.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/BgpPeer'
-          x-order: 1
-        timers:
-          description: BGP timers.
-          x-order: 2
-          $ref: '#/components/schemas/BgpTimers'
     BgpTimers:
       description: BGP protocol timers.
       type: object
@@ -244,19 +247,30 @@ components:
           - string
           - 'null'
           x-order: 2
-    NodeGroupResponse:
-      description: Specifies the details of Node Groups.
-      title: Node Group Response
+    BgpInstance:
+      description: BGP instance.
+      type: object
+      title: bgpInstance
       properties:
-        nodeGroups:
-          description: Specifies the details of a Node Group.
+        localAS:
+          description: Local AS.
+          type:
+          - integer
+          - 'null'
+          format: uint32
+          x-order: 0
+        peers:
+          description: List of bgp peer groups.
           type:
           - array
           - 'null'
-          title: Node Groups
           items:
-            $ref: '#/components/schemas/NodeGroup'
-          x-order: 0
+            $ref: '#/components/schemas/BgpPeer'
+          x-order: 1
+        timers:
+          description: BGP timers.
+          x-order: 2
+          $ref: '#/components/schemas/BgpTimers'
     DnsServersInfo:
       description: List of DNS servers in cluster.
       type: object
@@ -269,6 +283,19 @@ components:
           - 'null'
           items:
             type: string
+          x-order: 0
+    NodeGroupResponse:
+      description: Specifies the details of Node Groups.
+      title: Node Group Response
+      properties:
+        nodeGroups:
+          description: Specifies the details of a Node Group.
+          type:
+          - array
+          - 'null'
+          title: Node Groups
+          items:
+            $ref: '#/components/schemas/NodeGroup'
           x-order: 0
     NodeGroup:
       description: Specifies common fields required to define Node Group.
@@ -317,39 +344,12 @@ components:
           description: DNS servers information in node group.
           x-order: 6
           $ref: '#/components/schemas/DnsServersInfo'
-  responses:
-    CreateNodeGroupResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NodeGroupResponse'
-    GetNodeGroupByNameResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NodeGroupResponse'
-    GetNodeGroupsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NodeGroupResponse'
-    UpdateNodeGroupResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NodeGroupResponse'
-    NoContentResponse:
-      description: No Content
-    ErrorResponse:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+    NodeGroupRequest:
+      description: Specifies the request to create a Node Group.
+      title: Node Group Request.
+      allOf:
+      - $ref: '#/components/schemas/NodeGroup'
+      - type: object
   securitySchemes:
     APIKeyHeader:
       in: header

@@ -173,7 +173,91 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 components:
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestError'
+    GetRemoteClusterByIdResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            description: 'A single remote Cluster instance with the specified Cluster id is returned
+
+              in this Array.'
+            type: array
+            title: Single Remote Cluster in Array.
+            items:
+              $ref: '#/components/schemas/RemoteCluster'
+    GetRemoteClustersResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            description: 'Specifies the remote Clusters that are registered on this Cluster
+
+              for replication that match the specified filter criteria.'
+            type: array
+            title: Array of Remote Clusters.
+            items:
+              $ref: '#/components/schemas/RemoteCluster'
+    NoContentResponse:
+      description: No Content
+    CreateRemoteClusterResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RemoteCluster'
+    GetReplicationEncryptionKeyResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReplicationEncryptionKeyReponse'
+    UpdateRemoteClusterResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RemoteCluster'
   schemas:
+    AccessTokenCredential:
+      description: Specifies the Cohesity credentials required for generating an access token.
+      type: object
+      title: Create Access Token Credential Request.
+      required:
+      - username
+      - password
+      properties:
+        domain:
+          description: 'Specifies the domain the user is logging in to. For a Local user model,
+
+            the domain is always LOCAL. For LDAP/AD user models, the domain will map to
+
+            an LDAP connection string. A user is uniquely identified by a
+
+            combination of username and domain. If this is not set, LOCAL is assumed.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Domain
+        password:
+          description: Specifies the password of the Cohesity user account.
+          type:
+          - string
+          - 'null'
+          x-go-name: Password
+        username:
+          description: Specifies the login name of the Cohesity user.
+          type:
+          - string
+          - 'null'
+          x-go-name: Username
+      x-go-package: cohesity/iris/server/data/public
     ReplicationEncryptionKeyReponse:
       description: 'Specifies the encryption key that is used for encrypting replication data
 
@@ -187,209 +271,6 @@ components:
           - string
           - 'null'
           x-go-name: EncryptionKey
-      x-go-package: cohesity/iris/server/data/public
-    RegisterRemoteCluster:
-      description: 'Specifies the settings required for registering a remote Cluster
-
-        on this local Cluster.'
-      type: object
-      title: Register Remote Cluster.
-      properties:
-        allEndpointsReachable:
-          description: 'Specifies whether any endpoint (such as a Node) on the remote Cluster
-
-            is reachable from this local Cluster.
-
-            If true, a service running on the local Cluster can communicate
-
-            directly with any of its peers running on the remote Cluster, without
-
-            using a proxy.'
-          type:
-          - boolean
-          - 'null'
-          x-go-name: AllEndpointsReachable
-        autoRegisterTarget:
-          description: 'Specifies whether the remote cluster needs to be kept in sync.
-
-            This will be set to true by default.'
-          type:
-          - boolean
-          - 'null'
-          x-go-name: AutoRegisterTarget
-        autoRegistration:
-          description: 'Specifies whether the remote registration has happened automatically
-
-            (due to registration on the other site).
-
-            Can''t think of other states (other than manually & automatically) so this
-
-            isn''t an enum.
-
-            For a manual registration, this field will not be set.'
-          type:
-          - boolean
-          - 'null'
-          x-go-name: AutoRegistration
-        bandwidthLimit:
-          description: 'Specifies settings for limiting the data transfer rate between
-
-            the local and remote Clusters.'
-          title: Bandwidth Limit.
-          $ref: '#/components/schemas/BandwidthLimit'
-        clusterId:
-          description: Specifies the unique id of the remote Cluster.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ClusterId
-        clusterIncarnationId:
-          description: 'Specifies the unique incarnation id of the remote Cluster. This
-
-            id is determined dynamically by contacting the remote Cluster.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: ClusterIncarnationId
-        compressionEnabled:
-          description: 'Specifies whether to compress the outbound data when
-
-            transferring the replication data over the network to the remote Cluster.'
-          type:
-          - boolean
-          - 'null'
-          x-go-name: CompressionEnabled
-        description:
-          description: Specifies any additional information if needed.
-          type:
-          - string
-          - 'null'
-          x-go-name: Description
-        encryptionKey:
-          description: 'Specifies the encryption key used for encrypting the replication data
-
-            from a local Cluster to a remote Cluster.
-
-            If a key is not specified, replication traffic encryption is disabled.
-
-            When Snapshots are replicated from a local Cluster to a remote Cluster,
-
-            the encryption key specified on the local Cluster must be the same
-
-            as the key specified on the remote Cluster.'
-          type:
-          - string
-          - 'null'
-          x-go-name: EncryptionKey
-        name:
-          description: 'Specifies the name of the remote cluster. This field is determined
-
-            dynamically by contacting the remote cluster.'
-          type:
-          - string
-          - 'null'
-          x-go-name: Name
-        networkInterface:
-          description: 'Specifies the name of the network interfaces to use for communicating with
-
-            the remote Cluster.'
-          type:
-          - string
-          - 'null'
-          x-go-name: NetworkInterface
-        password:
-          description: 'Specifies the password for Cohesity user to use when
-
-            connecting to the remote Cluster.'
-          type:
-          - string
-          - 'null'
-          x-go-name: Password
-        purposeRemoteAccess:
-          description: Whether the remote cluster will be used for remote access for SPOG.
-          type:
-          - boolean
-          - 'null'
-          x-go-name: PurposeRemoteAccess
-        purposeReplication:
-          description: Whether the remote cluster will be used for replication.
-          type:
-          - boolean
-          - 'null'
-          x-go-name: PurposeReplication
-        remoteAccessCredentials:
-          description: 'Optional field for the user credentials to connect to Iris for remote
-
-            access for SPOG. If this is not specified, then credentials specified
-
-            for replication set up will be used for remote access for SPOG.
-
-            Allowing a different user credentials to be set up for SPOG permits
-
-            having different roles for remote access for SPOG and replication set
-
-            up.'
-          $ref: '#/components/schemas/AccessTokenCredential'
-        remoteIps:
-          description: 'Array of Remote Node IP Addresses.
-
-
-            Specifies the IP addresses of the Nodes on the remote Cluster to
-
-            connect with. These IP addresses can also be VIPS.
-
-            Specifying hostnames is not supported.'
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          x-go-name: RemoteIps
-        remoteIrisPorts:
-          description: 'Array of Ports.
-
-
-            Specifies the ports to use when connecting to the Nodes of the
-
-            remote Cluster.'
-          type:
-          - array
-          - 'null'
-          items:
-            type: integer
-            format: int64
-          x-go-name: RemoteIrisPorts
-        userName:
-          description: 'Specifies the Cohesity user name used to connect to the
-
-            remote Cluster.'
-          type:
-          - string
-          - 'null'
-          x-go-name: UserName
-        validateOnly:
-          description: Whether to only validate the credentials without saving the information.
-          type:
-          - boolean
-          - 'null'
-          x-go-name: ValidateOnly
-        viewBoxPairInfo:
-          description: 'Array of Storage Domain (View Box) Pairs.
-
-
-            Specifies pairings between Storage Domains (View Boxes) on the local Cluster
-
-            with Storage Domains (View Boxes) on a remote Cluster that are used in
-
-            replication.'
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ViewBoxPairInfo'
-          x-go-name: ViewBoxPairInfoList
       x-go-package: cohesity/iris/server/data/public
     RequestError:
       description: Details about the Error.
@@ -650,6 +531,117 @@ components:
           - 'null'
           x-go-name: RemoteViewBoxName
       x-go-package: cohesity/iris/server/data/public
+    TimeOfAWeek:
+      description: 'Specifies a time period by specifying a single daily time period
+
+        and one or more days of the week, for example 9 AM - 5 PM
+
+        on Monday, Wednesday or Friday. If different time periods are required
+
+        on different days, then multiple instances of this Weekly Time Period
+
+        must be specified.'
+      type: object
+      title: Time Period.
+      properties:
+        days:
+          description: 'Array of Week Days.
+
+
+            Specifies a list of days of a week (such as ''kSunday'') when the
+
+            time period should be applied.
+
+            If not set, the time range applies to all days of the week.
+
+            Specifies a day in a week such as ''kSunday'', ''kMonday'', etc.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            enum:
+            - kSunday
+            - kMonday
+            - kTuesday
+            - kWednesday
+            - kThursday
+            - kFriday
+            - kSaturday
+          x-go-name: Days
+        endTime:
+          description: Specifies the end time for the daily time period.
+          title: End Time.
+          allOf:
+          - $ref: '#/components/schemas/TimeOfDay'
+        isAllDay:
+          description: 'All Day.
+
+
+            Specifies that time range is applied for entire day.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: IsAllDay
+        startTime:
+          description: Specifies the start time for the daily time period.
+          title: Start Time.
+          allOf:
+          - $ref: '#/components/schemas/TimeOfDay'
+      x-go-package: cohesity/iris/server/data/public
+    BandwidthLimitOverride:
+      description: 'Specifies bandwidth limit override value to be enforced during
+
+        the specified daily time period for the specified days of the week.'
+      type: object
+      title: Bandwidth Limit Override
+      properties:
+        bytesPerSecond:
+          description: 'Specifies the value to override the regular maximum bandwidth rate
+
+            (rateLimitBytesPerSec) for the specified time period.
+
+            The value is specified in bytes per second.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: BytesPerSecond
+        ioRate:
+          description: 'Specifies the value to override the default IO rate for the specified
+
+            time period.'
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: IoRate
+        timePeriods:
+          description: 'Specifies a daily time period and days of the week when the
+
+            regular maximum bandwidth rate should be overridden.'
+          $ref: '#/components/schemas/TimeOfAWeek'
+      x-go-package: cohesity/iris/server/data/public
+    TimeOfDay:
+      description: Specifies a time in day with hours and minutes.
+      type: object
+      title: Time of Day.
+      properties:
+        hour:
+          description: Specifies an (0-23) hour in a day.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Hour
+        minute:
+          description: Specifies a (0-59) minute in an hour.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Minute
+      x-go-package: cohesity/iris/server/data/public
     BandwidthLimit:
       description: 'Specifies settings for limiting the data transfer rate between
 
@@ -711,198 +703,206 @@ components:
           - 'null'
           x-go-name: Timezone
       x-go-package: cohesity/iris/server/data/public
-    AccessTokenCredential:
-      description: Specifies the Cohesity credentials required for generating an access token.
+    RegisterRemoteCluster:
+      description: 'Specifies the settings required for registering a remote Cluster
+
+        on this local Cluster.'
       type: object
-      title: Create Access Token Credential Request.
-      required:
-      - username
-      - password
+      title: Register Remote Cluster.
       properties:
-        domain:
-          description: 'Specifies the domain the user is logging in to. For a Local user model,
+        allEndpointsReachable:
+          description: 'Specifies whether any endpoint (such as a Node) on the remote Cluster
 
-            the domain is always LOCAL. For LDAP/AD user models, the domain will map to
+            is reachable from this local Cluster.
 
-            an LDAP connection string. A user is uniquely identified by a
+            If true, a service running on the local Cluster can communicate
 
-            combination of username and domain. If this is not set, LOCAL is assumed.'
+            directly with any of its peers running on the remote Cluster, without
+
+            using a proxy.'
           type:
-          - string
+          - boolean
           - 'null'
-          x-go-name: Domain
-        password:
-          description: Specifies the password of the Cohesity user account.
-          type:
-          - string
-          - 'null'
-          x-go-name: Password
-        username:
-          description: Specifies the login name of the Cohesity user.
-          type:
-          - string
-          - 'null'
-          x-go-name: Username
-      x-go-package: cohesity/iris/server/data/public
-    TimeOfDay:
-      description: Specifies a time in day with hours and minutes.
-      type: object
-      title: Time of Day.
-      properties:
-        hour:
-          description: Specifies an (0-23) hour in a day.
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: Hour
-        minute:
-          description: Specifies a (0-59) minute in an hour.
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: Minute
-      x-go-package: cohesity/iris/server/data/public
-    BandwidthLimitOverride:
-      description: 'Specifies bandwidth limit override value to be enforced during
+          x-go-name: AllEndpointsReachable
+        autoRegisterTarget:
+          description: 'Specifies whether the remote cluster needs to be kept in sync.
 
-        the specified daily time period for the specified days of the week.'
-      type: object
-      title: Bandwidth Limit Override
-      properties:
-        bytesPerSecond:
-          description: 'Specifies the value to override the regular maximum bandwidth rate
+            This will be set to true by default.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: AutoRegisterTarget
+        autoRegistration:
+          description: 'Specifies whether the remote registration has happened automatically
 
-            (rateLimitBytesPerSec) for the specified time period.
+            (due to registration on the other site).
 
-            The value is specified in bytes per second.'
+            Can''t think of other states (other than manually & automatically) so this
+
+            isn''t an enum.
+
+            For a manual registration, this field will not be set.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: AutoRegistration
+        bandwidthLimit:
+          description: 'Specifies settings for limiting the data transfer rate between
+
+            the local and remote Clusters.'
+          title: Bandwidth Limit.
+          $ref: '#/components/schemas/BandwidthLimit'
+        clusterId:
+          description: Specifies the unique id of the remote Cluster.
           type:
           - integer
           - 'null'
           format: int64
-          x-go-name: BytesPerSecond
-        ioRate:
-          description: 'Specifies the value to override the default IO rate for the specified
+          x-go-name: ClusterId
+        clusterIncarnationId:
+          description: 'Specifies the unique incarnation id of the remote Cluster. This
 
-            time period.'
+            id is determined dynamically by contacting the remote Cluster.'
           type:
           - integer
           - 'null'
-          format: int32
-          x-go-name: IoRate
-        timePeriods:
-          description: 'Specifies a daily time period and days of the week when the
+          format: int64
+          x-go-name: ClusterIncarnationId
+        compressionEnabled:
+          description: 'Specifies whether to compress the outbound data when
 
-            regular maximum bandwidth rate should be overridden.'
-          $ref: '#/components/schemas/TimeOfAWeek'
-      x-go-package: cohesity/iris/server/data/public
-    TimeOfAWeek:
-      description: 'Specifies a time period by specifying a single daily time period
+            transferring the replication data over the network to the remote Cluster.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: CompressionEnabled
+        description:
+          description: Specifies any additional information if needed.
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+        encryptionKey:
+          description: 'Specifies the encryption key used for encrypting the replication data
 
-        and one or more days of the week, for example 9 AM - 5 PM
+            from a local Cluster to a remote Cluster.
 
-        on Monday, Wednesday or Friday. If different time periods are required
+            If a key is not specified, replication traffic encryption is disabled.
 
-        on different days, then multiple instances of this Weekly Time Period
+            When Snapshots are replicated from a local Cluster to a remote Cluster,
 
-        must be specified.'
-      type: object
-      title: Time Period.
-      properties:
-        days:
-          description: 'Array of Week Days.
+            the encryption key specified on the local Cluster must be the same
+
+            as the key specified on the remote Cluster.'
+          type:
+          - string
+          - 'null'
+          x-go-name: EncryptionKey
+        name:
+          description: 'Specifies the name of the remote cluster. This field is determined
+
+            dynamically by contacting the remote cluster.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Name
+        networkInterface:
+          description: 'Specifies the name of the network interfaces to use for communicating with
+
+            the remote Cluster.'
+          type:
+          - string
+          - 'null'
+          x-go-name: NetworkInterface
+        password:
+          description: 'Specifies the password for Cohesity user to use when
+
+            connecting to the remote Cluster.'
+          type:
+          - string
+          - 'null'
+          x-go-name: Password
+        purposeRemoteAccess:
+          description: Whether the remote cluster will be used for remote access for SPOG.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: PurposeRemoteAccess
+        purposeReplication:
+          description: Whether the remote cluster will be used for replication.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: PurposeReplication
+        remoteAccessCredentials:
+          description: 'Optional field for the user credentials to connect to Iris for remote
+
+            access for SPOG. If this is not specified, then credentials specified
+
+            for replication set up will be used for remote access for SPOG.
+
+            Allowing a different user credentials to be set up for SPOG permits
+
+            having different roles for remote access for SPOG and replication set
+
+            up.'
+          $ref: '#/components/schemas/AccessTokenCredential'
+        remoteIps:
+          description: 'Array of Remote Node IP Addresses.
 
 
-            Specifies a list of days of a week (such as ''kSunday'') when the
+            Specifies the IP addresses of the Nodes on the remote Cluster to
 
-            time period should be applied.
+            connect with. These IP addresses can also be VIPS.
 
-            If not set, the time range applies to all days of the week.
-
-            Specifies a day in a week such as ''kSunday'', ''kMonday'', etc.'
+            Specifying hostnames is not supported.'
           type:
           - array
           - 'null'
           items:
             type: string
-            enum:
-            - kSunday
-            - kMonday
-            - kTuesday
-            - kWednesday
-            - kThursday
-            - kFriday
-            - kSaturday
-          x-go-name: Days
-        endTime:
-          description: Specifies the end time for the daily time period.
-          title: End Time.
-          allOf:
-          - $ref: '#/components/schemas/TimeOfDay'
-        isAllDay:
-          description: 'All Day.
+          x-go-name: RemoteIps
+        remoteIrisPorts:
+          description: 'Array of Ports.
 
 
-            Specifies that time range is applied for entire day.'
+            Specifies the ports to use when connecting to the Nodes of the
+
+            remote Cluster.'
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int64
+          x-go-name: RemoteIrisPorts
+        userName:
+          description: 'Specifies the Cohesity user name used to connect to the
+
+            remote Cluster.'
+          type:
+          - string
+          - 'null'
+          x-go-name: UserName
+        validateOnly:
+          description: Whether to only validate the credentials without saving the information.
           type:
           - boolean
           - 'null'
-          x-go-name: IsAllDay
-        startTime:
-          description: Specifies the start time for the daily time period.
-          title: Start Time.
-          allOf:
-          - $ref: '#/components/schemas/TimeOfDay'
+          x-go-name: ValidateOnly
+        viewBoxPairInfo:
+          description: 'Array of Storage Domain (View Box) Pairs.
+
+
+            Specifies pairings between Storage Domains (View Boxes) on the local Cluster
+
+            with Storage Domains (View Boxes) on a remote Cluster that are used in
+
+            replication.'
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ViewBoxPairInfo'
+          x-go-name: ViewBoxPairInfoList
       x-go-package: cohesity/iris/server/data/public
-  responses:
-    GetReplicationEncryptionKeyResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReplicationEncryptionKeyReponse'
-    UpdateRemoteClusterResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RemoteCluster'
-    CreateRemoteClusterResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RemoteCluster'
-    Error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestError'
-    GetRemoteClusterByIdResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            description: 'A single remote Cluster instance with the specified Cluster id is returned
-
-              in this Array.'
-            type: array
-            title: Single Remote Cluster in Array.
-            items:
-              $ref: '#/components/schemas/RemoteCluster'
-    NoContentResponse:
-      description: No Content
-    GetRemoteClustersResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            description: 'Specifies the remote Clusters that are registered on this Cluster
-
-              for replication that match the specified filter criteria.'
-            type: array
-            title: Array of Remote Clusters.
-            items:
-              $ref: '#/components/schemas/RemoteCluster'

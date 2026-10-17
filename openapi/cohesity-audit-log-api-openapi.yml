@@ -272,18 +272,25 @@ paths:
         required: true
 components:
   schemas:
-    AuditLogsEntityTypes:
-      description: Specifies entity types of audit logs.
+    AuditLogs:
+      description: Sepcifies the audit logs.
       type: object
       properties:
-        entityTypes:
-          description: Specifies a list of audit logs entity types.
+        auditLogs:
+          description: Specifies a list of audit logs.
           type:
           - array
           - 'null'
           items:
-            type: string
+            $ref: '#/components/schemas/AuditLog'
           x-order: 0
+        count:
+          description: Specifies the total number of audit logs that match the filter and search criteria. Use this value to determine how many additional requests are required to get the full result.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-order: 1
     Error:
       description: Specifies the error object with error code and a message.
       type: object
@@ -447,113 +454,18 @@ components:
           - string
           - 'null'
           x-order: 14
-    SmbPermission:
-      description: Specifies information about a single SMB permission.
+    AuditLogsEntityTypes:
+      description: Specifies entity types of audit logs.
       type: object
-      title: SMB Permission.
       properties:
-        type:
-          description: 'Specifies the type of permission.
-
-            ''Allow'' indicates access is allowed.
-
-            ''Deny'' indicates access is denied.
-
-            ''SpecialType'' indicates a type defined in the Access Control Entry (ACE)
-
-            does not map to ''Allow'' or ''Deny''.'
+        entityTypes:
+          description: Specifies a list of audit logs entity types.
           type:
-          - string
+          - array
           - 'null'
-          enum:
-          - Allow
-          - Deny
-          - SpecialType
+          items:
+            type: string
           x-order: 0
-        mode:
-          description: 'Specifies how the permission should be applied to folders and/or files.
-
-            ''FolderSubFoldersAndFiles'' indicates that permissions are applied to a Folder
-
-            and it''s sub folders and files.
-
-            ''FolderAndSubFolders'' indicates that permissions are applied to a Folder and it''s sub folders.
-
-            ''FolderAndSubFiles'' indicates that permissions are applied to a Folder and it''s sub files.
-
-            ''FolderOnly'' indicates that permsission are applied to folder only.
-
-            ''SubFoldersAndFilesOnly'' indicates that permissions are applied to sub folders and files only.
-
-            ''SubFoldersOnly'' indicates that permissiona are applied to sub folders only.
-
-            ''FilesOnly'' indicates that permissions are applied to files only.'
-          type:
-          - string
-          - 'null'
-          enum:
-          - FolderSubFoldersAndFiles
-          - FolderAndSubFolders
-          - FolderAndFiles
-          - FolderOnly
-          - SubFoldersAndFilesOnly
-          - SubFoldersOnly
-          - FilesOnly
-          x-order: 1
-        access:
-          description: "Specifies the read/write access to the SMB share.\n'ReadyOnly' indicates read only access to the SMB share.\n'ReadWrite' indicates read and write access to the SMB share.\n'FullControl' indicates full administrative control of the SMB share.\n'SpecialAccess' indicates custom permissions to the SMB share using\n access masks structures.\n'SuperUser' indicates root permissions ignoring all SMB ACLs."
-          type:
-          - string
-          - 'null'
-          enum:
-          - ReadOnly
-          - ReadWrite
-          - Modify
-          - FullControl
-          - SpecialAccess
-          x-order: 2
-        sid:
-          description: Specifies the security identifier (SID) of the principal.
-          type:
-          - string
-          - 'null'
-          x-order: 3
-        specialType:
-          description: 'Specifies a custom type.
-
-            When the type from the Access Control Entry (ACE) cannot be mapped
-
-            to one of the enums in ''type'', this field is populated with the custom
-
-            type derived from the ACE and ''type'' is set to kSpecialType.
-
-            This is a placeholder for storing an unmapped type and should
-
-            not be set when creating and editing a View.'
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-order: 4
-        specialAccessMask:
-          description: 'Specifies custom access permissions.
-
-            When the access mask from the Access Control Entry (ACE) cannot be mapped
-
-            to one of the enums in ''access'', this field is populated
-
-            with the custom mask derived from the ACE and ''access'' is set
-
-            to kSpecialAccess.
-
-            This is a placeholder for storing an unmapped access permission and should
-
-            not be set when creating and editing a View.'
-          type:
-          - integer
-          - 'null'
-          format: uint32
-          x-order: 5
     Subnet:
       description: 'Defines a Subnet (Subnetwork).
 
@@ -689,25 +601,113 @@ components:
           - kReadOnly
           - kReadWrite
           x-order: 10
-    AuditLogs:
-      description: Sepcifies the audit logs.
+    SmbPermission:
+      description: Specifies information about a single SMB permission.
       type: object
+      title: SMB Permission.
       properties:
-        auditLogs:
-          description: Specifies a list of audit logs.
+        type:
+          description: 'Specifies the type of permission.
+
+            ''Allow'' indicates access is allowed.
+
+            ''Deny'' indicates access is denied.
+
+            ''SpecialType'' indicates a type defined in the Access Control Entry (ACE)
+
+            does not map to ''Allow'' or ''Deny''.'
           type:
-          - array
+          - string
           - 'null'
-          items:
-            $ref: '#/components/schemas/AuditLog'
+          enum:
+          - Allow
+          - Deny
+          - SpecialType
           x-order: 0
-        count:
-          description: Specifies the total number of audit logs that match the filter and search criteria. Use this value to determine how many additional requests are required to get the full result.
+        mode:
+          description: 'Specifies how the permission should be applied to folders and/or files.
+
+            ''FolderSubFoldersAndFiles'' indicates that permissions are applied to a Folder
+
+            and it''s sub folders and files.
+
+            ''FolderAndSubFolders'' indicates that permissions are applied to a Folder and it''s sub folders.
+
+            ''FolderAndSubFiles'' indicates that permissions are applied to a Folder and it''s sub files.
+
+            ''FolderOnly'' indicates that permsission are applied to folder only.
+
+            ''SubFoldersAndFilesOnly'' indicates that permissions are applied to sub folders and files only.
+
+            ''SubFoldersOnly'' indicates that permissiona are applied to sub folders only.
+
+            ''FilesOnly'' indicates that permissions are applied to files only.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - FolderSubFoldersAndFiles
+          - FolderAndSubFolders
+          - FolderAndFiles
+          - FolderOnly
+          - SubFoldersAndFilesOnly
+          - SubFoldersOnly
+          - FilesOnly
+          x-order: 1
+        access:
+          description: "Specifies the read/write access to the SMB share.\n'ReadyOnly' indicates read only access to the SMB share.\n'ReadWrite' indicates read and write access to the SMB share.\n'FullControl' indicates full administrative control of the SMB share.\n'SpecialAccess' indicates custom permissions to the SMB share using\n access masks structures.\n'SuperUser' indicates root permissions ignoring all SMB ACLs."
+          type:
+          - string
+          - 'null'
+          enum:
+          - ReadOnly
+          - ReadWrite
+          - Modify
+          - FullControl
+          - SpecialAccess
+          x-order: 2
+        sid:
+          description: Specifies the security identifier (SID) of the principal.
+          type:
+          - string
+          - 'null'
+          x-order: 3
+        specialType:
+          description: 'Specifies a custom type.
+
+            When the type from the Access Control Entry (ACE) cannot be mapped
+
+            to one of the enums in ''type'', this field is populated with the custom
+
+            type derived from the ACE and ''type'' is set to kSpecialType.
+
+            This is a placeholder for storing an unmapped type and should
+
+            not be set when creating and editing a View.'
           type:
           - integer
           - 'null'
-          format: int64
-          x-order: 1
+          format: int32
+          x-order: 4
+        specialAccessMask:
+          description: 'Specifies custom access permissions.
+
+            When the access mask from the Access Control Entry (ACE) cannot be mapped
+
+            to one of the enums in ''access'', this field is populated
+
+            with the custom mask derived from the ACE and ''access'' is set
+
+            to kSpecialAccess.
+
+            This is a placeholder for storing an unmapped access permission and should
+
+            not be set when creating and editing a View.'
+          type:
+          - integer
+          - 'null'
+          format: uint32
+          x-order: 5
     AuditLogsActions:
       description: Specifies actions of audit logs.
       type: object
@@ -721,24 +721,24 @@ components:
             type: string
           x-order: 0
   responses:
-    GetAuditLogsEntityTypesResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AuditLogsEntityTypes'
-    GetAuditLogsActionsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AuditLogsActions'
     GetFilerAuditLogConfigsResponse:
       description: Success
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/FilerAuditLogConfigs'
+    GetAuditLogsActionsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuditLogsActions'
+    GetAuditLogsEntityTypesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuditLogsEntityTypes'
     ErrorResponse:
       description: Error
       content:

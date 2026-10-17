@@ -99,37 +99,84 @@ paths:
         required: true
 components:
   responses:
-    GetComponentPreviewResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ComponentPreview'
     GetComponentByIdResponse:
       description: Success
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Component'
-    GetComponentsPreviewResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ComponentsPreview'
-    GetComponentsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Components'
     ErrorResponse:
       description: Error
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+    GetComponentPreviewResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ComponentPreview'
+    GetComponentsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Components'
+    GetComponentsPreviewResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ComponentsPreview'
   schemas:
+    XlsxAttributeCustomConfigParams:
+      description: Specifies the configuration parameters to customize the columns in excel report for a component. The ordering of the columns in the resulting xlsx will be done according to the order they are configured.
+      type: object
+      required:
+      - attributeName
+      properties:
+        attributeName:
+          description: Specifies the name of the attribute.
+          type:
+          - string
+          - 'null'
+        customLabel:
+          description: Specifies a custom label for attribute to appear in the xlsx report. If not specified, default attribute name will be used.
+          type:
+          - string
+          - 'null'
+        format:
+          description: Specifies a custom format for attribute to appear in the xlsx report. If not specified, the attribute value is sent as-is.
+          type: string
+          enum:
+          - Timestamp
+          - Duration
+    SystemsFilterParams:
+      description: Specifies the systems filter. Specifying this will pre filter all the results provided list of system identifier before applying aggregations.
+      type: object
+      required:
+      - systemIds
+      properties:
+        systemNames:
+          description: Specifies the optional system names labels.
+          type: array
+          items:
+            type: string
+          x-go-custom-tag: bson:"systemNames,omitempty"
+        systemIds:
+          description: Specifies an array of system identifiers. System identifiers may be of format clusterid:clusterincarnationid or a regionid (applicable only in case of DMaaS).
+          type: array
+          items:
+            type: string
+          minItems: 1
+          x-go-custom-tag: bson:"systemIds,omitempty"
+    CustomConfigParams:
+      description: Specifies the configuration parameters to customize and format the columns in the report artifacts like excel, pdf etc
+      type: object
+      properties:
+        xlsxParams:
+          $ref: '#/components/schemas/XlsxCustomConfigParams'
     XlsxCustomConfigParams:
       description: Specifies the configuration parameters to customize a component in excel report.
       type: object
@@ -142,6 +189,177 @@ components:
           items:
             $ref: '#/components/schemas/XlsxAttributeCustomConfigParams'
           minItems: 1
+    LimitParams:
+      description: Specifies the parameters to limit the resulting dataset.
+      type: object
+      required:
+      - size
+      properties:
+        from:
+          description: Specifies the offset to which resulting data will be skipped before applying the size parameter. For example if dataset size is 10 objects, from=2 and size=5, then from 10 objects only 5 objects are returned starting from offset 2 i.e., 2 to 7. If not specified, then none of the objects are skipped.
+          type:
+          - integer
+          - 'null'
+        size:
+          description: Specifies the number of objects to be returned from the offset specified.
+          type: integer
+          minimum: 1
+    TimeRangeFilterParams:
+      description: Specifies the time range filter. Specifying this will pre filter all the results on necessary resources like Protection Runs etc before applying aggregations. Currently, maximum allowed time range is 60 days.
+      type: object
+      properties:
+        lowerBound:
+          description: Specifies the lower bound value. If specified, all the results which are greater than this value will be returned.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-custom-tag: bson:"lowerBound,omitempty"
+        upperBound:
+          description: Specifies the upper bound value. If specified, all the results which are lesser than this value will be returned.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-custom-tag: bson:"upperBound,omitempty"
+        durationHours:
+          description: Specifies the duration preceding the current time for which the data must be fetch i.e fetch data between currentTime and currentTime - durationHours. This filter is only considered if neither upperBound, lowerBound or dateRange is specified.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-custom-tag: bson:"durationHours,omitempty"
+        dateRange:
+          description: Enum value for specifying the date range for a time filter. Considered only if lowerBound and upperBound are empty.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Last1Hour
+          - Last24Hours
+          - Last7Days
+          - CurrentMonth
+          - Last30Days
+          - LastMonth
+          - Last90Days
+          - Last3Months
+          - Last180Days
+          - Last6Months
+          - CurrentYear
+          - Last365Days
+          - LastYear
+          x-go-custom-tag: bson:"dateRange,omitempty"
+    Components:
+      description: Specifies a list of report components.
+      type: object
+      properties:
+        components:
+          description: Specifies list of components.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Component'
+    RangeFilterParams:
+      description: Specifies the filters that are applied on attributes.
+      type: object
+      properties:
+        lowerBound:
+          description: Specifies the lower bound value. If specified, all the results which are greater than this value will be returned.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-custom-tag: bson:"lowerBound,omitempty"
+        upperBound:
+          description: Specifies the upper bound value. If specified, all the results which are lesser than this value will be returned.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-custom-tag: bson:"upperBound,omitempty"
+    TenantsFilterParams:
+      description: 'Specifies the tenants filter. Specifying this will pre filter all the
+
+        results with provided list of tenants before applying aggregations.'
+      type: object
+      properties:
+        includeTenants:
+          description: 'Specifies whether to include tenants. Defaults to true. If false, it
+
+            will not consider below filters. False will result in no data for
+
+            helios tenant or dmaas user.'
+          type:
+          - boolean
+          - 'null'
+          x-go-custom-tag: bson:"includeTenants,omitempty"
+        tenantNames:
+          description: Specifies the optional tenant names labels.
+          type: array
+          items:
+            type: string
+          x-go-custom-tag: bson:"tenantNames,omitempty"
+        tenantIds:
+          description: 'Specifies an array of tenant identifiers. Provide local tenant
+
+            identifiers.'
+          type: array
+          items:
+            type: string
+          minItems: 1
+          x-go-custom-tag: bson:"tenantIds,omitempty"
+    ComponentPreviewParams:
+      description: Specifies preview of a component.
+      type: object
+      properties:
+        filters:
+          description: Specifies list of global filters that are applicable to given components in the report.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AttributeFilter'
+        timezone:
+          description: Specifies timezone of the user. If nil, defaults to UTC. The time specified should be a location name in the IANA Time Zone database, for example, 'America/Los_Angeles'
+          type:
+          - string
+          - 'null'
+        sort:
+          description: Specifies the sorting (ordering) parameters to be applied to the resulting data.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AttributeSort'
+        limit:
+          $ref: '#/components/schemas/LimitParams'
+    Error:
+      description: Specifies the error object with error code and a message.
+      type: object
+      properties:
+        errorCode:
+          description: Specifies the error code.
+          type: integer
+        errorMessage:
+          description: Specifies the error message.
+          type: string
+    AttributeAggregations:
+      description: Specifies the aggregation related information that needs to be applied on the attributes.
+      type: object
+      properties:
+        groupedAttributes:
+          description: Specifies list of attributes to be grouped in the aggregation.
+          type: array
+          items:
+            type: string
+        aggregatedAttributes:
+          description: Specifies list of aggregation properties to be applied on the attributes.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AggregatedAttributesParams'
     AggregatedAttributesParams:
       description: Specifies list of aggregation properties to be applied on the attributes.
       type: object
@@ -185,6 +403,58 @@ components:
           type:
           - boolean
           - 'null'
+    InFilterParams:
+      description: Specifies the in filter that are applied on attributes.
+      type: object
+      required:
+      - attributeDataType
+      properties:
+        attributeDataType:
+          description: Specifies the data type of the attribute.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Bool
+          - String
+          - Int64
+          - Int32
+          - StringArray
+          - Int64Array
+          - Float64
+          x-go-custom-tag: bson:"attributeDataType,omitempty"
+        attributeLabels:
+          description: Specifies the optional label values for the attribute.
+          type: array
+          items:
+            type: string
+          x-go-custom-tag: bson:"attributeLabels,omitempty"
+        int64FilterValues:
+          description: Specifies list of int64 values to filter results on.
+          type: array
+          items:
+            type: integer
+            format: int64
+          x-go-custom-tag: bson:"int64FilterValues,omitempty"
+        boolFilterValues:
+          description: Specifies list of boolean values to filter results on.
+          type: array
+          items:
+            type: boolean
+          x-go-custom-tag: bson:"boolFilterValues,omitempty"
+        stringFilterValues:
+          description: Specifies list of string values to filter results on.
+          type: array
+          items:
+            type: string
+          x-go-custom-tag: bson:"stringFilterValues,omitempty"
+        int32FilterValues:
+          description: Specifies list of int32 values to filter results on.
+          type: array
+          items:
+            type: integer
+            format: int32
+          x-go-custom-tag: bson:"int32FilterValues,omitempty"
     ComponentsPreview:
       description: Specifies preview of a component.
       type: object
@@ -214,37 +484,6 @@ components:
           - integer
           - 'null'
           format: int64
-    LimitParams:
-      description: Specifies the parameters to limit the resulting dataset.
-      type: object
-      required:
-      - size
-      properties:
-        from:
-          description: Specifies the offset to which resulting data will be skipped before applying the size parameter. For example if dataset size is 10 objects, from=2 and size=5, then from 10 objects only 5 objects are returned starting from offset 2 i.e., 2 to 7. If not specified, then none of the objects are skipped.
-          type:
-          - integer
-          - 'null'
-        size:
-          description: Specifies the number of objects to be returned from the offset specified.
-          type: integer
-          minimum: 1
-    AttributeAggregations:
-      description: Specifies the aggregation related information that needs to be applied on the attributes.
-      type: object
-      properties:
-        groupedAttributes:
-          description: Specifies list of attributes to be grouped in the aggregation.
-          type: array
-          items:
-            type: string
-        aggregatedAttributes:
-          description: Specifies list of aggregation properties to be applied on the attributes.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/AggregatedAttributesParams'
     Component:
       description: Specifies a Report Component.
       type: object
@@ -319,243 +558,6 @@ components:
             additionalProperties:
               type: object
           readOnly: true
-    ComponentsPreviewParams:
-      description: Specifies preview of a component.
-      type: object
-      properties:
-        components:
-          description: The list of components to render for the report. This overrides the components retrieved for the report from store.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/Component'
-        filters:
-          description: Specifies list of global filters that are applicable to given components in the report.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/AttributeFilter'
-        timezone:
-          description: Specifies timezone of the user. If nil, defaults to UTC. The time specified should be a location name in the IANA Time Zone database, for example, 'America/Los_Angeles'
-          type:
-          - string
-          - 'null'
-    CustomConfigParams:
-      description: Specifies the configuration parameters to customize and format the columns in the report artifacts like excel, pdf etc
-      type: object
-      properties:
-        xlsxParams:
-          $ref: '#/components/schemas/XlsxCustomConfigParams'
-    Components:
-      description: Specifies a list of report components.
-      type: object
-      properties:
-        components:
-          description: Specifies list of components.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/Component'
-    TenantsFilterParams:
-      description: 'Specifies the tenants filter. Specifying this will pre filter all the
-
-        results with provided list of tenants before applying aggregations.'
-      type: object
-      properties:
-        includeTenants:
-          description: 'Specifies whether to include tenants. Defaults to true. If false, it
-
-            will not consider below filters. False will result in no data for
-
-            helios tenant or dmaas user.'
-          type:
-          - boolean
-          - 'null'
-          x-go-custom-tag: bson:"includeTenants,omitempty"
-        tenantNames:
-          description: Specifies the optional tenant names labels.
-          type: array
-          items:
-            type: string
-          x-go-custom-tag: bson:"tenantNames,omitempty"
-        tenantIds:
-          description: 'Specifies an array of tenant identifiers. Provide local tenant
-
-            identifiers.'
-          type: array
-          items:
-            type: string
-          minItems: 1
-          x-go-custom-tag: bson:"tenantIds,omitempty"
-    RangeFilterParams:
-      description: Specifies the filters that are applied on attributes.
-      type: object
-      properties:
-        lowerBound:
-          description: Specifies the lower bound value. If specified, all the results which are greater than this value will be returned.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-custom-tag: bson:"lowerBound,omitempty"
-        upperBound:
-          description: Specifies the upper bound value. If specified, all the results which are lesser than this value will be returned.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-custom-tag: bson:"upperBound,omitempty"
-    InFilterParams:
-      description: Specifies the in filter that are applied on attributes.
-      type: object
-      required:
-      - attributeDataType
-      properties:
-        attributeDataType:
-          description: Specifies the data type of the attribute.
-          type:
-          - string
-          - 'null'
-          enum:
-          - Bool
-          - String
-          - Int64
-          - Int32
-          - StringArray
-          - Int64Array
-          - Float64
-          x-go-custom-tag: bson:"attributeDataType,omitempty"
-        attributeLabels:
-          description: Specifies the optional label values for the attribute.
-          type: array
-          items:
-            type: string
-          x-go-custom-tag: bson:"attributeLabels,omitempty"
-        int64FilterValues:
-          description: Specifies list of int64 values to filter results on.
-          type: array
-          items:
-            type: integer
-            format: int64
-          x-go-custom-tag: bson:"int64FilterValues,omitempty"
-        boolFilterValues:
-          description: Specifies list of boolean values to filter results on.
-          type: array
-          items:
-            type: boolean
-          x-go-custom-tag: bson:"boolFilterValues,omitempty"
-        stringFilterValues:
-          description: Specifies list of string values to filter results on.
-          type: array
-          items:
-            type: string
-          x-go-custom-tag: bson:"stringFilterValues,omitempty"
-        int32FilterValues:
-          description: Specifies list of int32 values to filter results on.
-          type: array
-          items:
-            type: integer
-            format: int32
-          x-go-custom-tag: bson:"int32FilterValues,omitempty"
-    TimeRangeFilterParams:
-      description: Specifies the time range filter. Specifying this will pre filter all the results on necessary resources like Protection Runs etc before applying aggregations. Currently, maximum allowed time range is 60 days.
-      type: object
-      properties:
-        lowerBound:
-          description: Specifies the lower bound value. If specified, all the results which are greater than this value will be returned.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-custom-tag: bson:"lowerBound,omitempty"
-        upperBound:
-          description: Specifies the upper bound value. If specified, all the results which are lesser than this value will be returned.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-custom-tag: bson:"upperBound,omitempty"
-        durationHours:
-          description: Specifies the duration preceding the current time for which the data must be fetch i.e fetch data between currentTime and currentTime - durationHours. This filter is only considered if neither upperBound, lowerBound or dateRange is specified.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-custom-tag: bson:"durationHours,omitempty"
-        dateRange:
-          description: Enum value for specifying the date range for a time filter. Considered only if lowerBound and upperBound are empty.
-          type:
-          - string
-          - 'null'
-          enum:
-          - Last1Hour
-          - Last24Hours
-          - Last7Days
-          - CurrentMonth
-          - Last30Days
-          - LastMonth
-          - Last90Days
-          - Last3Months
-          - Last180Days
-          - Last6Months
-          - CurrentYear
-          - Last365Days
-          - LastYear
-          x-go-custom-tag: bson:"dateRange,omitempty"
-    Error:
-      description: Specifies the error object with error code and a message.
-      type: object
-      properties:
-        errorCode:
-          description: Specifies the error code.
-          type: integer
-        errorMessage:
-          description: Specifies the error message.
-          type: string
-    SystemsFilterParams:
-      description: Specifies the systems filter. Specifying this will pre filter all the results provided list of system identifier before applying aggregations.
-      type: object
-      required:
-      - systemIds
-      properties:
-        systemNames:
-          description: Specifies the optional system names labels.
-          type: array
-          items:
-            type: string
-          x-go-custom-tag: bson:"systemNames,omitempty"
-        systemIds:
-          description: Specifies an array of system identifiers. System identifiers may be of format clusterid:clusterincarnationid or a regionid (applicable only in case of DMaaS).
-          type: array
-          items:
-            type: string
-          minItems: 1
-          x-go-custom-tag: bson:"systemIds,omitempty"
-    XlsxAttributeCustomConfigParams:
-      description: Specifies the configuration parameters to customize the columns in excel report for a component. The ordering of the columns in the resulting xlsx will be done according to the order they are configured.
-      type: object
-      required:
-      - attributeName
-      properties:
-        attributeName:
-          description: Specifies the name of the attribute.
-          type:
-          - string
-          - 'null'
-        customLabel:
-          description: Specifies a custom label for attribute to appear in the xlsx report. If not specified, default attribute name will be used.
-          type:
-          - string
-          - 'null'
-        format:
-          description: Specifies a custom format for attribute to appear in the xlsx report. If not specified, the attribute value is sent as-is.
-          type: string
-          enum:
-          - Timestamp
-          - Duration
     AttributeFilter:
       description: Specifies the filters that are applied on attributes.
       type: object
@@ -601,31 +603,6 @@ components:
           description: Specifies the params for applying filter on system identifiers.
           $ref: '#/components/schemas/TenantsFilterParams'
           x-go-custom-tag: bson:"tenantsFilterParams,omitempty"
-    ComponentPreviewParams:
-      description: Specifies preview of a component.
-      type: object
-      properties:
-        filters:
-          description: Specifies list of global filters that are applicable to given components in the report.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/AttributeFilter'
-        timezone:
-          description: Specifies timezone of the user. If nil, defaults to UTC. The time specified should be a location name in the IANA Time Zone database, for example, 'America/Los_Angeles'
-          type:
-          - string
-          - 'null'
-        sort:
-          description: Specifies the sorting (ordering) parameters to be applied to the resulting data.
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/AttributeSort'
-        limit:
-          $ref: '#/components/schemas/LimitParams'
     ComponentPreview:
       description: Specifies preview of a component.
       type: object
@@ -651,6 +628,29 @@ components:
           - integer
           - 'null'
           format: int64
+    ComponentsPreviewParams:
+      description: Specifies preview of a component.
+      type: object
+      properties:
+        components:
+          description: The list of components to render for the report. This overrides the components retrieved for the report from store.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Component'
+        filters:
+          description: Specifies list of global filters that are applicable to given components in the report.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AttributeFilter'
+        timezone:
+          description: Specifies timezone of the user. If nil, defaults to UTC. The time specified should be a location name in the IANA Time Zone database, for example, 'America/Los_Angeles'
+          type:
+          - string
+          - 'null'
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

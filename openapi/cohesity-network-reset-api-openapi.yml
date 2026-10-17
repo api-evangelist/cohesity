@@ -109,6 +109,12 @@ components:
           x-go-name: Operation
           x-order: 0
   responses:
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
     GetNodesResetStateResponse:
       description: Success
       content:
@@ -117,12 +123,6 @@ components:
             $ref: '#/components/schemas/ResetStates'
     AcceptedResponse:
       description: Request Accepted
-    ErrorResponse:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   securitySchemes:
     APIKeyHeader:
       in: header

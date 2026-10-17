@@ -90,10 +90,15 @@ components:
           - string
           - 'null'
           x-order: 1
-    TenantDmaasCert:
-      description: Specifies the parameters to of a tenant certificate.
+    AddDmaasTenantCertRequest:
+      description: Specifies the parameters to add an Orion tenant certificate.
       type: object
-      title: Tenant Dmaas Certificate.
+      title: Add Tenant Cert Request.
+      required:
+      - tenantId
+      - certificate
+      - privateKey
+      - connectorCaChain
       properties:
         tenantId:
           description: The id of the tenant.
@@ -125,15 +130,10 @@ components:
           - string
           - 'null'
           x-order: 4
-    AddDmaasTenantCertRequest:
-      description: Specifies the parameters to add an Orion tenant certificate.
+    TenantDmaasCert:
+      description: Specifies the parameters to of a tenant certificate.
       type: object
-      title: Add Tenant Cert Request.
-      required:
-      - tenantId
-      - certificate
-      - privateKey
-      - connectorCaChain
+      title: Tenant Dmaas Certificate.
       properties:
         tenantId:
           description: The id of the tenant.
@@ -179,26 +179,26 @@ components:
             $ref: '#/components/schemas/TenantDmaasCert'
           x-order: 0
   responses:
-    AddDmaasTenantCertResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AddDmaasTenantCertRequest'
     GetDmaasTenantCertsResponse:
       description: Success
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/TenantDmaasCerts'
-    NoContentResponse:
-      description: No Content
     ErrorResponse:
       description: Error
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+    NoContentResponse:
+      description: No Content
+    AddDmaasTenantCertResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AddDmaasTenantCertRequest'
   securitySchemes:
     APIKeyHeader:
       in: header

@@ -341,24 +341,259 @@ components:
           format: int32
           x-go-name: NumNodeFailuresTolerated
       x-go-package: cohesity/iris/server/data/public
-    RequestError:
-      description: Details about the Error.
+    Subnet:
+      description: 'Defines a Subnet (Subnetwork).
+
+        The netmask can be specified by setting netmaskBits or netmaskIp4.
+
+        The netmask can only be set using netmaskIp4 if the IP address
+
+        is an IPv4 address.'
       type: object
-      title: Error
+      title: Subnet
       properties:
-        errorCode:
-          description: Operation response error code.
+        component:
+          description: Component that has reserved the subnet.
+          type:
+          - string
+          - 'null'
+          x-go-name: Component
+        description:
+          description: Description of the subnet.
+          type:
+          - string
+          - 'null'
+          x-go-name: Description
+        id:
+          description: ID of the subnet.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: Id
+        ip:
+          description: Specifies either an IPv6 address or an IPv4 address.
+          type:
+          - string
+          - 'null'
+          x-go-name: Ip
+        netmaskBits:
+          description: Specifies the netmask using bits.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: NetmaskBits
+        netmaskIp4:
+          description: 'Specifies the netmask using an IP4 address.
+
+            The netmask can only be set using netmaskIp4 if the IP address
+
+            is an IPv4 address.'
+          type:
+          - string
+          - 'null'
+          x-go-name: NetmaskIp4
+        nfsAccess:
+          description: 'Specifies whether clients from this subnet can mount using NFS protocol.
+
+            Protocol access level.
+
+            ''kDisabled'' indicates Protocol access level ''Disabled''
+
+            ''kReadOnly'' indicates Protocol access level ''ReadOnly''
+
+            ''kReadWrite'' indicates Protocol access level ''ReadWrite'''
+          type:
+          - string
+          - 'null'
+          enum:
+          - kDisabled
+          - kReadOnly
+          - kReadWrite
+          x-go-name: NfsAccess
+        nfsAllSquash:
+          description: 'Specifies whether all clients from this subnet can map view with
+
+            view_all_squash_uid/view_all_squash_gid configured in the view.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: NfsAllSquash
+        nfsRootSquash:
+          description: Specifies whether clients from this subnet can mount as root on NFS.
+          type:
+          - boolean
+          - 'null'
+          x-go-name: NfsRootSquash
+        smbAccess:
+          description: 'Specifies whether clients from this subnet can mount using SMB protocol.
+
+            Protocol access level.
+
+            ''kDisabled'' indicates Protocol access level ''Disabled''
+
+            ''kReadOnly'' indicates Protocol access level ''ReadOnly''
+
+            ''kReadWrite'' indicates Protocol access level ''ReadWrite'''
+          type:
+          - string
+          - 'null'
+          enum:
+          - kDisabled
+          - kReadOnly
+          - kReadWrite
+          x-go-name: SmbAccess
+      x-go-package: cohesity/iris/server/data/public
+    SchemaInfo:
+      description: 'Specifies the metric data point where public data metric name as key and the
+
+        schema defined metric name as a value.'
+      type: object
+      title: Schema Info.
+      properties:
+        entityId:
+          description: Specifies the id of the entity represented as a string.
+          type:
+          - string
+          - 'null'
+          x-go-name: EntityId
+        key:
+          description: Specifies the key which is public facing name for metric name.
+          type:
+          - string
+          - 'null'
+          x-go-name: Key
+        metricName:
+          description: Specifies the Apollo schema metric name.
+          type:
+          - string
+          - 'null'
+          x-go-name: MetricName
+        schemaName:
+          description: Specifies the name of entity schema such as 'ApolloViewBoxStats'.
+          type:
+          - string
+          - 'null'
+          x-go-name: SchemaName
+      x-go-package: cohesity/iris/server/data/public
+    ViewBoxStats:
+      description: Provides statistics about the Storage Domain (View Box).
+      type: object
+      title: Storage Domain (View Box) Stats.
+      properties:
+        cloudUsagePerfStats:
+          description: 'Provides the usage statistics for the data stored in the
+
+            cloud for the Storage Domain (View Box). Performance statistics are not
+
+            populated.'
+          $ref: '#/components/schemas/UsageAndPerformanceStats'
+        dataUsageStats:
+          description: 'Specifies the data usage metric of the data stored on the Storage Domain
+
+            (View Box).'
+          title: Data Usage Statistics.
+          $ref: '#/components/schemas/DataUsageStats'
+        id:
+          description: Specifies the id of the Storage Domain (View Box).
           type:
           - integer
           - 'null'
           format: int64
-          x-go-name: ErrorCode
-        message:
-          description: Description of the error.
+          x-go-name: Id
+        localUsagePerfStats:
+          description: 'Provides usage statistics for the locally stored data
+
+            on the Storage Domain (View Box). Performance statistics are not populated.'
+          $ref: '#/components/schemas/UsageAndPerformanceStats'
+        logicalStats:
+          description: Provides the logical usage statistics for the Storage Domain (View Box).
+          $ref: '#/components/schemas/LogicalStats'
+        usagePerfStats:
+          description: 'Provides usage and performance statistics for the Storage Domain
+
+            (View Box)
+
+            (includes both local and cloud data).'
+          $ref: '#/components/schemas/UsageAndPerformanceStats'
+      x-go-package: cohesity/iris/server/data/public
+    QuotaPolicy:
+      description: 'Specifies a quota limit that can be optionally applied to Views and
+
+        View Boxes.
+
+        At the View level, this quota defines a logical limit for usage on the View.
+
+        At the View Box level, this quota defines a physical limit or
+
+        a default logical View limit.
+
+        If a physical quota is specified for View Box, this quota defines a physical
+
+        limit for the usage on the View Box.
+
+        If a default logical View quota is specified for View Box, this limit
+
+        is inherited by all the Views in that View Box.
+
+        However, this inherited quota can be overwritten at the View level.
+
+        A new write is not allowed if the resource will exceed the specified quota.
+
+        However, it takes time for the Cohesity Cluster to calculate
+
+        the usage across Nodes, so the limit may be exceeded by a small amount.
+
+        In addition, if the limit is increased or data is removed,
+
+        there may be a delay before the Cohesity Cluster allows more data
+
+        to be written to the resource, as the Cluster calculates the usage
+
+        across Nodes.'
+      type: object
+      title: Quota Policy
+      properties:
+        alertLimitBytes:
+          description: 'Specifies if an alert should be triggered when the usage of this
+
+            resource exceeds this quota limit.
+
+            This limit is optional and is specified in bytes.
+
+            If no value is specified, there is no limit.'
           type:
-          - string
+          - integer
           - 'null'
-          x-go-name: Message
+          format: int64
+          x-go-name: AlertLimitBytes
+        alertThresholdPercentage:
+          description: 'Supported only for user quota policy. Specifies when the usage goes above
+
+            an alert threshold percentage which is:
+
+            HardLimitBytes * AlertThresholdPercentage, eg: 80% of HardLimitBytes
+
+            Can only be set if HardLimitBytes is set.
+
+            Cannot be set if AlertLimitBytes is already set.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: AlertThresholdPercentage
+        hardLimitBytes:
+          description: 'Specifies an optional quota limit on the usage allowed for this
+
+            resource. This limit is specified in bytes. If no value is specified,
+
+            there is no limit.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: HardLimitBytes
       x-go-package: cohesity/iris/server/data/public
     CreateViewBoxParams:
       description: Provides details about the Storage Domain (View Box).
@@ -567,230 +802,6 @@ components:
             type: string
           x-go-name: TenantIdVec
       x-go-package: cohesity/iris/server/data/public
-    ViewBoxStats:
-      description: Provides statistics about the Storage Domain (View Box).
-      type: object
-      title: Storage Domain (View Box) Stats.
-      properties:
-        cloudUsagePerfStats:
-          description: 'Provides the usage statistics for the data stored in the
-
-            cloud for the Storage Domain (View Box). Performance statistics are not
-
-            populated.'
-          $ref: '#/components/schemas/UsageAndPerformanceStats'
-        dataUsageStats:
-          description: 'Specifies the data usage metric of the data stored on the Storage Domain
-
-            (View Box).'
-          title: Data Usage Statistics.
-          $ref: '#/components/schemas/DataUsageStats'
-        id:
-          description: Specifies the id of the Storage Domain (View Box).
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: Id
-        localUsagePerfStats:
-          description: 'Provides usage statistics for the locally stored data
-
-            on the Storage Domain (View Box). Performance statistics are not populated.'
-          $ref: '#/components/schemas/UsageAndPerformanceStats'
-        logicalStats:
-          description: Provides the logical usage statistics for the Storage Domain (View Box).
-          $ref: '#/components/schemas/LogicalStats'
-        usagePerfStats:
-          description: 'Provides usage and performance statistics for the Storage Domain
-
-            (View Box)
-
-            (includes both local and cloud data).'
-          $ref: '#/components/schemas/UsageAndPerformanceStats'
-      x-go-package: cohesity/iris/server/data/public
-    LogicalStats:
-      description: 'Provides logical statistics for logical entities such as Clusters
-
-        and Domains (View Boxes).
-
-        The logical size is the size of the data when it is fully hydrated or
-
-        expanded.
-
-        The actual physical data stored on the Cohesity Cluster is
-
-        reduced by change-block tracking, compression and deduplication.'
-      type: object
-      title: Logical Statistics
-      properties:
-        totalLogicalUsageBytes:
-          description: 'Provides the combined data residing on protected objects.
-
-            The size of data before reduction by deduplication and compression.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: TotalLogicalUsageBytes
-      x-go-package: cohesity/iris/server/data/public
-    ErasureCodingInfo:
-      description: Specifies information for erasure coding.
-      type: object
-      title: Erasure Coding Information.
-      properties:
-        algorithm:
-          description: 'Algorthm used for erasure coding.
-
-            REED_SOLOMON indicates the algorithm used for erasure coding.
-
-            LRC indicates the algorithm used for erasure coding.'
-          type:
-          - string
-          - 'null'
-          enum:
-          - REED_SOLOMON
-          - LRC
-          x-go-name: Algorithm
-        erasureCodingEnabled:
-          description: 'Specifies whether Erasure coding is enabled on the Storage Domain
-
-            (View Box).'
-          type:
-          - boolean
-          - 'null'
-          x-go-name: ErasureCodingEnabled
-        inlineErasureCoding:
-          description: 'Specifies if erasure coding should occur inline (as the data is being
-
-            written). This field is only relevant if erasure coding is enabled.'
-          type:
-          - boolean
-          - 'null'
-          x-go-name: InlineErasureCoding
-        numCodedStripes:
-          description: The number of coded stripes.
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: NumCodedStripes
-        numDataStripes:
-          description: The number of stripes containing data.
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: NumDataStripes
-      x-go-package: cohesity/iris/server/data/public
-    QuotaPolicy:
-      description: 'Specifies a quota limit that can be optionally applied to Views and
-
-        View Boxes.
-
-        At the View level, this quota defines a logical limit for usage on the View.
-
-        At the View Box level, this quota defines a physical limit or
-
-        a default logical View limit.
-
-        If a physical quota is specified for View Box, this quota defines a physical
-
-        limit for the usage on the View Box.
-
-        If a default logical View quota is specified for View Box, this limit
-
-        is inherited by all the Views in that View Box.
-
-        However, this inherited quota can be overwritten at the View level.
-
-        A new write is not allowed if the resource will exceed the specified quota.
-
-        However, it takes time for the Cohesity Cluster to calculate
-
-        the usage across Nodes, so the limit may be exceeded by a small amount.
-
-        In addition, if the limit is increased or data is removed,
-
-        there may be a delay before the Cohesity Cluster allows more data
-
-        to be written to the resource, as the Cluster calculates the usage
-
-        across Nodes.'
-      type: object
-      title: Quota Policy
-      properties:
-        alertLimitBytes:
-          description: 'Specifies if an alert should be triggered when the usage of this
-
-            resource exceeds this quota limit.
-
-            This limit is optional and is specified in bytes.
-
-            If no value is specified, there is no limit.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: AlertLimitBytes
-        alertThresholdPercentage:
-          description: 'Supported only for user quota policy. Specifies when the usage goes above
-
-            an alert threshold percentage which is:
-
-            HardLimitBytes * AlertThresholdPercentage, eg: 80% of HardLimitBytes
-
-            Can only be set if HardLimitBytes is set.
-
-            Cannot be set if AlertLimitBytes is already set.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: AlertThresholdPercentage
-        hardLimitBytes:
-          description: 'Specifies an optional quota limit on the usage allowed for this
-
-            resource. This limit is specified in bytes. If no value is specified,
-
-            there is no limit.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: HardLimitBytes
-      x-go-package: cohesity/iris/server/data/public
-    SchemaInfo:
-      description: 'Specifies the metric data point where public data metric name as key and the
-
-        schema defined metric name as a value.'
-      type: object
-      title: Schema Info.
-      properties:
-        entityId:
-          description: Specifies the id of the entity represented as a string.
-          type:
-          - string
-          - 'null'
-          x-go-name: EntityId
-        key:
-          description: Specifies the key which is public facing name for metric name.
-          type:
-          - string
-          - 'null'
-          x-go-name: Key
-        metricName:
-          description: Specifies the Apollo schema metric name.
-          type:
-          - string
-          - 'null'
-          x-go-name: MetricName
-        schemaName:
-          description: Specifies the name of entity schema such as 'ApolloViewBoxStats'.
-          type:
-          - string
-          - 'null'
-          x-go-name: SchemaName
-      x-go-package: cohesity/iris/server/data/public
     UsageAndPerformanceStats:
       description: 'Provides usage and performance statistics
 
@@ -928,6 +939,349 @@ components:
           - 'null'
           format: double
           x-go-name: WriteLatencyMsecs
+      x-go-package: cohesity/iris/server/data/public
+    LogicalStats:
+      description: 'Provides logical statistics for logical entities such as Clusters
+
+        and Domains (View Boxes).
+
+        The logical size is the size of the data when it is fully hydrated or
+
+        expanded.
+
+        The actual physical data stored on the Cohesity Cluster is
+
+        reduced by change-block tracking, compression and deduplication.'
+      type: object
+      title: Logical Statistics
+      properties:
+        totalLogicalUsageBytes:
+          description: 'Provides the combined data residing on protected objects.
+
+            The size of data before reduction by deduplication and compression.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: TotalLogicalUsageBytes
+      x-go-package: cohesity/iris/server/data/public
+    RequestError:
+      description: Details about the Error.
+      type: object
+      title: Error
+      properties:
+        errorCode:
+          description: Operation response error code.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: ErrorCode
+        message:
+          description: Description of the error.
+          type:
+          - string
+          - 'null'
+          x-go-name: Message
+      x-go-package: cohesity/iris/server/data/public
+    DataUsageStats:
+      description: 'Specifies the data usage metric of the data stored on the Cohesity
+
+        Cluster or Storage Domains (View Boxes).'
+      type: object
+      title: Data Usage Statistics.
+      properties:
+        cloudDataWrittenBytes:
+          description: 'Specifies the total data written on cloud tiers, as computed by the
+
+            Cohesity Cluster.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: CloudDataWrittenBytes
+        cloudDataWrittenBytesTimestampUsec:
+          description: Specifies Timestamp of CloudDataWrittenBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: CloudDataWrittenBytesTimestampUsec
+        cloudTotalPhysicalUsageBytes:
+          description: 'Specifies the total cloud capacity, as computed by the Cohesity Cluster,
+
+            after the size of the data has been reduced by change-block tracking,
+
+            compression and deduplication.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: CloudTotalPhysicalUsageBytes
+        cloudTotalPhysicalUsageBytesTimestampUsec:
+          description: Specifies Timestamp of CloudTotalPhysicalUsageBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: CloudTotalPhysicalUsageBytesTimestampUsec
+        dataInBytes:
+          description: 'Specifies the data read from the protected objects by the Cohesity Cluster
+
+            before any data reduction using deduplication and compression.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: DataInBytes
+        dataInBytesAfterDedup:
+          description: 'Specifies the size of the data has been reduced by change-block
+
+            tracking and deduplication but before compression or data is replicated to
+
+            other nodes as per RF or Erasure Coding policy.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: DataInBytesAfterDedup
+        dataInBytesAfterDedupTimestampUsec:
+          description: Specifies Timestamp of DataInBytesAfterDedup.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: DataInBytesAfterDedupTimestampUsec
+        dataInBytesTimestampUsec:
+          description: Specifies Timestamp of DataInBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: DataInBytesTimestampUsec
+        dataProtectLogicalUsageBytes:
+          description: Specifies the logical data used by Data Protect on Cohesity cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: DataProtectLogicalUsageBytes
+        dataProtectLogicalUsageBytesTimestampUsec:
+          description: Specifies Timestamp of DataProtectLogicalUsageBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: DataProtectLogicalUsageBytesTimestampUsec
+        dataProtectPhysicalUsageBytes:
+          description: Specifies the physical data used by Data Protect on Cohesity cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: DataProtectPhysicalUsageBytes
+        dataProtectPhysicalUsageBytesTimestampUsec:
+          description: Specifies Timestamp of DataProtectPhysicalUsageBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: DataProtectPhysicalUsageBytesTimestampUsec
+        dataWrittenBytes:
+          description: 'Specifies the data written after it has been reduced by deduplication and
+
+            compression. This does not include resiliency impact.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: DataWrittenBytes
+        dataWrittenBytesTimestampUsec:
+          description: Specifies Timestamp of DataWrittenBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: DataWrittenBytesTimestampUsec
+        fileServicesLogicalUsageBytes:
+          description: Specifies the logical data used by File services on Cohesity cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: FileServicesLogicalUsageBytes
+        fileServicesLogicalUsageBytesTimestampUsec:
+          description: Specifies Timestamp of FileServicesLogicalUsageBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: FileServicesLogicalUsageBytesTimestampUsec
+        fileServicesPhysicalUsageBytes:
+          description: Specifies the physical data used by File services on Cohesity cluster.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: FileServicesPhysicalUsageBytes
+        fileServicesPhysicalUsageBytesTimestampUsec:
+          description: Specifies Timestamp of FileServicesPhysicalUsageBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: FileServicesPhysicalUsageBytesTimestampUsec
+        localDataWrittenBytes:
+          description: 'Specifies the total data written on local tiers, as computed by the
+
+            Cohesity Cluster, after the size of the data has been reduced by
+
+            change-block tracking, deduplication and compression. This does not
+
+            include resiliency impact.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: LocalDataWrittenBytes
+        localDataWrittenBytesTimestampUsec:
+          description: Specifies Timestamp of LocalDataWrittenBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: LocalDataWrittenBytesTimestampUsec
+        localTierResiliencyImpactBytes:
+          description: 'Specifies the size of the data has been replicated to other nodes as per
+
+            RF or Erasure Coding policy.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: LocalTierResiliencyImpactBytes
+        localTierResiliencyImpactBytesTimestampUsec:
+          description: Specifies Timestamp of LocalTierResiliencyImpactBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: LocalTierResiliencyImpactBytesTimestampUsec
+        localTotalPhysicalUsageBytes:
+          description: 'Specifies the total local capacity, as computed by the Cohesity Cluster,
+
+            after the size of the data has been reduced by change-block tracking,
+
+            compression and deduplication.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: LocalTotalPhysicalUsageBytes
+        localTotalPhysicalUsageBytesTimestampUsec:
+          description: Specifies Timestamp of LocalTotalPhysicalUsageBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: LocalTotalPhysicalUsageBytesTimestampUsec
+        outdatedLogicalUsageBytesTimestampUsec:
+          description: Specifies Timestamp of OutdatedLogicalUsageBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: OutdatedLogicalUsageBytesTimestampUsec
+        storageConsumedBytes:
+          description: 'Specifies the total capacity, as computed by the Cohesity Cluster,
+
+            after the size of the data has been reduced by change-block tracking,
+
+            compression and deduplication. This includes resiliency impact.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: StorageConsumedBytes
+        storageConsumedBytesTimestampUsec:
+          description: Specifies Timestamp of StorageConsumedBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: StorageConsumedBytesTimestampUsec
+        totalLogicalUsageBytes:
+          description: 'Provides the combined data residing on protected objects.
+
+            The size of data before reduction by deduplication and compression.'
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: TotalLogicalUsageBytes
+        totalLogicalUsageBytesTimestampUsec:
+          description: Specifies Timestamp of TotalLogicalUsageBytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: TotalLogicalUsageBytesTimestampUsec
+        uniquePhysicalDataBytes:
+          description: Specifies the unique physical data usage in bytes.
+          type:
+          - integer
+          - 'null'
+          format: int64
+          x-go-name: UniquePhysicalDataBytes
+      x-go-package: cohesity/iris/server/data/public
+    ErasureCodingInfo:
+      description: Specifies information for erasure coding.
+      type: object
+      title: Erasure Coding Information.
+      properties:
+        algorithm:
+          description: 'Algorthm used for erasure coding.
+
+            REED_SOLOMON indicates the algorithm used for erasure coding.
+
+            LRC indicates the algorithm used for erasure coding.'
+          type:
+          - string
+          - 'null'
+          enum:
+          - REED_SOLOMON
+          - LRC
+          x-go-name: Algorithm
+        erasureCodingEnabled:
+          description: 'Specifies whether Erasure coding is enabled on the Storage Domain
+
+            (View Box).'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: ErasureCodingEnabled
+        inlineErasureCoding:
+          description: 'Specifies if erasure coding should occur inline (as the data is being
+
+            written). This field is only relevant if erasure coding is enabled.'
+          type:
+          - boolean
+          - 'null'
+          x-go-name: InlineErasureCoding
+        numCodedStripes:
+          description: The number of coded stripes.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: NumCodedStripes
+        numDataStripes:
+          description: The number of stripes containing data.
+          type:
+          - integer
+          - 'null'
+          format: int32
+          x-go-name: NumDataStripes
       x-go-package: cohesity/iris/server/data/public
     ViewBox:
       description: Provides details about a Storage Domain (View Box).
@@ -1217,388 +1571,16 @@ components:
           - 'null'
           x-go-name: TreatFileSyncAsDataSync
       x-go-package: cohesity/iris/server/data/public
-    DataUsageStats:
-      description: 'Specifies the data usage metric of the data stored on the Cohesity
-
-        Cluster or Storage Domains (View Boxes).'
-      type: object
-      title: Data Usage Statistics.
-      properties:
-        cloudDataWrittenBytes:
-          description: 'Specifies the total data written on cloud tiers, as computed by the
-
-            Cohesity Cluster.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: CloudDataWrittenBytes
-        cloudDataWrittenBytesTimestampUsec:
-          description: Specifies Timestamp of CloudDataWrittenBytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: CloudDataWrittenBytesTimestampUsec
-        cloudTotalPhysicalUsageBytes:
-          description: 'Specifies the total cloud capacity, as computed by the Cohesity Cluster,
-
-            after the size of the data has been reduced by change-block tracking,
-
-            compression and deduplication.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: CloudTotalPhysicalUsageBytes
-        cloudTotalPhysicalUsageBytesTimestampUsec:
-          description: Specifies Timestamp of CloudTotalPhysicalUsageBytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: CloudTotalPhysicalUsageBytesTimestampUsec
-        dataInBytes:
-          description: 'Specifies the data read from the protected objects by the Cohesity Cluster
-
-            before any data reduction using deduplication and compression.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: DataInBytes
-        dataInBytesAfterDedup:
-          description: 'Specifies the size of the data has been reduced by change-block
-
-            tracking and deduplication but before compression or data is replicated to
-
-            other nodes as per RF or Erasure Coding policy.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: DataInBytesAfterDedup
-        dataInBytesAfterDedupTimestampUsec:
-          description: Specifies Timestamp of DataInBytesAfterDedup.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: DataInBytesAfterDedupTimestampUsec
-        dataInBytesTimestampUsec:
-          description: Specifies Timestamp of DataInBytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: DataInBytesTimestampUsec
-        dataProtectLogicalUsageBytes:
-          description: Specifies the logical data used by Data Protect on Cohesity cluster.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: DataProtectLogicalUsageBytes
-        dataProtectLogicalUsageBytesTimestampUsec:
-          description: Specifies Timestamp of DataProtectLogicalUsageBytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: DataProtectLogicalUsageBytesTimestampUsec
-        dataProtectPhysicalUsageBytes:
-          description: Specifies the physical data used by Data Protect on Cohesity cluster.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: DataProtectPhysicalUsageBytes
-        dataProtectPhysicalUsageBytesTimestampUsec:
-          description: Specifies Timestamp of DataProtectPhysicalUsageBytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: DataProtectPhysicalUsageBytesTimestampUsec
-        dataWrittenBytes:
-          description: 'Specifies the data written after it has been reduced by deduplication and
-
-            compression. This does not include resiliency impact.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: DataWrittenBytes
-        dataWrittenBytesTimestampUsec:
-          description: Specifies Timestamp of DataWrittenBytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: DataWrittenBytesTimestampUsec
-        fileServicesLogicalUsageBytes:
-          description: Specifies the logical data used by File services on Cohesity cluster.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: FileServicesLogicalUsageBytes
-        fileServicesLogicalUsageBytesTimestampUsec:
-          description: Specifies Timestamp of FileServicesLogicalUsageBytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: FileServicesLogicalUsageBytesTimestampUsec
-        fileServicesPhysicalUsageBytes:
-          description: Specifies the physical data used by File services on Cohesity cluster.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: FileServicesPhysicalUsageBytes
-        fileServicesPhysicalUsageBytesTimestampUsec:
-          description: Specifies Timestamp of FileServicesPhysicalUsageBytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: FileServicesPhysicalUsageBytesTimestampUsec
-        localDataWrittenBytes:
-          description: 'Specifies the total data written on local tiers, as computed by the
-
-            Cohesity Cluster, after the size of the data has been reduced by
-
-            change-block tracking, deduplication and compression. This does not
-
-            include resiliency impact.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: LocalDataWrittenBytes
-        localDataWrittenBytesTimestampUsec:
-          description: Specifies Timestamp of LocalDataWrittenBytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: LocalDataWrittenBytesTimestampUsec
-        localTierResiliencyImpactBytes:
-          description: 'Specifies the size of the data has been replicated to other nodes as per
-
-            RF or Erasure Coding policy.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: LocalTierResiliencyImpactBytes
-        localTierResiliencyImpactBytesTimestampUsec:
-          description: Specifies Timestamp of LocalTierResiliencyImpactBytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: LocalTierResiliencyImpactBytesTimestampUsec
-        localTotalPhysicalUsageBytes:
-          description: 'Specifies the total local capacity, as computed by the Cohesity Cluster,
-
-            after the size of the data has been reduced by change-block tracking,
-
-            compression and deduplication.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: LocalTotalPhysicalUsageBytes
-        localTotalPhysicalUsageBytesTimestampUsec:
-          description: Specifies Timestamp of LocalTotalPhysicalUsageBytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: LocalTotalPhysicalUsageBytesTimestampUsec
-        outdatedLogicalUsageBytesTimestampUsec:
-          description: Specifies Timestamp of OutdatedLogicalUsageBytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: OutdatedLogicalUsageBytesTimestampUsec
-        storageConsumedBytes:
-          description: 'Specifies the total capacity, as computed by the Cohesity Cluster,
-
-            after the size of the data has been reduced by change-block tracking,
-
-            compression and deduplication. This includes resiliency impact.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: StorageConsumedBytes
-        storageConsumedBytesTimestampUsec:
-          description: Specifies Timestamp of StorageConsumedBytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: StorageConsumedBytesTimestampUsec
-        totalLogicalUsageBytes:
-          description: 'Provides the combined data residing on protected objects.
-
-            The size of data before reduction by deduplication and compression.'
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: TotalLogicalUsageBytes
-        totalLogicalUsageBytesTimestampUsec:
-          description: Specifies Timestamp of TotalLogicalUsageBytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: TotalLogicalUsageBytesTimestampUsec
-        uniquePhysicalDataBytes:
-          description: Specifies the unique physical data usage in bytes.
-          type:
-          - integer
-          - 'null'
-          format: int64
-          x-go-name: UniquePhysicalDataBytes
-      x-go-package: cohesity/iris/server/data/public
-    Subnet:
-      description: 'Defines a Subnet (Subnetwork).
-
-        The netmask can be specified by setting netmaskBits or netmaskIp4.
-
-        The netmask can only be set using netmaskIp4 if the IP address
-
-        is an IPv4 address.'
-      type: object
-      title: Subnet
-      properties:
-        component:
-          description: Component that has reserved the subnet.
-          type:
-          - string
-          - 'null'
-          x-go-name: Component
-        description:
-          description: Description of the subnet.
-          type:
-          - string
-          - 'null'
-          x-go-name: Description
-        id:
-          description: ID of the subnet.
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: Id
-        ip:
-          description: Specifies either an IPv6 address or an IPv4 address.
-          type:
-          - string
-          - 'null'
-          x-go-name: Ip
-        netmaskBits:
-          description: Specifies the netmask using bits.
-          type:
-          - integer
-          - 'null'
-          format: int32
-          x-go-name: NetmaskBits
-        netmaskIp4:
-          description: 'Specifies the netmask using an IP4 address.
-
-            The netmask can only be set using netmaskIp4 if the IP address
-
-            is an IPv4 address.'
-          type:
-          - string
-          - 'null'
-          x-go-name: NetmaskIp4
-        nfsAccess:
-          description: 'Specifies whether clients from this subnet can mount using NFS protocol.
-
-            Protocol access level.
-
-            ''kDisabled'' indicates Protocol access level ''Disabled''
-
-            ''kReadOnly'' indicates Protocol access level ''ReadOnly''
-
-            ''kReadWrite'' indicates Protocol access level ''ReadWrite'''
-          type:
-          - string
-          - 'null'
-          enum:
-          - kDisabled
-          - kReadOnly
-          - kReadWrite
-          x-go-name: NfsAccess
-        nfsAllSquash:
-          description: 'Specifies whether all clients from this subnet can map view with
-
-            view_all_squash_uid/view_all_squash_gid configured in the view.'
-          type:
-          - boolean
-          - 'null'
-          x-go-name: NfsAllSquash
-        nfsRootSquash:
-          description: Specifies whether clients from this subnet can mount as root on NFS.
-          type:
-          - boolean
-          - 'null'
-          x-go-name: NfsRootSquash
-        smbAccess:
-          description: 'Specifies whether clients from this subnet can mount using SMB protocol.
-
-            Protocol access level.
-
-            ''kDisabled'' indicates Protocol access level ''Disabled''
-
-            ''kReadOnly'' indicates Protocol access level ''ReadOnly''
-
-            ''kReadWrite'' indicates Protocol access level ''ReadWrite'''
-          type:
-          - string
-          - 'null'
-          enum:
-          - kDisabled
-          - kReadOnly
-          - kReadWrite
-          x-go-name: SmbAccess
-      x-go-package: cohesity/iris/server/data/public
   responses:
-    NoContentResponse:
-      description: No Content
-    GetViewBoxesResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            description: 'List of Storage Domains (View Boxes) that match the specified filter
-
-              criteria.'
-            type: array
-            title: Array of View Boxes.
-            items:
-              $ref: '#/components/schemas/ViewBox'
     Error:
       description: Error
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/RequestError'
+    NoContentResponse:
+      description: No Content
     GetViewBoxByIdResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ViewBox'
-    UpdateViewBoxResponse:
       description: Success
       content:
         application/json:
@@ -1612,3 +1594,21 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ViewBox'
+    UpdateViewBoxResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ViewBox'
+    GetViewBoxesResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            description: 'List of Storage Domains (View Boxes) that match the specified filter
+
+              criteria.'
+            type: array
+            title: Array of View Boxes.
+            items:
+              $ref: '#/components/schemas/ViewBox'

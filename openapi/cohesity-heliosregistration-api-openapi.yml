@@ -58,6 +58,27 @@ paths:
       security:
       - APIKeyHeader: []
 components:
+  responses:
+    HeliosRegConfigResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HeliosRegConfig'
+    GetRigelClaimLogsResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RigelClaimLogs'
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NoContentResponse:
+      description: No Content
   schemas:
     Error:
       description: Specifies the error object with error code and a message.
@@ -76,53 +97,6 @@ components:
           - string
           - 'null'
           x-order: 1
-    RigelRegConfig:
-      description: Specifies the Rigel Registration Config.
-      type: object
-      title: Rigel Registration Config.
-      properties:
-        regInfo:
-          description: Specifies the registration status.
-          type:
-          - object
-          - 'null'
-          x-order: 0
-          $ref: '#/components/schemas/RigelClaimInfo'
-        controlPlaneConnectionInfo:
-          description: Specifies the connection status between rigel and control plane(helios).
-          type:
-          - object
-          - 'null'
-          x-order: 1
-          $ref: '#/components/schemas/RigelConnectionInfo'
-        dataPlaneConnectionInfo:
-          description: Specifies the connection status between rigel and data plane.
-          type:
-          - object
-          - 'null'
-          x-order: 2
-          $ref: '#/components/schemas/RigelConnectionInfo'
-    HeliosRegConfig:
-      description: Specifies the Helios Registration Config.
-      type: object
-      title: Helios Registration Config.
-      properties:
-        entityType:
-          description: Specifies the type of entity that is registered on Helios.
-          type:
-          - string
-          - 'null'
-          enum:
-          - Rigel
-          - Cluster
-          x-order: 0
-        rigelRegConfig:
-          description: Specifies the Rigel Registration Config.
-          type:
-          - object
-          - 'null'
-          x-order: 1
-          $ref: '#/components/schemas/RigelRegConfig'
     RigelConnectionInfo:
       description: Specifies the Rigel connection info.
       type: object
@@ -147,19 +121,6 @@ components:
           - 'null'
           format: int64
           x-order: 2
-    HeliosClaimRequest:
-      description: Specifies the request to register to Helios.
-      type: object
-      title: Register to Helios.
-      required:
-      - registrationToken
-      properties:
-        registrationToken:
-          description: Specifies the Helios registration token.
-          type:
-          - string
-          - 'null'
-          x-order: 0
     RigelClaimLogs:
       description: Specifies the Rigel claim logs.
       type: object
@@ -195,6 +156,53 @@ components:
           - string
           - 'null'
           x-order: 1
+    HeliosRegConfig:
+      description: Specifies the Helios Registration Config.
+      type: object
+      title: Helios Registration Config.
+      properties:
+        entityType:
+          description: Specifies the type of entity that is registered on Helios.
+          type:
+          - string
+          - 'null'
+          enum:
+          - Rigel
+          - Cluster
+          x-order: 0
+        rigelRegConfig:
+          description: Specifies the Rigel Registration Config.
+          type:
+          - object
+          - 'null'
+          x-order: 1
+          $ref: '#/components/schemas/RigelRegConfig'
+    RigelRegConfig:
+      description: Specifies the Rigel Registration Config.
+      type: object
+      title: Rigel Registration Config.
+      properties:
+        regInfo:
+          description: Specifies the registration status.
+          type:
+          - object
+          - 'null'
+          x-order: 0
+          $ref: '#/components/schemas/RigelClaimInfo'
+        controlPlaneConnectionInfo:
+          description: Specifies the connection status between rigel and control plane(helios).
+          type:
+          - object
+          - 'null'
+          x-order: 1
+          $ref: '#/components/schemas/RigelConnectionInfo'
+        dataPlaneConnectionInfo:
+          description: Specifies the connection status between rigel and data plane.
+          type:
+          - object
+          - 'null'
+          x-order: 2
+          $ref: '#/components/schemas/RigelConnectionInfo'
     RigelClaimLog:
       description: Specifies an event during Rigel claim..
       type: object
@@ -220,27 +228,19 @@ components:
           - 'null'
           x-cohesity-enum: rigel_claim_log_type
           x-order: 2
-  responses:
-    HeliosRegConfigResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/HeliosRegConfig'
-    GetRigelClaimLogsResponse:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RigelClaimLogs'
-    NoContentResponse:
-      description: No Content
-    ErrorResponse:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+    HeliosClaimRequest:
+      description: Specifies the request to register to Helios.
+      type: object
+      title: Register to Helios.
+      required:
+      - registrationToken
+      properties:
+        registrationToken:
+          description: Specifies the Helios registration token.
+          type:
+          - string
+          - 'null'
+          x-order: 0
   securitySchemes:
     APIKeyHeader:
       in: header
