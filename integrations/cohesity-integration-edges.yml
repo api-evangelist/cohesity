@@ -19,6 +19,223 @@ checked:
 - splunk/integrations/splunk-integration-edges.yml
 marketplace_apps: []
 edges:
+- partner_name: CrowdStrike (own)
+  partner: crowdstrike
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://marketplace.crowdstrike.com/listings/cohesity-datahawk-for-falcon-logscale/
+  mirror_of: crowdstrike/integrations/crowdstrike-integration-edges.yml
+  apps:
+  - Cohesity DataHawk for Falcon LogScale
+  listing_count: 1
+  detected: '2026-10-14'
+  detected_by: mirror-platform-listings.py
+- partner_name: Microsoft Sentinel (own)
+  partner: microsoft-sentinel
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://github.com/Azure/Azure-Sentinel/tree/master/Solutions/CohesitySecurity
+  mirror_of: microsoft-sentinel/integrations/microsoft-sentinel-integration-edges.yml
+  apps:
+  - CohesitySecurity
+  listing_count: 1
+  detected: '2026-10-14'
+  detected_by: mirror-platform-listings.py
+  category: Security - Cloud Security
+  badges:
+  - support-tier:partner
+- partner_name: Palo Alto Networks (own)
+  partner: palo-alto-networks
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://cortex.marketplace.pan.dev/marketplace/details/CohesityHelios/
+  mirror_of: palo-alto-networks/integrations/palo-alto-networks-integration-edges.yml
+  apps:
+  - Cohesity Helios
+  listing_count: 1
+  detected: '2026-10-14'
+  detected_by: mirror-platform-listings.py
+  category: Vulnerability Management
+  badges:
+  - support:partner
+- partner_name: Splunk (own)
+  partner: splunk
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://splunkbase.splunk.com/app/7530/
+  mirror_of: splunk/integrations/splunk-integration-edges.yml
+  apps:
+  - Cohesity Add-on For Splunk
+  listing_count: 1
+  detected: '2026-10-14'
+  detected_by: mirror-platform-listings.py
+  category: addon
+- partner_name: Go module proxy
+  partner: null
+  partner_match: null
+  type: register
+  direction: provider-built
+  category: official SDK (Go)
+  evidence: https://pkg.go.dev/github.com/cohesity/go-sdk
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: Go module proxy (public registry JSON)
+    spec_file: null
+    language: Go
+    packages:
+    - name: github.com/cohesity/go-sdk
+      version: v0.74.2
+      released: '2026-05-19'
+      released_field: Time
+      lapsed: false
+      page: https://pkg.go.dev/github.com/cohesity/go-sdk
+      repo_leg: github-org:cohesity
+      publisher_leg: org:cohesity
+      matched_by: github-org
+    - name: github.com/cohesity/management-sdk-go
+      version: v0.0.0-20240514173917-fdda37b91cd3
+      released: '2024-05-14'
+      released_field: Time
+      lapsed: true
+      page: https://pkg.go.dev/github.com/cohesity/management-sdk-go
+      repo_leg: github-org:cohesity
+      publisher_leg: org:cohesity
+      matched_by: github-org
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
+- partner_name: PyPI
+  partner: pypi
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official SDK (Python)
+  evidence: https://pypi.org/project/cohesity-management-sdk/
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: PyPI (public registry JSON)
+    spec_file: null
+    language: Python
+    packages:
+    - name: cohesity-management-sdk
+      version: 1.16.0
+      released: '2026-08-25'
+      released_field: upload_time
+      lapsed: false
+      page: https://pypi.org/project/cohesity-management-sdk/
+      repo_leg: github-org:cohesity
+      publisher_leg: email:cohesity.com
+      matched_by: domain
+    - name: cohesity-sdk
+      version: 1.4.0
+      released: '2025-03-19'
+      released_field: upload_time
+      lapsed: false
+      page: https://pypi.org/project/cohesity-sdk/
+      repo_leg: github-org:cohesity
+      publisher_leg: email:cohesity.com
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
+- partner_name: FedRAMP
+  partner: null
+  partner_match: register
+  type: contract
+  channel: regulator-register
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://marketplace.fedramp.gov/products/FR2306445868
+  category: FedRAMP In Process
+  contract_reference:
+    register: FedRAMP Marketplace data (github.com/18F/fedramp-data data/data.json @4b73d9247f)
+    standard: FedRAMP
+    spec_file: null
+    role: fedramp-in-process
+    registered_name: Cohesity
+    register_id: FR2306445868
+    matched_domain: cohesity.com
+    matched_by: domain
+    domain_source: poc-email
+    designations:
+    - In Process
+    packages:
+    - Cohesity Cloud Services for Government
+    service_models:
+    - SaaS
+    paths:
+    - Agency
+    signal_note: certified_products = one entry per AUTHORIZED impact level, never per package; packages, service
+      models, paths and leveraging agencies are context, never counted. The register lists current designations
+      only (revoked / expired are removed), so lapsed is always false
+    detected_by: sweep-gov-cloud.py
+    detected: '2026-10-15'
+  detected_by: sweep-gov-cloud.py
+  first_seen: '2026-10-15'
+- partner_name: GovRAMP
+  partner: null
+  partner_match: register
+  type: register
+  channel: standard-directory
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://govramp.org/program-participants
+  category: GovRAMP authorization
+  contract_reference:
+    register: GovRAMP Program Participants (govramp.org/program-participants)
+    standard: GovRAMP
+    spec_file: null
+    role: govramp-authorized
+    registered_name: Cohesity
+    register_id: SR24007
+    matched_domain: cohesity.com
+    matched_by: domain
+    domain_source: contact-email
+    statuses:
+    - Authorized
+    offerings:
+    - Cohesity Cloud Services for Government
+    signal_note: certified_products = one entry per AUTHORIZED impact level (Authorized / Provisionally Authorized),
+      never per offering; Progressing / Pending / Ready / Core are participation only
+    detected_by: sweep-gov-cloud.py
+    detected: '2026-10-15'
+    certified_products:
+    - product: GovRAMP Moderate
+      impact_level: Moderate
+      lapsed: false
+      latest_authorization: '2024-05-22'
+  detected_by: sweep-gov-cloud.py
+  first_seen: '2026-10-15'
 - partner_name: AWS Marketplace
   partner: amazon-web-services
   partner_match: aggregator
@@ -118,229 +335,12 @@ edges:
   evidence: https://azuremarketplace.microsoft.com/en-us/marketplace/apps?search=Cohesity%2C%20Inc.
   listing_count: 3
   apps:
+  - Cohesity DataPlatform DataProtect Cloud Edition
   - Cohesity Security Integration for Microsoft Sentinel
   - Cohesity DataProtect
-  - Cohesity DataPlatform DataProtect Cloud Edition
   seller_name: Cohesity, Inc.
   detected_by: sweep-cloud-marketplaces.py
-  detected: '2026-10-13'
-- partner_name: CrowdStrike (own)
-  partner: crowdstrike
-  partner_match: mirror
-  mirror_match: domain
-  type: marketplace
-  relationship: platform-app
-  direction: third-party
-  channel: partner-built
-  marketplace: own
-  evidence: https://marketplace.crowdstrike.com/listings/cohesity-datahawk-for-falcon-logscale/
-  mirror_of: crowdstrike/integrations/crowdstrike-integration-edges.yml
-  apps:
-  - Cohesity DataHawk for Falcon LogScale
-  listing_count: 1
-  detected: '2026-10-14'
-  detected_by: mirror-platform-listings.py
-- partner_name: Microsoft Sentinel (own)
-  partner: microsoft-sentinel
-  partner_match: mirror
-  mirror_match: domain
-  type: marketplace
-  relationship: platform-app
-  direction: third-party
-  channel: partner-built
-  marketplace: own
-  evidence: https://github.com/Azure/Azure-Sentinel/tree/master/Solutions/CohesitySecurity
-  mirror_of: microsoft-sentinel/integrations/microsoft-sentinel-integration-edges.yml
-  apps:
-  - CohesitySecurity
-  listing_count: 1
-  detected: '2026-10-14'
-  detected_by: mirror-platform-listings.py
-  category: Security - Cloud Security
-  badges:
-  - support-tier:partner
-- partner_name: Palo Alto Networks (own)
-  partner: palo-alto-networks
-  partner_match: mirror
-  mirror_match: domain
-  type: marketplace
-  relationship: platform-app
-  direction: third-party
-  channel: partner-built
-  marketplace: own
-  evidence: https://cortex.marketplace.pan.dev/marketplace/details/CohesityHelios/
-  mirror_of: palo-alto-networks/integrations/palo-alto-networks-integration-edges.yml
-  apps:
-  - Cohesity Helios
-  listing_count: 1
-  detected: '2026-10-14'
-  detected_by: mirror-platform-listings.py
-  category: Vulnerability Management
-  badges:
-  - support:partner
-- partner_name: Splunk (own)
-  partner: splunk
-  partner_match: mirror
-  mirror_match: domain
-  type: marketplace
-  relationship: platform-app
-  direction: third-party
-  channel: partner-built
-  marketplace: own
-  evidence: https://splunkbase.splunk.com/app/7530/
-  mirror_of: splunk/integrations/splunk-integration-edges.yml
-  apps:
-  - Cohesity Add-on For Splunk
-  listing_count: 1
-  detected: '2026-10-14'
-  detected_by: mirror-platform-listings.py
-  category: addon
-- partner_name: FedRAMP
-  partner: null
-  partner_match: register
-  type: contract
-  channel: regulator-register
-  relationship: standard-participant
-  direction: partner-built
-  evidence: https://marketplace.fedramp.gov/products/FR2306445868
-  category: FedRAMP In Process
-  contract_reference:
-    register: FedRAMP Marketplace data (github.com/18F/fedramp-data data/data.json @4b73d9247f)
-    standard: FedRAMP
-    spec_file: null
-    role: fedramp-in-process
-    registered_name: Cohesity
-    register_id: FR2306445868
-    matched_domain: cohesity.com
-    matched_by: domain
-    domain_source: poc-email
-    designations:
-    - In Process
-    packages:
-    - Cohesity Cloud Services for Government
-    service_models:
-    - SaaS
-    paths:
-    - Agency
-    signal_note: certified_products = one entry per AUTHORIZED impact level, never per package; packages, service
-      models, paths and leveraging agencies are context, never counted. The register lists current designations
-      only (revoked / expired are removed), so lapsed is always false
-    detected_by: sweep-gov-cloud.py
-    detected: '2026-10-15'
-  detected_by: sweep-gov-cloud.py
-  first_seen: '2026-10-15'
-- partner_name: GovRAMP
-  partner: null
-  partner_match: register
-  type: register
-  channel: standard-directory
-  relationship: standard-participant
-  direction: partner-built
-  evidence: https://govramp.org/program-participants
-  category: GovRAMP authorization
-  contract_reference:
-    register: GovRAMP Program Participants (govramp.org/program-participants)
-    standard: GovRAMP
-    spec_file: null
-    role: govramp-authorized
-    registered_name: Cohesity
-    register_id: SR24007
-    matched_domain: cohesity.com
-    matched_by: domain
-    domain_source: contact-email
-    statuses:
-    - Authorized
-    offerings:
-    - Cohesity Cloud Services for Government
-    signal_note: certified_products = one entry per AUTHORIZED impact level (Authorized / Provisionally Authorized),
-      never per offering; Progressing / Pending / Ready / Core are participation only
-    detected_by: sweep-gov-cloud.py
-    detected: '2026-10-15'
-    certified_products:
-    - product: GovRAMP Moderate
-      impact_level: Moderate
-      lapsed: false
-      latest_authorization: '2024-05-22'
-  detected_by: sweep-gov-cloud.py
-  first_seen: '2026-10-15'
-- partner_name: Go module proxy
-  partner: null
-  partner_match: null
-  type: register
-  direction: provider-built
-  category: official SDK (Go)
-  evidence: https://pkg.go.dev/github.com/cohesity/go-sdk
-  channel: package-registry
-  relationship: distribution-channel
-  contract_reference:
-    register: Go module proxy (public registry JSON)
-    spec_file: null
-    language: Go
-    packages:
-    - name: github.com/cohesity/go-sdk
-      version: v0.74.2
-      released: '2026-05-19'
-      released_field: Time
-      lapsed: false
-      page: https://pkg.go.dev/github.com/cohesity/go-sdk
-      repo_leg: github-org:cohesity
-      publisher_leg: org:cohesity
-      matched_by: github-org
-    - name: github.com/cohesity/management-sdk-go
-      version: v0.0.0-20240514173917-fdda37b91cd3
-      released: '2024-05-14'
-      released_field: Time
-      lapsed: true
-      page: https://pkg.go.dev/github.com/cohesity/management-sdk-go
-      repo_leg: github-org:cohesity
-      publisher_leg: org:cohesity
-      matched_by: github-org
-    current: true
-    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
-      24 months'
-    detected_by: sweep-official-sdks.py
-    detected: '2026-10-18'
-  detected_by: sweep-official-sdks.py
-  first_seen: '2026-10-18'
-- partner_name: PyPI
-  partner: pypi
-  partner_match: register
-  type: register
-  direction: provider-built
-  category: official SDK (Python)
-  evidence: https://pypi.org/project/cohesity-management-sdk/
-  channel: package-registry
-  relationship: distribution-channel
-  contract_reference:
-    register: PyPI (public registry JSON)
-    spec_file: null
-    language: Python
-    packages:
-    - name: cohesity-management-sdk
-      version: 1.16.0
-      released: '2026-08-25'
-      released_field: upload_time
-      lapsed: false
-      page: https://pypi.org/project/cohesity-management-sdk/
-      repo_leg: github-org:cohesity
-      publisher_leg: email:cohesity.com
-      matched_by: domain
-    - name: cohesity-sdk
-      version: 1.4.0
-      released: '2025-03-19'
-      released_field: upload_time
-      lapsed: false
-      page: https://pypi.org/project/cohesity-sdk/
-      repo_leg: github-org:cohesity
-      publisher_leg: email:cohesity.com
-      matched_by: domain
-    current: true
-    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
-      24 months'
-    detected_by: sweep-official-sdks.py
-    detected: '2026-10-18'
-  detected_by: sweep-official-sdks.py
-  first_seen: '2026-10-18'
+  detected: '2026-10-19'
 source:
 - crowdstrike/integrations/crowdstrike-integration-edges.yml
 - microsoft-sentinel/integrations/microsoft-sentinel-integration-edges.yml
