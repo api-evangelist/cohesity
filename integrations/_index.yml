@@ -348,8 +348,8 @@
     spec_file: null
     role: cc-certified-manufacturer
     registered_name: Cohesity Inc.
-    matched_domain: null
-    matched_by: register-name
+    matched_domain: cohesity.com
+    matched_by: domain
     certified_products:
     - product: Data Protection
       product_type: Data Protection
@@ -363,9 +363,7 @@
       product counts are context, never counted'
     detected_by: sweep-common-criteria-certified-products.py
     detected: '2026-10-21'
-    register_name_note: register-name 'cohesity' = cohesity; no wikidata P856
-    identity_source: register-name
-    identity_note: register gave only the name; exact normalised match to the repo's apis.yml name, one repo, Wikidata
-      P856 not contradicting (Kin 2026-10-20 decision 2)
+    identity: wikidata Q27150197 'Cohesity' P856 https://www.cohesity.com/
+    identity_source: wikidata P856 (labelled provenance step; Kin 2026-10-15 decision 1)
   status: not-a-workflow
   arazzo: null
