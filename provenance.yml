@@ -12,6 +12,9 @@ artifacts:
   authentication/cohesity-authentication.yml:
     method: searched
     evidence: declared in the artifact
+  capabilities/cohesity-capability-edges.yml:
+    method: unknown
+    evidence: no authorship recorded
   changelog/cohesity-changelog.yml:
     method: searched
     evidence: declared in the artifact
@@ -33,127 +36,13 @@ artifacts:
   front-door-ai/2026-09-17.yml:
     method: unknown
     evidence: no authorship recorded
-  kin/checks-2026-09-24T161608.yml:
+  integrations/_index.yml:
     method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-25T125852.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-25T133943.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-25T143147.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-25T154045.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-26T215308.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-27T094438.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-27T103455.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-27T123021.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-27T132314.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-27T140727.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-28T221322.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-29T213958.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-29T230545.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-30T203505.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-30T220315.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-31T223420.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-01T063623.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-01T210448.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-01T222808.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-02T211804.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-02T224043.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-03T161828.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-03T174231.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-04T062714.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-04T212454.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-04T224856.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-05T055819.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-05T072335.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-05T144739.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-05T195450.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-05T211839.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-06T011047.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-06T211804.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-06T224210.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-07T200636.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-07T213054.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-08T214843.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-08T232836.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-10T204815.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-10T222408.yml:
+    evidence: carries an API Evangelist house phrase
+  integrations/cohesity-integration-edges.yml:
+    method: searched
+    evidence: declared in the artifact
+  kin/checks-2026-10-11T110117.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
   kin/score-2026-09-12T062655.yml:
@@ -235,6 +124,21 @@ artifacts:
     method: generated
     evidence: Kin Score snapshot written by score.rb
   kin/score-2026-09-24T161608.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-25T210408.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-25T232841.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-10-03T000835.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-10-03T024842.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-10-11T110117.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
   lifecycle/cohesity-lifecycle.yml:
@@ -557,16 +461,289 @@ artifacts:
   openapi/cohesity-vlan-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
-  overlays/cohesity-cluster-v1-overlay.yaml:
+  overlays/cohesity-access-tokens-api-phrasing-overlay.yaml:
     method: generated
     evidence: declared in the artifact
+  overlays/cohesity-active-directory-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-alerts-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-analytics-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-antivirusservicegroup-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-app-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-appinstance-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-applications-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-artifacts-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-audit-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-audit-log-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-banner-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-certificates-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-clonerefreshtasks-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-cluster-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-cluster-v1-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
   overlays/cohesity-cluster-v2-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/cohesity-clusterpartitions-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-clusters-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-components-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-connectors-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-customreporting-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-dashboard-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-data-tiering-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-dmaastenantcertificate-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-drplan-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-external-connection-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-failover-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-filters-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-fleetinstance-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-groups-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-health-checks-api-phrasing-overlay.yaml:
     method: generated
     evidence: declared in the artifact
   overlays/cohesity-helios-reporting-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/cohesity-heliosregistration-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-idps-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-interface-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-interface-group-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-internal-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-ip-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-kerberos-providers-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-keystone-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-kms-configuration-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-kmsconfigurationresponse-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-kmsupdaterequestparameters-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-ldapprovider-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-license-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-miscellaneous-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-monitoring-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-network-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-network-information-service-nis-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-network-reset-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-node-groups-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-nodes-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-notifications-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-objects-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-packages-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-patches-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-platform-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-preferences-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-principals-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-privileges-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-protected-objects-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-protection-groups-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-protection-policies-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-protectionjobs-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-protectionobjects-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-protectionruns-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-protectionsources-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-recoveries-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-remotecluster-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-remoterestore-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-reports-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-restoretasks-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-roles-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-routes-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-scheduler-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-schedules-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-search-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-security-api-phrasing-overlay.yaml:
     method: generated
     evidence: declared in the artifact
   overlays/cohesity-site-continuity-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/cohesity-sites-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-smbfileopens-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-statistics-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-stats-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-storagedomains-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-tags-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-tasks-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-tenant-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-tenants-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-test-data-management-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-users-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-vaults-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-viewboxes-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-views-api-phrasing-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/cohesity-vlan-api-phrasing-overlay.yaml:
     method: generated
     evidence: declared in the artifact
   packages/cohesity-packages.yml:
