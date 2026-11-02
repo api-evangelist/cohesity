@@ -1,0 +1,84 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: Cohesity
+providerId: cohesity
+generated: '2026-09-05'
+method: searched
+source: https://www.cohesity.com/buy/cohesity-data-cloud-packaging/
+created: '2026-05-04'
+modified: '2026-09-05'
+plan_count: 2
+prices_published: false
+self_serve_signup: false
+free_tier: false
+description: >-
+  Cohesity publishes named product editions but NO prices and NO API-level plan.
+  This file replaces a 2026-05-04 bulk-sweep scaffold that invented Free /
+  Professional / Enterprise tiers with fabricated request quotas and per-minute
+  rate limits; none of those tiers, quotas or limits exist. Cohesity is an
+  enterprise contract-negotiated vendor - subscription licences are sold in 1, 3
+  or 5-year terms through sales, API access is a capability of the product a
+  customer already licenses, and there is no metered API plan, no self-serve
+  signup and no published price of any kind.
+note: >-
+  The Kin Score should read this as an honest zero on published pricing, not as
+  three tiers with numbers behind them.
+plans:
+  - id: cohesity-core-edition
+    name: Core Edition
+    type: subscription
+    price: null
+    currency: null
+    billing_period: '1, 3 or 5-year subscription term'
+    quota: null
+    overage: null
+    description: For essential data protection and ransomware remediation.
+    source: https://www.cohesity.com/buy/cohesity-data-cloud-packaging/
+  - id: cohesity-enterprise-edition
+    name: Enterprise Edition
+    type: subscription
+    price: null
+    currency: null
+    billing_period: '1, 3 or 5-year subscription term'
+    quota: null
+    overage: null
+    recommended: true
+    description: >-
+      For protection against sophisticated cyber threats and rapid response and
+      recovery.
+    source: https://www.cohesity.com/buy/cohesity-data-cloud-packaging/
+add_ons:
+  - {name: Replication, price: null}
+  - {name: Cyber Vaulting, price: null}
+  - {name: Data Insights, price: null}
+  - {name: Platinum Service, price: null}
+sales_gate:
+  contact_url: https://www.cohesity.com/buy/
+  mechanism: contact-sales
+  note: Both editions and all four add-ons require contacting sales for pricing.
+evidence:
+  - {url: 'https://www.cohesity.com/buy/cohesity-data-cloud-packaging/', status: 200}
+  - {url: 'https://www.cohesity.com/pricing/', status: 404, note: no pricing page exists at the conventional path}
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com
+x-canonical:
+  generated: '2026-11-01'
+  vocabulary: engine/economics/plans-canonical.yml
+  models:
+  - subscription
+  units: []
+  plans:
+  - name: Core Edition
+    access: other
+    model: subscription
+    model_how: stated
+    units: []
+    periods: []
+  - name: Enterprise Edition
+    access: other
+    model: subscription
+    model_how: stated
+    units: []
+    periods: []
